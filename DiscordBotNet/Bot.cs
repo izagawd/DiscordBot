@@ -40,14 +40,10 @@ public class Bot
 
     public List<Character> idk = new List<Character>();
 
-    public async Task DoShit()
-    {
-        Console.WriteLine("i do shit");
-    }
+
     private async Task RunBotAsync(string[] args)
     {
 
-        DoShit();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         while (true)
         {
