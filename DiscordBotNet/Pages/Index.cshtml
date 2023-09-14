@@ -1,0 +1,22 @@
+﻿@page
+
+@model IndexModel
+@{
+    Layout = "Shared/_NavigationLayout";
+}
+<head>
+       <link rel="stylesheet" type="text/css" href="css/Home.css">
+    <title>Home</title>
+</head>
+<body>
+
+<div id="welcome_div">
+    <p id="welcome">welcome, @User.GetDiscordUserName()!</p>
+    <div id="user_picture_div">
+        <img id="user_picture" src="@User.GetDiscordUserAvatarUrl()"/>
+    </div>
+    <p id="level">Level @Model.UserData.Level</p>
+
+</div>
+
+</body>

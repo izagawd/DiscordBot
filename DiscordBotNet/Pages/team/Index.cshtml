@@ -1,0 +1,56 @@
+﻿@page
+@inject PostgreSqlContext DatabaseContext 
+@using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters
+@using DiscordBotNet.LegendaryBot.Database
+@using System.Web
+@model DiscordBotNet.Pages.team.Index
+
+@{
+    Layout = "Shared/_NavigationLayout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/NeutralHref.css">
+    <link rel="stylesheet" type="text/css" href="css/Team.css">
+    <title>Team</title>
+</head>
+<body>
+
+<div id="team_main_div" ondrop="AddToTeam( event)"  ondragover="event.preventDefault()">
+    @{ var team = Model.UserData.Team;}
+    @foreach (var i in team)
+    {
+        <a href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="the_href super_character_div character_in_team_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">
+            <div class="character_div">
+                <img src="@i.IconUrl" class="image_class" draggable="false"/>
+                <div class="character_details">
+                    <p>Level: @i.Level</p>
+                    <p>Name : @i.Name</p>
+                </div>
+            </div>
+        </a>
+    }
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/team.js"></script>
+<div id="character_list_div" ondrop="RemoveFromTeam( event)"  ondragover="event.preventDefault()">
+    @foreach (var i in Model.UserData.Inventory.OfType<Character>().Where(j => !team.Contains(j)))
+    {
+        <div class="super_character_div character_in_list_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">
+            <a draggable="false" href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="character_div the_href">
+                <img src="@i.IconUrl" class="image_class" draggable="false"/>
+                <div class="character_details">
+                    <p>Level: @i.Level</p>
+                    <p>Name : @i.Name</p>
+                </div>
+            </a>
+            </div>
+    }
+</div>
+
+</body>
+</html>

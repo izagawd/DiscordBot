@@ -1,0 +1,69 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = DiscordBotNet
+build_property.RootNamespace = DiscordBotNet
+build_property.ProjectDir = C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/add/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcYWRkXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/blessings/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcYmxlc3NpbmdzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/characters/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcY2hhcmFjdGVyc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/characters/info/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcY2hhcmFjdGVyc1xpbmZvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/Shared/_NavigationLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9OYXZpZ2F0aW9uTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/team/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcdGVhbVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/testing/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcdGVzdGluZ1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-workspace/discordbotnet/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
