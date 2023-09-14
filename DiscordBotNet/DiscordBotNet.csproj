@@ -40,6 +40,7 @@
     <_ContentIncludedByDefault Remove="Pages\die\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Pages\login\Index.cshtml" />
     <_ContentIncludedByDefault Remove="LegendaryBot\ConfigFiles\App.config" />
+    <_ContentIncludedByDefault Remove="ConfigFiles\App.config" />
 
 
 
