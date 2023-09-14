@@ -17,6 +17,7 @@ using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
 namespace DiscordBotNet;
@@ -33,20 +34,27 @@ public class Bot
     private static void Main(string[] args) => new Bot().RunBotAsync(args).GetAwaiter().GetResult();
 
     public static SlashCommandsExtension SlashCommandsExtension { get; protected set; }
+    /// <summary>
+    /// This is my discord user Id because it's too long to memorize
+    /// </summary>
     public static ulong Izasid => 216230858783326209;
+    /// <summary>
+    /// this is the discord user Id of another account of mine that i use to test stuff
+    /// </summary>
     public static ulong Testersid => 266157684380663809;
     public static DiscordClient Client { get; private set; }
 
-
-    public List<Character> idk = new List<Character>();
-
-
+    /// <summary>
+    /// this is where the program starts
+    /// </summary>
     private async Task RunBotAsync(string[] args)
     {
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         while (true)
         {
+            //sometimes BasicFunction.LoadAsync throws an error so it repeats
+            // when an exception is thrown
             try
             {
                 await BasicFunction.LoadAsync();
@@ -68,7 +76,7 @@ public class Bot
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration
         {
-            Token = "MzQwMDU0NjEwOTg5NDE2NDYw.GlAoYq.Ld1L9YN2SoS713RS9YGbeNTfdRYzUOH6jknDE4",
+            Token = ConfigurationManager.AppSettings["BotToken"]!,
             Intents = DiscordIntents.All,
             AutoReconnect = true,
         };
