@@ -38,7 +38,6 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\DiscordBotNet.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\DiscordBotNet.RazorAssemblyInfo.cache
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\DiscordBotNet.RazorAssemblyInfo.cs
-C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\LegendaryBot\ConfigFiles\App.config
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\appsettings.Development.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\appsettings.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\DiscordBotNet.staticwebassets.runtime.json
@@ -84,3 +83,4 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\System.Interactive.Async.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\System.Linq.Async.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\ConfigFiles\App.config
