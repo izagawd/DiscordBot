@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
-namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
+namespace DiscordBotNet.LegendaryBot.Battle.Stats;
 
 
 public abstract class GearStat

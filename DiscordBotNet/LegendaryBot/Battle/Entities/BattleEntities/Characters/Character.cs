@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Reflection;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
+using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;

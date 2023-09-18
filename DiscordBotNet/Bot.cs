@@ -2,11 +2,11 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
+using DiscordBotNet.Database;
 using DiscordBotNet.LegendaryBot;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+
 using DiscordBotNet.LegendaryBot.command;
-using DiscordBotNet.LegendaryBot.Database;
-using DiscordBotNet.LegendaryBot.Database.Models;
+
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -65,11 +65,10 @@ public class Bot
                 // ignored
             }
         }
-        
         var ctx = new PostgreSqlContext();
-
         await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
         await ctx.SaveChangesAsync();
+
         
         await ctx.DisposeAsync();
         BasicFunction.imageMapper.Count.Print();
@@ -129,11 +128,7 @@ public class Bot
 
     private Task OnReady(DiscordClient client, SocketEventArgs e)
     {
-        foreach(var i in client.Guilds.Values)
-        {
 
-            i.BulkOverwriteApplicationCommandsAsync(new List<DiscordApplicationCommand>());
-        }
         Console.WriteLine("Ready!");
         return Task.CompletedTask;
     }

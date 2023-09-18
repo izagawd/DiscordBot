@@ -1,6 +1,6 @@
 ﻿
 
-namespace DiscordBotNet.LegendaryBot.Database.Models;
+namespace DiscordBotNet.Database.Models;
 
 
 public abstract class Model

@@ -1,4 +1,4 @@
-﻿using DiscordBotNet.LegendaryBot.Database;
+﻿using DiscordBotNet.Database;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 

@@ -1,12 +1,13 @@
 ﻿using System.Linq.Expressions;
+using DiscordBotNet.Database.Models;
+using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
-using DiscordBotNet.LegendaryBot.Database.Models;
+using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace DiscordBotNet.LegendaryBot.Database;
+namespace DiscordBotNet.Database;
 
 public static class PostgreExtension
 {
@@ -43,7 +44,8 @@ public static class PostgreExtension
     public static IIncludableQueryable<UserData,Blessing?> IncludeTeamWithAllEquipments
         (this IQueryable<UserData> queryable)
     {
-        return queryable
+
+        return  queryable
             .IncludeWithAllEquipments(i => i.Character1)
             .IncludeWithAllEquipments(i => i.Character2)
             .IncludeWithAllEquipments(i => i.Character3)

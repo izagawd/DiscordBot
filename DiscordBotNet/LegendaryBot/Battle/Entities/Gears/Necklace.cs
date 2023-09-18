@@ -1,4 +1,6 @@
-﻿namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
+﻿using DiscordBotNet.LegendaryBot.Battle.Stats;
+
+namespace DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 
 public class Necklace : Gear
 {

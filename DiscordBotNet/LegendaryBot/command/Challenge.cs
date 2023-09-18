@@ -1,7 +1,7 @@
-﻿using DiscordBotNet.LegendaryBot.Battle;
+﻿using DiscordBotNet.Database;
+using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
-using DiscordBotNet.LegendaryBot.Database;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
@@ -16,7 +16,6 @@ public class Challenge :BaseCommandClass
     private static DiscordButtonComponent yes = new(ButtonStyle.Primary, "yes", "YES");
     private static DiscordButtonComponent no = new(ButtonStyle.Primary, "no", "NO");
 
-    [CommandArgs(MakesUsersOccupied = true, RequiresBegun = true)]
     [SlashCommand("challenge", "Challenge other players to a duel!")]
     public async Task Execute(InteractionContext ctx,[Option("user", "User to challenge")] DiscordUser opponent)
     {
@@ -29,8 +28,18 @@ public class Challenge :BaseCommandClass
                             i.Include(j => j.Inventory)
                                 .ThenInclude(j => (j as Character).Blessing)
                                 .Include(i => i.Inventory.Where(i => i is Character)));
-        
-        var embedToBuild = new DiscordEmbedBuilder()
+        DiscordEmbedBuilder embedToBuild;
+        if (player1User.IsOccupied)
+        {
+            embedToBuild = new DiscordEmbedBuilder()
+                .WithTitle($"Hmm")
+                .WithColor(player1User.Color)
+                .WithAuthor(player1.Username, iconUrl: player1.AvatarUrl)
+                .WithDescription("You are occupied");
+            await ctx.CreateResponseAsync(embedToBuild.Build());
+            return;
+        }
+        embedToBuild = new DiscordEmbedBuilder()
             .WithTitle($"Hmm")
             .WithColor(player1User.Color)
             .WithAuthor(player1.Username, iconUrl: player1.AvatarUrl)
@@ -42,11 +51,22 @@ public class Challenge :BaseCommandClass
             return;
             
         }
+  
         var player2User = await DatabaseContext.UserData.FindOrCreateAsync(player2.Id, 
             i =>
                 i.Include(j => j.Inventory)
                     .ThenInclude(j => (j as Character).Blessing)
                     .Include(i => i.Inventory.Where(i => i is Character)));
+        if (player2User.IsOccupied)
+        {
+            embedToBuild = new DiscordEmbedBuilder()
+                .WithTitle($"Hmm")
+                .WithColor(player1User.Color)
+                .WithAuthor(player1.Username, iconUrl: player1.AvatarUrl)
+                .WithDescription($"{player2.Username} is occupied");
+            await ctx.CreateResponseAsync(embedToBuild.Build());
+            return;
+        }
         if (player2User.Tier == Tier.Unranked || player1User.Tier == Tier.Unranked)
         {
             embedToBuild = embedToBuild
@@ -60,7 +80,7 @@ public class Challenge :BaseCommandClass
             .WithTitle($"{player2.Username}, ")
             
             .WithDescription($"`do you accept {player1.Username}'s challenge?`");
-
+        await MakeOccupiedAsync(player1User);
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
             .AddEmbed(embedToBuild.Build())
             .AddComponents(yes,no));
@@ -88,6 +108,8 @@ public class Challenge :BaseCommandClass
             return;
             
         }
+
+        await MakeOccupiedAsync(player2User);
         var simulator = new BattleSimulator(await player1User.Team.LoadAsync(player1), await player2User.Team.LoadAsync(player2));
         BattleResult battleResult = await simulator.Start(ctx.Interaction,message);
 

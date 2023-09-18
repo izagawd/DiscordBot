@@ -1,5 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Database;
-using DiscordBotNet.LegendaryBot.Database.Models;
+﻿using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 

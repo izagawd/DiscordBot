@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DSharpPlus.Entities;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
 
-namespace DiscordBotNet.LegendaryBot.Database.Models;
+namespace DiscordBotNet.Database.Models;
 
 
 public class UserData : Model,  ICanBeLeveledUp

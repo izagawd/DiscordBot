@@ -1,5 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Database;
+﻿using DiscordBotNet.Database;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

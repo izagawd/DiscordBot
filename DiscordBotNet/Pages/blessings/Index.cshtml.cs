@@ -1,5 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
-using DiscordBotNet.LegendaryBot.Database;
+﻿using DiscordBotNet.Database;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 

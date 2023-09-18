@@ -1,6 +1,7 @@
-﻿using DiscordBotNet.LegendaryBot.Database;
+﻿using DiscordBotNet.Database;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using Google.Apis.Util;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
@@ -15,8 +16,7 @@ public class Avatar: BaseCommandClass
         {
             user = ctx.User;
         }
-  
-
+        
         DiscordColor color = await DatabaseContext.UserData
             .FindOrCreateSelectAsync(user.Id, i => i.Color);
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
@@ -26,5 +26,6 @@ public class Avatar: BaseCommandClass
             .WithImageUrl(user.AvatarUrl)
             .WithTimestamp(DateTime.Now);
         await ctx.CreateResponseAsync(embed);
+
     }
 }

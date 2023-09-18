@@ -1,13 +1,15 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Entities;
+﻿using DiscordBotNet.Database.Models;
+using DiscordBotNet.LegendaryBot;
+using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
-using DiscordBotNet.LegendaryBot.Database.Models;
+using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+using DiscordBotNet.LegendaryBot.Battle.Stats;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
-namespace DiscordBotNet.LegendaryBot.Database;
+namespace DiscordBotNet.Database;
 
 public class PostgreSqlContext :DbContext
 {
@@ -42,7 +44,7 @@ public class PostgreSqlContext :DbContext
         optionsBuilder
             .UseNpgsql(ConfigurationManager.AppSettings["PostgreSQLConnectionString"])
             .EnableSensitiveDataLogging();
-
+    
     }
 
 
@@ -90,6 +92,7 @@ public class PostgreSqlContext :DbContext
                 .ValueGeneratedNever();
         });
 
+            
         modelBuilder.Entity<UserData>()
             .HasOne(i => i.Character1)
             .WithOne()
@@ -147,7 +150,6 @@ public class PostgreSqlContext :DbContext
             .WithOne()
             .HasForeignKey<Character>(i => i.NecklaceId)
             .OnDelete(DeleteBehavior.SetNull);
-        ;
 
         modelBuilder.Entity<Character>()
             .HasOne(i => i.Ring)

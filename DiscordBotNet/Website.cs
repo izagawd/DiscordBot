@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Security.Claims;
 using AspNet.Security.OAuth.Discord;
-using DiscordBotNet.LegendaryBot.Database;
+using DiscordBotNet.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 

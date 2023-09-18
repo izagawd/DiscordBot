@@ -265,7 +265,7 @@ public class BattleSimulator
                 
                 j.Team = i;
                 j.CurrentBattle = this;
-                j.Blessing.Print();
+               
             }
             
             characters.AddRange(i);

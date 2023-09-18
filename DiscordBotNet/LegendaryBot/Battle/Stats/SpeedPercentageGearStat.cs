@@ -1,6 +1,6 @@
 ﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
-namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
+namespace DiscordBotNet.LegendaryBot.Battle.Stats;
 
 public class SpeedPercentageGearStat : GearStat
 {

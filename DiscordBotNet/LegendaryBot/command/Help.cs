@@ -1,4 +1,4 @@
-﻿using DiscordBotNet.LegendaryBot.Database;
+﻿using DiscordBotNet.Database;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
@@ -49,16 +49,17 @@ public class Help : BaseCommandClass
                 {
                     embedToBuild.WithTitle($"**{foundCommand.Name}**");
                     embedToBuild.AddField("Description", foundCommand.Description);
-                    embedToBuild.AddField("Example", foundCommand.Example);
+                    embedToBuild.AddField("Example(s)", foundCommand.Example);
                 }
                 else
                 {
-                    embedToBuild.Title = foundCommand.Name + " related commands";
-                    embedToBuild.AddField("Example",foundCommand.Example);
+                    embedToBuild.Title = foundCommand.Name;
+                    embedToBuild.WithDescription(foundCommand.Description);
+                    embedToBuild.AddField("Example(s)",foundCommand.Example);
                     foreach (var i in _commandResults[foundCommand.GetType()])
                     {
-                        embedToBuild.AddField(foundCommand.Name + " " + i.SlashCommandAttribute.Name,
-                            i.SlashCommandAttribute.Description);
+                        embedToBuild.AddField(foundCommand.Name + " " + i.Name,
+                            i.Description);
                     }
                 }
 

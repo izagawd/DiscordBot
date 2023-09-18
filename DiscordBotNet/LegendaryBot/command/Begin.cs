@@ -1,11 +1,11 @@
-﻿using DiscordBotNet.LegendaryBot.Battle;
+﻿using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
+using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Arguments;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
 using DiscordBotNet.LegendaryBot.Battle.Results;
-using DiscordBotNet.LegendaryBot.Database;
-using DiscordBotNet.LegendaryBot.Database.Models;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 public class Begin : BaseCommandClass
 {
     public override BotCommandType BotCommandType { get; } = BotCommandType.Adventure;
-    [CommandArgs(MakesUsersOccupied = true)]
+
     [SlashCommand("begin", "Begin your journey by playing the tutorial!")]
     public async Task Execute(InteractionContext ctx)
     {
@@ -29,6 +29,18 @@ public class Begin : BaseCommandClass
                     .ThenInclude(j => (j as Character).Blessing)
                     .Include(i => i.Inventory.Where(i => i is Character || i is Blessing)));
         DiscordColor userColor = userData.Color;
+        if (userData.IsOccupied)
+        {
+            embedToBuild
+                .WithTitle("Hmm")
+                .WithAuthor(author.Username, iconUrl: author.AvatarUrl)
+                .WithDescription("`You are occupied`")
+                .WithColor(userColor);
+
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embedToBuild.Build()));
+            return;
+        }
+
 
         if (userData.Tier != Tier.Unranked)
         {
@@ -41,6 +53,7 @@ public class Begin : BaseCommandClass
             await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embedToBuild.Build()));
             return;
         }
+        await MakeOccupiedAsync(userData);
         Lily lily = new Lily();
         
         if (!userData.Inventory.Any(i => i is Player))

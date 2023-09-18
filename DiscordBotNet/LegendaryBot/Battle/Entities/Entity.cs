@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using DiscordBotNet.LegendaryBot.Database.Models;
+using DiscordBotNet.Database.Models;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities;
 

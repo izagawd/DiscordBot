@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities;
 using DiscordBotNet.LegendaryBot.Battle.Results;
+using DiscordBotNet.LegendaryBot.Battle.Stats;
 
-namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
+namespace DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 
 public abstract class Gear : BattleEntity
 {
