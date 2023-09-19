@@ -45,11 +45,13 @@ public static class PostgreExtension
         (this IQueryable<UserData> queryable)
     {
 
-        return  queryable
+        var idk =  queryable
             .IncludeWithAllEquipments(i => i.Character1)
             .IncludeWithAllEquipments(i => i.Character2)
             .IncludeWithAllEquipments(i => i.Character3)
             .IncludeWithAllEquipments(i => i.Character4);
+        idk.ToQueryString().Print();
+        return idk;
     }
 
     public static IIncludableQueryable<UserData, Necklace?> IncludeTeamWithGears

@@ -1,0 +1,262 @@
+SELECT u."Id", u."Character1Id", u."Character2Id", u."Character3Id", u."Character4Id", u."Coins", u."Color", u."Experience", u."IsOccupied", u."Language", u."Level", u."StartTime", u."Tier", t."Id", t."DateAcquired", t."Discriminator", t."UserDataId", t."Experience", t."Level", t."ArmorId", t."BasicAttackLevel", t."BlessingId", t."BootsId", t."HelmetId", t."NecklaceId", t."RingId", t."SkillLevel", t."SurgeLevel", t."WeaponId", t."Element", t0."Id", t0."DateAcquired", t0."Discriminator", t0."UserDataId", t0."Experience", t0."Level", t0."IsNew", t0."MainStatId", t0."Rarity", t0."SubStat1Id", t0."SubStat2Id", t0."SubStat3Id", t0."SubStat4Id", g."Id", g."Discriminator", g."TimesIncreased", g."Value", g0."Id", g0."Discriminator", g0."TimesIncreased", g0."Value", g1."Id", g1."Discriminator", g1."TimesIncreased", g1."Value", g2."Id", g2."Discriminator", g2."TimesIncreased", g2."Value", g3."Id", g3."Discriminator", g3."TimesIncreased", g3."Value", t1."Id", t1."DateAcquired", t1."Discriminator", t1."UserDataId", t1."Experience", t1."Level", t1."IsNew", t1."MainStatId", t1."Rarity", t1."SubStat1Id", t1."SubStat2Id", t1."SubStat3Id", t1."SubStat4Id", g4."Id", g4."Discriminator", g4."TimesIncreased", g4."Value", g5."Id", g5."Discriminator", g5."TimesIncreased", g5."Value", g6."Id", g6."Discriminator", g6."TimesIncreased", g6."Value", g7."Id", g7."Discriminator", g7."TimesIncreased", g7."Value", g8."Id", g8."Discriminator", g8."TimesIncreased", g8."Value", t2."Id", t2."DateAcquired", t2."Discriminator", t2."UserDataId", t2."Experience", t2."Level", t2."IsNew", t2."MainStatId", t2."Rarity", t2."SubStat1Id", t2."SubStat2Id", t2."SubStat3Id", t2."SubStat4Id", g9."Id", g9."Discriminator", g9."TimesIncreased", g9."Value", g10."Id", g10."Discriminator", g10."TimesIncreased", g10."Value", g11."Id", g11."Discriminator", g11."TimesIncreased", g11."Value", g12."Id", g12."Discriminator", g12."TimesIncreased", g12."Value", g13."Id", g13."Discriminator", g13."TimesIncreased", g13."Value", t3."Id", t3."DateAcquired", t3."Discriminator", t3."UserDataId", t3."Experience", t3."Level", t3."IsNew", t3."MainStatId", t3."Rarity", t3."SubStat1Id", t3."SubStat2Id", t3."SubStat3Id", t3."SubStat4Id", g14."Id", g14."Discriminator", g14."TimesIncreased", g14."Value", g15."Id", g15."Discriminator", g15."TimesIncreased", g15."Value", g16."Id", g16."Discriminator", g16."TimesIncreased", g16."Value", g17."Id", g17."Discriminator", g17."TimesIncreased", g17."Value", g18."Id", g18."Discriminator", g18."TimesIncreased", g18."Value", t4."Id", t4."DateAcquired", t4."Discriminator", t4."UserDataId", t4."Experience", t4."Level", t4."IsNew", t4."MainStatId", t4."Rarity", t4."SubStat1Id", t4."SubStat2Id", t4."SubStat3Id", t4."SubStat4Id", g19."Id", g19."Discriminator", g19."TimesIncreased", g19."Value", g20."Id", g20."Discriminator", g20."TimesIncreased", g20."Value", g21."Id", g21."Discriminator", g21."TimesIncreased", g21."Value", g22."Id", g22."Discriminator", g22."TimesIncreased", g22."Value", g23."Id", g23."Discriminator", g23."TimesIncreased", g23."Value", t5."Id", t5."DateAcquired", t5."Discriminator", t5."UserDataId", t5."Experience", t5."Level", t5."IsNew", t5."MainStatId", t5."Rarity", t5."SubStat1Id", t5."SubStat2Id", t5."SubStat3Id", t5."SubStat4Id", g24."Id", g24."Discriminator", g24."TimesIncreased", g24."Value", g25."Id", g25."Discriminator", g25."TimesIncreased", g25."Value", g26."Id", g26."Discriminator", g26."TimesIncreased", g26."Value", g27."Id", g27."Discriminator", g27."TimesIncreased", g27."Value", g28."Id", g28."Discriminator", g28."TimesIncreased", g28."Value", t6."Id", t6."DateAcquired", t6."Discriminator", t6."UserDataId", t6."Experience", t6."Level", t6."ArmorId", t6."BasicAttackLevel", t6."BlessingId", t6."BootsId", t6."HelmetId", t6."NecklaceId", t6."RingId", t6."SkillLevel", t6."SurgeLevel", t6."WeaponId", t6."Element", t7."Id", t7."DateAcquired", t7."Discriminator", t7."UserDataId", t7."Experience", t7."Level", t7."IsNew", t7."MainStatId", t7."Rarity", t7."SubStat1Id", t7."SubStat2Id", t7."SubStat3Id", t7."SubStat4Id", g29."Id", g29."Discriminator", g29."TimesIncreased", g29."Value", g30."Id", g30."Discriminator", g30."TimesIncreased", g30."Value", g31."Id", g31."Discriminator", g31."TimesIncreased", g31."Value", g32."Id", g32."Discriminator", g32."TimesIncreased", g32."Value", g33."Id", g33."Discriminator", g33."TimesIncreased", g33."Value", t8."Id", t8."DateAcquired", t8."Discriminator", t8."UserDataId", t8."Experience", t8."Level", t8."IsNew", t8."MainStatId", t8."Rarity", t8."SubStat1Id", t8."SubStat2Id", t8."SubStat3Id", t8."SubStat4Id", g34."Id", g34."Discriminator", g34."TimesIncreased", g34."Value", g35."Id", g35."Discriminator", g35."TimesIncreased", g35."Value", g36."Id", g36."Discriminator", g36."TimesIncreased", g36."Value", g37."Id", g37."Discriminator", g37."TimesIncreased", g37."Value", g38."Id", g38."Discriminator", g38."TimesIncreased", g38."Value", t9."Id", t9."DateAcquired", t9."Discriminator", t9."UserDataId", t9."Experience", t9."Level", t9."IsNew", t9."MainStatId", t9."Rarity", t9."SubStat1Id", t9."SubStat2Id", t9."SubStat3Id", t9."SubStat4Id", g39."Id", g39."Discriminator", g39."TimesIncreased", g39."Value", g40."Id", g40."Discriminator", g40."TimesIncreased", g40."Value", g41."Id", g41."Discriminator", g41."TimesIncreased", g41."Value", g42."Id", g42."Discriminator", g42."TimesIncreased", g42."Value", g43."Id", g43."Discriminator", g43."TimesIncreased", g43."Value", t10."Id", t10."DateAcquired", t10."Discriminator", t10."UserDataId", t10."Experience", t10."Level", t10."IsNew", t10."MainStatId", t10."Rarity", t10."SubStat1Id", t10."SubStat2Id", t10."SubStat3Id", t10."SubStat4Id", g44."Id", g44."Discriminator", g44."TimesIncreased", g44."Value", g45."Id", g45."Discriminator", g45."TimesIncreased", g45."Value", g46."Id", g46."Discriminator", g46."TimesIncreased", g46."Value", g47."Id", g47."Discriminator", g47."TimesIncreased", g47."Value", g48."Id", g48."Discriminator", g48."TimesIncreased", g48."Value", t11."Id", t11."DateAcquired", t11."Discriminator", t11."UserDataId", t11."Experience", t11."Level", t11."IsNew", t11."MainStatId", t11."Rarity", t11."SubStat1Id", t11."SubStat2Id", t11."SubStat3Id", t11."SubStat4Id", g49."Id", g49."Discriminator", g49."TimesIncreased", g49."Value", g50."Id", g50."Discriminator", g50."TimesIncreased", g50."Value", g51."Id", g51."Discriminator", g51."TimesIncreased", g51."Value", g52."Id", g52."Discriminator", g52."TimesIncreased", g52."Value", g53."Id", g53."Discriminator", g53."TimesIncreased", g53."Value", t12."Id", t12."DateAcquired", t12."Discriminator", t12."UserDataId", t12."Experience", t12."Level", t12."IsNew", t12."MainStatId", t12."Rarity", t12."SubStat1Id", t12."SubStat2Id", t12."SubStat3Id", t12."SubStat4Id", g54."Id", g54."Discriminator", g54."TimesIncreased", g54."Value", g55."Id", g55."Discriminator", g55."TimesIncreased", g55."Value", g56."Id", g56."Discriminator", g56."TimesIncreased", g56."Value", g57."Id", g57."Discriminator", g57."TimesIncreased", g57."Value", g58."Id", g58."Discriminator", g58."TimesIncreased", g58."Value", t13."Id", t13."DateAcquired", t13."Discriminator", t13."UserDataId", t13."Experience", t13."Level", t13."ArmorId", t13."BasicAttackLevel", t13."BlessingId", t13."BootsId", t13."HelmetId", t13."NecklaceId", t13."RingId", t13."SkillLevel", t13."SurgeLevel", t13."WeaponId", t13."Element", t14."Id", t14."DateAcquired", t14."Discriminator", t14."UserDataId", t14."Experience", t14."Level", t14."IsNew", t14."MainStatId", t14."Rarity", t14."SubStat1Id", t14."SubStat2Id", t14."SubStat3Id", t14."SubStat4Id", g59."Id", g59."Discriminator", g59."TimesIncreased", g59."Value", g60."Id", g60."Discriminator", g60."TimesIncreased", g60."Value", g61."Id", g61."Discriminator", g61."TimesIncreased", g61."Value", g62."Id", g62."Discriminator", g62."TimesIncreased", g62."Value", g63."Id", g63."Discriminator", g63."TimesIncreased", g63."Value", t15."Id", t15."DateAcquired", t15."Discriminator", t15."UserDataId", t15."Experience", t15."Level", t15."IsNew", t15."MainStatId", t15."Rarity", t15."SubStat1Id", t15."SubStat2Id", t15."SubStat3Id", t15."SubStat4Id", g64."Id", g64."Discriminator", g64."TimesIncreased", g64."Value", g65."Id", g65."Discriminator", g65."TimesIncreased", g65."Value", g66."Id", g66."Discriminator", g66."TimesIncreased", g66."Value", g67."Id", g67."Discriminator", g67."TimesIncreased", g67."Value", g68."Id", g68."Discriminator", g68."TimesIncreased", g68."Value", t16."Id", t16."DateAcquired", t16."Discriminator", t16."UserDataId", t16."Experience", t16."Level", t16."IsNew", t16."MainStatId", t16."Rarity", t16."SubStat1Id", t16."SubStat2Id", t16."SubStat3Id", t16."SubStat4Id", g69."Id", g69."Discriminator", g69."TimesIncreased", g69."Value", g70."Id", g70."Discriminator", g70."TimesIncreased", g70."Value", g71."Id", g71."Discriminator", g71."TimesIncreased", g71."Value", g72."Id", g72."Discriminator", g72."TimesIncreased", g72."Value", g73."Id", g73."Discriminator", g73."TimesIncreased", g73."Value", t17."Id", t17."DateAcquired", t17."Discriminator", t17."UserDataId", t17."Experience", t17."Level", t17."IsNew", t17."MainStatId", t17."Rarity", t17."SubStat1Id", t17."SubStat2Id", t17."SubStat3Id", t17."SubStat4Id", g74."Id", g74."Discriminator", g74."TimesIncreased", g74."Value", g75."Id", g75."Discriminator", g75."TimesIncreased", g75."Value", g76."Id", g76."Discriminator", g76."TimesIncreased", g76."Value", g77."Id", g77."Discriminator", g77."TimesIncreased", g77."Value", g78."Id", g78."Discriminator", g78."TimesIncreased", g78."Value", t18."Id", t18."DateAcquired", t18."Discriminator", t18."UserDataId", t18."Experience", t18."Level", t18."IsNew", t18."MainStatId", t18."Rarity", t18."SubStat1Id", t18."SubStat2Id", t18."SubStat3Id", t18."SubStat4Id", g79."Id", g79."Discriminator", g79."TimesIncreased", g79."Value", g80."Id", g80."Discriminator", g80."TimesIncreased", g80."Value", g81."Id", g81."Discriminator", g81."TimesIncreased", g81."Value", g82."Id", g82."Discriminator", g82."TimesIncreased", g82."Value", g83."Id", g83."Discriminator", g83."TimesIncreased", g83."Value", t19."Id", t19."DateAcquired", t19."Discriminator", t19."UserDataId", t19."Experience", t19."Level", t19."IsNew", t19."MainStatId", t19."Rarity", t19."SubStat1Id", t19."SubStat2Id", t19."SubStat3Id", t19."SubStat4Id", g84."Id", g84."Discriminator", g84."TimesIncreased", g84."Value", g85."Id", g85."Discriminator", g85."TimesIncreased", g85."Value", g86."Id", g86."Discriminator", g86."TimesIncreased", g86."Value", g87."Id", g87."Discriminator", g87."TimesIncreased", g87."Value", g88."Id", g88."Discriminator", g88."TimesIncreased", g88."Value", t20."Id", t20."DateAcquired", t20."Discriminator", t20."UserDataId", t20."Experience", t20."Level", t20."ArmorId", t20."BasicAttackLevel", t20."BlessingId", t20."BootsId", t20."HelmetId", t20."NecklaceId", t20."RingId", t20."SkillLevel", t20."SurgeLevel", t20."WeaponId", t20."Element", t21."Id", t21."DateAcquired", t21."Discriminator", t21."UserDataId", t21."Experience", t21."Level", t21."IsNew", t21."MainStatId", t21."Rarity", t21."SubStat1Id", t21."SubStat2Id", t21."SubStat3Id", t21."SubStat4Id", g89."Id", g89."Discriminator", g89."TimesIncreased", g89."Value", g90."Id", g90."Discriminator", g90."TimesIncreased", g90."Value", g91."Id", g91."Discriminator", g91."TimesIncreased", g91."Value", g92."Id", g92."Discriminator", g92."TimesIncreased", g92."Value", g93."Id", g93."Discriminator", g93."TimesIncreased", g93."Value", t22."Id", t22."DateAcquired", t22."Discriminator", t22."UserDataId", t22."Experience", t22."Level", t22."IsNew", t22."MainStatId", t22."Rarity", t22."SubStat1Id", t22."SubStat2Id", t22."SubStat3Id", t22."SubStat4Id", g94."Id", g94."Discriminator", g94."TimesIncreased", g94."Value", g95."Id", g95."Discriminator", g95."TimesIncreased", g95."Value", g96."Id", g96."Discriminator", g96."TimesIncreased", g96."Value", g97."Id", g97."Discriminator", g97."TimesIncreased", g97."Value", g98."Id", g98."Discriminator", g98."TimesIncreased", g98."Value", t23."Id", t23."DateAcquired", t23."Discriminator", t23."UserDataId", t23."Experience", t23."Level", t23."IsNew", t23."MainStatId", t23."Rarity", t23."SubStat1Id", t23."SubStat2Id", t23."SubStat3Id", t23."SubStat4Id", g99."Id", g99."Discriminator", g99."TimesIncreased", g99."Value", g100."Id", g100."Discriminator", g100."TimesIncreased", g100."Value", g101."Id", g101."Discriminator", g101."TimesIncreased", g101."Value", g102."Id", g102."Discriminator", g102."TimesIncreased", g102."Value", g103."Id", g103."Discriminator", g103."TimesIncreased", g103."Value", t24."Id", t24."DateAcquired", t24."Discriminator", t24."UserDataId", t24."Experience", t24."Level", t24."IsNew", t24."MainStatId", t24."Rarity", t24."SubStat1Id", t24."SubStat2Id", t24."SubStat3Id", t24."SubStat4Id", g104."Id", g104."Discriminator", g104."TimesIncreased", g104."Value", g105."Id", g105."Discriminator", g105."TimesIncreased", g105."Value", g106."Id", g106."Discriminator", g106."TimesIncreased", g106."Value", g107."Id", g107."Discriminator", g107."TimesIncreased", g107."Value", g108."Id", g108."Discriminator", g108."TimesIncreased", g108."Value", t25."Id", t25."DateAcquired", t25."Discriminator", t25."UserDataId", t25."Experience", t25."Level", t25."IsNew", t25."MainStatId", t25."Rarity", t25."SubStat1Id", t25."SubStat2Id", t25."SubStat3Id", t25."SubStat4Id", g109."Id", g109."Discriminator", g109."TimesIncreased", g109."Value", g110."Id", g110."Discriminator", g110."TimesIncreased", g110."Value", g111."Id", g111."Discriminator", g111."TimesIncreased", g111."Value", g112."Id", g112."Discriminator", g112."TimesIncreased", g112."Value", g113."Id", g113."Discriminator", g113."TimesIncreased", g113."Value", t26."Id", t26."DateAcquired", t26."Discriminator", t26."UserDataId", t26."Experience", t26."Level", t26."IsNew", t26."MainStatId", t26."Rarity", t26."SubStat1Id", t26."SubStat2Id", t26."SubStat3Id", t26."SubStat4Id", g114."Id", g114."Discriminator", g114."TimesIncreased", g114."Value", g115."Id", g115."Discriminator", g115."TimesIncreased", g115."Value", g116."Id", g116."Discriminator", g116."TimesIncreased", g116."Value", g117."Id", g117."Discriminator", g117."TimesIncreased", g117."Value", g118."Id", g118."Discriminator", g118."TimesIncreased", g118."Value"
+FROM "UserData" AS u
+LEFT JOIN (
+    SELECT e."Id", e."DateAcquired", e."Discriminator", e."UserDataId", e."Experience", e."Level", e."ArmorId", e."BasicAttackLevel", e."BlessingId", e."BootsId", e."HelmetId", e."NecklaceId", e."RingId", e."SkillLevel", e."SurgeLevel", e."WeaponId", e."Element"
+    FROM "Entity" AS e
+    WHERE e."Discriminator" IN ('Blast', 'CoachChad', 'Goblin', 'Lily', 'Player', 'RoyalGuard', 'Slime')
+) AS t ON u."Character1Id" = t."Id"
+LEFT JOIN (
+    SELECT e0."Id", e0."DateAcquired", e0."Discriminator", e0."UserDataId", e0."Experience", e0."Level", e0."IsNew", e0."MainStatId", e0."Rarity", e0."SubStat1Id", e0."SubStat2Id", e0."SubStat3Id", e0."SubStat4Id"
+    FROM "Entity" AS e0
+    WHERE e0."Discriminator" = 'Armor'
+) AS t0 ON t."ArmorId" = t0."Id"
+LEFT JOIN "GearStat" AS g ON t0."MainStatId" = g."Id"
+LEFT JOIN "GearStat" AS g0 ON t0."SubStat1Id" = g0."Id"
+LEFT JOIN "GearStat" AS g1 ON t0."SubStat2Id" = g1."Id"
+LEFT JOIN "GearStat" AS g2 ON t0."SubStat3Id" = g2."Id"
+LEFT JOIN "GearStat" AS g3 ON t0."SubStat4Id" = g3."Id"
+LEFT JOIN (
+    SELECT e1."Id", e1."DateAcquired", e1."Discriminator", e1."UserDataId", e1."Experience", e1."Level", e1."IsNew", e1."MainStatId", e1."Rarity", e1."SubStat1Id", e1."SubStat2Id", e1."SubStat3Id", e1."SubStat4Id"
+    FROM "Entity" AS e1
+    WHERE e1."Discriminator" = 'Boots'
+) AS t1 ON t."BootsId" = t1."Id"
+LEFT JOIN "GearStat" AS g4 ON t1."MainStatId" = g4."Id"
+LEFT JOIN "GearStat" AS g5 ON t1."SubStat1Id" = g5."Id"
+LEFT JOIN "GearStat" AS g6 ON t1."SubStat2Id" = g6."Id"
+LEFT JOIN "GearStat" AS g7 ON t1."SubStat3Id" = g7."Id"
+LEFT JOIN "GearStat" AS g8 ON t1."SubStat4Id" = g8."Id"
+LEFT JOIN (
+    SELECT e2."Id", e2."DateAcquired", e2."Discriminator", e2."UserDataId", e2."Experience", e2."Level", e2."IsNew", e2."MainStatId", e2."Rarity", e2."SubStat1Id", e2."SubStat2Id", e2."SubStat3Id", e2."SubStat4Id"
+    FROM "Entity" AS e2
+    WHERE e2."Discriminator" = 'Helmet'
+) AS t2 ON t."HelmetId" = t2."Id"
+LEFT JOIN "GearStat" AS g9 ON t2."MainStatId" = g9."Id"
+LEFT JOIN "GearStat" AS g10 ON t2."SubStat1Id" = g10."Id"
+LEFT JOIN "GearStat" AS g11 ON t2."SubStat2Id" = g11."Id"
+LEFT JOIN "GearStat" AS g12 ON t2."SubStat3Id" = g12."Id"
+LEFT JOIN "GearStat" AS g13 ON t2."SubStat4Id" = g13."Id"
+LEFT JOIN (
+    SELECT e3."Id", e3."DateAcquired", e3."Discriminator", e3."UserDataId", e3."Experience", e3."Level", e3."IsNew", e3."MainStatId", e3."Rarity", e3."SubStat1Id", e3."SubStat2Id", e3."SubStat3Id", e3."SubStat4Id"
+    FROM "Entity" AS e3
+    WHERE e3."Discriminator" = 'Weapon'
+) AS t3 ON t."WeaponId" = t3."Id"
+LEFT JOIN "GearStat" AS g14 ON t3."MainStatId" = g14."Id"
+LEFT JOIN "GearStat" AS g15 ON t3."SubStat1Id" = g15."Id"
+LEFT JOIN "GearStat" AS g16 ON t3."SubStat2Id" = g16."Id"
+LEFT JOIN "GearStat" AS g17 ON t3."SubStat3Id" = g17."Id"
+LEFT JOIN "GearStat" AS g18 ON t3."SubStat4Id" = g18."Id"
+LEFT JOIN (
+    SELECT e4."Id", e4."DateAcquired", e4."Discriminator", e4."UserDataId", e4."Experience", e4."Level", e4."IsNew", e4."MainStatId", e4."Rarity", e4."SubStat1Id", e4."SubStat2Id", e4."SubStat3Id", e4."SubStat4Id"
+    FROM "Entity" AS e4
+    WHERE e4."Discriminator" = 'Ring'
+) AS t4 ON t."RingId" = t4."Id"
+LEFT JOIN "GearStat" AS g19 ON t4."MainStatId" = g19."Id"
+LEFT JOIN "GearStat" AS g20 ON t4."SubStat1Id" = g20."Id"
+LEFT JOIN "GearStat" AS g21 ON t4."SubStat2Id" = g21."Id"
+LEFT JOIN "GearStat" AS g22 ON t4."SubStat3Id" = g22."Id"
+LEFT JOIN "GearStat" AS g23 ON t4."SubStat4Id" = g23."Id"
+LEFT JOIN (
+    SELECT e5."Id", e5."DateAcquired", e5."Discriminator", e5."UserDataId", e5."Experience", e5."Level", e5."IsNew", e5."MainStatId", e5."Rarity", e5."SubStat1Id", e5."SubStat2Id", e5."SubStat3Id", e5."SubStat4Id"
+    FROM "Entity" AS e5
+    WHERE e5."Discriminator" = 'Necklace'
+) AS t5 ON t."NecklaceId" = t5."Id"
+LEFT JOIN "GearStat" AS g24 ON t5."MainStatId" = g24."Id"
+LEFT JOIN "GearStat" AS g25 ON t5."SubStat1Id" = g25."Id"
+LEFT JOIN "GearStat" AS g26 ON t5."SubStat2Id" = g26."Id"
+LEFT JOIN "GearStat" AS g27 ON t5."SubStat3Id" = g27."Id"
+LEFT JOIN "GearStat" AS g28 ON t5."SubStat4Id" = g28."Id"
+LEFT JOIN (
+    SELECT e6."Id", e6."DateAcquired", e6."Discriminator", e6."UserDataId", e6."Experience", e6."Level", e6."ArmorId", e6."BasicAttackLevel", e6."BlessingId", e6."BootsId", e6."HelmetId", e6."NecklaceId", e6."RingId", e6."SkillLevel", e6."SurgeLevel", e6."WeaponId", e6."Element"
+    FROM "Entity" AS e6
+    WHERE e6."Discriminator" IN ('Blast', 'CoachChad', 'Goblin', 'Lily', 'Player', 'RoyalGuard', 'Slime')
+) AS t6 ON u."Character2Id" = t6."Id"
+LEFT JOIN (
+    SELECT e7."Id", e7."DateAcquired", e7."Discriminator", e7."UserDataId", e7."Experience", e7."Level", e7."IsNew", e7."MainStatId", e7."Rarity", e7."SubStat1Id", e7."SubStat2Id", e7."SubStat3Id", e7."SubStat4Id"
+    FROM "Entity" AS e7
+    WHERE e7."Discriminator" = 'Armor'
+) AS t7 ON t6."ArmorId" = t7."Id"
+LEFT JOIN "GearStat" AS g29 ON t7."MainStatId" = g29."Id"
+LEFT JOIN "GearStat" AS g30 ON t7."SubStat1Id" = g30."Id"
+LEFT JOIN "GearStat" AS g31 ON t7."SubStat2Id" = g31."Id"
+LEFT JOIN "GearStat" AS g32 ON t7."SubStat3Id" = g32."Id"
+LEFT JOIN "GearStat" AS g33 ON t7."SubStat4Id" = g33."Id"
+LEFT JOIN (
+    SELECT e8."Id", e8."DateAcquired", e8."Discriminator", e8."UserDataId", e8."Experience", e8."Level", e8."IsNew", e8."MainStatId", e8."Rarity", e8."SubStat1Id", e8."SubStat2Id", e8."SubStat3Id", e8."SubStat4Id"
+    FROM "Entity" AS e8
+    WHERE e8."Discriminator" = 'Boots'
+) AS t8 ON t6."BootsId" = t8."Id"
+LEFT JOIN "GearStat" AS g34 ON t8."MainStatId" = g34."Id"
+LEFT JOIN "GearStat" AS g35 ON t8."SubStat1Id" = g35."Id"
+LEFT JOIN "GearStat" AS g36 ON t8."SubStat2Id" = g36."Id"
+LEFT JOIN "GearStat" AS g37 ON t8."SubStat3Id" = g37."Id"
+LEFT JOIN "GearStat" AS g38 ON t8."SubStat4Id" = g38."Id"
+LEFT JOIN (
+    SELECT e9."Id", e9."DateAcquired", e9."Discriminator", e9."UserDataId", e9."Experience", e9."Level", e9."IsNew", e9."MainStatId", e9."Rarity", e9."SubStat1Id", e9."SubStat2Id", e9."SubStat3Id", e9."SubStat4Id"
+    FROM "Entity" AS e9
+    WHERE e9."Discriminator" = 'Helmet'
+) AS t9 ON t6."HelmetId" = t9."Id"
+LEFT JOIN "GearStat" AS g39 ON t9."MainStatId" = g39."Id"
+LEFT JOIN "GearStat" AS g40 ON t9."SubStat1Id" = g40."Id"
+LEFT JOIN "GearStat" AS g41 ON t9."SubStat2Id" = g41."Id"
+LEFT JOIN "GearStat" AS g42 ON t9."SubStat3Id" = g42."Id"
+LEFT JOIN "GearStat" AS g43 ON t9."SubStat4Id" = g43."Id"
+LEFT JOIN (
+    SELECT e10."Id", e10."DateAcquired", e10."Discriminator", e10."UserDataId", e10."Experience", e10."Level", e10."IsNew", e10."MainStatId", e10."Rarity", e10."SubStat1Id", e10."SubStat2Id", e10."SubStat3Id", e10."SubStat4Id"
+    FROM "Entity" AS e10
+    WHERE e10."Discriminator" = 'Weapon'
+) AS t10 ON t6."WeaponId" = t10."Id"
+LEFT JOIN "GearStat" AS g44 ON t10."MainStatId" = g44."Id"
+LEFT JOIN "GearStat" AS g45 ON t10."SubStat1Id" = g45."Id"
+LEFT JOIN "GearStat" AS g46 ON t10."SubStat2Id" = g46."Id"
+LEFT JOIN "GearStat" AS g47 ON t10."SubStat3Id" = g47."Id"
+LEFT JOIN "GearStat" AS g48 ON t10."SubStat4Id" = g48."Id"
+LEFT JOIN (
+    SELECT e11."Id", e11."DateAcquired", e11."Discriminator", e11."UserDataId", e11."Experience", e11."Level", e11."IsNew", e11."MainStatId", e11."Rarity", e11."SubStat1Id", e11."SubStat2Id", e11."SubStat3Id", e11."SubStat4Id"
+    FROM "Entity" AS e11
+    WHERE e11."Discriminator" = 'Ring'
+) AS t11 ON t6."RingId" = t11."Id"
+LEFT JOIN "GearStat" AS g49 ON t11."MainStatId" = g49."Id"
+LEFT JOIN "GearStat" AS g50 ON t11."SubStat1Id" = g50."Id"
+LEFT JOIN "GearStat" AS g51 ON t11."SubStat2Id" = g51."Id"
+LEFT JOIN "GearStat" AS g52 ON t11."SubStat3Id" = g52."Id"
+LEFT JOIN "GearStat" AS g53 ON t11."SubStat4Id" = g53."Id"
+LEFT JOIN (
+    SELECT e12."Id", e12."DateAcquired", e12."Discriminator", e12."UserDataId", e12."Experience", e12."Level", e12."IsNew", e12."MainStatId", e12."Rarity", e12."SubStat1Id", e12."SubStat2Id", e12."SubStat3Id", e12."SubStat4Id"
+    FROM "Entity" AS e12
+    WHERE e12."Discriminator" = 'Necklace'
+) AS t12 ON t6."NecklaceId" = t12."Id"
+LEFT JOIN "GearStat" AS g54 ON t12."MainStatId" = g54."Id"
+LEFT JOIN "GearStat" AS g55 ON t12."SubStat1Id" = g55."Id"
+LEFT JOIN "GearStat" AS g56 ON t12."SubStat2Id" = g56."Id"
+LEFT JOIN "GearStat" AS g57 ON t12."SubStat3Id" = g57."Id"
+LEFT JOIN "GearStat" AS g58 ON t12."SubStat4Id" = g58."Id"
+LEFT JOIN (
+    SELECT e13."Id", e13."DateAcquired", e13."Discriminator", e13."UserDataId", e13."Experience", e13."Level", e13."ArmorId", e13."BasicAttackLevel", e13."BlessingId", e13."BootsId", e13."HelmetId", e13."NecklaceId", e13."RingId", e13."SkillLevel", e13."SurgeLevel", e13."WeaponId", e13."Element"
+    FROM "Entity" AS e13
+    WHERE e13."Discriminator" IN ('Blast', 'CoachChad', 'Goblin', 'Lily', 'Player', 'RoyalGuard', 'Slime')
+) AS t13 ON u."Character3Id" = t13."Id"
+LEFT JOIN (
+    SELECT e14."Id", e14."DateAcquired", e14."Discriminator", e14."UserDataId", e14."Experience", e14."Level", e14."IsNew", e14."MainStatId", e14."Rarity", e14."SubStat1Id", e14."SubStat2Id", e14."SubStat3Id", e14."SubStat4Id"
+    FROM "Entity" AS e14
+    WHERE e14."Discriminator" = 'Armor'
+) AS t14 ON t13."ArmorId" = t14."Id"
+LEFT JOIN "GearStat" AS g59 ON t14."MainStatId" = g59."Id"
+LEFT JOIN "GearStat" AS g60 ON t14."SubStat1Id" = g60."Id"
+LEFT JOIN "GearStat" AS g61 ON t14."SubStat2Id" = g61."Id"
+LEFT JOIN "GearStat" AS g62 ON t14."SubStat3Id" = g62."Id"
+LEFT JOIN "GearStat" AS g63 ON t14."SubStat4Id" = g63."Id"
+LEFT JOIN (
+    SELECT e15."Id", e15."DateAcquired", e15."Discriminator", e15."UserDataId", e15."Experience", e15."Level", e15."IsNew", e15."MainStatId", e15."Rarity", e15."SubStat1Id", e15."SubStat2Id", e15."SubStat3Id", e15."SubStat4Id"
+    FROM "Entity" AS e15
+    WHERE e15."Discriminator" = 'Boots'
+) AS t15 ON t13."BootsId" = t15."Id"
+LEFT JOIN "GearStat" AS g64 ON t15."MainStatId" = g64."Id"
+LEFT JOIN "GearStat" AS g65 ON t15."SubStat1Id" = g65."Id"
+LEFT JOIN "GearStat" AS g66 ON t15."SubStat2Id" = g66."Id"
+LEFT JOIN "GearStat" AS g67 ON t15."SubStat3Id" = g67."Id"
+LEFT JOIN "GearStat" AS g68 ON t15."SubStat4Id" = g68."Id"
+LEFT JOIN (
+    SELECT e16."Id", e16."DateAcquired", e16."Discriminator", e16."UserDataId", e16."Experience", e16."Level", e16."IsNew", e16."MainStatId", e16."Rarity", e16."SubStat1Id", e16."SubStat2Id", e16."SubStat3Id", e16."SubStat4Id"
+    FROM "Entity" AS e16
+    WHERE e16."Discriminator" = 'Helmet'
+) AS t16 ON t13."HelmetId" = t16."Id"
+LEFT JOIN "GearStat" AS g69 ON t16."MainStatId" = g69."Id"
+LEFT JOIN "GearStat" AS g70 ON t16."SubStat1Id" = g70."Id"
+LEFT JOIN "GearStat" AS g71 ON t16."SubStat2Id" = g71."Id"
+LEFT JOIN "GearStat" AS g72 ON t16."SubStat3Id" = g72."Id"
+LEFT JOIN "GearStat" AS g73 ON t16."SubStat4Id" = g73."Id"
+LEFT JOIN (
+    SELECT e17."Id", e17."DateAcquired", e17."Discriminator", e17."UserDataId", e17."Experience", e17."Level", e17."IsNew", e17."MainStatId", e17."Rarity", e17."SubStat1Id", e17."SubStat2Id", e17."SubStat3Id", e17."SubStat4Id"
+    FROM "Entity" AS e17
+    WHERE e17."Discriminator" = 'Weapon'
+) AS t17 ON t13."WeaponId" = t17."Id"
+LEFT JOIN "GearStat" AS g74 ON t17."MainStatId" = g74."Id"
+LEFT JOIN "GearStat" AS g75 ON t17."SubStat1Id" = g75."Id"
+LEFT JOIN "GearStat" AS g76 ON t17."SubStat2Id" = g76."Id"
+LEFT JOIN "GearStat" AS g77 ON t17."SubStat3Id" = g77."Id"
+LEFT JOIN "GearStat" AS g78 ON t17."SubStat4Id" = g78."Id"
+LEFT JOIN (
+    SELECT e18."Id", e18."DateAcquired", e18."Discriminator", e18."UserDataId", e18."Experience", e18."Level", e18."IsNew", e18."MainStatId", e18."Rarity", e18."SubStat1Id", e18."SubStat2Id", e18."SubStat3Id", e18."SubStat4Id"
+    FROM "Entity" AS e18
+    WHERE e18."Discriminator" = 'Ring'
+) AS t18 ON t13."RingId" = t18."Id"
+LEFT JOIN "GearStat" AS g79 ON t18."MainStatId" = g79."Id"
+LEFT JOIN "GearStat" AS g80 ON t18."SubStat1Id" = g80."Id"
+LEFT JOIN "GearStat" AS g81 ON t18."SubStat2Id" = g81."Id"
+LEFT JOIN "GearStat" AS g82 ON t18."SubStat3Id" = g82."Id"
+LEFT JOIN "GearStat" AS g83 ON t18."SubStat4Id" = g83."Id"
+LEFT JOIN (
+    SELECT e19."Id", e19."DateAcquired", e19."Discriminator", e19."UserDataId", e19."Experience", e19."Level", e19."IsNew", e19."MainStatId", e19."Rarity", e19."SubStat1Id", e19."SubStat2Id", e19."SubStat3Id", e19."SubStat4Id"
+    FROM "Entity" AS e19
+    WHERE e19."Discriminator" = 'Necklace'
+) AS t19 ON t13."NecklaceId" = t19."Id"
+LEFT JOIN "GearStat" AS g84 ON t19."MainStatId" = g84."Id"
+LEFT JOIN "GearStat" AS g85 ON t19."SubStat1Id" = g85."Id"
+LEFT JOIN "GearStat" AS g86 ON t19."SubStat2Id" = g86."Id"
+LEFT JOIN "GearStat" AS g87 ON t19."SubStat3Id" = g87."Id"
+LEFT JOIN "GearStat" AS g88 ON t19."SubStat4Id" = g88."Id"
+LEFT JOIN (
+    SELECT e20."Id", e20."DateAcquired", e20."Discriminator", e20."UserDataId", e20."Experience", e20."Level", e20."ArmorId", e20."BasicAttackLevel", e20."BlessingId", e20."BootsId", e20."HelmetId", e20."NecklaceId", e20."RingId", e20."SkillLevel", e20."SurgeLevel", e20."WeaponId", e20."Element"
+    FROM "Entity" AS e20
+    WHERE e20."Discriminator" IN ('Blast', 'CoachChad', 'Goblin', 'Lily', 'Player', 'RoyalGuard', 'Slime')
+) AS t20 ON u."Character4Id" = t20."Id"
+LEFT JOIN (
+    SELECT e21."Id", e21."DateAcquired", e21."Discriminator", e21."UserDataId", e21."Experience", e21."Level", e21."IsNew", e21."MainStatId", e21."Rarity", e21."SubStat1Id", e21."SubStat2Id", e21."SubStat3Id", e21."SubStat4Id"
+    FROM "Entity" AS e21
+    WHERE e21."Discriminator" = 'Armor'
+) AS t21 ON t20."ArmorId" = t21."Id"
+LEFT JOIN "GearStat" AS g89 ON t21."MainStatId" = g89."Id"
+LEFT JOIN "GearStat" AS g90 ON t21."SubStat1Id" = g90."Id"
+LEFT JOIN "GearStat" AS g91 ON t21."SubStat2Id" = g91."Id"
+LEFT JOIN "GearStat" AS g92 ON t21."SubStat3Id" = g92."Id"
+LEFT JOIN "GearStat" AS g93 ON t21."SubStat4Id" = g93."Id"
+LEFT JOIN (
+    SELECT e22."Id", e22."DateAcquired", e22."Discriminator", e22."UserDataId", e22."Experience", e22."Level", e22."IsNew", e22."MainStatId", e22."Rarity", e22."SubStat1Id", e22."SubStat2Id", e22."SubStat3Id", e22."SubStat4Id"
+    FROM "Entity" AS e22
+    WHERE e22."Discriminator" = 'Boots'
+) AS t22 ON t20."BootsId" = t22."Id"
+LEFT JOIN "GearStat" AS g94 ON t22."MainStatId" = g94."Id"
+LEFT JOIN "GearStat" AS g95 ON t22."SubStat1Id" = g95."Id"
+LEFT JOIN "GearStat" AS g96 ON t22."SubStat2Id" = g96."Id"
+LEFT JOIN "GearStat" AS g97 ON t22."SubStat3Id" = g97."Id"
+LEFT JOIN "GearStat" AS g98 ON t22."SubStat4Id" = g98."Id"
+LEFT JOIN (
+    SELECT e23."Id", e23."DateAcquired", e23."Discriminator", e23."UserDataId", e23."Experience", e23."Level", e23."IsNew", e23."MainStatId", e23."Rarity", e23."SubStat1Id", e23."SubStat2Id", e23."SubStat3Id", e23."SubStat4Id"
+    FROM "Entity" AS e23
+    WHERE e23."Discriminator" = 'Helmet'
+) AS t23 ON t20."HelmetId" = t23."Id"
+LEFT JOIN "GearStat" AS g99 ON t23."MainStatId" = g99."Id"
+LEFT JOIN "GearStat" AS g100 ON t23."SubStat1Id" = g100."Id"
+LEFT JOIN "GearStat" AS g101 ON t23."SubStat2Id" = g101."Id"
+LEFT JOIN "GearStat" AS g102 ON t23."SubStat3Id" = g102."Id"
+LEFT JOIN "GearStat" AS g103 ON t23."SubStat4Id" = g103."Id"
+LEFT JOIN (
+    SELECT e24."Id", e24."DateAcquired", e24."Discriminator", e24."UserDataId", e24."Experience", e24."Level", e24."IsNew", e24."MainStatId", e24."Rarity", e24."SubStat1Id", e24."SubStat2Id", e24."SubStat3Id", e24."SubStat4Id"
+    FROM "Entity" AS e24
+    WHERE e24."Discriminator" = 'Weapon'
+) AS t24 ON t20."WeaponId" = t24."Id"
+LEFT JOIN "GearStat" AS g104 ON t24."MainStatId" = g104."Id"
+LEFT JOIN "GearStat" AS g105 ON t24."SubStat1Id" = g105."Id"
+LEFT JOIN "GearStat" AS g106 ON t24."SubStat2Id" = g106."Id"
+LEFT JOIN "GearStat" AS g107 ON t24."SubStat3Id" = g107."Id"
+LEFT JOIN "GearStat" AS g108 ON t24."SubStat4Id" = g108."Id"
+LEFT JOIN (
+    SELECT e25."Id", e25."DateAcquired", e25."Discriminator", e25."UserDataId", e25."Experience", e25."Level", e25."IsNew", e25."MainStatId", e25."Rarity", e25."SubStat1Id", e25."SubStat2Id", e25."SubStat3Id", e25."SubStat4Id"
+    FROM "Entity" AS e25
+    WHERE e25."Discriminator" = 'Ring'
+) AS t25 ON t20."RingId" = t25."Id"
+LEFT JOIN "GearStat" AS g109 ON t25."MainStatId" = g109."Id"
+LEFT JOIN "GearStat" AS g110 ON t25."SubStat1Id" = g110."Id"
+LEFT JOIN "GearStat" AS g111 ON t25."SubStat2Id" = g111."Id"
+LEFT JOIN "GearStat" AS g112 ON t25."SubStat3Id" = g112."Id"
+LEFT JOIN "GearStat" AS g113 ON t25."SubStat4Id" = g113."Id"
+LEFT JOIN (
+    SELECT e26."Id", e26."DateAcquired", e26."Discriminator", e26."UserDataId", e26."Experience", e26."Level", e26."IsNew", e26."MainStatId", e26."Rarity", e26."SubStat1Id", e26."SubStat2Id", e26."SubStat3Id", e26."SubStat4Id"
+    FROM "Entity" AS e26
+    WHERE e26."Discriminator" = 'Necklace'
+) AS t26 ON t20."NecklaceId" = t26."Id"
+LEFT JOIN "GearStat" AS g114 ON t26."MainStatId" = g114."Id"
+LEFT JOIN "GearStat" AS g115 ON t26."SubStat1Id" = g115."Id"
+LEFT JOIN "GearStat" AS g116 ON t26."SubStat2Id" = g116."Id"
+LEFT JOIN "GearStat" AS g117 ON t26."SubStat3Id" = g117."Id"
+LEFT JOIN "GearStat" AS g118 ON t26."SubStat4Id" = g118."Id"

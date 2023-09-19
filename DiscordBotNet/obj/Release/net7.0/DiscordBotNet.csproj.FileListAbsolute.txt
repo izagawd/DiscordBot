@@ -84,3 +84,6 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\System.Interactive.Async.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\System.Linq.Async.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\ConfigFiles\App.config
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Castle.Core.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.EntityFrameworkCore.Proxies.dll

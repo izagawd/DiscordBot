@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "8Xw317jGQRWFrlePZh9LuOqjdwPvjJT3svL1WStRUP/lJjsgZQJ5BNV9KSrLIOZAEV5yF3rdtmqAzbWpHUDn8Q==",
+  "dgSpecHash": "VmOZFX9gaZUPWEAEo/4H7W+PVxXRx/Cm7d3fdb+Zr+NGur+cLtMZbcTu4kWSo4BVnB7gUl8mU1bkpSk+1sDvWA==",
   "success": true,
   "projectFilePath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\theiz\\.nuget\\packages\\aspnet.security.oauth.discord\\7.0.4\\aspnet.security.oauth.discord.7.0.4.nupkg.sha512",
+    "C:\\Users\\theiz\\.nuget\\packages\\castle.core\\5.1.0\\castle.core.5.1.0.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\concurrenthashset\\1.3.0\\concurrenthashset.1.3.0.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\discord.net.core\\3.12.0\\discord.net.core.3.12.0.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\dsharpplus\\5.0.0-nightly-01749\\dsharpplus.5.0.0-nightly-01749.nupkg.sha512",
@@ -48,6 +49,7 @@
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.10\\microsoft.entityframeworkcore.abstractions.7.0.10.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.10\\microsoft.entityframeworkcore.analyzers.7.0.10.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.entityframeworkcore.design\\7.0.10\\microsoft.entityframeworkcore.design.7.0.10.nupkg.sha512",
+    "C:\\Users\\theiz\\.nuget\\packages\\microsoft.entityframeworkcore.proxies\\7.0.9\\microsoft.entityframeworkcore.proxies.7.0.9.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.10\\microsoft.entityframeworkcore.relational.7.0.10.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",

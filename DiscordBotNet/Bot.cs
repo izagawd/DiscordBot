@@ -44,6 +44,22 @@ public class Bot
     public static ulong Testersid => 266157684380663809;
     public static DiscordClient Client { get; private set; }
 
+    public async Task DoShit()
+    {
+
+        var ctx = new PostgreSqlContext();
+
+        var stop = new Stopwatch(); stop.Start();
+
+ 
+
+        var user = await ctx
+            .UserData
+            .IncludeTeamWithGears()
+            .FirstOrDefaultAsync(i => i.Id == Izasid);
+        stop.Elapsed.TotalMilliseconds.Print();
+        
+    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
@@ -71,6 +87,14 @@ public class Bot
 
         
         await ctx.DisposeAsync();
+        await DoShit();
+        await DoShit();
+        await DoShit();
+        await DoShit();
+        await DoShit();
+        
+        await DoShit();
+        return;
         BasicFunction.imageMapper.Count.Print();
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration
