@@ -734,7 +734,35 @@ public abstract  class Character : BattleEntity
         StatusEffects = new(this);
 
     }
-    
+
+    public void SetGear(Gear gear)
+    {
+        if (gear is Armor armor)
+        {
+            Armor = armor;
+        }
+        else if (gear is Boots boots)
+        {
+            Boots = boots;
+        }
+        else if (gear is Helmet helmet)
+        {
+            Helmet = helmet;
+        }
+        else if (gear is Weapon weapon)
+        {
+            Weapon = weapon;
+        }
+        else if (gear is Ring ring)
+        {
+            Ring = ring;
+        }
+        else if (gear is Necklace necklace)
+        {
+            Necklace = necklace;
+        }
+
+    }
     public override int MaxLevel => 100;
 
     public void SetLevel(int level)

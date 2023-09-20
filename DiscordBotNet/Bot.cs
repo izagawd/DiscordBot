@@ -2,9 +2,14 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.LegendaryBot;
-
+using DiscordBotNet.LegendaryBot.Battle;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 using DiscordBotNet.LegendaryBot.command;
 
 using DSharpPlus;
@@ -17,6 +22,7 @@ using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -48,16 +54,17 @@ public class Bot
     {
 
         var ctx = new PostgreSqlContext();
-
-        var stop = new Stopwatch(); stop.Start();
-
- 
+        
+        var stop = new Stopwatch();
+        stop.Start();
 
         var user = await ctx
             .UserData
-            .IncludeTeamWithGears()
-            .FirstOrDefaultAsync(i => i.Id == Izasid);
-        stop.Elapsed.TotalMilliseconds.Print();
+            .FindOrCreateAsync(Izasid, i => i.IncludeTeamWithAllEquipments().AsSplitQuery());
+
+        stop.ElapsedMilliseconds.Print();
+        user.Team.Count.Print();
+        await ctx.SaveChangesAsync();
         
     }
     /// <summary>
@@ -82,18 +89,16 @@ public class Bot
             }
         }
         var ctx = new PostgreSqlContext();
+
         await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
         await ctx.SaveChangesAsync();
 
+
+        return;
+  
         
         await ctx.DisposeAsync();
-        await DoShit();
-        await DoShit();
-        await DoShit();
-        await DoShit();
-        await DoShit();
-        
-        await DoShit();
+    
         return;
         BasicFunction.imageMapper.Count.Print();
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;

@@ -1,4 +1,5 @@
 ﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Stats;
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Stats;
 
@@ -30,7 +31,7 @@ public abstract class GearStat
     {
         Value = GetMainStat(rarity, level);
     }
-
+    
     public abstract int GetMainStat(Rarity rarity, int level);
 /// <summary>
 /// the amount of times a substat has been increased, if this GearStat is a substat

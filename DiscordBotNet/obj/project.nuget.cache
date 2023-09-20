@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VmOZFX9gaZUPWEAEo/4H7W+PVxXRx/Cm7d3fdb+Zr+NGur+cLtMZbcTu4kWSo4BVnB7gUl8mU1bkpSk+1sDvWA==",
+  "dgSpecHash": "8qCSvhsIbnXEjliijdYqxDDgKAYVa4cp6pVmps5ev+m2bfiOGUdx+BrfAwYS8ely4xzFKn1xG7tVtS1tk+AE9g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj",
+  "projectFilePath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\theiz\\.nuget\\packages\\aspnet.security.oauth.discord\\7.0.4\\aspnet.security.oauth.discord.7.0.4.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\castle.core\\5.1.0\\castle.core.5.1.0.nupkg.sha512",

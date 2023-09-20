@@ -4,6 +4,7 @@ using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
@@ -20,7 +21,7 @@ public class Hunt : BaseCommandClass
         var stop = new Stopwatch();
         var userData = await DatabaseContext.UserData
             .FindOrCreateAsync(author.Id,
-                i => i.IncludeTeamWithAllEquipments());
+                i => i.Include(i => i.Inventory.Where(i => i is Character)));
 
         var embedToBuild = new DiscordEmbedBuilder()
             .WithUser(author)

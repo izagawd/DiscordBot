@@ -13,6 +13,11 @@ namespace DiscordBotNet.Database.Models;
 
 public class UserData : Model,  ICanBeLeveledUp
 {
+    public UserData(ulong id)
+    {
+        Id = id;
+    }
+    public UserData(){}
     public void RemoveFromTeam(Character character)
     {
         if (Character1 == character)

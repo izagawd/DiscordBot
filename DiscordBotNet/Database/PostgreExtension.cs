@@ -14,7 +14,7 @@ public static class PostgreExtension
     public async static Task<List<T>> FindOrCreateManyAsync<T>(this DbSet<T> set,
         IEnumerable<ulong> ids)  where T : Model,new()
     {
-        return await set.FindOrCreateManyAsync<T,float>(ids, null);
+        return await set.FindOrCreateManyAsync(ids, null);
         
     }
 
@@ -45,13 +45,12 @@ public static class PostgreExtension
         (this IQueryable<UserData> queryable)
     {
 
-        var idk =  queryable
+       return   queryable
             .IncludeWithAllEquipments(i => i.Character1)
             .IncludeWithAllEquipments(i => i.Character2)
             .IncludeWithAllEquipments(i => i.Character3)
             .IncludeWithAllEquipments(i => i.Character4);
-        idk.ToQueryString().Print();
-        return idk;
+
     }
 
     public static IIncludableQueryable<UserData, Necklace?> IncludeTeamWithGears
@@ -104,8 +103,8 @@ public static class PostgreExtension
 
 
 
-    public async static Task<List<T>> FindOrCreateManyAsync<T, U>(this DbSet<T> set,
-        IEnumerable<ulong> ids, Func<IQueryable<T>, IIncludableQueryable<T, U>>? includableQueryableFunc) 
+    public async static Task<List<T>> FindOrCreateManyAsync<T>(this DbSet<T> set,
+        IEnumerable<ulong> ids, Func<IQueryable<T>, IQueryable<T>>? includableQueryableFunc) 
         where T : Model, new()
     {
         List<T> data;
@@ -113,9 +112,9 @@ public static class PostgreExtension
         if (includableQueryableFunc is not null)
         {
             
-            var queryableSet = set.AsQueryable();
+       
             data = await includableQueryableFunc
-                .Invoke(queryableSet)
+                .Invoke(set)
                 .Where(i => idsAsList.Contains(i.Id))
                 .ToListAsync();
         }
@@ -148,11 +147,11 @@ public static class PostgreExtension
     public async static Task<List<U>> FindOrCreateManySelectAsync<T,  U>(this DbSet<T> set,
        IEnumerable<ulong> ids,Expression<Func<T, U>> selectExpression) where T : Model,new()
     {
-        return await set.FindOrCreateManySelectAsync<T,float, U>( ids, null, selectExpression);
+        return await set.FindOrCreateManySelectAsync( ids, null, selectExpression);
     }
 
-    public async static Task<List<V>> FindOrCreateManySelectAsync<T, U,V>(this DbSet<T> set,
-        IEnumerable<ulong> ids, Func<IQueryable<T>, IIncludableQueryable<T, U>>? includableQueryableFunc,
+    public async static Task<List<V>> FindOrCreateManySelectAsync<T, V>(this DbSet<T> set,
+        IEnumerable<ulong> ids, Func<IQueryable<T>, IQueryable<T>>? includableQueryableFunc,
          Expression<Func<T, V>> selectExpression) where T : Model, new()
     {
         List<V> data;
@@ -199,10 +198,10 @@ public static class PostgreExtension
     public async static Task<U> FindOrCreateSelectAsync<T,  U>(this DbSet<T> set,
         ulong id,Expression<Func<T, U>> selectExpression) where T : Model,new()
     {
-        return await set.FindOrCreateSelectAsync<T,float, U>( id, null, selectExpression);
+        return await set.FindOrCreateSelectAsync( id, null, selectExpression);
     }
-    public async static Task<V> FindOrCreateSelectAsync<T, U, V>(this DbSet<T> set, ulong id,
-        Func<IQueryable<T>, IIncludableQueryable<T, U>>? includableQueryableFunc, Expression<Func<T,V>> selectExpression) where T : Model,new()
+    public async static Task<V> FindOrCreateSelectAsync<T, V>(this DbSet<T> set, ulong id,
+        Func<IQueryable<T>, IQueryable<T>>? includableQueryableFunc, Expression<Func<T,V>> selectExpression) where T : Model,new()
     {
         V? data;
         if (includableQueryableFunc is not null)
@@ -239,7 +238,7 @@ public static class PostgreExtension
     /// <typeparam name="T">The instance/row type</typeparam>
     /// <typeparam name="U"></typeparam>
     /// <returns></returns>
-    public async static Task<T> FindOrCreateAsync<T,U>(this DbSet<T> set, ulong id,Func<IQueryable<T>, IIncludableQueryable<T,U>>? includableQueryableFunc) where T : Model, new()
+    public async static Task<T> FindOrCreateAsync<T>(this DbSet<T> set, ulong id,Func<IQueryable<T>, IQueryable<T>>? includableQueryableFunc) where T : Model, new()
     {
         T? data;
         if (includableQueryableFunc is not null)
@@ -271,6 +270,6 @@ public static class PostgreExtension
     /// <returns></returns>
     public async static Task<T> FindOrCreateAsync<T>(this DbSet<T> set, ulong id) where T : Model, new()
     {
-        return await set.FindOrCreateAsync<T, float>(id, null);
+        return await set.FindOrCreateAsync(id, null);
     }
 }
