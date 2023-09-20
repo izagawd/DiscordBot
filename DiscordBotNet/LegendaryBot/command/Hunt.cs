@@ -20,8 +20,8 @@ public class Hunt : BaseCommandClass
 
         var stop = new Stopwatch();
         var userData = await DatabaseContext.UserData
-            .FindOrCreateAsync(author.Id,
-                i => i.Include(i => i.Inventory.Where(i => i is Character)));
+            .Include(i => i.Inventory.Where(i => i is Character))
+            .FindOrCreateAsync(author.Id);
 
         var embedToBuild = new DiscordEmbedBuilder()
             .WithUser(author)

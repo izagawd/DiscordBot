@@ -24,8 +24,9 @@ public class Index : PageModel
     {
         var didParse = Guid.TryParse(characterId, out Guid id);
         if (!didParse) return Redirect("/characters");
-        UserData = await DatabaseContext.UserData.FindOrCreateAsync(User.GetDiscordUserId(), i =>
-            i.Include(j => j.Inventory.Where(k => k is Blessing || k is Character)));
+        UserData = await DatabaseContext.UserData
+            .Include(j => j.Inventory.Where(k => k is Blessing || k is Character))
+            .FindOrCreateAsync(User.GetDiscordUserId());
         Character = UserData.Inventory.OfType<Character>().FirstOrDefault(k => k.Id == id);
         Blessings = UserData.Inventory.OfType<Blessing>().ToList();
         if (Character is null)

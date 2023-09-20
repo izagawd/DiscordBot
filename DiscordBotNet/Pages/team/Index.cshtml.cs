@@ -22,8 +22,10 @@ public class Index : PageModel
     }
     public async Task OnGetAsync()
     {
-        UserData = await DatabaseContext.UserData.FindOrCreateAsync(User.GetDiscordUserId(), i =>
-        i.Include(j => j.Inventory.Where(k => k is Character)));
+        UserData = await DatabaseContext.UserData
+            .Include(j => j.Inventory.Where(k => k is Character))
+            .FindOrCreateAsync(User.GetDiscordUserId());
+        
 
         foreach (var i in UserData.Inventory.OfType<Player>())
         {

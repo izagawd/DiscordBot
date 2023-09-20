@@ -40,9 +40,10 @@ public class Index : PageModel
         Sort = sort;
         Element = element;
 
-        
-        var userData = await DatabaseContext.UserData.FindOrCreateAsync(User.GetDiscordUserId(), i =>
-            i.Include(j => j.Inventory.Where(k => k is Character)));
+
+        var userData = await DatabaseContext.UserData
+            .Include(j => j.Inventory.Where(k => k is Character))
+            .FindOrCreateAsync(User.GetDiscordUserId());
 
         Characters = userData.Inventory.OfType<Character>().ToList();
 

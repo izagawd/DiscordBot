@@ -24,8 +24,9 @@ public class Detail : BaseCommandClass
             return;
         }
   
-        var userData = await DatabaseContext.UserData.FindOrCreateAsync(ctx.User.Id, i => i
-            .Include(i => i.Inventory.Where(j => j.Id == entityId)));
+        var userData = await DatabaseContext.UserData
+            .Include(i => i.Inventory.Where(j => j.Id == entityId))
+            .FindOrCreateAsync(ctx.User.Id);
         embedBuilder.WithColor(userData.Color);
         if (!userData.Inventory.Any())
         {

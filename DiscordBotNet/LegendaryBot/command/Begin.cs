@@ -22,12 +22,12 @@ public class Begin : BaseCommandClass
     {
         DiscordEmbedBuilder embedToBuild = new();
         DiscordUser author = ctx.User;
-        
+
         UserData userData = await DatabaseContext.UserData
-            .FindOrCreateAsync(author.Id, i =>
-                i.Include(j => j.Inventory)
-                    .ThenInclude(j => (j as Character).Blessing)
-                    .Include(i => i.Inventory.Where(i => i is Character || i is Blessing)));
+            .Include(j => j.Inventory)
+            .ThenInclude(j => (j as Character).Blessing)
+            .Include(i => i.Inventory.Where(i => i is Character || i is Blessing))
+            .FindOrCreateAsync(author.Id);
         DiscordColor userColor = userData.Color;
         if (userData.IsOccupied)
         {

@@ -57,13 +57,17 @@ public class Bot
         
         var stop = new Stopwatch();
         stop.Start();
-
+        
+        stop.ElapsedMilliseconds.Print();
+        var gottenctx = ctx.UserData.Where(i => true).GetDbContext();
+ 
         var user = await ctx
             .UserData
-            .FindOrCreateAsync(Izasid, i => i.IncludeTeamWithAllEquipments().AsSplitQuery());
+            .IncludeTeamWithAllEquipments()
+            .FindOrCreateAsync(Izasid);
 
         stop.ElapsedMilliseconds.Print();
-        user.Team.Count.Print();
+        user.Inventory.Count.Print();
         await ctx.SaveChangesAsync();
         
     }
@@ -87,13 +91,16 @@ public class Bot
             {
                 // ignored
             }
+
+            
         }
+        
         var ctx = new PostgreSqlContext();
 
         await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
         await ctx.SaveChangesAsync();
 
-
+        await DoShit();
         return;
   
         

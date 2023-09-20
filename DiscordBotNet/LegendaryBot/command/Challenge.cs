@@ -22,12 +22,12 @@ public class Challenge :BaseCommandClass
         
         var player1 = ctx.User;
         var player2 = opponent;
-        
-        var player1User = await DatabaseContext.UserData.FindOrCreateAsync(player1.Id, 
-             i =>
-                            i.Include(j => j.Inventory)
-                                .ThenInclude(j => (j as Character).Blessing)
-                                .Include(i => i.Inventory.Where(i => i is Character)));
+
+        var player1User = await DatabaseContext.UserData
+            .Include(j => j.Inventory)
+            .ThenInclude(j => (j as Character).Blessing)
+            .Include(i => i.Inventory.Where(i => i is Character))
+            .FindOrCreateAsync(player1.Id);
         DiscordEmbedBuilder embedToBuild;
         if (player1User.IsOccupied)
         {
@@ -51,12 +51,12 @@ public class Challenge :BaseCommandClass
             return;
             
         }
-  
-        var player2User = await DatabaseContext.UserData.FindOrCreateAsync(player2.Id, 
-            i =>
-                i.Include(j => j.Inventory)
-                    .ThenInclude(j => (j as Character).Blessing)
-                    .Include(i => i.Inventory.Where(i => i is Character)));
+
+        var player2User = await DatabaseContext.UserData
+            .Include(j => j.Inventory)
+            .ThenInclude(j => (j as Character).Blessing)
+            .Include(i => i.Inventory.Where(i => i is Character))
+            .FindOrCreateAsync(player2.Id);
         if (player2User.IsOccupied)
         {
             embedToBuild = new DiscordEmbedBuilder()

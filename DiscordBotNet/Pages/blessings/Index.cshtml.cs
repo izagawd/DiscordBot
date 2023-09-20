@@ -35,9 +35,10 @@ public class Index : PageModel
         Sort = sort;
 
 
-        
-        var userData = await DatabaseContext.UserData.FindOrCreateAsync(User.GetDiscordUserId(), i =>
-            i.Include(j => j.Inventory.Where(k => k is Blessing)));
+
+        var userData = await DatabaseContext.UserData
+            .Include(j => j.Inventory.Where(k => k is Blessing))
+            .FindOrCreateAsync(User.GetDiscordUserId());
 
         Blessings = userData.Inventory.OfType<Blessing>().ToList();
 

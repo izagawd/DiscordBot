@@ -5,6 +5,7 @@ using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DSharpPlus.Entities;
+using Microsoft.EntityFrameworkCore;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
 
@@ -18,6 +19,20 @@ public class UserData : Model,  ICanBeLeveledUp
         Id = id;
     }
     public UserData(){}
+
+
+    [NotMapped]
+    public IEnumerable<Guid> Ids
+    {
+        get
+        {
+            foreach (var i in Team)
+            {
+                yield return i.Id;
+            }
+        }
+    }
+
     public void RemoveFromTeam(Character character)
     {
         if (Character1 == character)
