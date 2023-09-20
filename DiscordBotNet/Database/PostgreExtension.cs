@@ -210,16 +210,16 @@ public static class PostgreExtension
     /// <typeparam name="T">The instance/row type</typeparam>
     /// <typeparam name="U"></typeparam>
     /// <returns></returns>
-    public async static Task<T> FindOrCreateAsync<T>(this IQueryable<T> queryable, ulong id) where T : Model, new()
+    public async static Task<T> FindOrCreateAsync<T>(this IQueryable<T> set, ulong id) where T : Model, new()
     {
-        T? data = await queryable
+        T? data = await set
                 .FirstOrDefaultAsync(i => i.Id == id);
      
 
         if (data is null)
         {
             data = new T { Id = id };
-            await queryable.GetDbContext().Set<T>().AddAsync(data);
+            await set.GetDbContext().Set<T>().AddAsync(data);
         }
         return data;
     }

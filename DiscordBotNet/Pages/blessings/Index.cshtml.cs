@@ -17,7 +17,7 @@ public class Index : PageModel
     {
         DatabaseContext = databaseContext;
     }
-    public void die(){}
+  
     public async Task OnGetAsync(string name, string sort)
     { 
         
