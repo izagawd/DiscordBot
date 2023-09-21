@@ -1,6 +1,7 @@
 ﻿using DiscordBotNet.Database;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using SixLabors.ImageSharp;
 
 namespace DiscordBotNet.LegendaryBot.command;
 

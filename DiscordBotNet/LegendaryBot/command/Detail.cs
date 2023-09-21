@@ -3,6 +3,7 @@ using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
 
 namespace DiscordBotNet.LegendaryBot.command;
 

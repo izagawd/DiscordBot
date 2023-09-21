@@ -76,7 +76,7 @@ public class Bot
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-
+        "YO".Print();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         while (true)
         {
@@ -95,18 +95,7 @@ public class Bot
             
         }
         
-        var ctx = new PostgreSqlContext();
-        ctx.ResetDatabase();
-        await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
-        await ctx.SaveChangesAsync();
 
-        await DoShit();
-        return;
-  
-        
-        await ctx.DisposeAsync();
-    
-        return;
         BasicFunction.imageMapper.Count.Print();
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration

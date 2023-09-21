@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace DiscordBotNet.Pages;
+namespace discordbotnet.Pages;
 
 public class PrivacyModel : PageModel
 {

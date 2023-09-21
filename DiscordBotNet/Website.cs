@@ -4,6 +4,7 @@ using AspNet.Security.OAuth.Discord;
 using DiscordBotNet.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SixLabors.ImageSharp;
 
 namespace DiscordBotNet;
 

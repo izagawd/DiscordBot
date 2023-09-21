@@ -12,6 +12,9 @@ using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;

@@ -7,7 +7,10 @@ using DiscordBotNet.LegendaryBot.Battle.Results;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.Fonts;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace DiscordBotNet.Database.Models;
 
