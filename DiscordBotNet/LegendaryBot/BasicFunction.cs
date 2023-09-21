@@ -42,10 +42,19 @@ public static class BasicFunction
 
         return count;
     }
+    /// <summary>
+    /// Gets the image as sixlabors image from the url provided, and caches is in the EntityImages memory cache
+    /// </summary>
+
     public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
     {
         return await GetImageFromUrlAsync(url, false);
     }
+     /// <summary>
+     /// Gets the image as sixlabors image from the url provided, and caches it
+     /// </summary>
+     /// <param name="toEntityDictionary">If true, permenantly caches it in the EntityDictionary. if false, temporarily caches it in EntityImages memory cache</param>
+     /// <returns></returns>
     private static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url, bool toEntityDictionary)
     {
         if (EntityImages.ContainsKey(url)) return EntityImages[url].Clone();
