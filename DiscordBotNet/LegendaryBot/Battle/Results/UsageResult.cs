@@ -3,6 +3,10 @@ using DiscordBotNet.LegendaryBot.Battle.Moves;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Results;
 
+public enum TargetType
+{
+    None, SingleTarget, AOE, InBetween, 
+}
 public class UsageResult
 {
     /// <summary>
@@ -11,12 +15,15 @@ public class UsageResult
     public string? Text { get; set; }
 
     public bool IsAttackUsage => DamageResults.Count > 0;
+    /// <summary>
+    /// The amount of people this usage targets
+    /// </summary>
     public bool IsNonAttackUsage => !IsAttackUsage;
-
+    public TargetType TargetType { get; set; }
     /// <summary>
     /// if the skill deals any sort of damage, the damage results should be in this list
     /// </summary>
-    public List<DamageResult> DamageResults { get; set; } = new List<DamageResult>();
+    public List<DamageResult> DamageResults { get; set; } = new();
     /// <summary>
     /// The character who used the skill/item
     /// </summary>
@@ -29,13 +36,13 @@ public class UsageResult
     /// The move used to execute this skill
     /// </summary>
     public Move MoveUsed { get; set; }
-    public UsageResult(string text, UsageType usageType) : this(usageType)
+    public UsageResult(UsageType usageType, TargetType targetType,string text) : this(usageType,targetType)
     {
         
         Text = text;
     }
 
-    public UsageResult(UsageType usageType)
+    public UsageResult(UsageType usageType, TargetType targetType)
     {
         UsageType = usageType;
     }

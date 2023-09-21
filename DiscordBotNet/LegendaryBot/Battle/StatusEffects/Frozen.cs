@@ -22,6 +22,6 @@ public class Frozen : StatusEffect
     {
         decision = "None";
         affected.CurrentBattle.AdditionalTexts.Add($"{affected} cannot move because they are frozen!");
-        return new UsageResult("c-cold...", usageType);
+        return new UsageResult(usageType, TargetType.None,"c-cold...");
     }
 }

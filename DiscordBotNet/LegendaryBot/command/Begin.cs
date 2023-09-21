@@ -4,7 +4,7 @@ using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Arguments;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-
+using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -26,7 +26,7 @@ public class Begin : BaseCommandClass
         UserData userData = await DatabaseContext.UserData
             .Include(j => j.Inventory)
             .ThenInclude(j => (j as Character).Blessing)
-            .Include(i => i.Inventory.Where(i => i is Character))
+            .Include(i => i.Inventory.Where(i => i is Character || i is Gear))
             .FindOrCreateAsync(author.Id);
         DiscordColor userColor = userData.Color;
         if (userData.IsOccupied)

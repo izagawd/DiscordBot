@@ -32,7 +32,7 @@ public class MethaneSlap : BasicAttack
     }
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        var result = new UsageResult(usageType);
+        var result = new UsageResult(usageType, TargetType.SingleTarget);
 
         result.DamageResults.Add(target.Damage(        new DamageArgs()
         {
@@ -94,7 +94,7 @@ public class BlowAway : Skill
 
         }
 
-        return new UsageResult("Blow Away!",usageType);
+        return new UsageResult(usageType, TargetType.AOE,"Blow Away!");
         
     }
 
@@ -121,7 +121,7 @@ public class VolcanicEruption : Surge
     {
         owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 4});
         owner.CurrentBattle.AdditionalTexts.Add($"{owner} is charging up a very powerful attack!");
-        return new UsageResult(usageType);
+        return new UsageResult(usageType, TargetType.AOE);
     }
 }
 public class Blast : Character

@@ -96,7 +96,7 @@ public abstract class Move:  IHasIconUrl
 
     protected virtual UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        return new UsageResult(usageType);
+        return new UsageResult(usageType,TargetType.None);
     }
     /// <summary>
     /// This is where the general functionality of a move is done. It does some checks before HiddenUtilize is called

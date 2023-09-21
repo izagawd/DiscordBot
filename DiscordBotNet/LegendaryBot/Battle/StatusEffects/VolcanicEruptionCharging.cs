@@ -34,13 +34,13 @@ public class VolcanicEruptionCharging : StatusEffect
                     DamageText =$"{affected} shot out a very powerful blast that dealt $ damage to {i}!"
                 });
                 damageResults.Add(damageResult);
-                return new UsageResult(UsageType.NormalUsage)
+                return new UsageResult(UsageType.NormalUsage,TargetType.AOE)
                     { Text = "Blast!", DamageResults = damageResults};
             }
 
         }
         affected.CurrentBattle.AdditionalTexts.Add($"{affected} is charging up a very powerful attack. {Duration-1} more turns till it is released");
-        return new UsageResult("Charging!", usageType);
+        return new UsageResult(usageType,TargetType.None,"Charging!");
     }
     public override void PassTurn(Character affected)
     {

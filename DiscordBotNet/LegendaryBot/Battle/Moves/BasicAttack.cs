@@ -27,6 +27,6 @@ public class BasicAttack : Move
             DamageText = $"{owner} gave" +
                          $" {target} a punch and dealt $ damage!"
         });
-        return new UsageResult(usageType) { DamageResults = new List<DamageResult> { damageResult } };
+        return new UsageResult(usageType, TargetType.SingleTarget) { DamageResults = new List<DamageResult> { damageResult } };
     }
 }

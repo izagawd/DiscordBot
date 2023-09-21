@@ -28,7 +28,7 @@ public class SneakyAmbush : Surge
             DamageText =$"{owner} attacks {target} in a sneaky way that cannot be countered and dealt $ damage!",
             CanBeCountered = false
         });
-        return new UsageResult(usageType)
+        return new UsageResult(usageType, TargetType.SingleTarget)
         {
             DamageResults = new List<DamageResult> { damageResult },
             User = owner,

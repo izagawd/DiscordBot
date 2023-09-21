@@ -30,7 +30,7 @@ public class ChamomileSachetWhack : BasicAttack
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {     
 
-        var result = new UsageResult(usageType);
+        var result = new UsageResult(usageType, TargetType.SingleTarget);
         result.DamageResults.Add(target.Damage(new DamageArgs
         {
             Damage = owner.Attack * 1.9,
@@ -79,7 +79,7 @@ public class BlossomTouch : Skill
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         target.RecoverHealth((owner.MaxHealth * GetHealthHealScaling(owner.SurgeLevel) * 0.01).Round());
-        return new UsageResult($"{owner} used Blossom Touch!", usageType);
+        return new UsageResult(usageType, TargetType.SingleTarget,$"{owner} used Blossom Touch!");
     }
 }
 public class LilyOfTheValley : Surge
@@ -142,7 +142,8 @@ public class LilyOfTheValley : Surge
                 i.StatusEffects.Add(new Stun(owner){Duration = 1}, owner.Effectiveness);
             }
         }
-        return new UsageResult($"{owner} used Lily of The Valley, and released a dangerous gas to the enemy team!", usageType);
+        return new UsageResult( usageType, TargetType.AOE,
+            $"{owner} used Lily of The Valley, and released a dangerous gas to the enemy team!");
     }
 }
 public class Lily : Character

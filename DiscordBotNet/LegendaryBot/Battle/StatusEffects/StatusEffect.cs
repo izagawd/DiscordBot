@@ -88,7 +88,7 @@ public abstract class StatusEffect: IHasIconUrl
 
     public virtual UsageResult OverridenUsage(Character affected,ref Character target, ref string decision, UsageType usageType) // the status effect might or might not replace the player's decision
     {
-        return new UsageResult(usageType);
+        return new UsageResult(usageType, TargetType.None);
     }
     /// <summary>
     /// 

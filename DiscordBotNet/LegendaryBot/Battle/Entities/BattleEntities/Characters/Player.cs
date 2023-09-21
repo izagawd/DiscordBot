@@ -31,7 +31,7 @@ public class FireBall : Skill
         }
 
 
-        return new UsageResult(usageType) { DamageResults = new List<DamageResult> { damageResult } };
+        return new UsageResult(usageType, TargetType.SingleTarget) { DamageResults = new List<DamageResult> { damageResult } };
     }
 }
 public class Ignite : Surge
@@ -53,7 +53,7 @@ public class Ignite : Surge
                 target.StatusEffects.Add(new Burn(owner),owner.Effectiveness);
             }
         }
-        return new UsageResult($"Ignite!", usageType);
+        return new UsageResult(usageType, TargetType.SingleTarget,"Ignite!");
     }
 }
 public class Player : Character

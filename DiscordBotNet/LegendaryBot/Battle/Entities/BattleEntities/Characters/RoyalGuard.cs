@@ -27,7 +27,7 @@ public class IWillBeYourShield : Skill
         target.StatusEffects.Add(new Shield(owner, 1000){Duration = 3});
         target.StatusEffects.Add(new DefenseBuff(owner) { Duration = 3 });
 
-        return new UsageResult($"As a loyal knight, {owner} helps {target}!", usageType);
+        return new UsageResult(usageType, TargetType.SingleTarget,$"As a loyal knight, {owner} helps {target}!");
     }
 }
 
@@ -57,7 +57,7 @@ public class IWillProtectUs : Surge
             
         }
 
-        return new UsageResult($"As a loyal knight, {owner} increases the defense of all allies!", usageType);
+        return new UsageResult(usageType, TargetType.AOE,$"As a loyal knight, {owner} increases the defense of all allies!");
     }
 }
 public class RoyalGuard : Character

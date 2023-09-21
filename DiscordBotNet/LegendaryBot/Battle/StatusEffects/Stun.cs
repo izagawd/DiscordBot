@@ -23,6 +23,6 @@ public class Stun : StatusEffect
     {
         decision = "None";
         affected.CurrentBattle.AdditionalTexts.Add($"{affected} cannot move because they are stunned!");
-        return new UsageResult("dizzy...", usageType);
+        return new UsageResult(usageType,TargetType.None,"dizzy...");
     }
 }

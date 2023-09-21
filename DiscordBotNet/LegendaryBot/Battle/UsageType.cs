@@ -2,5 +2,5 @@
 
 public enum UsageType
 {
-    NormalUsage, CounterAttack, ExtraAttack,MiscellaneousFollowUpAttack
+    NormalUsage, CounterUsage, ExtraUsage,MiscellaneousFollowUpUsage
 }

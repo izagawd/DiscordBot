@@ -16,7 +16,7 @@ public class ThumbsUp : Skill
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         owner.CurrentBattle.AdditionalTexts.Add($"{owner} is cheering {target} on!");
-        return new UsageResult($"{owner} gave {target} a thumbs up!", usageType)
+        return new UsageResult(usageType,  TargetType.SingleTarget,$"{owner} gave {target} a thumbs up!")
         {
    
             
