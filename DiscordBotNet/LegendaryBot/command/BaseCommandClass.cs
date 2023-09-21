@@ -49,7 +49,8 @@ public abstract class BaseCommandClass : ApplicationCommandModule
         DatabaseContext = new PostgreSqlContext();
         return Task.FromResult(true);
     }
-    public override async Task AfterContextMenuExecutionAsync(ContextMenuContext ctx)
+
+    public override async Task AfterSlashExecutionAsync(InteractionContext ctx)
     {
         foreach (var i in OccupiedUserDatas)
         {
@@ -76,7 +77,7 @@ public abstract class BaseCommandClass : ApplicationCommandModule
             i.IsOccupied = true;
         }
         OccupiedUserDatas.AddRange(userDatas);
-        var ids = userDatas.Select(i => i.Id);
+        var ids = userDatas.Select(i => i.Id).ToArray();
         var tempCtx = new PostgreSqlContext();
         await tempCtx.UserData
             .Where(i => ids.Contains(i.Id))

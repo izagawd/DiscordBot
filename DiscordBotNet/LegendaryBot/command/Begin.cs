@@ -26,7 +26,7 @@ public class Begin : BaseCommandClass
         UserData userData = await DatabaseContext.UserData
             .Include(j => j.Inventory)
             .ThenInclude(j => (j as Character).Blessing)
-            .Include(i => i.Inventory.Where(i => i is Character || i is Blessing))
+            .Include(i => i.Inventory.Where(i => i is Character))
             .FindOrCreateAsync(author.Id);
         DiscordColor userColor = userData.Color;
         if (userData.IsOccupied)
