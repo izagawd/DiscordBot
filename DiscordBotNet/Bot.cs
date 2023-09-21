@@ -7,6 +7,7 @@ using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle;
+using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
@@ -53,30 +54,13 @@ public class Bot
     public async Task DoShit()
     {
 
-        var ctx = new PostgreSqlContext();
-        
-        var stop = new Stopwatch();
-        stop.Start();
-        
-        stop.ElapsedMilliseconds.Print();
-        var gottenctx = ctx.UserData.Where(i => true).GetDbContext();
- 
-        var user = await ctx
-            .UserData
-            .IncludeTeamWithAllEquipments()
-            .FindOrCreateAsync(Izasid);
-
-        stop.ElapsedMilliseconds.Print();
-        user.Inventory.Count.Print();
-        await ctx.SaveChangesAsync();
-        
     }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-        "YO".Print();
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         while (true)
         {
@@ -94,8 +78,13 @@ public class Bot
 
             
         }
-        
 
+        var ctx = new PostgreSqlContext();
+
+        await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
+        await ctx.SaveChangesAsync();
+        await ctx.DisposeAsync();
+ 
         BasicFunction.imageMapper.Count.Print();
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration

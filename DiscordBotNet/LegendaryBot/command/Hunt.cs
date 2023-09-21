@@ -18,9 +18,9 @@ public class Hunt : BaseCommandClass
     {
         var author = ctx.User;
 
-        var stop = new Stopwatch();
+  
         var userData = await DatabaseContext.UserData
-            .Include(i => i.Inventory.Where(i => i is Character))
+            .IncludeTeamWithAllEquipments()
             .FindOrCreateAsync(author.Id);
 
         var embedToBuild = new DiscordEmbedBuilder()

@@ -47,7 +47,9 @@ public class PostgreSqlContext :DbContext
         
         // Configure the database provider and connection string
         optionsBuilder
-            .UseNpgsql(ConfigurationManager.AppSettings["PostgreSQLConnectionString"])
+            
+            .UseNpgsql(ConfigurationManager.AppSettings["PostgreSqlConnectionString"])
+
             .EnableSensitiveDataLogging();
     
     }
@@ -163,7 +165,23 @@ public class PostgreSqlContext :DbContext
         
         modelBuilder.Entity<Gear>(entity =>
         {
-            entity.OwnsOne(e => e.Idk, b => b.ToJson());
+            entity
+                .Property(i => i.MainStat)
+                .HasConversion(GearStat.ValueConverter);
+            entity
+                .Property(i => i.SubStat1)
+                .HasConversion(GearStat.ValueConverter);
+            entity
+                .Property(i => i.SubStat2)
+                .HasConversion(GearStat.ValueConverter);
+            entity
+                .Property(i => i.SubStat3)
+                .HasConversion(GearStat.ValueConverter);
+
+            entity
+                .Property(i => i.SubStat4)
+                .HasConversion(GearStat.ValueConverter);
+
 
         });
 

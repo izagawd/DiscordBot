@@ -24,9 +24,7 @@ public class Challenge :BaseCommandClass
         var player2 = opponent;
 
         var player1User = await DatabaseContext.UserData
-            .Include(j => j.Inventory)
-            .ThenInclude(j => (j as Character).Blessing)
-            .Include(i => i.Inventory.Where(i => i is Character))
+            .IncludeTeamWithAllEquipments()
             .FindOrCreateAsync(player1.Id);
         DiscordEmbedBuilder embedToBuild;
         if (player1User.IsOccupied)

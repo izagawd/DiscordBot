@@ -50,23 +50,23 @@
             },
             "DSharpPlus": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01760, )"
+              "version": "[5.0.0-nightly-01763, )"
             },
             "DSharpPlus.CommandsNext": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01760, )"
+              "version": "[5.0.0-nightly-01763, )"
             },
             "DSharpPlus.Interactivity": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01760, )"
+              "version": "[5.0.0-nightly-01763, )"
             },
             "DSharpPlus.SlashCommands": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01760, )"
+              "version": "[5.0.0-nightly-01763, )"
             },
             "DSharpPlus.VoiceNext": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01760, )"
+              "version": "[5.0.0-nightly-01763, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -76,9 +76,21 @@
               "target": "Package",
               "version": "[8.0.0-rc.1.23419.6, )"
             },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0-rc.1.23419.6, )"
+            },
+            "MySql.Data.EntityFramework": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[8.0.0-rc.1, )"
+            },
+            "Npgsql.Json.NET": {
+              "target": "Package",
+              "version": "[8.0.0-preview.4, )"
             },
             "SixLabors.ImageSharp": {
               "target": "Package",

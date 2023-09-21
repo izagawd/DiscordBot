@@ -8,16 +8,15 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 public abstract class Gear : BattleEntity
 {
 
-    [NotMapped]
+   
     public GearStat MainStat { get; protected set; }
-    public AttackFlatGearStat Idk { get; protected set; }
-    [NotMapped]
+
     public GearStat? SubStat1 { get; protected set; }
-    [NotMapped]
+
     public GearStat? SubStat2 { get; protected set; }
-    [NotMapped]
+
     public GearStat? SubStat3 { get; protected set; }
-    [NotMapped]
+
     public GearStat? SubStat4 { get; protected set; }
 
     
