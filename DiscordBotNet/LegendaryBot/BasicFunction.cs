@@ -1,6 +1,8 @@
-﻿using DiscordBotNet.LegendaryBot.Battle;
+﻿using System.Diagnostics;
+using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
+using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -8,11 +10,12 @@ namespace DiscordBotNet.LegendaryBot;
 
 public static class BasicFunction
 {
-    public static Dictionary<string, Image<Rgba32>> imageMapper = new();
-
-    public static async Task LoadAsync()
+    public static Dictionary<string, Image<Rgba32>> EntityImages = new();
+    public static MemoryCache UserImages { get; } = new(new MemoryCacheOptions());
+    
+    public static async Task<int> LoadEntityImagesAsync()
     {
-        List<Task> tasks = new List<Task>();
+        int count = 0;
         foreach (var type in Bot.AllAssemblyTypes.Where(t => typeof(IHasIconUrl).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract))
         {
           
@@ -25,40 +28,52 @@ public static class BasicFunction
             {
                 icon = (IHasIconUrl)Activator.CreateInstance(type)!;
             }
-
-
-      
+            
             if (icon.IconUrl is not null)
             {
-                tasks.Add(GetImageFromUrlAsync(icon.IconUrl));
+
+                await GetImageFromUrlAsync(icon.IconUrl, true);
+                count += 0;
             }
         }
 
-        await Task.WhenAll(tasks);
+        return count;
     }
     public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
     {
-        if (imageMapper.ContainsKey(url)) return imageMapper[url].Clone();
+        var stop = new Stopwatch(); stop.Start();
+        
+        var image =  await GetImageFromUrlAsync(url, false);
+        stop.Elapsed.TotalMilliseconds.Print();
+        return image;
+
+    }
+    private static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url, bool toEntityDictionary)
+    {
+        if (EntityImages.ContainsKey(url)) return EntityImages[url].Clone();
+        if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!;
         try{
             var webClient = new HttpClient();
             var responseMessage = await webClient.GetAsync(url);
             var memoryStream = await responseMessage.Content.ReadAsStreamAsync();
             var characterImage = await Image.LoadAsync<Rgba32>(memoryStream);
-            imageMapper[url] = characterImage;
+            if (toEntityDictionary)
+            {
+                EntityImages[url] = characterImage;  
+            }
+            else
+            {
+                UserImages.Set(url,characterImage);
+            }
             webClient.Dispose();
             responseMessage.Dispose();
             return characterImage.Clone();
         }
         catch
         {
-  
-            imageMapper[url] =
-                await GetImageFromUrlAsync("https://legendarygawds.com/move-pictures/guilotine.png");
-
-            return imageMapper[url];
+            return await GetImageFromUrlAsync("https://legendarygawds.com/move-pictures/guilotine.png", true);
         }
     }
-
     /// <returns>
     /// A random element from the parameters
     /// </returns>

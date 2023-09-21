@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DiscordBotNet.Pages.add;
 [Authorize]
-public class Index : PageModel
+public class Index(PostgreSqlContext context) : PageModel
 {
-    public PostgreSqlContext DatabaseContext { get; private set; }
+    public PostgreSqlContext DatabaseContext { get; private set; } = context;
+
     public async Task OnPostAsync(string type)
     {
         Type theType = Bot.AllAssemblyTypes.First(i => i.Name == type);
@@ -15,10 +16,5 @@ public class Index : PageModel
         entity.UserDataId = User.GetDiscordUserId();
         await DatabaseContext.Entity.AddAsync(entity);
         await DatabaseContext.SaveChangesAsync();
-    }
-
-    public Index(PostgreSqlContext context)
-    {
-        DatabaseContext = context;
     }
 }

@@ -29,7 +29,7 @@ public class UsageResult
     /// </summary>
     public Character User { get; set; }
     /// <summary>
-    /// Determines if the usage was from a normal skill use or a follow up attack.  this must not be null
+    /// Determines if the usage was from a normal skill use or a follow up use.  this must be set
     /// </summary>
     public UsageType UsageType { get; set; }
     /// <summary>
