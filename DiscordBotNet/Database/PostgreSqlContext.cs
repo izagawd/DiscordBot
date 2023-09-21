@@ -185,7 +185,8 @@ public class PostgreSqlContext :DbContext
 
         });
 
-
+        modelBuilder.Entity<UserData>()
+            .HasKey(i => i.Id);
         modelBuilder.Entity<Character>()
             .HasOne(i => i.Blessing)
             .WithOne(i => i.Character)

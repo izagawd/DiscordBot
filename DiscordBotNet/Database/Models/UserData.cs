@@ -76,7 +76,7 @@ public class UserData : Model,  ICanBeLeveledUp
         }
 
         character.UserDataId = Id;
-        
+        character.UserData = this;
     }
     [NotMapped]
     

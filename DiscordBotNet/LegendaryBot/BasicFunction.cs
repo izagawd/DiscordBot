@@ -12,7 +12,10 @@ public static class BasicFunction
 {
     public static Dictionary<string, Image<Rgba32>> EntityImages = new();
     public static MemoryCache UserImages { get; } = new(new MemoryCacheOptions());
-    
+    /// <summary>
+    /// Loads all the images of entities
+    /// </summary>
+    /// <returns>The amount of images loaded</returns>
     public static async Task<int> LoadEntityImagesAsync()
     {
         int count = 0;
@@ -33,7 +36,7 @@ public static class BasicFunction
             {
 
                 await GetImageFromUrlAsync(icon.IconUrl, true);
-                count += 0;
+                count += 1;
             }
         }
 
@@ -41,17 +44,12 @@ public static class BasicFunction
     }
     public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
     {
-        var stop = new Stopwatch(); stop.Start();
-        
-        var image =  await GetImageFromUrlAsync(url, false);
-        stop.Elapsed.TotalMilliseconds.Print();
-        return image;
-
+        return await GetImageFromUrlAsync(url, false);
     }
     private static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url, bool toEntityDictionary)
     {
         if (EntityImages.ContainsKey(url)) return EntityImages[url].Clone();
-        if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!;
+        if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!.Clone();
         try{
             var webClient = new HttpClient();
             var responseMessage = await webClient.GetAsync(url);
@@ -63,7 +61,9 @@ public static class BasicFunction
             }
             else
             {
-                UserImages.Set(url,characterImage);
+  
+                UserImages.Set(url,characterImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
+                "via memory cache".Print();
             }
             webClient.Dispose();
             responseMessage.Dispose();
@@ -71,7 +71,9 @@ public static class BasicFunction
         }
         catch
         {
-            return await GetImageFromUrlAsync("https://legendarygawds.com/move-pictures/guilotine.png", true);
+            var alternateImage =  await GetImageFromUrlAsync("https://legendarygawds.com/move-pictures/guilotine.png", true);
+            EntityImages[url] = alternateImage;
+            return alternateImage;
         }
     }
     /// <returns>

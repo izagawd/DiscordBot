@@ -28,6 +28,7 @@ public class Begin : BaseCommandClass
             .ThenInclude(j => (j as Character).Blessing)
             .Include(i => i.Inventory.Where(i => i is Character || i is Gear))
             .FindOrCreateAsync(author.Id);
+        await DatabaseContext.SaveChangesAsync();
         DiscordColor userColor = userData.Color;
         if (userData.IsOccupied)
         {
@@ -62,12 +63,9 @@ public class Begin : BaseCommandClass
       
             player.SetElement(Element.Fire);
 
-            player.UserDataId = author.Id;
 
 
             userData.Inventory.Add(player);
-
-            
             player.UserData = userData;
         }
 

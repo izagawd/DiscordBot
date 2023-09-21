@@ -64,18 +64,20 @@ public class Bot
         Console.WriteLine("Entity images loading...");
         var stopwatch = new Stopwatch(); stopwatch.Start();
         var imagesLoaded = await BasicFunction.LoadEntityImagesAsync(); 
-        stopwatch.Stop(); stopwatch.Reset();
-        Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to load {imagesLoaded} entity images");
+        stopwatch.Stop(); 
+        Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to load and cache {imagesLoaded} entity images");
+        stopwatch.Reset();
         Console.WriteLine($"Making all users unoccupied...");
         stopwatch.Start();
         var ctx = new PostgreSqlContext();
+    
         
         await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
         var count = await ctx.UserData.CountAsync();
         await ctx.SaveChangesAsync();
         await ctx.DisposeAsync();
         stopwatch.Stop();
-        Console.WriteLine($"Took a total of ${stopwatch.Elapsed.TotalMilliseconds}ms to make {count} users unoccupied");
+        Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to make {count} users unoccupied");
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration
         {

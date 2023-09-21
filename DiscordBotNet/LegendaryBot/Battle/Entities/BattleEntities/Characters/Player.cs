@@ -3,6 +3,7 @@ using System.Security.Claims;
 using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
+using DSharpPlus;
 using DSharpPlus.Entities;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -128,7 +129,7 @@ public class Player : Character
         }
 
         Name = User.Username;
-        IconUrl = User.AvatarUrl;
+        IconUrl = User.GetAvatarUrl(ImageFormat.Png);
         if (UserData is not null)
         {
             Color = UserData.Color;

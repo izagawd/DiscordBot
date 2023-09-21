@@ -63,6 +63,7 @@ public abstract class BaseCommandClass : ApplicationCommandModule
             await tempCtx.UserData
                 .Where(i => ids.Contains(i.Id))
                 .ForEachAsync(i => i.IsOccupied = false);
+            await tempCtx.SaveChangesAsync();
             await tempCtx.DisposeAsync();
         }
         await DatabaseContext.DisposeAsync();
