@@ -1,8 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace discordbotnet.Pages;
-
+namespace DiscordBotNet.Pages;
+[Authorize]
 public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
@@ -10,10 +12,20 @@ public class IndexModel : PageModel
     public IndexModel(ILogger<IndexModel> logger)
     {
         _logger = logger;
+
     }
 
-    public void OnGet()
+    public UserData UserData { get; set; }
+
+
+
+    public async Task OnGetAsync()
     {
 
+        var databaseContext = new PostgreSqlContext();
+        UserData = await databaseContext.UserData.FindOrCreateAsync(User.GetDiscordUserId());
+        await databaseContext.DisposeAsync();
+
     }
+
 }

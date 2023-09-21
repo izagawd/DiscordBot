@@ -1,10 +1,23 @@
 ﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@using DiscordBotNet
+@model DiscordBotNet.Pages.IndexModel
+@{
+    Layout = "Shared/_NavigationLayout";
+}
+<head>
+    <link rel="stylesheet" type="text/css" href="css/Home.css">
+    <title>Home</title>
+</head>
+<body>
+
+<div id="welcome_div">
+    <p id="welcome">welcome, @User.GetDiscordUserName()!</p>
+    <div id="user_picture_div">
+        <img id="user_picture" src="@User.GetDiscordUserAvatarUrl()"/>
+    </div>
+    <p id="level">Level @Model.UserData.Level</p>
+
 </div>
+
+</body>
