@@ -96,7 +96,7 @@ public class Bot
         }
         
         var ctx = new PostgreSqlContext();
-
+        ctx.ResetDatabase();
         await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
         await ctx.SaveChangesAsync();
 

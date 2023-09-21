@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Nodes;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Stats;
 
@@ -20,7 +23,7 @@ public abstract class GearStat
     [NotMapped]  public static Type EffectivenessType { get; } = typeof(EffectivenessGearStat);
     [NotMapped] public static Type SpeedFlatType { get; } = typeof(SpeedFlatGearStat);
     [NotMapped]  public static Type SpeedPercentageType { get; } = typeof(SpeedPercentageGearStat);
-    public Guid Id { get; set; } = Guid.NewGuid();
+
     /// <summary>
     /// This is called when the gear that owns this stat is loaded. It sets the main stat's value according to
     /// the rarity and the level of the gear
@@ -31,6 +34,37 @@ public abstract class GearStat
     {
         Value = GetMainStat(rarity, level);
     }
+    public class CustomTypeValueConverter<TCustomType, TOtherType> : ValueConverter<TCustomType, TOtherType>
+    {
+        public CustomTypeValueConverter(Func<TCustomType, TOtherType> convertToProvider, Func<TOtherType, TCustomType> convertFromProvider)
+            : base(
+                v => convertToProvider(v),
+                v => convertFromProvider(v))
+        {
+        }
+    }
+    public static ValueConverter<GearStat, string> ValueConverter { get;} = 
+    
+        new CustomTypeValueConverter<GearStat,string>(i =>
+                new JsonObject
+                {
+                    { "TimesIncreased", i.TimesIncreased }, { "Value", i.Value },
+                    { "Discriminator", i.GetType().Name }
+                }.ToJsonString(),
+            i =>
+            {
+                var doc = JsonNode.Parse(i).AsObject();
+
+                var type = Bot.AllAssemblyTypes.First(i =>
+                    i.IsRelatedToType(typeof(GearStat)) && i.Name == doc["Discriminator"]!.GetValue<string>());
+                var stat = (GearStat)Activator.CreateInstance(type)!;
+                stat.TimesIncreased = doc["TimesIncreased"]!.GetValue<int>();
+                stat.Value = doc["Value"]!.GetValue<int>();
+                return stat;
+            });
+
+
+
     
     public abstract int GetMainStat(Rarity rarity, int level);
 /// <summary>

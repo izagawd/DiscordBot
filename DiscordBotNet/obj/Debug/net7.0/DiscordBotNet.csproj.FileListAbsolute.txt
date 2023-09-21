@@ -87,3 +87,4 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\ne
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\System.Interactive.Async.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\System.Linq.Async.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\Npgsql.Json.NET.dll

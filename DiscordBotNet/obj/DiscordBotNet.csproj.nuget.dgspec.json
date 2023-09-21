@@ -1,34 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj": {}
+    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj": {
+    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj",
+        "projectUniqueName": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj",
         "projectName": "DiscordBotNet",
-        "projectPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj",
+        "projectPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj",
         "packagesPath": "C:\\Users\\theiz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\obj\\",
+        "outputPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Users\\theiz\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder",
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Users\\theiz\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\theiz\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Users\\theiz\\AppData\\Roaming\\NuGet\\config\\Godot.Offline.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -99,6 +95,14 @@
               "target": "Package",
               "version": "[7.0.10, )"
             },
+            "Microsoft.EntityFrameworkCore.Abstractions": {
+              "target": "Package",
+              "version": "[7.0.11, )"
+            },
+            "Microsoft.EntityFrameworkCore.Analyzers": {
+              "target": "Package",
+              "version": "[7.0.11, )"
+            },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -108,6 +112,10 @@
             "Microsoft.EntityFrameworkCore.Proxies": {
               "target": "Package",
               "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational": {
+              "target": "Package",
+              "version": "[7.0.10, )"
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
@@ -119,7 +127,11 @@
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[7.0.4, )"
+            },
+            "Npgsql.Json.NET": {
+              "target": "Package",
+              "version": "[8.0.0-preview.4, )"
             },
             "SixLabors.ImageSharp": {
               "target": "Package",

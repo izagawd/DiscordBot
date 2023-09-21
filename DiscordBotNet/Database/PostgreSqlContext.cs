@@ -1,4 +1,6 @@
-﻿using DiscordBotNet.Database.Models;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -6,6 +8,9 @@ using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.Stats;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -19,7 +24,7 @@ public class PostgreSqlContext :DbContext
     public DbSet<GuildData> GuildData{ get; set; }
     public DbSet<Entity> Entity { get; set; }
 
-    public DbSet<GearStat> GearStat { get; set; }
+   
     public DbSet<Quote> Quote { get; set; }
 
     static PostgreSqlContext()
@@ -52,6 +57,7 @@ public class PostgreSqlContext :DbContext
         Database.EnsureCreated();
       
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         foreach (var entityType in entityClasses)
@@ -60,11 +66,10 @@ public class PostgreSqlContext :DbContext
             
         }
 
-        foreach (var gearStatType in gearStatClasses)
+        foreach (var i in gearStatClasses)
         {
-            modelBuilder.Entity(gearStatType);
+            modelBuilder.Owned(i);
         }
-
 
         modelBuilder.Entity<UserData>()
             .Property(i => i.Color)
@@ -80,14 +85,7 @@ public class PostgreSqlContext :DbContext
         modelBuilder.Entity<Quote>()
             .Property(i => i.Id)
             .ValueGeneratedNever();
-        modelBuilder.Entity<GearStat>(gearStat =>
-        {
-            gearStat
-                .HasKey(i => i.Id);
-            gearStat
-                .Property(i => i.Id)
-                .ValueGeneratedNever();
-        });
+
 
             
         modelBuilder.Entity<UserData>()
@@ -165,35 +163,8 @@ public class PostgreSqlContext :DbContext
         
         modelBuilder.Entity<Gear>(entity =>
         {
+            entity.OwnsOne(e => e.Idk, b => b.ToJson());
 
-            // Configure one-to-one relationships for GearStat properties
-            entity.HasOne(e => e.MainStat)
-                .WithOne()
-                .HasForeignKey<Gear>(e => e.MainStatId);
-            entity
-                .Property(i => i.Rarity)
-                .HasColumnName("Rarity");
-            entity.HasOne(e => e.SubStat1)
-                .WithOne()
-                .HasForeignKey<Gear>(e => e.SubStat1Id);
-
-            entity.HasOne(e => e.SubStat2)
-                .WithOne()
-                .HasForeignKey<Gear>(e => e.SubStat2Id);
-
-            entity.HasOne(e => e.SubStat3)
-                .WithOne()
-                .HasForeignKey<Gear>(e => e.SubStat3Id);
-
-            entity.HasOne(e => e.SubStat4)
-                .WithOne()
-                .HasForeignKey<Gear>(e => e.SubStat4Id);
-
-            entity.Navigation(i => i.MainStat).AutoInclude();
-            entity.Navigation(i => i.SubStat1).AutoInclude();
-            entity.Navigation(i => i.SubStat2).AutoInclude();
-            entity.Navigation(i => i.SubStat3).AutoInclude();
-            entity.Navigation(i => i.SubStat4).AutoInclude();
         });
 
 

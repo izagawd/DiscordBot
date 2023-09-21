@@ -7,17 +7,17 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
 
 public abstract class Gear : BattleEntity
 {
-    public Guid MainStatId { get; protected set; }
-    public Guid? SubStat1Id { get; protected set; }
-    public Guid? SubStat2Id { get; protected set; }
-    public Guid? SubStat3Id { get; protected set; }
-    public Guid? SubStat4Id { get; protected set; }
-    
+
+    [NotMapped]
     public GearStat MainStat { get; protected set; }
-    
+    public AttackFlatGearStat Idk { get; protected set; }
+    [NotMapped]
     public GearStat? SubStat1 { get; protected set; }
+    [NotMapped]
     public GearStat? SubStat2 { get; protected set; }
+    [NotMapped]
     public GearStat? SubStat3 { get; protected set; }
+    [NotMapped]
     public GearStat? SubStat4 { get; protected set; }
 
     
