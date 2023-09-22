@@ -18,8 +18,8 @@ namespace DiscordBotNet.Database;
 
 public class PostgreSqlContext :DbContext
 {
-    private static List<Type> entityClasses;
-    private static List<Type> gearStatClasses;
+    private static Type[] entityClasses;
+    private static Type[] gearStatClasses;
     public DbSet<UserData> UserData { get; set; }
     public DbSet<GuildData> GuildData{ get; set; }
     public DbSet<Entity> Entity { get; set; }
@@ -31,11 +31,11 @@ public class PostgreSqlContext :DbContext
     {
 
         entityClasses = Bot.AllAssemblyTypes
-            .Where(type => type.IsRelatedToType(typeof(Entity))).ToList();
+            .Where(type => type.IsRelatedToType(typeof(Entity))).ToArray();
         gearStatClasses =
             Bot.AllAssemblyTypes
                 .Where(type => type.IsRelatedToType(typeof(GearStat)) && !type.IsAbstract)
-                .ToList();
+                .ToArray();
 
     }
 

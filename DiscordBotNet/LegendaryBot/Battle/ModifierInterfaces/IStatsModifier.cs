@@ -4,8 +4,7 @@ namespace DiscordBotNet.LegendaryBot.Battle.ModifierInterfaces;
 
 public interface IStatsModifier
 {
-
-/// <param name="owner">The person who possesses the entity</param>
-/// <returns></returns>
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner);
+    /// <param name="owner">The person who possesses the entity</param>
+    /// <returns></returns>
+    public StatsModifierArgs[] GetAllStatsModifierArgs(Character owner);
 }

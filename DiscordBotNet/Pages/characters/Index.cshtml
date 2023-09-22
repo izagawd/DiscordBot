@@ -71,7 +71,7 @@
     }
     if (Model.Name.Length > 0)
     {
-        filteredCharactersEnumerable = filteredCharactersEnumerable.Where(i => i.Name.ToLower().Contains(Model.Name.ToLower())).ToList();
+        filteredCharactersEnumerable = filteredCharactersEnumerable.Where(i => i.Name.ToLower().Contains(Model.Name.ToLower()));
     }
 
     switch (Model.Sort)

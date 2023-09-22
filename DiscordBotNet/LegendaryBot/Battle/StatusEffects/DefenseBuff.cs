@@ -32,11 +32,11 @@ public class DefenseBuff: StatusEffect, IStatsModifier
 
     }
 
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public StatsModifierArgs[] GetAllStatsModifierArgs(Character owner)
     {
-        return new List<DefensePercentageModifierArgs>()
+        return new StatsModifierArgs[]
         {
-            new ()
+            new  DefensePercentageModifierArgs()
             {
                 CharacterToAffect = owner,
                 ValueToChangeWith = DefensePercentage,

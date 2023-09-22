@@ -15,7 +15,7 @@ public class Index : PageModel
     public string Name { get; set; }
 
     public string Sort { get; set; }
-    public List<Character> Characters { get; set; }
+    public Character[] Characters { get; set; }
 
     public PostgreSqlContext DatabaseContext { get; set; }
     public Index(PostgreSqlContext databaseContext)
@@ -45,7 +45,7 @@ public class Index : PageModel
             .Include(j => j.Inventory.Where(k => k is Character))
             .FindOrCreateAsync(User.GetDiscordUserId());
 
-        Characters = userData.Inventory.OfType<Character>().ToList();
+        Characters = userData.Inventory.OfType<Character>().ToArray();
 
     }
 }

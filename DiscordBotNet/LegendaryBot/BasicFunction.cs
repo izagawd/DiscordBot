@@ -113,7 +113,7 @@ public static class BasicFunction
 
         Random random = new();
         int index = random.Next(elements.Count());
-        return elements.ToList()[index];
+        return elements.ToArray()[index];
     }
     /// <summary>
     /// Makes the first letter of each word in a string capital

@@ -51,12 +51,12 @@ public abstract  class Character : BattleEntity
         return theStatsModified;
     }
     
-    public static List<Type> CharacterTypeList { get; }
+    public static Type[] CharacterTypeArray { get; }
     static Character()
     {
         var allTypes = Assembly.GetExecutingAssembly().GetTypes();
-        CharacterTypeList = allTypes.Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(Character)))
-            .ToList();
+        CharacterTypeArray = allTypes.Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(Character)))
+            .ToArray();
 
     }
     [NotMapped]
@@ -522,17 +522,11 @@ public abstract  class Character : BattleEntity
     /// <summary>
     /// this will be used to get the items this character will drop if killed
     /// </summary>
-    protected IEnumerable<Entity> MakeItemsToDrop()
-    {
-        return new List<Entity>().ToImmutableList();
-    }
     [NotMapped]
-    public ImmutableList<Entity> DroppedItems {
+    public virtual Entity[] DroppedItems {
         get
         {
-            var theList = MakeItemsToDrop().ToList();
-            theList.AddRange(ExtraItemsToDrop);
-            return theList.ToImmutableList();
+            return new Entity[0];
         } 
     }
 
@@ -932,7 +926,7 @@ public abstract  class Character : BattleEntity
 
     [NotMapped]
     public virtual Skill Skill { get;  protected set; } = new();
-    public int Position => CurrentBattle.Characters.IndexOf(this)+ 1;
+    public int Position => Array.IndexOf(CurrentBattle.Characters.ToArray(),this) +1;
     [NotMapped]
     public virtual Surge Surge { get; protected set; } = new();
     public bool IsOverriden

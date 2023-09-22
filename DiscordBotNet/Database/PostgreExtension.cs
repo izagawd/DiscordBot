@@ -122,19 +122,19 @@ public static class PostgreExtension
         where T : Model, new()
     {
         List<T> data;
-        var idsAsList = ids.ToList();
+        var idsAsArray = ids.ToArray();
 
             data = await queryable
-                .Where(i => idsAsList.Contains(i.Id))
+                .Where(i => idsAsArray.Contains(i.Id))
                 .ToListAsync();
    
-        if (data.Count != idsAsList.Count())
+        if (data.Count != idsAsArray.Length)
         {
             var existingIds = await queryable
-                .Where(i => idsAsList.Contains(i.Id))
+                .Where(i => idsAsArray.Contains(i.Id))
                 .Select(u => u.Id)
                 .ToListAsync();
-            var missingIds = idsAsList.Except(existingIds);
+            var missingIds = idsAsArray.Except(existingIds);
             List<T> missingInstances = new List<T>();
             foreach (var i in missingIds)
             {
@@ -155,22 +155,22 @@ public static class PostgreExtension
          Expression<Func<T, V>> selectExpression) where T : Model, new()
     {
         List<V> data;
-        var idsAsList = ids.ToList();
+        var idsAsArray = ids.ToArray();
         
             data = await queryable
-                .Where(i => idsAsList.Contains(i.Id))
+                .Where(i => idsAsArray.Contains(i.Id))
                 .Select(selectExpression)
                 .ToListAsync();
           
         
    
-        if (data.Count != idsAsList.Count)
+        if (data.Count != idsAsArray.Length)
         {
             var existingIds = await queryable
-                .Where(i => idsAsList.Contains(i.Id))
+                .Where(i => idsAsArray.Contains(i.Id))
                 .Select(u => u.Id)
                 .ToListAsync();
-            var missingIds = idsAsList.Except(existingIds);
+            var missingIds = idsAsArray.Except(existingIds);
             List<T> missingInstances = new List<T>();
             foreach (var i in missingIds)
             {

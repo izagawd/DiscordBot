@@ -14,7 +14,7 @@ public class Index : PageModel
     public PostgreSqlContext DatabaseContext { get; private set; }
     public Character Character { get; private set; }
     public UserData UserData { get; private set; }
-    public List<Blessing> Blessings { get; private set; }
+    public Blessing[] Blessings { get; private set; }
 
     public Index(PostgreSqlContext context)
     {
@@ -28,7 +28,7 @@ public class Index : PageModel
             .Include(j => j.Inventory.Where(k => k is Blessing || k is Character))
             .FindOrCreateAsync(User.GetDiscordUserId());
         Character = UserData.Inventory.OfType<Character>().FirstOrDefault(k => k.Id == id);
-        Blessings = UserData.Inventory.OfType<Blessing>().ToList();
+        Blessings = UserData.Inventory.OfType<Blessing>().ToArray();
         if (Character is null)
         {
             return Redirect("/characters");

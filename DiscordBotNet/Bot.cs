@@ -35,7 +35,7 @@ public class Bot
 {
     
     public static BaseCommandClass[]? CommandArray;
-    public static readonly ImmutableList<Type> AllAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToImmutableList();
+    public static readonly Type[] AllAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray();
 
 
     private static void Main(string[] args) => new Bot().RunBotAsync(args).GetAwaiter().GetResult();
@@ -102,7 +102,7 @@ public class Bot
         client.SocketOpened += OnReady;
         await client.ConnectAsync();
         await Website.Start(args);
-
+        
     }
 
 
@@ -113,16 +113,11 @@ public class Bot
         var involvedUsers = new List<DiscordUser>();
         involvedUsers.Add(ev.Context.User);
         if (ev.Context.ResolvedUserMentions is not null)
-        {
             involvedUsers.AddRange(ev.Context.ResolvedUserMentions);
-        }
-        
-        var involvedIds = involvedUsers.Select(i => i.Id).ToList();
+        var involvedIds = involvedUsers.Select(i => i.Id).ToArray();
         await databaseContext.UserData.Where(i => involvedIds.Contains(i.Id))
             .ForEachAsync(i =>
-            {
-                i.IsOccupied = false;
-            });
+                i.IsOccupied = false);
         await databaseContext.SaveChangesAsync();
         await databaseContext.DisposeAsync();
         await ev.Context.Channel.SendMessageAsync(new DiscordEmbedBuilder()

@@ -45,7 +45,7 @@
 
     if (Model.Name.Length > 0)
     {
-        filteredBlessingsEnumerable = filteredBlessingsEnumerable.Where(i => i.Name.ToLower().Contains(Model.Name.ToLower())).ToList();
+        filteredBlessingsEnumerable = filteredBlessingsEnumerable.Where(i => i.Name.ToLower().Contains(Model.Name.ToLower()));
     }
 
     switch (Model.Sort)

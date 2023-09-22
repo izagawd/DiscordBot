@@ -84,8 +84,8 @@ public class UserData : Model,  ICanBeLeveledUp
         get
         {
             CharacterTeam team = new CharacterTeam(Id);
-            Character?[] characterList = {Character1,Character2,Character3,Character4};
-            foreach (var i in characterList)
+            Character?[] characterArray = {Character1,Character2,Character3,Character4};
+            foreach (var i in characterArray)
             {
                 if (i is not null)
                     team.Add(i);

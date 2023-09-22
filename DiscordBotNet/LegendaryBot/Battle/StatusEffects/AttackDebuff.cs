@@ -36,9 +36,9 @@ public class AttackDebuff : StatusEffect, IStatsModifier
 
  
 
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner) 
+    public StatsModifierArgs[] GetAllStatsModifierArgs(Character owner) 
     {
-        return new List<StatsModifierArgs>()
+        return new StatsModifierArgs[]
         {
             new AttackPercentageModifierArgs()
             {

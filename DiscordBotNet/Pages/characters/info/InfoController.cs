@@ -39,13 +39,13 @@ public class InfoController : Controller
        var anotherParse =  Guid.TryParse(blessingId, out Guid blessingGuid);
       
         if (!(didParse && anotherParse)) return Ok();
-        var entityList = await DatabaseContext.Entity
+        var entityArray = await DatabaseContext.Entity
             .Where(i => ((i is Blessing || i is Character) && (i.Id == characterGuid || i.Id == blessingGuid)) || (i is Character && (i as Character).BlessingId == blessingGuid) && i.UserDataId == User.GetDiscordUserId())
-            .ToListAsync();
+            .ToArrayAsync();
 
-        var character = entityList.OfType<Character>().FirstOrDefault();
+        var character = entityArray.OfType<Character>().FirstOrDefault();
         if (character is null) return Ok();
-        var blessing = entityList.OfType<Blessing>().FirstOrDefault();
+        var blessing = entityArray.OfType<Blessing>().FirstOrDefault();
         character.Blessing = blessing;
         if (blessing is not null && blessing.Character is not null)
         {

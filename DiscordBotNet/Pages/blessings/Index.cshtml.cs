@@ -10,7 +10,7 @@ public class Index : PageModel
     public string Name { get; set; }
 
     public string Sort { get; set; }
-    public List<Blessing> Blessings { get; set; }
+    public Blessing[] Blessings { get; set; }
 
     public PostgreSqlContext DatabaseContext { get; set; }
     public Index(PostgreSqlContext databaseContext)
@@ -40,7 +40,7 @@ public class Index : PageModel
             .Include(j => j.Inventory.Where(k => k is Blessing))
             .FindOrCreateAsync(User.GetDiscordUserId());
 
-        Blessings = userData.Inventory.OfType<Blessing>().ToList();
+        Blessings = userData.Inventory.OfType<Blessing>().ToArray();
 
     }
 }

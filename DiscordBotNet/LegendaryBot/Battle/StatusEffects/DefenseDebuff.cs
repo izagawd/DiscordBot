@@ -31,7 +31,7 @@ public class DefenseDebuff: StatusEffect,IStatsModifier
     {
 
     }
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public StatsModifierArgs[] GetAllStatsModifierArgs(Character owner)
     {
         return new DefensePercentageModifierArgs[]
         {

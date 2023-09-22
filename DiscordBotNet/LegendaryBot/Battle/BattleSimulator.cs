@@ -140,7 +140,7 @@ public class BattleSimulator
         }
     }
 
-    public ImmutableList<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
+    public StatsModifierArgs[] GetAllStatsModifierArgsInBattle()
     {
         List<StatsModifierArgs> statsModifierArgsList = new List<StatsModifierArgs>();
         foreach (var i in Characters)
@@ -165,7 +165,7 @@ public class BattleSimulator
             }
         }
 
-        return statsModifierArgsList.ToImmutableList();
+        return statsModifierArgsList.ToArray();
     }
     public List<CharacterTeam> CharacterTeams { get; } 
 
@@ -187,7 +187,7 @@ public class BattleSimulator
     /// <summary>
     /// All the characters in the battle
     /// </summary>
-    public List<Character> Characters => characters.OrderByDescending(i => i.CombatReadiness).ToList();
+    public IEnumerable<Character> Characters => characters.OrderByDescending(i => i.CombatReadiness);
     /// <summary>
     /// Creates a new battle between two teams
     /// </summary>
@@ -304,7 +304,7 @@ public class BattleSimulator
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
 
             ActiveCharacter.CombatReadiness = 0;
-            foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToList())
+            foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
             {
                 //this code executes for status effects that occur just before the beginning of the turn
                 if (i.ExecuteStatusEffectBeforeTurn)
@@ -500,7 +500,7 @@ public class BattleSimulator
                 }
             }
             InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
-            foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToList())
+            foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
             {
                 if (i.ExecuteStatusEffectAfterTurn)
                 {
