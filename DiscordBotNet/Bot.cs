@@ -53,21 +53,28 @@ public class Bot
 
     public async Task DoShit()
     {
+        IEnumerable<int> samples = Enumerable.Range(0, 3);
+        foreach (var sample in samples)
+            Console.WriteLine(sample);
 
+        foreach (var sample in samples)
+            Console.WriteLine(sample);
     }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
+        
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
+
         Console.WriteLine("Entity images loading...");
         var stopwatch = new Stopwatch(); stopwatch.Start();
         var imagesLoaded = await BasicFunction.LoadEntityImagesAsync(); 
         stopwatch.Stop(); 
         Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to load and cache {imagesLoaded} entity images");
         stopwatch.Reset();
-        Console.WriteLine($"Making all users unoccupied...");
+        Console.WriteLine("Making all users unoccupied...");
         stopwatch.Start();
         var ctx = new PostgreSqlContext();
     
@@ -78,6 +85,7 @@ public class Bot
         await ctx.DisposeAsync();
         stopwatch.Stop();
         Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to make {count} users unoccupied");
+        
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration
         {

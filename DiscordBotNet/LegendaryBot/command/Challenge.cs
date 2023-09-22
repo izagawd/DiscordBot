@@ -1,4 +1,5 @@
 ﻿using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
@@ -110,6 +111,43 @@ public class Challenge :BaseCommandClass
         await MakeOccupiedAsync(player2User);
         var simulator = new BattleSimulator(await player1User.Team.LoadAsync(player1), await player2User.Team.LoadAsync(player2));
         BattleResult battleResult = await simulator.Start(ctx.Interaction,message);
+        DiscordUser winnerDiscord;
+        UserData winnerUserData;
+        if (battleResult.Winners.UserId == player1.Id)
+        {
+            winnerDiscord = player1;
+            winnerUserData = player1User;
+        }
+        else
+        {
+            winnerDiscord = player2;
+            winnerUserData = player2User;
+        }
 
+        var player2Team = player2User.Team;
+        var player1Team = player1User.Team;
+        var expToGainForUser1 = BattleFunction.ExpGainFormula((int)player2Team.Average(i => i.Level));
+        var expToGainForUser2 = BattleFunction.ExpGainFormula((int)player1Team.Average(i => i.Level));
+        if (winnerUserData != player1User)
+        {
+            expToGainForUser2 /= 2;
+        }
+        else
+        {
+            expToGainForUser1 /= 2;
+        }
+
+        var player1LevelUpString = string.Join("\n", player1Team.Select(i => i.IncreaseExp(expToGainForUser1).Text));
+        var player2LevelUpString = string.Join("\n", player2Team.Select(i => i.IncreaseExp(expToGainForUser2).Text));
+        await DatabaseContext.SaveChangesAsync();
+        await message.ModifyAsync(new DiscordMessageBuilder()
+        {
+            Embed = new DiscordEmbedBuilder()
+                .WithColor(winnerUserData.Color)
+                .WithTitle("Battle Ended")
+                .WithDescription($"{winnerDiscord.Username} won the battle! ")
+                .AddField($"{player1.Username}'s characters gained: ",player1LevelUpString)
+                .AddField($"{player2.Username}'s characters gained: ",player2LevelUpString)
+        });
     }
 }
