@@ -1,8 +1,9 @@
-﻿
-using System.Collections.Immutable;
+﻿using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.InteropServices.Marshalling;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.LegendaryBot;
@@ -51,21 +52,14 @@ public class Bot
     public static ulong Testersid => 266157684380663809;
     public static DiscordClient Client { get; private set; }
 
-    public async Task DoShit()
-    {
-        IEnumerable<int> samples = Enumerable.Range(0, 3);
-        foreach (var sample in samples)
-            Console.WriteLine(sample);
 
-        foreach (var sample in samples)
-            Console.WriteLine(sample);
-    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
         
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         Console.WriteLine("Entity images loading...");
@@ -92,6 +86,7 @@ public class Bot
             Token = ConfigurationManager.AppSettings["BotToken"]!,
             Intents = DiscordIntents.All,
             AutoReconnect = true,
+            
         };
         
         var client = new DiscordClient(config);
@@ -109,6 +104,7 @@ public class Bot
         client.UseInteractivity(interactivityConfiguration);
         client.SocketOpened += OnReady;
         await client.ConnectAsync();
+
         await Website.Start(args);
         
     }
@@ -126,10 +122,13 @@ public class Bot
         await databaseContext.UserData.Where(i => involvedIds.Contains(i.Id))
             .ForEachAsync(i =>
                 i.IsOccupied = false);
+        var color = await databaseContext.UserData.FindOrCreateSelectAsync(ev.Context.User.Id, i => i.Color);
         await databaseContext.SaveChangesAsync();
+
         await databaseContext.DisposeAsync();
+
         await ev.Context.Channel.SendMessageAsync(new DiscordEmbedBuilder()
-            .WithColor(DiscordColor.Green)
+            .WithColor(color)
             .WithTitle("hmm")
             .WithDescription("Something went wrong"));
     }

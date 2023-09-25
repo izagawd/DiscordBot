@@ -15,7 +15,16 @@ namespace DiscordBotNet.Database;
 
 public static class PostgreExtension
 {
-    public static DbContext GetDbContext(this IQueryable query)
+    public async static Task<T?> RandomAsync<T>(this IQueryable<T> queryable)
+    {
+       return await queryable.OrderBy(i => EF.Functions.Random()).FirstOrDefaultAsync();
+    }
+
+    public static T? Random<T>(this IQueryable<T> queryable)
+    {
+        return queryable.OrderBy(i => EF.Functions.Random()).FirstOrDefault();
+    }
+    public static DbContext GetDbContext(this IQueryable query) 
     {
 
         
@@ -31,6 +40,10 @@ public static class PostgreExtension
         return  stateManager.Context;
     }
 
+    public static T GetDbContext<T>(this IQueryable query) where T : DbContext
+    {
+        return (T) GetDbContext(query);
+    }
 
     public static IIncludableQueryable<UserData,Character?> IncludeTeam
         (this IQueryable<UserData> queryable)

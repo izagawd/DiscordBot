@@ -1,4 +1,6 @@
-﻿namespace DiscordBotNet.LegendaryBot;
+﻿using DiscordBotNet.Database.Models;
+
+namespace DiscordBotNet.LegendaryBot;
 
 public class Quote
 {
@@ -6,8 +8,9 @@ public class Quote
     public bool IsPermitted { get; set; } = false;
     public ulong UserDataId { get; set; }
     public string QuoteValue { get; set; } = "Nothing";
+    public UserData UserData { get; set; }
 
-    public DateTime DateChanged { get; set; } = DateTime.UtcNow;
+    public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     public override string ToString()
     {
         return QuoteValue;

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj": {}
+    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj": {
+    "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj",
+        "projectUniqueName": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj",
         "projectName": "DiscordBotNet",
-        "projectPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj",
+        "projectPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj",
         "packagesPath": "C:\\Users\\theiz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\obj\\",
+        "outputPath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Users\\theiz\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder"
@@ -50,23 +50,23 @@
             },
             "DSharpPlus": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01763, )"
+              "version": "[5.0.0-nightly-01764, )"
             },
             "DSharpPlus.CommandsNext": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01763, )"
+              "version": "[5.0.0-nightly-01764, )"
             },
             "DSharpPlus.Interactivity": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01763, )"
+              "version": "[5.0.0-nightly-01764, )"
             },
             "DSharpPlus.SlashCommands": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01763, )"
+              "version": "[5.0.0-nightly-01764, )"
             },
             "DSharpPlus.VoiceNext": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01763, )"
+              "version": "[5.0.0-nightly-01764, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",

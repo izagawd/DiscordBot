@@ -160,7 +160,7 @@ public class PostgreSqlContext :DbContext
             .OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<UserData>()
             .HasMany(i => i.Quotes)
-            .WithOne()
+            .WithOne(i => i.UserData)
             .HasForeignKey(i => i.UserDataId);
         
         modelBuilder.Entity<Gear>(entity =>
