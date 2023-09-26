@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="7.0.4" />
-    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01764" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01764" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="5.0.0-nightly-01764" />
-    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01764" />
-    <PackageReference Include="DSharpPlus.VoiceNext" Version="5.0.0-nightly-01764" />
+    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01766" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01766" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="5.0.0-nightly-01766" />
+    <PackageReference Include="DSharpPlus.Lavalink" Version="5.0.0-nightly-01735" />
+    <PackageReference Include="DSharpPlus.Rest" Version="5.0.0-nightly-01766" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01766" />
+    <PackageReference Include="DSharpPlus.VoiceNext" Version="5.0.0-nightly-01766" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0-rc.1.23419.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.0-rc.1.23419.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0-rc.1.23419.6" />
@@ -24,5 +26,6 @@
     <PackageReference Include="SixLabors.ImageSharp.Web" Version="3.0.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0-rc.1.23419.4" />
   </ItemGroup>
+
 
 </Project>

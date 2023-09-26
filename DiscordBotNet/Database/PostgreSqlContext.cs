@@ -162,7 +162,14 @@ public class PostgreSqlContext :DbContext
             .HasMany(i => i.Quotes)
             .WithOne(i => i.UserData)
             .HasForeignKey(i => i.UserDataId);
-        
+        modelBuilder.Entity<Quote>()
+            .HasMany(i => i.QuoteReactions)
+            .WithOne(i => i.Quote)
+            .HasForeignKey(i => i.QuoteId);
+        modelBuilder.Entity<UserData>()
+            .HasMany(i => i.QuoteReactions)
+            .WithOne(i => i.UserData)
+            .HasForeignKey(i => i.UserDataId);
         modelBuilder.Entity<Gear>(entity =>
         {
             entity

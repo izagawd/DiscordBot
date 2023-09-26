@@ -1,5 +1,9 @@
-﻿using DiscordBotNet.Database;
+﻿
+using DiscordBotNet.Database;
+using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +11,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("Quote", "Post a quote or send a quote")]
 public class Quote : BaseCommandClass
 {
+
     [SlashCommand("read", "gets a random quote")]
     public async Task Read(InteractionContext ctx)
     {
@@ -18,6 +23,8 @@ public class Quote : BaseCommandClass
             await ctx.CreateResponseAsync("damn");
             return;
         }
+        DiscordButtonComponent yes = new(ButtonStyle.Primary, "yes", "YES");
+        DiscordButtonComponent no = new(ButtonStyle.Primary, "no", "NO");
         var ownerOfQuote = await ctx.Client.GetUserAsync(randomQuote.UserDataId);
         var quoteDate = randomQuote.DateCreated;
         var embedBuilder = new DiscordEmbedBuilder()
@@ -26,7 +33,21 @@ public class Quote : BaseCommandClass
             .WithTitle($"{ownerOfQuote.Username}'s quote")
             .WithDescription(randomQuote.QuoteValue)
             .WithFooter($"Date and time created: {quoteDate:MM/dd/yyyy HH:mm:ss}");
-        await ctx.CreateResponseAsync(embedBuilder);
+        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+            .AddEmbed(embedBuilder)
+            .AddComponents(yes,no));
+        var message = await ctx.GetOriginalResponseAsync();
+
+        await message.WaitForButtonAsync(i =>
+        {
+            
+            if (!new [] { "yes", "no" }.Contains(i.Interaction.Data.CustomId)) return false;
+            var id = i.User.Id;
+            var newDbContext = new PostgreSqlContext();
+            if (newDbContext.Set<QuoteReaction>().Any(i => i.QuoteId == randomQuote.Id && i.UserDataId == id))
+                i.Interaction.CreateResponseAsync(InteractionResponseType.Pong);
+            return true;
+        },  new TimeSpan(0,10,0));
     }
     [SlashCommand("write", "creates a quote")]
     public async Task Write(InteractionContext ctx, [Option("text", "the quote")] string text)
@@ -42,14 +63,17 @@ public class Quote : BaseCommandClass
                 .WithDescription("Quote length should be shorter than 1000 characters");
 
             await ctx.CreateResponseAsync(embedBuilder);
-        } else if (text.Length <= 0)
+            return;
+        } 
+        if (text.Length <= 0)
         {
             embedBuilder
                 .WithTitle("bruh")
                 .WithDescription("Write something in the quote!");
             await ctx.CreateResponseAsync(embedBuilder);
+            return;
         }
-        userData.Quotes.Add(new LegendaryBot.Quote(){QuoteValue = text});
+        userData.Quotes.Add(new LegendaryBot.Quote{QuoteValue = text});
         await DatabaseContext.SaveChangesAsync();
         embedBuilder
             .WithTitle("Success!")

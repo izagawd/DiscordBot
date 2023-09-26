@@ -24,18 +24,8 @@ public class UserData : Model,  ICanBeLeveledUp
     public UserData(){}
 
 
-    [NotMapped]
-    public IEnumerable<Guid> Ids
-    {
-        get
-        {
-            foreach (var i in Team)
-            {
-                yield return i.Id;
-            }
-        }
-    }
-
+    [NotMapped] public IEnumerable<Guid> Ids => Team.Select(i => i.Id);
+    public List<QuoteReaction> QuoteReactions { get; set; } = new();
     public void RemoveFromTeam(Character character)
     {
         if (Character1 == character)
