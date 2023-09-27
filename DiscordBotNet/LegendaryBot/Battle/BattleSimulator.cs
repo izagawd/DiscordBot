@@ -42,7 +42,6 @@ public class BattleSimulator
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
-     
         var image = new Image<Rgba32>(1300, 1200);
 
         int xOffSet = 120;

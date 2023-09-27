@@ -43,19 +43,17 @@ public class Quote : BaseCommandClass
         DiscordButtonComponent dislike = new(ButtonStyle.Primary, "dislike",null,false,new DiscordComponentEmoji("👎"));
         var ownerOfQuote = await ctx.Client.GetUserAsync(randomQuote.UserDataId);
         var quoteDate = randomQuote.DateCreated;
-        var image = randomQuote.GetImage(ownerImage, counts.likes, counts.dislikes);
-        var stream = new MemoryStream();
-        await image.SaveAsPngAsync(stream);
-        stream.Position = 0;
         var embedBuilder = new DiscordEmbedBuilder()
             .WithUser(ownerOfQuote)
             .WithImageUrl("attachment://quote.png")
             .WithColor(randomQuote.UserData.Color)
-            .WithTitle($"{ownerOfQuote.Username}'s quote");
+            .WithTitle($"{ownerOfQuote.Username}'s quote")
+            .WithDescription(randomQuote.QuoteValue)
+            .WithFooter($"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
             
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
             .AddEmbed(embedBuilder)
-            .AddFile("quote.png",stream)
+  
             .AddComponents(like,dislike));
         var message = await ctx.GetOriginalResponseAsync();
 
@@ -63,6 +61,8 @@ public class Quote : BaseCommandClass
         {
             Task.Run(async () =>
             {
+          
+            
                 var choice = i.Interaction.Data.CustomId;
                 if (!new[] { "like", "dislike" }.Contains(choice)) return;
                 var newDbContext = new PostgreSqlContext();
@@ -72,22 +72,34 @@ public class Quote : BaseCommandClass
                     {
                         quote = j.Quote, quoteReaction = j, 
                     })
-                    .FirstAsync();
-                var quoteReaction = anonymous.quoteReaction;
-                randomQuote = anonymous.quote;
+                    .FirstOrDefaultAsync();
                 
+                var quoteReaction = anonymous?.quoteReaction;
+                if (anonymous?.quote is not null)
+                {
+                    randomQuote = anonymous.quote;
+                }
+
+                var isNew = false;
                 if (quoteReaction is null)
                 {
                     quoteReaction = new QuoteReaction();
                     await newDbContext.Set<QuoteReaction>().AddAsync(quoteReaction);
+                    //assigning it to id instead of instance cuz instance might not be of the same dbcontext as newDbContext
                     quoteReaction.QuoteId = randomQuote.Id;
                     quoteReaction.UserDataId = i.User.Id;
-                    
+                    isNew = true;
                 }
 
                 if (!await newDbContext.UserData.AnyAsync(j => j.Id == i.User.Id))
                     await newDbContext.UserData.AddAsync(new UserData(i.User.Id));
-                if (choice == "like")
+                if (!isNew && 
+                    ((choice == "like" && quoteReaction.IsLike) ||(choice == "dislike" && !quoteReaction.IsLike)))
+                {
+                    newDbContext.Set<QuoteReaction>().Remove(quoteReaction);
+                   
+                } 
+                else if (choice == "like")
                 {
                     quoteReaction.IsLike = true;
                 } else
@@ -102,18 +114,17 @@ public class Quote : BaseCommandClass
                         dislikes = i.QuoteReactions.Count(j => !j.IsLike)
                     }).FirstAsync();
                 newDbContext.DisposeAsync();
-                stream = new MemoryStream();
-                image = randomQuote.GetImage(ownerImage, counts.likes, counts.dislikes);
-                await image.SaveAsPngAsync(stream);
-                stream.Position = 0;
+                embedBuilder            
+                    .WithFooter($"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
+
                 await i.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                     new DiscordInteractionResponseBuilder()
-                        
+
                         .AddEmbed(embedBuilder)
-                        .AddComponents(like,dislike)
-                        .AddFile("quote.png", stream));
-     
-            });
+                        .AddComponents(like, dislike));
+      
+
+            }).GetAwaiter().GetResult();
             return false;
         },  new TimeSpan(0,10,0));
     }
