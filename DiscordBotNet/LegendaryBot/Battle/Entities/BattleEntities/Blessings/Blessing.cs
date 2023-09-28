@@ -6,13 +6,22 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 
 public abstract class Blessing : BattleEntity
 {
+    /// <summary>
+    /// The description of the blessing in relation to the level provided
+    /// </summary>
+
+    public virtual string GetDescription(int level)
+    {
+        return "";
+        
+    }
+
+    public string Description => GetDescription(Level);
     public override string IconUrl => $"https://legendarygawds.com/blessing-pictures/{GetType().Name}.png";
 
-    public override int MaxLevel => 60;
-    [NotMapped]
-    public virtual int Attack { get; }
-    [NotMapped]
-    public virtual int Defense { get; }
+    public sealed  override int MaxLevel => 15;
+    [NotMapped] public virtual int Attack { get; } = 200;
+    [NotMapped] public virtual int Defense { get; } = 200;
 
     public Character? Character { get; set; }
     public override ExperienceGainResult IncreaseExp(ulong experience)

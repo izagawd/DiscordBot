@@ -1,5 +1,4 @@
 ﻿
-using System.Diagnostics;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DSharpPlus;
@@ -9,7 +8,7 @@ using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.X509;
+
 
 namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("Quote", "Post a quote or send a quote")]
@@ -19,6 +18,7 @@ public class Quote : BaseCommandClass
     [SlashCommand("read", "gets a random quote")]
     public async Task Read(InteractionContext ctx)
     {
+
         var color = await DatabaseContext.UserData.FindOrCreateSelectAsync(ctx.User.Id, i => i.Color);
         LegendaryBot.Quote randomQuote = (await DatabaseContext.Quote.Where(i => i.IsPermitted)
             .Include(i => i.UserData).RandomAsync())!;
@@ -28,6 +28,8 @@ public class Quote : BaseCommandClass
             await ctx.CreateResponseAsync("damn");
             return;
         }
+
+
         var counts = await DatabaseContext.Quote
             .Where(i => i.Id == randomQuote.Id)
             .Select(j =>
@@ -43,6 +45,7 @@ public class Quote : BaseCommandClass
         DiscordButtonComponent dislike = new(ButtonStyle.Primary, "dislike",null,false,new DiscordComponentEmoji("👎"));
         var ownerOfQuote = await ctx.Client.GetUserAsync(randomQuote.UserDataId);
         var quoteDate = randomQuote.DateCreated;
+        
         var embedBuilder = new DiscordEmbedBuilder()
             .WithUser(ownerOfQuote)
             .WithImageUrl("attachment://quote.png")
@@ -56,24 +59,21 @@ public class Quote : BaseCommandClass
   
             .AddComponents(like,dislike));
         var message = await ctx.GetOriginalResponseAsync();
-
         await message.WaitForButtonAsync(i =>
         {
             Task.Run(async () =>
             {
-          
-            
                 var choice = i.Interaction.Data.CustomId;
                 if (!new[] { "like", "dislike" }.Contains(choice)) return;
                 var newDbContext = new PostgreSqlContext();
-                var anonymous=await newDbContext.Set<QuoteReaction>()
+                var anonymous = await newDbContext.Set<QuoteReaction>()
                     .Where(j => j.QuoteId == randomQuote.Id && j.UserDataId == i.User.Id)
                     .Select(j => new
                     {
-                        quote = j.Quote, quoteReaction = j, 
+                        quote = j.Quote, quoteReaction = j,
                     })
                     .FirstOrDefaultAsync();
-                
+
                 var quoteReaction = anonymous?.quoteReaction;
                 if (anonymous?.quote is not null)
                 {
@@ -93,19 +93,21 @@ public class Quote : BaseCommandClass
 
                 if (!await newDbContext.UserData.AnyAsync(j => j.Id == i.User.Id))
                     await newDbContext.UserData.AddAsync(new UserData(i.User.Id));
-                if (!isNew && 
-                    ((choice == "like" && quoteReaction.IsLike) ||(choice == "dislike" && !quoteReaction.IsLike)))
+                if (!isNew &&
+                    ((choice == "like" && quoteReaction.IsLike) || (choice == "dislike" && !quoteReaction.IsLike)))
                 {
                     newDbContext.Set<QuoteReaction>().Remove(quoteReaction);
-                   
-                } 
+
+                }
                 else if (choice == "like")
                 {
                     quoteReaction.IsLike = true;
-                } else
+                }
+                else
                 {
                     quoteReaction.IsLike = false;
                 }
+
                 await newDbContext.SaveChangesAsync();
                 counts = await newDbContext.Quote.Where(i => i.Id == randomQuote.Id)
                     .Select(i => new
@@ -114,17 +116,18 @@ public class Quote : BaseCommandClass
                         dislikes = i.QuoteReactions.Count(j => !j.IsLike)
                     }).FirstAsync();
                 newDbContext.DisposeAsync();
-                embedBuilder            
-                    .WithFooter($"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
+                embedBuilder
+                    .WithFooter(
+                        $"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
 
                 await i.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                     new DiscordInteractionResponseBuilder()
 
                         .AddEmbed(embedBuilder)
                         .AddComponents(like, dislike));
-      
 
-            }).GetAwaiter().GetResult();
+
+            });
             return false;
         },  new TimeSpan(0,10,0));
     }

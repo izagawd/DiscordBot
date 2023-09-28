@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\obj\\Release\\net7.0\\scopedcss\\projectbundle\\DiscordBotNet.bundle.scp.css",
+      "PackagePath": "staticwebassets\\DiscordBotNet.bundle.scp.css"
+    },
+    {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\wwwroot\\css\\CharacterInfo.css",
       "PackagePath": "staticwebassets\\css\\CharacterInfo.css"
     },

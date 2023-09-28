@@ -65,14 +65,23 @@ public class PostgreSqlContext :DbContext
         foreach (var entityType in entityClasses)
         {
             modelBuilder.Entity(entityType);
-            
         }
 
         foreach (var i in gearStatClasses)
         {
             modelBuilder.Owned(i);
         }
+        ///makes sure the characterid properties are not the same, even across tables
+        modelBuilder.Entity<UserData>()
 
+            .ToTable(i => i.HasCheckConstraint("CK_character_id_properties_should_not_be_the_same",
+                $"\"{nameof(Models.UserData.Character1Id)}\" != \"{nameof(Models.UserData.Character2Id)}\"" +
+                $"AND \"{nameof(Models.UserData.Character1Id)}\" != \"{nameof(Models.UserData.Character3Id)}\"" +
+                $"AND \"{nameof(Models.UserData.Character1Id)}\" != \"{nameof(Models.UserData.Character4Id)}\"" +
+                $"AND \"{nameof(Models.UserData.Character2Id)}\" != \"{nameof(Models.UserData.Character3Id)}\"" +
+                $"AND \"{nameof(Models.UserData.Character2Id)}\" != \"{nameof(Models.UserData.Character4Id)}\"" +
+                $"AND \"{nameof(Models.UserData.Character3Id)}\" != \"{nameof(Models.UserData.Character4Id)}\""));
+     
         modelBuilder.Entity<UserData>()
             .Property(i => i.Color)
             .HasConversion(i => i.ToString(), j => new DiscordColor(j)

@@ -5,7 +5,7 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities;
 
 public abstract class BattleEntity : Entity, ICanBeLeveledUp
 {
-
+    
     public virtual int Level { get; protected set; } = 1;
     [NotMapped]
     public virtual int MaxLevel { get; }

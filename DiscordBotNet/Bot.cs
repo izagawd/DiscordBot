@@ -52,10 +52,14 @@ public class Bot
     public static ulong Testersid => 266157684380663809;
     public static DiscordClient Client { get; private set; }
 
-    public async Task DoShit()
+    private async Task DoShit()
     {
-
-        }
+        var ctx = new PostgreSqlContext();
+        var iza = await ctx.UserData.FindOrCreateAsync(Izasid);
+        await ctx.SaveChangesAsync();
+        iza.Inventory.AddRange(new Lily() *4);
+        await ctx.SaveChangesAsync();
+    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
@@ -90,6 +94,7 @@ public class Bot
             Intents = DiscordIntents.All,
             AutoReconnect = true,
             
+            
         };
         
         var client = new DiscordClient(config);
@@ -102,7 +107,7 @@ public class Bot
         client.UseVoiceNext(new VoiceNextConfiguration { AudioFormat = AudioFormat.Default});
         var interactivityConfiguration = new InteractivityConfiguration
         {
-            Timeout = TimeSpan.FromMinutes(2)
+            Timeout = TimeSpan.FromMinutes(2),
         };
         client.UseInteractivity(interactivityConfiguration);
         client.SocketOpened += OnReady;

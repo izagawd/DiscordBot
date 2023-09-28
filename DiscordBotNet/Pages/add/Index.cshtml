@@ -4,7 +4,7 @@
 @model DiscordBotNet.Pages.add.Index
 
 @{
-    Layout = null;
+    Layout = "Shared/_NavigationLayout";
 }
 
 <!DOCTYPE html>
@@ -14,12 +14,12 @@
     <title></title>
 </head>
 <body>
-<div>
+<div style="top: 15%; position: fixed;">
     <form method="post">
         <select name="type">
             @foreach (var i in Bot.AllAssemblyTypes.Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(Entity))))
             {
-                <option name="@i.Name">@i.Name</option>
+                <option value="@i.Name">@i.Name (@Model.Categorize(i).Name)</option>
             }
         </select>
         <button type="submit">Submit</button>

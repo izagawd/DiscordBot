@@ -574,10 +574,10 @@ public abstract  class Character : BattleEntity
             ctx.Fill(SixLabors.ImageSharp.Color.Green, new RectangleF(130, levelBarY, gottenExp, 30));
             ctx.Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30));
             var font = SystemFonts.CreateFont("Arial", 25);
-            
-            ctx.DrawText($"{Experience}/{GetRequiredExperienceToNextLevel()}",font,SixLabors.ImageSharp.Color.Black,new PointF(140,levelBarY));
-        
-            ctx.DrawText($"Level {Level}",font,SixLabors.ImageSharp.Color.Black,new PointF(140,levelBarY - 33));
+            var xPos = 135;
+            ctx.DrawText($"{Experience}/{GetRequiredExperienceToNextLevel()}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY+2));
+            ctx.DrawText($"Name: {Name}", font, SixLabors.ImageSharp.Color.Black, new PointF(xPos, levelBarY -57));
+            ctx.DrawText($"Level: {Level}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY - 30));
             ctx.Resize(1000, 300);
         });
 

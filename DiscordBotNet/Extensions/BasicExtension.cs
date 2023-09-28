@@ -1,8 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Text;
 using DSharpPlus.Entities;
-using SixLabors.ImageSharp;
-
 
 namespace DiscordBotNet.LegendaryBot;
 
@@ -23,6 +21,7 @@ public static class BasicExtension
     {
         return Color.ParseHex(color.ToString());
     }
+    
     
     public static string AddNewlines(this string input, int charactersPerLine)
     {
