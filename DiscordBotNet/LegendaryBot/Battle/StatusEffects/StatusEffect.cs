@@ -86,9 +86,14 @@ public abstract class StatusEffect: IHasIconUrl
     /// </summary>
     public virtual string Name => BasicFunction.Englishify(GetType().Name);
 
-    public virtual UsageResult OverridenUsage(Character affected,ref Character target, ref string decision, UsageType usageType) // the status effect might or might not replace the player's decision
+    public virtual UsageResult OverridenUsage(Character affected,ref Character target, ref BattleDecision decision, UsageType usageType) // the status effect might or might not replace the player's decision
     {
-        return new UsageResult(usageType, TargetType.None);
+        return new UsageResult(this)
+        {
+            UsageType = usageType,
+            TargetType = TargetType.None,
+            User = affected
+        };
     }
     /// <summary>
     /// 

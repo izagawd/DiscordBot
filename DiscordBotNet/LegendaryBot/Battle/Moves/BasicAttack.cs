@@ -3,9 +3,13 @@ using DiscordBotNet.LegendaryBot.Battle.Results;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Moves;
 
-public class BasicAttack : Move
+public abstract class BasicAttack : Move
 {
     public sealed override MoveType MoveType => MoveType.BasicAttack;
+    public override int MaxEnhance { get; } = 4;
+
+
+
     public sealed override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
@@ -16,17 +20,5 @@ public class BasicAttack : Move
         return base.Utilize(owner, target, usageType);
     }
 
-    protected  override UsageResult HiddenUtilize(Character owner,Character target, UsageType usageType)
-    {
- 
-        DamageResult damageResult = target.Damage(       new DamageArgs()
-        {
-            Damage = owner.Attack * 1.871,
-            Caster = owner,
-            CanCrit = true,
-            DamageText = $"{owner} gave" +
-                         $" {target} a punch and dealt $ damage!"
-        });
-        return new UsageResult(usageType, TargetType.SingleTarget) { DamageResults = new List<DamageResult> { damageResult } };
-    }
+
 }

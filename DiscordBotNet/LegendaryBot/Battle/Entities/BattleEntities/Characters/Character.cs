@@ -31,7 +31,7 @@ public abstract  class Character : BattleEntity
     public Shield? Shield => StatusEffects.OfType<Shield>().FirstOrDefault();
 
     [NotMapped]
-    public Move[] MoveList=> new Move[]{ BasicAttack, Skill, Surge };
+    public Move[] MoveList=> new Move[]{ BasicAttack, Skill, Surge }.Where(i => i is not null).ToArray();
 
     /// <summary>
     /// 
@@ -625,22 +625,22 @@ public abstract  class Character : BattleEntity
     /// </summary>
     /// <param name="target"></param>
     /// <param name="decision"></param>
-    public virtual void NonPlayerCharacterAi(ref Character target, ref string decision)
+    public virtual void NonPlayerCharacterAi(ref Character target, ref BattleDecision decision)
     {
-        List<MoveType> possibleDecisions = new() { MoveType.BasicAttack };
+        List<BattleDecision> possibleDecisions = new() { BattleDecision.BasicAttack };
 
 
         if(Skill.CanBeUsed(this))
-            possibleDecisions.Add(MoveType.Skill);
+            possibleDecisions.Add(BattleDecision.Skill);
         if(Surge.CanBeUsed(this))
-            possibleDecisions.Add(MoveType.Surge);
+            possibleDecisions.Add(BattleDecision.Surge);
 
         IEnumerable<Character> possibleTargets = new List<Character>();
         Move move;
-        MoveType moveDecision = MoveType.BasicAttack;
+        BattleDecision moveDecision = BattleDecision.BasicAttack;
         while (!possibleTargets.Any())
         {
-            moveDecision =BasicFunction.RandomChoice<MoveType>(possibleDecisions);
+            moveDecision =BasicFunction.RandomChoice<BattleDecision>(possibleDecisions);
             move = this[moveDecision]!;
             possibleTargets = move.GetPossibleTargets(this);
             possibleDecisions.Remove(moveDecision);
@@ -649,11 +649,28 @@ public abstract  class Character : BattleEntity
         
         target = BasicFunction.RandomChoice(possibleTargets);
 
-        decision = moveDecision.ToString();
+        decision = moveDecision;
 
     }
- 
-    
+
+    public Move? this[BattleDecision battleDecision]
+    {
+        get
+        {
+            switch (battleDecision)
+            {
+                case BattleDecision.Skill:
+                    return Skill;
+                case BattleDecision.Surge:
+                    return Surge;
+                case BattleDecision.BasicAttack:
+                    return BasicAttack;
+                default:
+                    return null;
+            }
+        }
+    }
+
     [NotMapped]
     public StatusEffectList StatusEffects { get; set; } 
 
@@ -896,23 +913,36 @@ public abstract  class Character : BattleEntity
         CurrentBattle.AdditionalTexts.Add(damageText);
         
         TakeDamageWhileConsideringShield(actualDamage);
-        var damageResult = new DamageResult
+        DamageResult damageResult;
+        if (damageArgs.Move is not null)
         {
-            Move = damageArgs.Move,
-            StatusEffect =  damageArgs.StatusEffect,
-            WasCrit = didCrit,
-            Damage = actualDamage,
-            DamageDealer = caster,
-            DamageReceiver = this,
-            CanBeCountered = canBeCountered
-        };
+            damageResult = new DamageResult(damageArgs.Move)
+            {
+                WasCrit = didCrit,
+                Damage = actualDamage,
+                DamageDealer = caster,
+                DamageReceiver = this,
+                CanBeCountered = canBeCountered
+            };
+        }
+        else
+        {
+            damageResult = new DamageResult(damageArgs.StatusEffect)
+            {
+                WasCrit = didCrit,
+                Damage = actualDamage,
+                DamageDealer = caster,
+                DamageReceiver = this,
+                CanBeCountered = canBeCountered
+            };
+        }
         CurrentBattle.InvokeBattleEvent(new CharacterDamageEventArgs(damageResult));
         return damageResult;
     }
     
 
     [NotMapped]
-    public virtual BasicAttack BasicAttack { get; } = new();
+    public abstract BasicAttack BasicAttack { get; }
     
     public string GetNameWithPosition(bool IsEnemy)
     {
@@ -923,12 +953,10 @@ public abstract  class Character : BattleEntity
         }
         return $"{Name} ({side}) ({Position})";
     }
-
-    [NotMapped]
-    public virtual Skill Skill { get;  protected set; } = new();
+    public abstract override Rarity Rarity { get; }
+    [NotMapped] public abstract Skill Skill { get; } 
     public int Position => Array.IndexOf(CurrentBattle.Characters.ToArray(),this) +1;
-    [NotMapped]
-    public virtual Surge Surge { get; protected set; } = new();
+    [NotMapped] public abstract Surge Surge { get; }
     public bool IsOverriden
     {
         get
@@ -951,16 +979,32 @@ public abstract  class Character : BattleEntity
         }
         CurrentBattle.AdditionalTexts.Add(damageText.Replace("$", damage.ToString()));
         TakeDamageWhileConsideringShield(damage.Round());
-        var  damageResult = new DamageResult
+        DamageResult damageResult;
+        if (damageArgs.Move is not null)
         {
-            Move = damageArgs.Move,
-            StatusEffect =  damageArgs.StatusEffect,
-            WasCrit = false,
-            Damage = damage.Round(),
-            DamageDealer = caster, 
-            DamageReceiver = this,
-            CanBeCountered = canBeCountered
-        };
+            damageResult = new DamageResult(damageArgs.Move)
+            {
+              
+                WasCrit = false,
+                Damage = damage.Round(),
+                DamageDealer = caster, 
+                DamageReceiver = this,
+                CanBeCountered = canBeCountered
+            };
+        }
+        else
+        {
+            damageResult = new DamageResult(damageArgs.StatusEffect)
+            {
+              
+                WasCrit = false,
+                Damage = damage.Round(),
+                DamageDealer = caster, 
+                DamageReceiver = this,
+                CanBeCountered = canBeCountered
+            };
+        }
+            
         CurrentBattle.InvokeBattleEvent(new CharacterDamageEventArgs(damageResult));
         return damageResult;
     }
@@ -1041,7 +1085,7 @@ public abstract  class Character : BattleEntity
                 default:
                     return null;
             } 
-        }
+        } set{}
     }
 
 

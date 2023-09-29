@@ -20,7 +20,6 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\DiscordBotNet.pdb
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\DiscordBotNet.genruntimeconfig.cache
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\ref\DiscordBotNet.dll
-C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.Extensions.Primitives.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.EntityFrameworkCore.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
@@ -67,8 +66,6 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\K4os.Compression.LZ4.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\K4os.Compression.LZ4.Streams.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\K4os.Hash.xxHash.dll
-C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.Extensions.Options.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.IO.RecyclableMemoryStream.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\MySql.Data.dll
@@ -97,3 +94,7 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\DiscordBotNet.sourcelink.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\obj\Release\net7.0\scopedcss\projectbundle\DiscordBotNet.bundle.scp.css
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\DSharpPlus.Core.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\System.Text.Encodings.Web.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\System.Text.Json.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Release\net7.0\runtimes\browser\lib\net7.0\System.Text.Encodings.Web.dll

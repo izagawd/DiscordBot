@@ -51,14 +51,10 @@ public class Bot
     /// </summary>
     public static ulong Testersid => 266157684380663809;
     public static DiscordClient Client { get; private set; }
-
+    
     private async Task DoShit()
     {
-        var ctx = new PostgreSqlContext();
-        var iza = await ctx.UserData.FindOrCreateAsync(Izasid);
-        await ctx.SaveChangesAsync();
-        iza.Inventory.AddRange(new Lily() *4);
-        await ctx.SaveChangesAsync();
+        (0.107421875 * 2).Print();
     }
     /// <summary>
     /// this is where the program starts
@@ -66,7 +62,6 @@ public class Bot
     private async Task RunBotAsync(string[] args)
     {
 
-        await DoShit();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         Console.WriteLine("Entity images loading...");
@@ -111,6 +106,7 @@ public class Bot
         };
         client.UseInteractivity(interactivityConfiguration);
         client.SocketOpened += OnReady;
+      
         await client.ConnectAsync();
 
         await Website.Start(args);

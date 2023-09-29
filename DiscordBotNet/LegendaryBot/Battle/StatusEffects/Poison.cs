@@ -19,9 +19,9 @@ public class Poison : StatusEffect
     {
         base.PassTurn(affected);
 
-        DamageResult damageResult = affected.FixedDamage(        new DamageArgs()
+    affected.FixedDamage(        new DamageArgs(this)
         {
-            StatusEffect = this,
+
             Damage = affected.MaxHealth * 0.05,
             Caster = Caster,
             CanCrit = false,

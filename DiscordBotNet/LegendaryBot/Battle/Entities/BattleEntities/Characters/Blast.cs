@@ -32,16 +32,24 @@ public class MethaneSlap : BasicAttack
     }
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        var result = new UsageResult(usageType, TargetType.SingleTarget);
-
-        result.DamageResults.Add(target.Damage(        new DamageArgs()
+        var damageResult = target.Damage(new DamageArgs(this)
         {
-            Damage = owner.Attack* 1.871,
+            Damage = owner.Attack * 1.871,
             Caster = owner,
             CanCrit = true,
-            DamageText ="That was a harsh slap that dealt $ damage!"
-        }));
-        result.Text = "Methane Slap!";
+            DamageText = "That was a harsh slap that dealt $ damage!"
+        });
+        var damageResultList = new []{ damageResult };
+ 
+        var result = new UsageResult(this)
+        {
+            Text = "Methane Slap!",User = owner,
+            UsageType = usageType,
+            TargetType = TargetType.SingleTarget,
+            DamageResults = damageResultList
+        };
+        
+    
         if (BasicFunction.RandomChance(GetDetonateChance(owner.BasicAttackLevel)))
         {
             foreach (var i in target.StatusEffects.OfType<Bomb>())
@@ -94,7 +102,7 @@ public class BlowAway : Skill
 
         }
 
-        return new UsageResult(usageType, TargetType.AOE,"Blow Away!");
+        return new UsageResult(this){TargetType = TargetType.AOE,Text = "Blow Away!",User = owner,UsageType = usageType};
         
     }
 
@@ -121,7 +129,7 @@ public class VolcanicEruption : Surge
     {
         owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 4});
         owner.CurrentBattle.AdditionalTexts.Add($"{owner} is charging up a very powerful attack!");
-        return new UsageResult(usageType, TargetType.AOE);
+        return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner};
     }
 }
 public class Blast : Character
@@ -133,7 +141,7 @@ public class Blast : Character
     public override int BaseAttack => (120 + (13 * Level));
     public override int BaseDefense => (100 + (5.2 * Level)).Round();
     public override int BaseSpeed => 105;
-    public override Surge Surge { get; protected set; } = new VolcanicEruption();
-    public override Skill Skill { get; protected set; } = new BlowAway();
+    public override Surge Surge { get;  } = new VolcanicEruption();
+    public override Skill Skill { get; } = new BlowAway();
     public override BasicAttack BasicAttack { get;  } = new MethaneSlap();
 }

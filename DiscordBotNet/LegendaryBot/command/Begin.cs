@@ -130,7 +130,7 @@ public class Begin : BaseCommandClass
         var userTeam = userData.Team;
         userTeam.Add(lily);
 
-        BattleResult battleResult = await  new BattleSimulator(await  userTeam.LoadAsync(), await new CharacterTeam(characters: coachChad).LoadAsync()).Start(ctx.Interaction, result.Message);
+        BattleResult battleResult = await  new BattleSimulator(await  userTeam.LoadAsync(), await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx.Interaction, result.Message);
         theDialogue.RemoveButtonsAtEnd = true;
         if (battleResult.TimedOut is not null)
         {

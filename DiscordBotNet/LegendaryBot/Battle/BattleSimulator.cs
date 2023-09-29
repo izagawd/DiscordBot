@@ -18,6 +18,10 @@ using SixLabors.ImageSharp.Processing;
 
 namespace DiscordBotNet.LegendaryBot.Battle;
 
+public enum BattleDecision
+{
+    Forfeit, Surge, BasicAttack, Skill, Other,
+}
 public class BattleSimulator
 {
    
@@ -235,29 +239,14 @@ public class BattleSimulator
         AdditionalTexts.Clear();
     }
 
-    public MoveType? GetMoveTypeByDecision(string decision)
-    {
-        switch (decision.ToLower())
-        {
-            case"skill":
-                return MoveType.Skill;
-            case"basic attack":
-                return MoveType.BasicAttack;
-            case"basicattack":
-                return MoveType.BasicAttack;
-            case "surge":
-                return MoveType.Surge;
-            default:
-                return null;
-        }
-    }
+
 
     public int Turn { get; set; } = 0;
     public List<string> AdditionalTexts { get; } = new();
     /// <summary>
     /// Initiates a new battle between two teams
     /// </summary>
-    public async Task<BattleResult> Start(DiscordInteraction interaction, DiscordMessage? message = null)
+    public async Task<BattleResult> StartAsync(DiscordInteraction interaction, DiscordMessage? message = null)
     {
         characters.Clear();
         CharacterTeams.ForEach(i =>
@@ -341,7 +330,7 @@ public class BattleSimulator
                 && winners is null)
             {
                 var components = new List<DiscordComponent> { basicAttackButton };
-
+            
                 if (ActiveCharacter.Skill.CanBeUsed(ActiveCharacter))
                 {
                     components.Add(skillButton);
@@ -366,14 +355,14 @@ public class BattleSimulator
                 await Task.Delay(5000); break;
             }
 
-            string decision = "";
+            BattleDecision decision =BattleDecision.Other;
  
             StatusEffect? mostPowerfulStatusEffect = null;
             if (ActiveCharacter.StatusEffects.Any())
                 mostPowerfulStatusEffect = ActiveCharacter.StatusEffects.OrderByDescending(i => i.OverrideTurnType).First();
             if (ActiveCharacter.IsDead) await Task.Delay(5000);
  
-            else if ( decision != "Forfeit" && mostPowerfulStatusEffect is not null &&  mostPowerfulStatusEffect.OverrideTurnType > 0 )
+            else if ( decision != BattleDecision.Forfeit && mostPowerfulStatusEffect is not null &&  mostPowerfulStatusEffect.OverrideTurnType > 0 )
             {
 
                 UsageResult overridenUsage  = mostPowerfulStatusEffect.OverridenUsage(ActiveCharacter,ref target, ref decision, UsageType.NormalUsage);
@@ -397,7 +386,11 @@ public class BattleSimulator
                 {
                     if (e.User.Id == ActiveCharacter.Team.UserId)
                     {
-                        decision = e.Interaction.Data.CustomId;
+                        var didParse = Enum.TryParse<BattleDecision>(e.Interaction.Data.CustomId, out decision);
+                        if (!didParse)
+                        {
+                            return false;
+                        }
                         e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                         return true;
                     }
@@ -413,7 +406,7 @@ public class BattleSimulator
                 List<DiscordSelectComponentOption> enemiesToSelect = new();
                 List<Character> possibleTargets = new List<Character>();
                 
-                if ( ActiveCharacter[GetMoveTypeByDecision(decision)] is Move theMove)
+                if ( ActiveCharacter[decision] is Move theMove)
                 {
                     possibleTargets.AddRange(theMove.GetPossibleTargets(ActiveCharacter));
                     foreach (var i in possibleTargets)
@@ -468,9 +461,9 @@ public class BattleSimulator
                 await Task.Delay(5000); break;
                 
             }
-            var move = ActiveCharacter[GetMoveTypeByDecision(decision)];
+            var move = ActiveCharacter[decision];
    
-            if (decision == "Forfeit")
+            if (decision == BattleDecision.Forfeit)
             {
                 forfeited = ActiveCharacter;
                 winners = CharacterTeams.First(i => i != ActiveCharacter.Team);

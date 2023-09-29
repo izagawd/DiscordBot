@@ -2,19 +2,21 @@
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DSharpPlus;
+using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI;
 
 
 namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("Quote", "Post a quote or send a quote")]
 public class Quote : BaseCommandClass
 {
-
+  
     [SlashCommand("read", "gets a random quote")]
     public async Task Read(InteractionContext ctx)
     {
@@ -53,11 +55,7 @@ public class Quote : BaseCommandClass
             .WithTitle($"{ownerOfQuote.Username}'s quote")
             .WithDescription(randomQuote.QuoteValue)
             .WithFooter($"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
-            
-        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
-            .AddEmbed(embedBuilder)
-  
-            .AddComponents(like,dislike));
+        
         var message = await ctx.GetOriginalResponseAsync();
         await message.WaitForButtonAsync(i =>
         {
@@ -109,7 +107,7 @@ public class Quote : BaseCommandClass
                 }
 
                 await newDbContext.SaveChangesAsync();
-                counts = await newDbContext.Quote.Where(i => i.Id == randomQuote.Id)
+                var localCounts = await newDbContext.Quote.Where(i => i.Id == randomQuote.Id)
                     .Select(i => new
                     {
                         likes = i.QuoteReactions.Count(j => j.IsLike),
@@ -118,7 +116,7 @@ public class Quote : BaseCommandClass
                 newDbContext.DisposeAsync();
                 embedBuilder
                     .WithFooter(
-                        $"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
+                        $"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {localCounts.likes} Dislikes: {localCounts.dislikes}");
 
                 await i.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                     new DiscordInteractionResponseBuilder()
@@ -130,6 +128,7 @@ public class Quote : BaseCommandClass
             });
             return false;
         },  new TimeSpan(0,10,0));
+        
     }
     [SlashCommand("write", "creates a quote")]
     public async Task Write(InteractionContext ctx, [Option("text", "the quote")] string text)

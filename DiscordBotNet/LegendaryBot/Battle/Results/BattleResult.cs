@@ -4,9 +4,9 @@ namespace DiscordBotNet.LegendaryBot.Battle.Results;
 
 public class BattleResult
 {
-    public CharacterTeam Winners { get; set; }
+    public required CharacterTeam Winners { get; init; }
 
-    public int Turns { get; set; }
-    public Character? TimedOut { get; set; } 
-    public Character? Forfeited { get; set; }
+    public required int Turns { get; init; }
+    public required Character? TimedOut { get; init; } 
+    public  Character? Forfeited { get; init; }
 }

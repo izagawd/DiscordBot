@@ -28,18 +28,25 @@ public class ChamomileSachetWhack : BasicAttack
         }
     }
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
-    {     
-
-        var result = new UsageResult(usageType, TargetType.SingleTarget);
-        result.DamageResults.Add(target.Damage(new DamageArgs
+    {
+        var damageResult = target.Damage(new DamageArgs(this)
         {
             Damage = owner.Attack * 1.9,
             Caster = owner,
             CanCrit = true,
-            DamageText ="That was a harsh snoozy whack that dealt $ damage!",
+            DamageText = "That was a harsh snoozy whack that dealt $ damage!",
 
-        }));
-        result.Text = "Chamomile Whack!";
+        });
+        var result = new UsageResult(this)
+        {
+            UsageType = usageType,
+            TargetType = TargetType.SingleTarget,
+            User = owner,
+            Text = "Chamomile Whack!",
+            DamageResults = new []{damageResult}
+        };
+    
+
         if (BasicFunction.RandomChance(GetSleepChance(owner.BasicAttackLevel)))
         {
             target.StatusEffects.Add(new Sleep(owner), owner.Effectiveness);
@@ -79,7 +86,13 @@ public class BlossomTouch : Skill
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         target.RecoverHealth((owner.MaxHealth * GetHealthHealScaling(owner.SurgeLevel) * 0.01).Round());
-        return new UsageResult(usageType, TargetType.SingleTarget,$"{owner} used Blossom Touch!");
+        return new UsageResult(this)
+        {
+            Text = $"{owner} used Blossom Touch!",
+            UsageType = usageType,
+            TargetType = TargetType.SingleTarget,
+            User = owner
+        };
     }
 }
 public class LilyOfTheValley : Surge
@@ -142,8 +155,14 @@ public class LilyOfTheValley : Surge
                 i.StatusEffects.Add(new Stun(owner){Duration = 1}, owner.Effectiveness);
             }
         }
-        return new UsageResult( usageType, TargetType.AOE,
-            $"{owner} used Lily of The Valley, and released a dangerous gas to the enemy team!");
+
+        return new UsageResult(this)
+        {
+            Text =  $"{owner} used Lily of The Valley, and released a dangerous gas to the enemy team!",
+            TargetType = TargetType.AOE,
+            UsageType = usageType,
+            User = owner
+        };
     }
 }
 public class Lily : Character
@@ -156,29 +175,29 @@ public class Lily : Character
 
     public override DiscordColor Color { get; protected set; } = DiscordColor.HotPink;
 
-    public override void NonPlayerCharacterAi(ref Character target, ref string decision)
+    public override void NonPlayerCharacterAi(ref Character target, ref BattleDecision decision)
     {
         if (Surge.CanBeUsed(this))
         {
-            decision = "surge";
+            decision = BattleDecision.Surge;
             target = Surge.GetPossibleTargets(this).First();
             return;
         }
         var teamMateWithLowestHealth = Team.OrderBy(i => i.Health).First();
         if (Skill.CanBeUsed(this) && teamMateWithLowestHealth.Health < teamMateWithLowestHealth.MaxHealth * 0.7)
         {
-            decision = "skill";
+            decision = BattleDecision.Skill;
             target = teamMateWithLowestHealth;
             return;
         }
 
-        decision = "basicattack";
+        decision = BattleDecision.BasicAttack;
         target = BasicAttack.GetPossibleTargets(this).OrderBy(i => i.Health).First();
 
     }
 
-    public override Skill Skill { get; protected set; } = new BlossomTouch();
-    public override Surge Surge { get; protected set; } = new LilyOfTheValley();
+    public override Skill Skill { get;  } = new BlossomTouch();
+    public override Surge Surge { get; } = new LilyOfTheValley();
     public override BasicAttack BasicAttack { get; } = new ChamomileSachetWhack();
     public override Rarity Rarity { get; protected set; } = Rarity.FourStar;
     public override Element Element => Element.Earth;

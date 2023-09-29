@@ -9,7 +9,7 @@ public abstract class Special : Move
     /// The maximum cooldown of the move based on the move level
     /// </summary>
 
-    public virtual int GetMaxCooldown(int level) => 3;
+    public abstract int GetMaxCooldown(int level);
 
     public int GetMaxCooldown(Character character)
     {
@@ -27,11 +27,11 @@ public abstract class Special : Move
     /// </summary>
     public int Cooldown { get; set; } = 0;
     public bool IsOnCooldown => Cooldown > 0;
-    public bool IsDefault => _default_types.Contains(GetType());
+
 
     public sealed override bool CanBeUsed(Character owner)
     {
-        return base.CanBeUsed(owner) && !IsDefault && !IsOnCooldown;
+        return base.CanBeUsed(owner) && !IsOnCooldown;
     }
 
     public override string ToString()

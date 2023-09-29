@@ -24,7 +24,7 @@ public class UserData : Model,  ICanBeLeveledUp
     public UserData(){}
 
 
-    [NotMapped] public IEnumerable<Guid> Ids => Team.Select(i => i.Id);
+    [NotMapped] public IReadOnlyList<Guid> Ids => Team.Select(i => i.Id).ToArray();
     public List<QuoteReaction> QuoteReactions { get; set; } = new();
 
     public void RemoveFromTeam(Character character)

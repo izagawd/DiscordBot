@@ -6,20 +6,45 @@ namespace DiscordBotNet.LegendaryBot.Battle.Results;
 
 public class DamageArgs
 {
-    public Move? Move { get; set; }
-    public StatusEffect? StatusEffect { get; set; }
-    public double Damage { get; set; }
-        public Character Caster { get; set; }
-        public string? DamageText { get; set; } = null;
+    public Move? Move { get; private set; }
+    public StatusEffect? StatusEffect { get; private set; }
+
+    public DamageArgs(Move move)
+    {
+        Move = move;
+    }
+
+    public DamageArgs(StatusEffect statusEffect)
+    {
+        StatusEffect = statusEffect;
+    }
+    public required double Damage
+    {
+        get; init;
+    }
+    /// <summary>
+    /// The one who casted the attack
+    /// </summary>
+        public required Character Caster { get; init; }
+        /// <summary>
+        /// Use $ in the string and it will be replaced with the damage
+        /// </summary>
+        public string? DamageText { get; init; } = null;
 
         public bool CanBeCountered
         {
             get;
-            set;
+            init;
         } = true;
-            /// <summary>
-            /// can crit doesnt work in fixed damage
-            /// </summary>
-        public bool CanCrit { get; set; } = true;
+
+        /// <summary>
+        /// if true, the attack always lands a critical hit. Doesnt work in fixed damage
+        /// </summary>
+        public bool AlwaysCrits { get; init; } = false;
+        /// <summary>
+        /// can crit doesnt work in fixed damage
+        /// </summary>
+        
+        public bool CanCrit { get; init; } = true;
 
 }

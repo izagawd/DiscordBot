@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZMbzZGUYGDG2YK0Tt2wNI5EzRRN4O1T3f9ELtf9RdbQKTPeJFhq8eHBsJFqw61my0AEcStrMFBbY3LkbwdLjDA==",
+  "dgSpecHash": "uxVvLo8KJk0HRSnw6uHTTQPWKSbiVBHH+I6PwAmA1jrlzO7E8mwYvKQODYhqg9TKuzDIJL+UOP5OLe752XBk3g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\DiscordBotNet\\DiscordBotNet.csproj",
+  "projectFilePath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-workspace\\discordbotnet\\DiscordBotNet.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\theiz\\.nuget\\packages\\aspnet.security.oauth.discord\\7.0.4\\aspnet.security.oauth.discord.7.0.4.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\concurrenthashset\\1.3.0\\concurrenthashset.1.3.0.nupkg.sha512",

@@ -27,9 +27,9 @@ public class Bomb : StatusEffect
     {
 
         affected.StatusEffects.Remove(this);
-        return affected.Damage(        new DamageArgs()
+        return affected.Damage(        new DamageArgs(this)
         {
-            StatusEffect = this,
+         
             Damage = Attack * 1.871,
             Caster = Caster,
             CanCrit = false,

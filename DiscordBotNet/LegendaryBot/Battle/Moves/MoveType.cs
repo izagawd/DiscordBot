@@ -2,5 +2,5 @@
 
 public enum MoveType
 {
-Surge,Skill,BasicAttack, 
+Surge,Skill,BasicAttack, Other
 }

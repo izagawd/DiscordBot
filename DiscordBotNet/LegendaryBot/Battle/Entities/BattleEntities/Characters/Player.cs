@@ -7,9 +7,45 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+public class FourthWallBreaker: BasicAttack
+{
+    public override string GetDescription(int moveLevel)
+    {
+       return "Damages the enemy by breaking the fourth wall";
+    }
+
+    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    {
+        return new UsageResult(this)
+        {
+            DamageResults = new DamageResult[]
+            {
+                target.Damage(new DamageArgs(this)
+                {
+                    AlwaysCrits = true,
+                    Caster = owner,
+                    DamageText =
+                        $"Breaks the fourth wall, causing {target} to cringe, and making them receive $ damage!",
+                    Damage = owner.Attack
+
+                }),
+            },
+            User = owner,
+            TargetType = TargetType.SingleTarget,
+            Text = "It's the power of being a real human",
+            UsageType = usageType
+
+        };
+    }
+}
 
 public class FireBall : Skill
 {
+    public override string GetDescription(int moveLevel)
+    {
+        return "Throws a fire ball at the enemy with a 40% chance to inflict burn";
+    }
+
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
@@ -19,7 +55,7 @@ public class FireBall : Skill
     public override int MaxEnhance { get; } = 4;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {  
-        DamageResult damageResult = target.Damage(      new DamageArgs()
+        DamageResult damageResult = target.Damage(      new DamageArgs(this)
         {
             Damage = owner.Attack * 1.9,
             Caster = owner,
@@ -32,12 +68,25 @@ public class FireBall : Skill
         }
 
 
-        return new UsageResult(usageType, TargetType.SingleTarget) { DamageResults = new List<DamageResult> { damageResult } };
+        return new UsageResult(this)
+        {
+            UsageType = usageType,
+            TargetType = TargetType.SingleTarget,
+            User = owner,
+            DamageResults = new List<DamageResult> { damageResult }
+        };
     }
 }
 public class Ignite : Surge
 {
     public override int GetMaxCooldown(int level) => 1;
+
+    public override int MaxEnhance { get; } = 4;
+
+    public override string GetDescription(int moveLevel)
+    {
+        return "Ignites the enemy with 3 burns. 70% chance each";
+    }
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
@@ -54,7 +103,14 @@ public class Ignite : Surge
                 target.StatusEffects.Add(new Burn(owner),owner.Effectiveness);
             }
         }
-        return new UsageResult(usageType, TargetType.SingleTarget,"Ignite!");
+
+        return new UsageResult(this)
+        {
+            UsageType = usageType,
+            TargetType = TargetType.SingleTarget,
+            Text = "Ignite!",
+            User = owner
+        };
     }
 }
 public class Player : Character
@@ -62,7 +118,7 @@ public class Player : Character
     public override bool IsInStandardBanner => false;
 
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
-
+    
     [NotMapped]
     public DiscordUser User { get; set; }
     [NotMapped]
@@ -81,7 +137,10 @@ public class Player : Character
                     return fireSkill;
             }
         }
+
     }
+
+    public override BasicAttack BasicAttack { get; }
 
     public override Surge Surge
     {
@@ -95,9 +154,8 @@ public class Player : Character
                     return fireSurge;
             }
         }
-    
+
     }
-    
 
 
     public void SetElement(Element element)

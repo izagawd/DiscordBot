@@ -2,13 +2,9 @@
 
 public class ExperienceGainResult
 {
-    public ExperienceGainResult()
-    {
-        ExcessExperience = 0;
-    }
 
-    public ulong ExcessExperience { get; set; }
-    public string Text { get; set; } = "";
+    public ulong ExcessExperience { get; init; }
+    public string Text { get; init; } = "";
     public override string ToString()
     {
         return Text;

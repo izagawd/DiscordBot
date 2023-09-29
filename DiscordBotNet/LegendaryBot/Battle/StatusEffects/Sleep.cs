@@ -27,10 +27,16 @@ public class Sleep: StatusEffect, IBattleEvent<CharacterDamageEventArgs>
         
     }
 
-    public override UsageResult OverridenUsage(Character affected, ref Character target, ref string decision, UsageType usageType)
+    public override UsageResult OverridenUsage(Character affected, ref Character target, ref BattleDecision decision, UsageType usageType)
     {
         affected.CurrentBattle.AdditionalTexts.Add($"{affected} is fast asleep");
-        return new UsageResult(usageType, TargetType.None,"Snores...");
-        
+        return new UsageResult(this)
+        {
+            UsageType = usageType,
+            TargetType = TargetType.None,
+            Text = "Snores...",
+            User = affected
+        };
+
     }
 }

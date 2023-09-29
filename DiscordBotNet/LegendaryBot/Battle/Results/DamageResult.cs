@@ -6,13 +6,22 @@ namespace DiscordBotNet.LegendaryBot.Battle.Results;
 
 public class DamageResult
 {
-    public Move? Move { get; set; }
-    public StatusEffect? StatusEffect { get; set; }
+    public  Move? Move { get; private set; }
+    public StatusEffect? StatusEffect { get; private set; }
 
-    public int Damage { get; set; }
-    public bool WasCrit { get; set; }
-    public bool CanBeCountered { get; set; } 
-    public Character? DamageDealer { get; set; }
-    public Character DamageReceiver { get; set; }
+    public DamageResult(Move move)
+    {
+        Move = move;
+    }
+
+    public DamageResult(StatusEffect statusEffect)
+    {
+        StatusEffect = statusEffect;
+    }
+    public int Damage { get; init; }
+    public bool WasCrit { get; init; }
+    public bool CanBeCountered { get; init; } 
+    public  Character? DamageDealer { get; init; }
+    public required Character DamageReceiver { get; init; }
 
 }

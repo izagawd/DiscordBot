@@ -3,7 +3,61 @@ using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+public class ShieldBash: BasicAttack
+{
+    public override string GetDescription(int moveLevel)
+    {
+        return $"Bashes the shield to the enemy, with a {GetShieldStunChanceByBash(moveLevel)}% chance to stun"!;
+    }
 
+    public int GetShieldStunChanceByBash(int moveLevel)
+    {
+        switch (moveLevel)
+        {
+            case 0:
+                return 5;
+            case 1:
+                return 6;
+            case 2:
+                return 7;
+            case 3:
+                return 8;
+            case 4:
+                return 9;
+            default:
+                return 10;
+        }
+    }
+    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    {
+        var usageResult =  new UsageResult(this)
+        {
+            DamageResults = new DamageResult[]
+            {
+                target.Damage(new DamageArgs(this)
+                {
+                    AlwaysCrits = true,
+                    Caster = owner,
+                    DamageText =
+                        $"Bashes {target}! and making them receive $ damage!",
+                    Damage = owner.Attack
+
+                }),
+            },
+            User = owner,
+            TargetType = TargetType.SingleTarget,
+            Text = "Hrraagh!!",
+            UsageType = usageType
+
+        };
+        if (BasicFunction.RandomChance(GetShieldStunChanceByBash(owner.GetMoveLevel(this))))
+        {
+            target.StatusEffects.Add(new Stun(owner));
+        }
+
+        return usageResult;
+    }
+}
 public class IWillBeYourShield : Skill
 {
     public override int GetMaxCooldown(int level)
@@ -17,6 +71,8 @@ public class IWillBeYourShield : Skill
         return owner.Team.Where(i =>!i.IsDead);
     }
 
+    public override int MaxEnhance { get; } = 5;
+
     public override string GetDescription(int moveLevel)
     {
         return "Increases the defense and gives a shield to the target and caster for 3 turns";
@@ -27,7 +83,13 @@ public class IWillBeYourShield : Skill
         target.StatusEffects.Add(new Shield(owner, 1000){Duration = 3});
         target.StatusEffects.Add(new DefenseBuff(owner) { Duration = 3 });
 
-        return new UsageResult(usageType, TargetType.SingleTarget,$"As a loyal knight, {owner} helps {target}!");
+        return new UsageResult(this)
+        {
+            Text = $"As a loyal knight, {owner} helps {target}!",
+            UsageType = usageType,
+            TargetType = TargetType.SingleTarget,
+            User = owner
+        };
     }
 }
 
@@ -44,6 +106,8 @@ public class IWillProtectUs : Surge
         return 5;
     }
 
+    public override int MaxEnhance { get; } = 5;
+
     public override string GetDescription(int moveLevel)
     {
         return "Increases the defense of all allies for 2 turns";
@@ -57,9 +121,16 @@ public class IWillProtectUs : Surge
             
         }
 
-        return new UsageResult(usageType, TargetType.AOE,$"As a loyal knight, {owner} increases the defense of all allies!");
+        return new UsageResult(this)
+        {
+            UsageType = usageType,
+            TargetType = TargetType.AOE,
+            Text = $"As a loyal knight, {owner} increases the defense of all allies!",
+            User = owner
+        };
     }
 }
+
 public class RoyalGuard : Character
 {
     public override Element Element { get; protected set; } = Element.Ice;
@@ -67,7 +138,8 @@ public class RoyalGuard : Character
     public override int BaseAttack => (110 + (10 * Level));
     public override int BaseDefense => (110 + (7.2 * Level)).Round();
     public override int BaseSpeed => 99;
+    public override BasicAttack BasicAttack { get; }
     public override Rarity Rarity => Rarity.ThreeStar;
-    public override Surge Surge { get; protected set; } = new IWillProtectUs();
-    public override Skill Skill { get; protected set; } = new IWillBeYourShield();
+    public override Surge Surge { get; } = new IWillProtectUs();
+    public override Skill Skill { get;  } = new IWillBeYourShield();
 }

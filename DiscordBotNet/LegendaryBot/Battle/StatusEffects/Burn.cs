@@ -18,9 +18,9 @@ public class Burn : StatusEffect
     public override void PassTurn(Character affected)
     {
         base.PassTurn(affected);
-        affected.Damage(        new DamageArgs()
+        affected.Damage(        new DamageArgs(this)
         {
-            StatusEffect = this,
+       
             Damage = _characterAttack /3.0,
             Caster = Caster,
             CanCrit = false,

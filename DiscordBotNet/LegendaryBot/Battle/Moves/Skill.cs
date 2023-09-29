@@ -1,7 +1,10 @@
-﻿namespace DiscordBotNet.LegendaryBot.Battle.Moves;
+﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
-public class Skill : Special
+namespace DiscordBotNet.LegendaryBot.Battle.Moves;
+
+public abstract class Skill : Special
 {
     public sealed override MoveType MoveType => MoveType.Skill;
-    
+
+
 }

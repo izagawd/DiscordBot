@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="df49bdbc-9051-4f76-b30f-538b26947510" name="VPS" url="http://discord.legendarygawds.com">
+        <fileTransfer rootFolder="/discordbotnet" accessType="SFTP" host="216.128.147.21" port="22" sshConfigId="61ba52ea-2cd5-4e50-ac05-89492405ecc0" sshConfig="root@216.128.147.21:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

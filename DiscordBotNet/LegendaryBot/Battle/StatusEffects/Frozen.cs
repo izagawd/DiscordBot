@@ -18,10 +18,16 @@ public class Frozen : StatusEffect
     public override int MaxStacks => 1;
     public override OverrideTurnType OverrideTurnType => OverrideTurnType.CannotMove;
 
-    public override UsageResult OverridenUsage(Character affected,ref Character target, ref string decision, UsageType usageType)
+    public override UsageResult OverridenUsage(Character affected,ref Character target, ref BattleDecision decision, UsageType usageType)
     {
-        decision = "None";
+        decision = BattleDecision.Other;
         affected.CurrentBattle.AdditionalTexts.Add($"{affected} cannot move because they are frozen!");
-        return new UsageResult(usageType, TargetType.None,"c-cold...");
+        return new UsageResult(this)
+        {
+            Text = "c-cold...",
+            UsageType = usageType,
+            User = affected,
+            TargetType = TargetType.None
+        };
     }
 }
