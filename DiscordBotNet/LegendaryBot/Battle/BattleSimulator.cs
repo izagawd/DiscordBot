@@ -124,21 +124,21 @@ public class BattleSimulator
         {
             if (i is IBattleEvent<T> iAsEvent)
             {
-                iAsEvent.OnEvent(eventArgs, i);
+                iAsEvent.OnBattleEvent(eventArgs, i);
             }
             foreach (var j in i.MoveList.OfType<IBattleEvent<T>>())
             {
-                j.OnEvent(eventArgs,i);
+                j.OnBattleEvent(eventArgs,i);
             }
 
             foreach (var j in i.StatusEffects.OfType<IBattleEvent<T>>())
             {
-                j.OnEvent(eventArgs,i);
+                j.OnBattleEvent(eventArgs,i);
             }
 
             if (i.Blessing is IBattleEvent<T> blessingAsEvent)
             {
-                blessingAsEvent.OnEvent(eventArgs,i);
+                blessingAsEvent.OnBattleEvent(eventArgs,i);
             }
         }
     }

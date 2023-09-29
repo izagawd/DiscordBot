@@ -125,7 +125,7 @@ public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBatt
 
     }
 
-    public void OnEvent(CharacterDeathEventArgs eventArgs, Character owner)
+    public void OnBattleEvent(CharacterDeathEventArgs eventArgs, Character owner)
     {
         if (eventArgs.Killed == this)
         {
@@ -134,7 +134,7 @@ public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBatt
         }
     }
 
-    public void OnEvent(TurnEndEventArgs eventArgs, Character owner)
+    public void OnBattleEvent(TurnEndEventArgs eventArgs, Character owner)
     {
         if (eventArgs.Character != owner) return;
         Health += (int)(0.05 * MaxHealth);

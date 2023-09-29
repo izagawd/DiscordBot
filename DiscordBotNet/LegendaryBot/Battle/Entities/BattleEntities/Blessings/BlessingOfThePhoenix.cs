@@ -15,7 +15,7 @@ public class BlessingOfThePhoenix : Blessing, IBattleEvent<CharacterDamageEventA
         if (level >= 3) return 6;
         return 5;
     }
-    public void OnEvent(CharacterDamageEventArgs eventArgs, Character owner)
+    public void OnBattleEvent(CharacterDamageEventArgs eventArgs, Character owner)
     {
         if (eventArgs.DamageResult.DamageReceiver != owner) return;
 

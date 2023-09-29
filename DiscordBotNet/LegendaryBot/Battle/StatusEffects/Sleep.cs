@@ -17,7 +17,7 @@ public class Sleep: StatusEffect, IBattleEvent<CharacterDamageEventArgs>
     public override OverrideTurnType OverrideTurnType => OverrideTurnType.CannotMove;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
 
-    public void OnEvent(CharacterDamageEventArgs eventArgs, Character owner)
+    public void OnBattleEvent(CharacterDamageEventArgs eventArgs, Character owner)
     {
         if(eventArgs.DamageResult.DamageReceiver != owner && eventArgs.DamageResult.StatusEffect is not null) return;
 

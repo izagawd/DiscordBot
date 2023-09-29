@@ -7,5 +7,5 @@ namespace DiscordBotNet.LegendaryBot.Battle.BattleEvents;
 /// <typeparam name="T">the arguments of the events. this is v3ry important because if the wrong one is used, the wrong event would be listened for</typeparam>
 public interface IBattleEvent<T> where T : System.EventArgs
 {
-    public void OnEvent(T eventArgs, Character owner);
+    public void OnBattleEvent(T eventArgs, Character owner);
 }
