@@ -3,7 +3,7 @@ using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-public class ShieldBash: BasicAttack
+public class ShieldBash : BasicAttack
 {
     public override string GetDescription(int moveLevel)
     {
@@ -39,7 +39,7 @@ public class ShieldBash: BasicAttack
                     AlwaysCrits = true,
                     Caster = owner,
                     DamageText =
-                        $"Bashes {target}! and making them receive $ damage!",
+                        $"Bashes {target}, making them receive $ damage!",
                     Damage = owner.Attack
 
                 }),

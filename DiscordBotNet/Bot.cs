@@ -106,7 +106,7 @@ public class Bot
         };
         client.UseInteractivity(interactivityConfiguration);
         client.SocketOpened += OnReady;
-      
+  
         await client.ConnectAsync();
 
         await Website.Start(args);
