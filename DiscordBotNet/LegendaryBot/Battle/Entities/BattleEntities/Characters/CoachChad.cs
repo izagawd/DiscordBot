@@ -21,8 +21,8 @@ public class GigaPunch : BasicAttack
                 target.Damage(new DamageArgs(this)
                 {
                     Caster = owner,
-                    Damage = owner.Attack / 2,
-                    DamageText = $"{owner} smiles chadly, and punches {target} in a cool way"
+                    Damage = owner.Attack * 2,
+                    DamageText = $"{owner} smiles chadly, and punches {target} in a cool way and dealt $ damage!"
 
                 })
             },

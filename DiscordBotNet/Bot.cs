@@ -39,9 +39,9 @@ public class Bot
     public static readonly Type[] AllAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray();
 
 
-    private static void Main(string[] args) => new Bot().RunBotAsync(args).GetAwaiter().GetResult();
+    private static async Task Main(string[] args) => await new Bot().RunBotAsync(args);
 
-    public static SlashCommandsExtension SlashCommandsExtension { get; protected set; }
+
     /// <summary>
     /// This is my discord user Id because it's too long to memorize
     /// </summary>
@@ -94,11 +94,11 @@ public class Bot
         
         var client = new DiscordClient(config);
         Client = client;
-        SlashCommandsExtension = client.UseSlashCommands();
+        var slashCommandsExtension = client.UseSlashCommands();
         
-        SlashCommandsExtension.RegisterCommands(Assembly.GetExecutingAssembly());
+        slashCommandsExtension.RegisterCommands(Assembly.GetExecutingAssembly());
         
-        SlashCommandsExtension.SlashCommandErrored += OnSlashCommandError;
+        slashCommandsExtension.SlashCommandErrored += OnSlashCommandError;
         client.UseVoiceNext(new VoiceNextConfiguration { AudioFormat = AudioFormat.Default});
         var interactivityConfiguration = new InteractivityConfiguration
         {
@@ -106,7 +106,7 @@ public class Bot
         };
         client.UseInteractivity(interactivityConfiguration);
         client.SocketOpened += OnReady;
-      
+  
         await client.ConnectAsync();
 
         await Website.Start(args);

@@ -91,7 +91,6 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\ne
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\obj\Debug\net7.0\DiscordBotNet.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\obj\Debug\net7.0\DiscordBotNet.sourcelink.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\obj\Debug\net7.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\obj\Debug\net7.0\scopedcss\projectbundle\DiscordBotNet.bundle.scp.css
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\DSharpPlus.Core.dll

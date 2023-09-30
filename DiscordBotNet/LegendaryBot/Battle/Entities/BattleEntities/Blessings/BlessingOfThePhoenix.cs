@@ -20,7 +20,7 @@ public class BlessingOfThePhoenix : Blessing, IBattleEvent<CharacterDamageEventA
         if (eventArgs.DamageResult.DamageReceiver != owner) return;
 
         var recovered = owner.RecoverHealth((GetHealthPercentRecovering(Level) *  0.01 * owner.MaxHealth).Round(),false);
-        owner.CurrentBattle.AdditionalTexts.Add($"Owner recovered {recovered} health via the blessing of the phoenix");
+        owner.CurrentBattle.AdditionalTexts.Add($"{owner} recovered {recovered} health via the blessing of the phoenix");
 
     }
 }

@@ -4,7 +4,9 @@ using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus;
+using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public class FourthWallBreaker: BasicAttack
@@ -140,7 +142,8 @@ public class Player : Character
 
     }
 
-    public override BasicAttack BasicAttack { get; }
+    public override BasicAttack BasicAttack { get; } = new FourthWallBreaker();
+
 
     public override Surge Surge
     {
