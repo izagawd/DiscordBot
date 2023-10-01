@@ -273,8 +273,6 @@ public class BattleSimulator
         Turn = 0;
         while (true)
         {
- 
-
             Turn += 1;
             while (!characters.Any(i => i.CombatReadiness >= 100 && !i.IsDead))
             {

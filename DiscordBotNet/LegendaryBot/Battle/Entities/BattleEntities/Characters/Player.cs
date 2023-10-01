@@ -209,7 +209,7 @@ public class Player : Character
         }
 
         Name = User.Username;
-        IconUrl = User.GetAvatarUrl(ImageFormat.Png);
+        IconUrl = User.AvatarUrl;
         if (UserData is not null)
         {
             Color = UserData.Color;
