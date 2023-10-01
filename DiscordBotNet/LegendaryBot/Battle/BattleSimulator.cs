@@ -404,8 +404,10 @@ public class BattleSimulator
                {
                    // ignored
                }
-
+                
                buttonAwaitercancellationToken.Cancel();
+               delayCancellationToken.Dispose();
+               buttonAwaitercancellationToken.Dispose();
             }
             else
             {
@@ -461,7 +463,7 @@ public class BattleSimulator
                         .AddComponents(selectTarget)
                         .AddEmbed(embedToEdit.Build());
                     message = await message.ModifyAsync(messageBuilder);
-                    CancellationTokenSource idk = new CancellationTokenSource();
+                    CancellationTokenSource buttonAwaiterToken = new CancellationTokenSource();
                     message.WaitForSelectAsync(e =>
                     {
                         if (e.User.Id == ActiveCharacter.Team.UserId)
@@ -470,19 +472,19 @@ public class BattleSimulator
                             e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                         }
                         return false;
-                    },idk.Token);
+                    },buttonAwaiterToken.Token);
                 
                     var results1 = await  message.WaitForButtonAsync(e =>
                     {
                         if (e.User.Id == ActiveCharacter.Team.UserId && e.Interaction.Data.CustomId == "Proceed")
                         {
-                            idk.Cancel();
+                            buttonAwaiterToken.Cancel();
                             e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                             return true;
                         }
                         return false;
                     });
-                 
+                    buttonAwaiterToken.Dispose();
                     if (results1.TimedOut)
                     {
                         timedOut = ActiveCharacter.Team;
