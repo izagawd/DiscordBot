@@ -10,6 +10,7 @@ namespace DiscordBotNet;
 
 public static class Website
 {
+    public static readonly string DomainName = "legendarygawds.com";
     public static string RenderImageTag(Image image)
     {
         if (image == null)

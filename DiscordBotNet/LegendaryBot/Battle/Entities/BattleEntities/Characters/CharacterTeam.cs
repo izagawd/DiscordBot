@@ -46,14 +46,8 @@ public class CharacterTeam : ISet<Character>
     {
         foreach (var i in Characters)
         {
-            if (i is Player player)
-            {
-                await player.LoadAsync(user);
-            }
-            else
-            {
-                await i.LoadAsync();
-            }
+            if (i is Player player) await player.LoadAsync(user);
+            else await i.LoadAsync();
         }
 
         return this;

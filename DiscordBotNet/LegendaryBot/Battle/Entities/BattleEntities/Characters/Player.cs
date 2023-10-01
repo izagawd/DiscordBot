@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Security.Claims;
 using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
@@ -87,9 +88,27 @@ public class Ignite : Surge
 
     public override string GetDescription(int moveLevel)
     {
-        return "Ignites the enemy with 3 burns. 70% chance each";
+        return $"Ignites the enemy with 3 burns. {IgniteChance(moveLevel)}% chance each";
     }
 
+    public int IgniteChance(int moveLevel)
+    {
+        switch (moveLevel)
+        {
+           case 0:
+               return 40;
+           case 1:
+               return 45;
+           case 2:
+               return 50;
+           case 3:
+               return 55;
+           case 4:
+               return 60;
+           default:
+               return 70;
+        }
+    }
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
@@ -100,7 +119,7 @@ public class Ignite : Surge
         owner.CurrentBattle.AdditionalTexts.Add($"{owner} attempts to make a human torch out of {target}!");
         for (int i = 0; i < 3; i++)
         {
-            if (BasicFunction.RandomChance(70))
+            if (BasicFunction.RandomChance(IgniteChance(owner.GetMoveLevel(this))))
             {
                 target.StatusEffects.Add(new Burn(owner),owner.Effectiveness);
             }

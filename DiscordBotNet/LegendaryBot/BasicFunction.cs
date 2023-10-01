@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
@@ -13,50 +14,52 @@ public static class BasicFunction
     public static Dictionary<string, Image<Rgba32>> EntityImages = new();
     public static MemoryCache UserImages { get; } = new(new MemoryCacheOptions());
     /// <summary>
-    /// Loads all the images of entities
+    /// Caches some  images in the program. it caches images by accessing properties with the ImageAttribute
     /// </summary>
-    /// <returns>The amount of images loaded</returns>
-    public static async Task<int> LoadEntityImagesAsync()
+    /// <returns>The amount of  images cached</returns>
+    public static async Task<int> CacheSomeEntityImagesAsync()
     {
-        int count = 0;
-        foreach (var type in Bot.AllAssemblyTypes.Where(t => typeof(IHasIconUrl).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract))
+        var count = 0;
+        foreach (Type type in Bot.AllAssemblyTypes.Where(i => i is { IsAbstract: false, IsInterface: false, IsEnum: false }))
         {
-          
-            IHasIconUrl icon;
-            if (type.IsRelatedToType(typeof(StatusEffect)))
-            {
-                icon = (IHasIconUrl)Activator.CreateInstance(type, args: new CoachChad())!;
-            }
-            else
-            {
-                icon = (IHasIconUrl)Activator.CreateInstance(type)!;
-            }
-            
-            if (icon.IconUrl is not null)
-            {
+            PropertyInfo[] propertiesWithAttribute = type.GetProperties()
+                .Where(prop => prop.GetCustomAttribute<ImageAttribute>() != null)
+                .ToArray();
 
-                await GetImageFromUrlAsync(icon.IconUrl, true);
-                count += 1;
+            if (propertiesWithAttribute.Length == 0) continue;
+            if(type.GetConstructors().All(i => i.GetParameters().Length != 0)) 
+                continue;
+            object? instance = Activator.CreateInstance(type);
+
+            foreach (var property in propertiesWithAttribute)
+            {
+                object? value = property.GetValue(instance);
+                if (value is string theString)
+                {
+                    await GetImageFromUrlAsync(theString);
+                    count++;
+                }
+                else if (value is IEnumerable<string> theEnumerable)
+                {
+                    foreach (var i in theEnumerable)
+                    {
+                        await GetImageFromUrlAsync(i);
+                        count++;
+                    }
+                }
             }
         }
 
         return count;
     }
-    /// <summary>
-    /// Gets the image as sixlabors image from the url provided, and caches is in the EntityImages memory cache
-    /// </summary>
 
-    public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
-    {
-        return await GetImageFromUrlAsync(url, false);
-    }
      /// <summary>
-     /// Gets the image as sixlabors image from the url provided, and caches it
+     /// Gets the image as sixlabors image from the url provided, caches it, and returns it
      /// </summary>
-     /// <param name="toEntityDictionary">If true, permenantly caches it in the EntityDictionary. if false, temporarily caches it in EntityImages memory cache</param>
-     /// <returns></returns>
-    private static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url, bool toEntityDictionary)
-    {
+    /// <returns></returns>
+    public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
+     {
+ 
         if (EntityImages.ContainsKey(url)) return EntityImages[url].Clone();
         if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!.Clone();
         try{
@@ -64,15 +67,15 @@ public static class BasicFunction
             var responseMessage = await webClient.GetAsync(url);
             var memoryStream = await responseMessage.Content.ReadAsStreamAsync();
             var characterImage = await Image.LoadAsync<Rgba32>(memoryStream);
-            if (toEntityDictionary)
+            //checks if the image is from this bot's domain  so it can permanently cache it
+            //instead of temporarily cache it
+            if (url.Contains(Website.DomainName))
             {
                 EntityImages[url] = characterImage;  
             }
             else
             {
-  
                 UserImages.Set(url,characterImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
-                "via memory cache".Print();
             }
             webClient.Dispose();
             responseMessage.Dispose();
@@ -80,24 +83,29 @@ public static class BasicFunction
         }
         catch
         {
-            var alternateImage =  await GetImageFromUrlAsync("https://legendarygawds.com/move-pictures/guilotine.png", true);
-            EntityImages[url] = alternateImage;
+            var alternateImage =  await GetImageFromUrlAsync("https://legendarygawds.com/move-pictures/guilotine.png");
+            if (url.Contains(Website.DomainName))
+            {
+                EntityImages[url] = alternateImage;
+            }
+            else
+            {
+                UserImages.Set(url,alternateImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
+
+            }
+         
             return alternateImage;
         }
     }
-    /// <returns>
-    /// A random element from the parameters
-    /// </returns>
-    public static T GetMaxValue<T>(params T[] numbers) 
-    {
-      
-        return numbers.Max()!;
-    }
+
 
     public static int GetRandomNumberInBetween(int a, int b)
     {
         return new Random().Next(a, b + 1);
     }
+    /// <returns>
+    /// A random element from the parameters
+    /// </returns>
     public static T RandomChoice<T>(params T[] elements)
     {
         

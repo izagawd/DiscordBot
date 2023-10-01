@@ -11,14 +11,14 @@ using SixLabors.ImageSharp.Processing;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Moves;
 
-public abstract class Move:  IHasIconUrl
+public abstract class Move
 {
     /// <summary>
     /// The maximum amount this move can be enhanced to
     /// </summary>
     public abstract int MaxEnhance { get; } 
 
-
+    [Image]
     public virtual string IconUrl => $"https://legendarygawds.com/move-pictures/{GetType().Name}.png";
 
     public async Task<Image<Rgba32>> GetImageAsync(int? level = null)

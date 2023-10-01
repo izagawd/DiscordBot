@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Immutable;
+using System.Diagnostics;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -265,8 +266,8 @@ public class BattleSimulator
         _mainText = "Battle Begins!";
         _additionalText = "Have fun!";
      
-        Character? timedOut = null;
-        Character? forfeited = null;
+        CharacterTeam? timedOut = null;
+        CharacterTeam? forfeited = null;
         
         Character? target = null;
         Turn = 0;
@@ -325,12 +326,13 @@ public class BattleSimulator
                 
    
             CheckForWinnerIfTeamIsDead();
+            var components = new List<DiscordComponent> {  };
             if (!(!ActiveCharacter.Team.IsPlayerTeam || ActiveCharacter.IsOverriden) 
                 && !ActiveCharacter.IsDead 
                 && winners is null)
             {
-                var components = new List<DiscordComponent> { basicAttackButton };
-            
+        
+                components.Add(basicAttackButton);
                 if (ActiveCharacter.Skill.CanBeUsed(ActiveCharacter))
                 {
                     components.Add(skillButton);
@@ -339,12 +341,10 @@ public class BattleSimulator
                 {
                     components.Add(surgeButton);
                 }
-
-                components.Add(forfeitButton);
-                messageBuilder
-                    .AddComponents(components);
-
             }
+            components.Add(forfeitButton);
+            messageBuilder
+                .AddComponents(components);
             if (message is null)
                 message = await interaction.Channel.SendMessageAsync(messageBuilder);
             else message = await message.ModifyAsync(messageBuilder);
@@ -375,22 +375,58 @@ public class BattleSimulator
             else if (!ActiveCharacter.Team.IsPlayerTeam)
             {
                ActiveCharacter.NonPlayerCharacterAi(ref target, ref decision);
-          
-                await Task.Delay(5000);
-            
+               var buttonAwaitercancellationToken = new CancellationTokenSource();
+               var delayCancellationToken = new CancellationTokenSource();
+
+               message.WaitForButtonAsync(e =>
+               {
+                   var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out decision);
+                   if (!didParse) return false;
+                   if (decision == BattleDecision.Forfeit)
+                   {
+                       var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
+                       if (forfeitedTeam is not null)
+                       {
+                           forfeited = forfeitedTeam;
+                           e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                           delayCancellationToken.Cancel();
+                           return true;
+                       }
+                   }
+
+                   return false;
+               }, buttonAwaitercancellationToken.Token);
+               try
+               {
+                   await Task.Delay(5000,delayCancellationToken.Token);
+               }
+               catch
+               {
+                   // ignored
+               }
+
+               buttonAwaitercancellationToken.Cancel();
             }
             else
             {
   
                 var results = await message.WaitForButtonAsync(e =>
                 {
+                    var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out decision);
+                    if (!didParse) return false;
+                    if (decision == BattleDecision.Forfeit)
+                    {
+                        var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
+                        if (forfeitedTeam is not null)
+                        {
+                            forfeited = forfeitedTeam;
+                            e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                            return true;
+                        }
+                    }
                     if (e.User.Id == ActiveCharacter.Team.UserId)
                     {
-                        var didParse = Enum.TryParse<BattleDecision>(e.Interaction.Data.CustomId, out decision);
-                        if (!didParse)
-                        {
-                            return false;
-                        }
+
                         e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                         return true;
                     }
@@ -399,7 +435,7 @@ public class BattleSimulator
              
                 if (results.TimedOut)
                 {
-                    timedOut = ActiveCharacter;
+                    timedOut = ActiveCharacter.Team;
                     winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
                     break;
                 }
@@ -449,11 +485,17 @@ public class BattleSimulator
                  
                     if (results1.TimedOut)
                     {
-                        timedOut = ActiveCharacter;
+                        timedOut = ActiveCharacter.Team;
                         winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
                         break;
                     }
                 }
+            }
+
+            if (forfeited is not null)
+            {
+                winners = CharacterTeams.First(i => i != forfeited);
+                break;
             }
             if (winners is not null)
             {
@@ -463,12 +505,7 @@ public class BattleSimulator
             }
             var move = ActiveCharacter[decision];
    
-            if (decision == BattleDecision.Forfeit)
-            {
-                forfeited = ActiveCharacter;
-                winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
-                break;
-            }
+
 
             if (move is not null)
             {

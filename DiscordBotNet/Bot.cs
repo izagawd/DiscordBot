@@ -54,7 +54,15 @@ public class Bot
     
     private async Task DoShit()
     {
-        (0.107421875 * 2).Print();
+        var ctx = new PostgreSqlContext();
+        var idk = new List<int>();
+        await ctx.Entity.ForEachAsync(i =>
+        {
+            if (i is not Character character) return;
+            idk.Add(character.Level);
+            character.IsDead.Print();
+        });
+        idk.ForEach(i => i.Print());
     }
     /// <summary>
     /// this is where the program starts
@@ -66,7 +74,7 @@ public class Bot
 
         Console.WriteLine("Entity images loading...");
         var stopwatch = new Stopwatch(); stopwatch.Start();
-        var imagesLoaded = await BasicFunction.LoadEntityImagesAsync(); 
+        var imagesLoaded = await BasicFunction.CacheSomeEntityImagesAsync();
         stopwatch.Stop(); 
         Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to load and cache {imagesLoaded} entity images");
         stopwatch.Reset();
@@ -75,7 +83,9 @@ public class Bot
         var ctx = new PostgreSqlContext();
     
         
-        await ctx.UserData.ForEachAsync(i => i.IsOccupied = false);
+        await ctx.UserData
+                
+            .ForEachAsync(i => i.IsOccupied = false);
         var count = await ctx.UserData.CountAsync();
         await ctx.SaveChangesAsync();
         await ctx.DisposeAsync();
@@ -88,8 +98,6 @@ public class Bot
             Token = ConfigurationManager.AppSettings["BotToken"]!,
             Intents = DiscordIntents.All,
             AutoReconnect = true,
-            
-            
         };
         
         var client = new DiscordClient(config);
@@ -130,11 +138,12 @@ public class Bot
         await databaseContext.SaveChangesAsync();
 
         await databaseContext.DisposeAsync();
-
-        await ev.Context.Channel.SendMessageAsync(new DiscordEmbedBuilder()
+        var embed = new DiscordEmbedBuilder()
             .WithColor(color)
             .WithTitle("hmm")
-            .WithDescription("Something went wrong"));
+            .WithDescription("Something went wrong");
+
+        await ev.Context.Channel.SendMessageAsync(embed);
     }
     
 

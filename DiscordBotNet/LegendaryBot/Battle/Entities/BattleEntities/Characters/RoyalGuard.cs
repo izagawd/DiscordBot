@@ -40,7 +40,7 @@ public class ShieldBash : BasicAttack
                     Caster = owner,
                     DamageText =
                         $"Bashes {target}, making them receive $ damage!",
-                    Damage = owner.Attack
+                    Damage = owner.Attack * 1.2
 
                 }),
             },
@@ -125,7 +125,7 @@ public class IWillProtectUs : Surge
         {
             UsageType = usageType,
             TargetType = TargetType.AOE,
-            Text = $"As a loyal knight, {owner} increases the defense of all allies!",
+            Text = $"As a loyal knight, {owner} increases the defense of all allies for three turns",
             User = owner
         };
     }
@@ -138,7 +138,7 @@ public class RoyalGuard : Character
     public override int BaseAttack => (110 + (10 * Level));
     public override int BaseDefense => (110 + (7.2 * Level)).Round();
     public override int BaseSpeed => 99;
-    public override BasicAttack BasicAttack { get; }
+    public override BasicAttack BasicAttack { get; } = new ShieldBash();
     public override Rarity Rarity => Rarity.ThreeStar;
     public override Surge Surge { get; } = new IWillProtectUs();
     public override Skill Skill { get;  } = new IWillBeYourShield();

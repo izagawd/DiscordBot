@@ -60,7 +60,6 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\ne
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\System.CodeDom.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\ConfigFiles\App.config
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\Google.Protobuf.dll
-C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\EntityFramework.SqlServer.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\EntityFramework.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\K4os.Compression.LZ4.dll
@@ -97,3 +96,4 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\ne
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\System.Text.Encodings.Web.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\System.Text.Json.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\runtimes\browser\lib\net7.0\System.Text.Encodings.Web.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net7.0\Polly.dll

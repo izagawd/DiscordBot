@@ -30,25 +30,24 @@ public abstract  class Character : BattleEntity
 
     public Shield? Shield => StatusEffects.OfType<Shield>().FirstOrDefault();
 
-    [NotMapped]
-    public Move[] MoveList=> new Move[]{ BasicAttack, Skill, Surge }.Where(i => i is not null).ToArray();
+    [NotMapped] public IEnumerable<Move> MoveList => new Move[] { BasicAttack, Skill, Surge };
 
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T">the type of stats modifier you want</typeparam>
-    public List<T> GetAllStatsModifierArgs<T>() where T : StatsModifierArgs
+    public IEnumerable<T> GetAllStatsModifierArgs<T>() where T : StatsModifierArgs
     {
-        List<T> theStatsModified = new List<T>();
+       
         if (CurrentBattle is not null)
         {
-            theStatsModified.AddRange(CurrentBattle
+            return CurrentBattle
                 .GetAllStatsModifierArgsInBattle()
                 .OfType<T>()
-                .Where(i => i.CharacterToAffect == this));
+                .Where(i => i.CharacterToAffect == this);
         }
-
-        return theStatsModified;
+        
+        return Array.Empty<T>();
     }
     
     public static Type[] CharacterTypeArray { get; }
@@ -957,6 +956,9 @@ public abstract  class Character : BattleEntity
     [NotMapped] public abstract Skill Skill { get; } 
     public int Position => Array.IndexOf(CurrentBattle.Characters.ToArray(),this) +1;
     [NotMapped] public abstract Surge Surge { get; }
+    /// <summary>
+    /// Checks if something overrides the player turn eg stun status effect preventing the player from doing anything
+    /// </summary>
     public bool IsOverriden
     {
         get

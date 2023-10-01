@@ -59,7 +59,7 @@ public class SimpleSlash : BasicAttack
                 target.Damage(new DamageArgs(this)
                 {
                     Caster = owner,
-                    Damage = owner.Attack
+                    Damage = owner.Attack * 1.2
                 })
             },
             TargetType = TargetType.SingleTarget,
@@ -88,7 +88,7 @@ public class SlashOfPrecision : Surge
         {
             CanCrit = true,
             Caster = owner,
-            Damage = owner.Attack,
+            Damage = owner.Attack * 3,
             AlwaysCrits = true,
             DamageText = $"The slash was so precise it dealt $ damage!",
      
@@ -112,12 +112,12 @@ public class Slasher : Character
 {
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
-    public override Element Element { get; protected set; } = Element.Fire;
+    public override Element Element { get; protected set; } = Element.Earth;
     public override int BaseMaxHealth => 1100 + (60 * Level);
     public override int BaseAttack => (120 + (13 * Level));
     public override int BaseDefense => (100 + (5.2 * Level)).Round();
     public override int BaseSpeed => 105;
     public override Surge Surge { get; } = new SlashOfPrecision();
-    public override Skill Skill { get;  } = new BlowAway();
-    public override BasicAttack BasicAttack { get;  } = new MethaneSlap();
+    public override Skill Skill { get; } = new WindSlash();
+    public override BasicAttack BasicAttack { get;  } = new SimpleSlash();
 }
