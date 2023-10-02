@@ -107,7 +107,7 @@ public abstract  class Character : BattleEntity
     }
 
 
-    public override string IconUrl =>$"https://legendarygawds.com/character-pictures/{GetType().Name}.png";
+    public override string IconUrl =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
     public float ShieldPercentage
     {
         get

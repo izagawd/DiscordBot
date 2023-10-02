@@ -59,12 +59,12 @@ public abstract class BaseCommandClass : ApplicationCommandModule
         if(OccupiedUserDatas.Any())
         {
             var ids = OccupiedUserDatas.Select(i => i.Id).ToArray();
-            var tempCtx = new PostgreSqlContext();
+            await using var tempCtx = new PostgreSqlContext();
             await tempCtx.UserData
                 .Where(i => ids.Contains(i.Id))
                 .ForEachAsync(i => i.IsOccupied = false);
             await tempCtx.SaveChangesAsync();
-            await tempCtx.DisposeAsync();
+ 
         }
         await DatabaseContext.DisposeAsync();
     }

@@ -46,7 +46,7 @@ public class Detail : BaseCommandClass
             await entity.LoadAsync();
         }
         
-        MemoryStream stream = new MemoryStream();
+        await using MemoryStream stream = new MemoryStream();
         await (await entity.GetDetailsImageAsync()).SaveAsPngAsync(stream);
         stream.Position = 0;
         embedBuilder.WithImageUrl("attachment://description.png");
@@ -55,5 +55,6 @@ public class Detail : BaseCommandClass
             .WithTitle("Detail")
             .AddEmbed(embedBuilder.Build());
         await ctx.CreateResponseAsync(builder);
+   
     }
 }

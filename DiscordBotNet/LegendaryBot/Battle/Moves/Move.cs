@@ -19,7 +19,7 @@ public abstract class Move
     public abstract int MaxEnhance { get; } 
 
     [Image]
-    public virtual string IconUrl => $"https://legendarygawds.com/move-pictures/{GetType().Name}.png";
+    public virtual string IconUrl => $"{Website.DomainName}/battle_images/moves/{GetType().Name}.png";
 
     public async Task<Image<Rgba32>> GetImageAsync(int? level = null)
     {

@@ -5,6 +5,42 @@
       "PackagePath": "staticwebassets\\DiscordBotNet.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\Blast.png",
+      "PackagePath": "staticwebassets\\battle_images\\characters\\Blast.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\CoachChad.png",
+      "PackagePath": "staticwebassets\\battle_images\\characters\\CoachChad.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\Lily.png",
+      "PackagePath": "staticwebassets\\battle_images\\characters\\Lily.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\moves\\DancingFlames.jpg",
+      "PackagePath": "staticwebassets\\battle_images\\moves\\DancingFlames.jpg"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\moves\\guilotine.png",
+      "PackagePath": "staticwebassets\\battle_images\\moves\\guilotine.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\AttackBuff.png",
+      "PackagePath": "staticwebassets\\battle_images\\status_effects\\AttackBuff.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Burn.png",
+      "PackagePath": "staticwebassets\\battle_images\\status_effects\\Burn.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Poison.png",
+      "PackagePath": "staticwebassets\\battle_images\\status_effects\\Poison.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Stun.png",
+      "PackagePath": "staticwebassets\\battle_images\\status_effects\\Stun.png"
+    },
+    {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\css\\CharacterInfo.css",
       "PackagePath": "staticwebassets\\css\\CharacterInfo.css"
     },

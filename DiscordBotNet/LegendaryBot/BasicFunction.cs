@@ -59,13 +59,13 @@ public static class BasicFunction
     /// <returns></returns>
     public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
      {
- 
+
         if (EntityImages.ContainsKey(url)) return EntityImages[url].Clone();
         if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!.Clone();
         try{
-            var webClient = new HttpClient();
-            var responseMessage = await webClient.GetAsync(url);
-            var memoryStream = await responseMessage.Content.ReadAsStreamAsync();
+            using var webClient = new HttpClient();
+            using var responseMessage = await webClient.GetAsync(url);
+            await using var memoryStream = await responseMessage.Content.ReadAsStreamAsync();
             var characterImage = await Image.LoadAsync<Rgba32>(memoryStream);
             //checks if the image is from this bot's domain  so it can permanently cache it
             //instead of temporarily cache it
@@ -77,13 +77,15 @@ public static class BasicFunction
             {
                 UserImages.Set(url,characterImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
             }
-            webClient.Dispose();
-            responseMessage.Dispose();
+
+
             return characterImage.Clone();
         }
         catch
         {
-            var alternateImage =  await GetImageFromUrlAsync("https://legendarygawds.com/move-pictures/guilotine.png");
+         
+         
+            var alternateImage =  await GetImageFromUrlAsync($"{Website.DomainName}/battle_images/moves/guilotine.png");
             if (url.Contains(Website.DomainName))
             {
                 EntityImages[url] = alternateImage;
@@ -93,7 +95,6 @@ public static class BasicFunction
                 UserImages.Set(url,alternateImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
 
             }
-         
             return alternateImage;
         }
     }

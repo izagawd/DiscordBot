@@ -31,7 +31,7 @@ public class Info : BaseCommandClass
             .WithImageUrl("attachment://info.png")
             .WithTimestamp(DateTime.Now);
         var image = await userData.GetInfoAsync(author);
-        var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
     
         await image.SaveAsPngAsync(stream);
         stream.Position = 0;
@@ -39,6 +39,7 @@ public class Info : BaseCommandClass
             .AddEmbed(embedBuilder.Build())
             .AddFile("info.png", stream);
         await ctx.CreateResponseAsync(response);
+
 
 
 

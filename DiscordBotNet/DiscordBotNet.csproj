@@ -16,6 +16,7 @@
     <PackageReference Include="DSharpPlus.Rest" Version="5.0.0-nightly-01790" />
     <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01790" />
     <PackageReference Include="DSharpPlus.VoiceNext" Version="5.0.0-nightly-01790" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="MySql.Data.EntityFramework" Version="8.1.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
@@ -24,6 +25,10 @@
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.0.0" />
     <PackageReference Include="SixLabors.ImageSharp.Web" Version="3.0.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0-rc.1.23419.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\battle_images\blessings\" />
   </ItemGroup>
 
 

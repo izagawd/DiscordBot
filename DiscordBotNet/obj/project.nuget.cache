@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "PCh8fbc8pjewSkUtlg1ZFQWjlGs6oxzkYKMqKbuB7DOn6TbgnJ5mr4StTENapFrOI2RtHjkft9NApwdyJtCA/w==",
+  "dgSpecHash": "h2UX2+LNdQU3aqUrPl2QIc6MfhFsgLfw0XUBr0jwo7YKjbqPdb/8d6XAq8fILG5U+bEcqBIcXFq2okQfcAgIBw==",
   "success": true,
   "projectFilePath": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\DiscordBotNet.csproj",
   "expectedPackageFiles": [
@@ -20,6 +20,7 @@
     "C:\\Users\\theiz\\.nuget\\packages\\k4os.compression.lz4\\1.3.5\\k4os.compression.lz4.1.3.5.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\k4os.compression.lz4.streams\\1.3.5\\k4os.compression.lz4.streams.1.3.5.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\k4os.hash.xxhash\\1.0.8\\k4os.hash.xxhash.1.0.8.nupkg.sha512",
+    "C:\\Users\\theiz\\.nuget\\packages\\microsoft.aspnetcore.authentication.certificate\\7.0.11\\microsoft.aspnetcore.authentication.certificate.7.0.11.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.11\\microsoft.entityframeworkcore.7.0.11.nupkg.sha512",
     "C:\\Users\\theiz\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.11\\microsoft.entityframeworkcore.abstractions.7.0.11.nupkg.sha512",

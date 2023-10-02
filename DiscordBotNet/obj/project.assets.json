@@ -275,6 +275,25 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Authentication.Certificate/7.0.11": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Caching.Memory": "7.0.0"
+        },
+        "compile": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.Certificate.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.Certificate.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.CSharp/4.7.0": {
         "type": "package",
         "compile": {
@@ -1628,6 +1647,21 @@
         "lib/netstandard2.0/K4os.Hash.xxHash.xml",
         "lib/netstandard2.1/K4os.Hash.xxHash.dll",
         "lib/netstandard2.1/K4os.Hash.xxHash.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.Certificate/7.0.11": {
+      "sha512": "R2ND4zgzy4RyyH41zCbVwUxeVjFM5U97Cbewn0QCd+UTf+wTdWIaNVnw1VPhMayOTwZSfZvrdOHjGc6gSL0YZg==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authentication.certificate/7.0.11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net7.0/Microsoft.AspNetCore.Authentication.Certificate.dll",
+        "lib/net7.0/Microsoft.AspNetCore.Authentication.Certificate.xml",
+        "microsoft.aspnetcore.authentication.certificate.7.0.11.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.certificate.nuspec"
       ]
     },
     "Microsoft.CSharp/4.7.0": {
@@ -3764,6 +3798,7 @@
       "DSharpPlus.Rest >= 5.0.0-nightly-01790",
       "DSharpPlus.SlashCommands >= 5.0.0-nightly-01790",
       "DSharpPlus.VoiceNext >= 5.0.0-nightly-01790",
+      "Microsoft.AspNetCore.Authentication.Certificate >= 7.0.11",
       "Microsoft.EntityFrameworkCore >= 7.0.11",
       "MySql.Data.EntityFramework >= 8.1.0",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 7.0.11",
@@ -3846,6 +3881,10 @@
           "DSharpPlus.VoiceNext": {
             "target": "Package",
             "version": "[5.0.0-nightly-01790, )"
+          },
+          "Microsoft.AspNetCore.Authentication.Certificate": {
+            "target": "Package",
+            "version": "[7.0.11, )"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",

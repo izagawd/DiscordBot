@@ -9,14 +9,15 @@
       "DiscordBotNet/1.0.0": {
         "dependencies": {
           "AspNet.Security.OAuth.Discord": "7.0.4",
-          "DSharpPlus": "5.0.0-nightly-01766",
-          "DSharpPlus.CommandsNext": "5.0.0-nightly-01766",
+          "DSharpPlus": "5.0.0-nightly-01790",
+          "DSharpPlus.CommandsNext": "5.0.0-nightly-01790",
           "DSharpPlus.Core": "5.0.0-nightly-01576",
-          "DSharpPlus.Interactivity": "5.0.0-nightly-01766",
-          "DSharpPlus.Lavalink": "5.0.0-nightly-01735",
-          "DSharpPlus.Rest": "5.0.0-nightly-01766",
-          "DSharpPlus.SlashCommands": "5.0.0-nightly-01766",
-          "DSharpPlus.VoiceNext": "5.0.0-nightly-01766",
+          "DSharpPlus.Interactivity": "5.0.0-nightly-01790",
+          "DSharpPlus.Lavalink": "5.0.0-nightly-01790",
+          "DSharpPlus.Rest": "5.0.0-nightly-01790",
+          "DSharpPlus.SlashCommands": "5.0.0-nightly-01790",
+          "DSharpPlus.VoiceNext": "5.0.0-nightly-01790",
+          "Microsoft.AspNetCore.Authentication.Certificate": "7.0.11",
           "Microsoft.EntityFrameworkCore": "7.0.11",
           "MySql.Data.EntityFramework": "8.1.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "7.0.11",
@@ -46,11 +47,12 @@
           }
         }
       },
-      "DSharpPlus/5.0.0-nightly-01766": {
+      "DSharpPlus/5.0.0-nightly-01790": {
         "dependencies": {
           "Microsoft.Extensions.Caching.Memory": "7.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
-          "Newtonsoft.Json": "13.0.3"
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.0",
+          "Newtonsoft.Json": "13.0.3",
+          "Polly": "7.2.3"
         },
         "runtime": {
           "lib/net7.0/DSharpPlus.dll": {
@@ -59,11 +61,11 @@
           }
         }
       },
-      "DSharpPlus.CommandsNext/5.0.0-nightly-01766": {
+      "DSharpPlus.CommandsNext/5.0.0-nightly-01790": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01766",
+          "DSharpPlus": "5.0.0-nightly-01790",
           "Microsoft.Extensions.DependencyInjection": "7.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "7.0.1"
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.0"
         },
         "runtime": {
           "lib/net7.0/DSharpPlus.CommandsNext.dll": {
@@ -83,10 +85,10 @@
           }
         }
       },
-      "DSharpPlus.Interactivity/5.0.0-nightly-01766": {
+      "DSharpPlus.Interactivity/5.0.0-nightly-01790": {
         "dependencies": {
           "ConcurrentHashSet": "1.3.0",
-          "DSharpPlus": "5.0.0-nightly-01766"
+          "DSharpPlus": "5.0.0-nightly-01790"
         },
         "runtime": {
           "lib/net7.0/DSharpPlus.Interactivity.dll": {
@@ -95,20 +97,20 @@
           }
         }
       },
-      "DSharpPlus.Lavalink/5.0.0-nightly-01735": {
+      "DSharpPlus.Lavalink/5.0.0-nightly-01790": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01766"
+          "DSharpPlus": "5.0.0-nightly-01790"
         },
         "runtime": {
           "lib/net7.0/DSharpPlus.Lavalink.dll": {
-            "assemblyVersion": "5.0.0.1735",
-            "fileVersion": "5.0.0.1735"
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
           }
         }
       },
-      "DSharpPlus.Rest/5.0.0-nightly-01766": {
+      "DSharpPlus.Rest/5.0.0-nightly-01790": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01766"
+          "DSharpPlus": "5.0.0-nightly-01790"
         },
         "runtime": {
           "lib/net7.0/DSharpPlus.Rest.dll": {
@@ -117,9 +119,9 @@
           }
         }
       },
-      "DSharpPlus.SlashCommands/5.0.0-nightly-01766": {
+      "DSharpPlus.SlashCommands/5.0.0-nightly-01790": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01766",
+          "DSharpPlus": "5.0.0-nightly-01790",
           "Microsoft.Extensions.DependencyInjection": "7.0.0"
         },
         "runtime": {
@@ -129,9 +131,9 @@
           }
         }
       },
-      "DSharpPlus.VoiceNext/5.0.0-nightly-01766": {
+      "DSharpPlus.VoiceNext/5.0.0-nightly-01790": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01766",
+          "DSharpPlus": "5.0.0-nightly-01790",
           "DSharpPlus.VoiceNext.Natives": "1.0.0"
         },
         "runtime": {
@@ -221,6 +223,17 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Authentication.Certificate/7.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Caching.Memory": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.Certificate.dll": {
+            "assemblyVersion": "7.0.11.0",
+            "fileVersion": "7.0.1123.42502"
+          }
+        }
+      },
       "Microsoft.CSharp/4.7.0": {},
       "Microsoft.EntityFrameworkCore/7.0.11": {
         "dependencies": {
@@ -267,7 +280,7 @@
         "dependencies": {
           "Microsoft.Extensions.Caching.Abstractions": "7.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.0",
           "Microsoft.Extensions.Options": "7.0.0",
           "Microsoft.Extensions.Primitives": "7.0.0"
         }
@@ -287,18 +300,11 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "7.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.0",
           "Microsoft.Extensions.Options": "7.0.0"
         }
       },
-      "Microsoft.Extensions.Logging.Abstractions/7.0.1": {
-        "runtime": {
-          "lib/net7.0/Microsoft.Extensions.Logging.Abstractions.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.723.27404"
-          }
-        }
-      },
+      "Microsoft.Extensions.Logging.Abstractions/7.0.0": {},
       "Microsoft.Extensions.Options/7.0.0": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
@@ -413,7 +419,7 @@
       },
       "Npgsql/7.0.6": {
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "7.0.1"
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.0"
         },
         "runtime": {
           "lib/net7.0/Npgsql.dll": {
@@ -433,6 +439,14 @@
           "lib/net7.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
             "assemblyVersion": "7.0.11.0",
             "fileVersion": "7.0.11.0"
+          }
+        }
+      },
+      "Polly/7.2.3": {
+        "runtime": {
+          "lib/netstandard2.0/Polly.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.2.3.0"
           }
         }
       },
@@ -779,19 +793,19 @@
       "path": "concurrenthashset/1.3.0",
       "hashPath": "concurrenthashset.1.3.0.nupkg.sha512"
     },
-    "DSharpPlus/5.0.0-nightly-01766": {
+    "DSharpPlus/5.0.0-nightly-01790": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ZTvTuS3ObS5iTq4CKsnVIRxKBmsjvqaKedHLpqCY+gQQAiosHxTV+j7djvkN/bmV6WyX0KBMtzKeuThiBdvdHA==",
-      "path": "dsharpplus/5.0.0-nightly-01766",
-      "hashPath": "dsharpplus.5.0.0-nightly-01766.nupkg.sha512"
+      "sha512": "sha512-b9JziHOfHhkAJ5db9R95ZCWHLxpdzit3w/8xx4mbEfgxeZlXyOfOCuAdWXtRZAkKHlIW21FUVIWyhI0uP3PluQ==",
+      "path": "dsharpplus/5.0.0-nightly-01790",
+      "hashPath": "dsharpplus.5.0.0-nightly-01790.nupkg.sha512"
     },
-    "DSharpPlus.CommandsNext/5.0.0-nightly-01766": {
+    "DSharpPlus.CommandsNext/5.0.0-nightly-01790": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-6D65jdirZ5YUEJn0Rq4AsRrkuIuWPd0J2QMaLXsapf7Eqo85/LKIGCRGtwwgW1t1GzK1cjCjk5h9u788EmZL3w==",
-      "path": "dsharpplus.commandsnext/5.0.0-nightly-01766",
-      "hashPath": "dsharpplus.commandsnext.5.0.0-nightly-01766.nupkg.sha512"
+      "sha512": "sha512-qSyyRImR2hPetDStS/wOjWS+wPT+TZlC6GSRTnfQATVbSAifon5kRu7WN8voNigKEL9AN5Co6SzsJbtESxvbvw==",
+      "path": "dsharpplus.commandsnext/5.0.0-nightly-01790",
+      "hashPath": "dsharpplus.commandsnext.5.0.0-nightly-01790.nupkg.sha512"
     },
     "DSharpPlus.Core/5.0.0-nightly-01576": {
       "type": "package",
@@ -800,40 +814,40 @@
       "path": "dsharpplus.core/5.0.0-nightly-01576",
       "hashPath": "dsharpplus.core.5.0.0-nightly-01576.nupkg.sha512"
     },
-    "DSharpPlus.Interactivity/5.0.0-nightly-01766": {
+    "DSharpPlus.Interactivity/5.0.0-nightly-01790": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-m2tqG3Pcrq6w8n6kLLaFQt81IfqFTMOwTvcLREp0+9w2zAcFP3ujQm8xqwKbOiV38/EBb4OKin1giubiXouSvg==",
-      "path": "dsharpplus.interactivity/5.0.0-nightly-01766",
-      "hashPath": "dsharpplus.interactivity.5.0.0-nightly-01766.nupkg.sha512"
+      "sha512": "sha512-oSgyHm2c8nKXgUSxuqI6hoF3nGbqStLU9tRZsvOdr5yGo9Aq9iMstX89ZGuuB7zPEFbU3P3ToL8RyYbFpDnWkw==",
+      "path": "dsharpplus.interactivity/5.0.0-nightly-01790",
+      "hashPath": "dsharpplus.interactivity.5.0.0-nightly-01790.nupkg.sha512"
     },
-    "DSharpPlus.Lavalink/5.0.0-nightly-01735": {
+    "DSharpPlus.Lavalink/5.0.0-nightly-01790": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0eByboW6rrLG+B6Q1D23vN58NWSIOR6uTQSTog5ucMER17aXZxFLpwCig7pDzPl2NpzBYa59fXLuHDTDn6e1tg==",
-      "path": "dsharpplus.lavalink/5.0.0-nightly-01735",
-      "hashPath": "dsharpplus.lavalink.5.0.0-nightly-01735.nupkg.sha512"
+      "sha512": "sha512-vdwyKQrw/TrvZaQgomihs47ZCHBHDCZDftq64wluE/vH4r90mEsJ0bhzuDiv8tjIZyIzIkfK1d2Q1tBzAlTfmw==",
+      "path": "dsharpplus.lavalink/5.0.0-nightly-01790",
+      "hashPath": "dsharpplus.lavalink.5.0.0-nightly-01790.nupkg.sha512"
     },
-    "DSharpPlus.Rest/5.0.0-nightly-01766": {
+    "DSharpPlus.Rest/5.0.0-nightly-01790": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-BhbdUEV/d+umJ4X+jJBSvK8wuTwZ4IBDnp0ps9AvyHwnGRPYW77cHYKASJgamMfTwVnfToVuuUc/Ak7AgB/rig==",
-      "path": "dsharpplus.rest/5.0.0-nightly-01766",
-      "hashPath": "dsharpplus.rest.5.0.0-nightly-01766.nupkg.sha512"
+      "sha512": "sha512-n+8X4d6MqvUWcQNAeZoicgH95xOujB9SdzHYo4yNCeFLioY0oozvQ3GcgN/c6EuyESeI5WCnHT/iWWXV8gJURA==",
+      "path": "dsharpplus.rest/5.0.0-nightly-01790",
+      "hashPath": "dsharpplus.rest.5.0.0-nightly-01790.nupkg.sha512"
     },
-    "DSharpPlus.SlashCommands/5.0.0-nightly-01766": {
+    "DSharpPlus.SlashCommands/5.0.0-nightly-01790": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0t8nlzWRk4Vy4JrG3fjGUGXs4H/y6L2D+pUKXny/5xF5esXITKqJs3Ku9g2WbijnMSb0i7A3wMiPGK89whb5Ig==",
-      "path": "dsharpplus.slashcommands/5.0.0-nightly-01766",
-      "hashPath": "dsharpplus.slashcommands.5.0.0-nightly-01766.nupkg.sha512"
+      "sha512": "sha512-d5YUkxYeD/AgSn+qm+qdvij4ndaexpNkQ1RvNUZ1GPNLvF2OCrXnrwqOshv055W4l4VdCtv4YWvtBiaxpY6fsg==",
+      "path": "dsharpplus.slashcommands/5.0.0-nightly-01790",
+      "hashPath": "dsharpplus.slashcommands.5.0.0-nightly-01790.nupkg.sha512"
     },
-    "DSharpPlus.VoiceNext/5.0.0-nightly-01766": {
+    "DSharpPlus.VoiceNext/5.0.0-nightly-01790": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-rUkj57eJKvz60mCZGxygnlasXZtdPwsv3dAknyM8/Y90hlAmKZLCvXmJkGZ0cdDhHplNKQT18vYQJ4uJb9vWWw==",
-      "path": "dsharpplus.voicenext/5.0.0-nightly-01766",
-      "hashPath": "dsharpplus.voicenext.5.0.0-nightly-01766.nupkg.sha512"
+      "sha512": "sha512-UeAFONulZT33jBjI8z03qaaCqIqYcrcmZpgbBBqE24UviBFPbnGHyGLY/XyuiDwGC9LTvNAhtAu8lSdPbu8IwQ==",
+      "path": "dsharpplus.voicenext/5.0.0-nightly-01790",
+      "hashPath": "dsharpplus.voicenext.5.0.0-nightly-01790.nupkg.sha512"
     },
     "DSharpPlus.VoiceNext.Natives/1.0.0": {
       "type": "package",
@@ -876,6 +890,13 @@
       "sha512": "sha512-Wp2F7BamQ2Q/7Hk834nV9vRQapgcr8kgv9Jvfm8J3D0IhDqZMMl+a2yxUq5ltJitvXvQfB8W6K4F4fCbw/P6YQ==",
       "path": "k4os.hash.xxhash/1.0.8",
       "hashPath": "k4os.hash.xxhash.1.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Certificate/7.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R2ND4zgzy4RyyH41zCbVwUxeVjFM5U97Cbewn0QCd+UTf+wTdWIaNVnw1VPhMayOTwZSfZvrdOHjGc6gSL0YZg==",
+      "path": "microsoft.aspnetcore.authentication.certificate/7.0.11",
+      "hashPath": "microsoft.aspnetcore.authentication.certificate.7.0.11.nupkg.sha512"
     },
     "Microsoft.CSharp/4.7.0": {
       "type": "package",
@@ -954,12 +975,12 @@
       "path": "microsoft.extensions.logging/7.0.0",
       "hashPath": "microsoft.extensions.logging.7.0.0.nupkg.sha512"
     },
-    "Microsoft.Extensions.Logging.Abstractions/7.0.1": {
+    "Microsoft.Extensions.Logging.Abstractions/7.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-pkeBFx0vqMW/A3aUVHh7MPu3WkBhaVlezhSZeb1c9XD0vUReYH1TLFSy5MxJgZfmz5LZzYoErMorlYZiwpOoNA==",
-      "path": "microsoft.extensions.logging.abstractions/7.0.1",
-      "hashPath": "microsoft.extensions.logging.abstractions.7.0.1.nupkg.sha512"
+      "sha512": "sha512-kmn78+LPVMOWeITUjIlfxUPDsI0R6G0RkeAMBmQxAJ7vBJn4q2dTva7pWi65ceN5vPGjJ9q/Uae2WKgvfktJAw==",
+      "path": "microsoft.extensions.logging.abstractions/7.0.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Options/7.0.0": {
       "type": "package",
@@ -1044,6 +1065,13 @@
       "sha512": "sha512-cHEgEz0ldXc9wVANs8sJqC+3eilqefrkasCBgaVT0tyj8tb1p3/pwy2ngjboNkDG3M0z+xJsJ4jC5p8wySAM3w==",
       "path": "npgsql.entityframeworkcore.postgresql/7.0.11",
       "hashPath": "npgsql.entityframeworkcore.postgresql.7.0.11.nupkg.sha512"
+    },
+    "Polly/7.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DeCY0OFbNdNxsjntr1gTXHJ5pKUwYzp04Er2LLeN3g6pWhffsGuKVfMBLe1lw7x76HrPkLxKEFxBlpRxS2nDEQ==",
+      "path": "polly/7.2.3",
+      "hashPath": "polly.7.2.3.nupkg.sha512"
     },
     "Portable.BouncyCastle/1.9.0": {
       "type": "package",

@@ -74,6 +74,10 @@
               "target": "Package",
               "version": "[5.0.0-nightly-01790, )"
             },
+            "Microsoft.AspNetCore.Authentication.Certificate": {
+              "target": "Package",
+              "version": "[7.0.11, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.11, )"

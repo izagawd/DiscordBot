@@ -315,7 +315,7 @@ public class BattleSimulator
                 .AddField(_mainText, _additionalText)
                 .WithImageUrl("attachment://battle.png");
             var combatImage = await GetCombatImageAsync();
-            var stream = new MemoryStream();
+            await using var stream = new MemoryStream();
             await combatImage.SaveAsPngAsync(stream);
             stream.Position = 0;
             DiscordMessageBuilder messageBuilder =new DiscordMessageBuilder()
@@ -346,7 +346,7 @@ public class BattleSimulator
             if (message is null)
                 message = await interaction.Channel.SendMessageAsync(messageBuilder);
             else message = await message.ModifyAsync(messageBuilder);
-
+;
             _mainText = $"{ActiveCharacter} is thinking of a course of action...";
             if (winners is not null)
             {
@@ -373,8 +373,8 @@ public class BattleSimulator
             else if (!ActiveCharacter.Team.IsPlayerTeam)
             {
                ActiveCharacter.NonPlayerCharacterAi(ref target, ref decision);
-               var buttonAwaitercancellationToken = new CancellationTokenSource();
-               var delayCancellationToken = new CancellationTokenSource();
+               using var buttonAwaitercancellationToken = new CancellationTokenSource();
+               using var delayCancellationToken = new CancellationTokenSource();
 
                message.WaitForButtonAsync(e =>
                {
@@ -404,8 +404,6 @@ public class BattleSimulator
                }
                 
                buttonAwaitercancellationToken.Cancel();
-               delayCancellationToken.Dispose();
-               buttonAwaitercancellationToken.Dispose();
             }
             else
             {
@@ -461,7 +459,7 @@ public class BattleSimulator
                         .AddComponents(selectTarget)
                         .AddEmbed(embedToEdit.Build());
                     message = await message.ModifyAsync(messageBuilder);
-                    CancellationTokenSource buttonAwaiterToken = new CancellationTokenSource();
+                    using CancellationTokenSource buttonAwaiterToken = new CancellationTokenSource();
                     message.WaitForSelectAsync(e =>
                     {
                         if (e.User.Id == ActiveCharacter.Team.UserId)
@@ -482,7 +480,7 @@ public class BattleSimulator
                         }
                         return false;
                     });
-                    buttonAwaiterToken.Dispose();
+             
                     if (results1.TimedOut)
                     {
                         timedOut = ActiveCharacter.Team;

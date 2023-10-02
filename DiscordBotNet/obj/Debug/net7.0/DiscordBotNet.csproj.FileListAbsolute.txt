@@ -97,3 +97,4 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\ne
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\System.Text.Json.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\net7.0\runtimes\browser\lib\net7.0\System.Text.Encodings.Web.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net7.0\Polly.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.Certificate.dll

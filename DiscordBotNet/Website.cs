@@ -3,6 +3,7 @@ using System.Security.Claims;
 using AspNet.Security.OAuth.Discord;
 using DiscordBotNet.Database;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SixLabors.ImageSharp;
 
@@ -10,7 +11,7 @@ namespace DiscordBotNet;
 
 public static class Website
 {
-    public static readonly string DomainName = "legendarygawds.com";
+    public static  readonly string DomainName = "https://localhost";
     public static string RenderImageTag(Image image)
     {
         if (image == null)
@@ -89,7 +90,9 @@ public static class Website
     public static async Task Start(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+        builder.Services.AddAuthentication(
+                CertificateAuthenticationDefaults.AuthenticationScheme)
+            .AddCertificate();
         ConfigureServices(builder.Services);
         var app = builder.Build();
         
@@ -117,7 +120,7 @@ public static class Website
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
         });
-        await app.RunAsync();
+        await app.RunAsync(DomainName);
 
     }
 }

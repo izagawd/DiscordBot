@@ -22,10 +22,8 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
 
-        var databaseContext = new PostgreSqlContext();
+        await using var databaseContext = new PostgreSqlContext();
         UserData = await databaseContext.UserData.FindOrCreateAsync(User.GetDiscordUserId());
-        await databaseContext.DisposeAsync();
-
     }
 
 }

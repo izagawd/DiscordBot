@@ -72,25 +72,19 @@ public class Bot
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
-        Console.WriteLine("Entity images loading...");
-        var stopwatch = new Stopwatch(); stopwatch.Start();
-        var imagesLoaded = await BasicFunction.CacheSomeEntityImagesAsync();
-        stopwatch.Stop(); 
-        Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to load and cache {imagesLoaded} entity images");
-        stopwatch.Reset();
+        var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
         stopwatch.Start();
-        var ctx = new PostgreSqlContext();
-    
-        
-        await ctx.UserData
-                
-            .ForEachAsync(i => i.IsOccupied = false);
-        var count = await ctx.UserData.CountAsync();
-        await ctx.SaveChangesAsync();
-        await ctx.DisposeAsync();
-        stopwatch.Stop();
-        Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to make {count} users unoccupied");
+        await using (var ctx = new PostgreSqlContext())
+        {
+            await ctx.UserData
+                .ForEachAsync(i => i.IsOccupied = false);
+            var count = await ctx.UserData.CountAsync();
+            await ctx.SaveChangesAsync();
+
+            Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to make {count} users unoccupied");
+        }
+
         
         CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration
@@ -125,7 +119,7 @@ public class Bot
     private async  Task OnSlashCommandError(SlashCommandsExtension extension,SlashCommandErrorEventArgs ev)
     {
         Console.WriteLine(ev.Exception);
-        var databaseContext = new PostgreSqlContext();
+        await using var databaseContext = new PostgreSqlContext();
         var involvedUsers = new List<DiscordUser>();
         involvedUsers.Add(ev.Context.User);
         if (ev.Context.ResolvedUserMentions is not null)
@@ -136,8 +130,6 @@ public class Bot
                 i.IsOccupied = false);
         var color = await databaseContext.UserData.FindOrCreateSelectAsync(ev.Context.User.Id, i => i.Color);
         await databaseContext.SaveChangesAsync();
-
-        await databaseContext.DisposeAsync();
         var embed = new DiscordEmbedBuilder()
             .WithColor(color)
             .WithTitle("hmm")

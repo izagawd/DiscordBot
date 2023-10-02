@@ -17,7 +17,7 @@ public abstract class Blessing : BattleEntity
     }
 
     public string Description => GetDescription(Level);
-    public override string IconUrl => $"https://legendarygawds.com/blessing-pictures/{GetType().Name}.png";
+    public override string IconUrl => $"{Website.DomainName}/battle_images/blessings/{GetType().Name}.png";
 
     public sealed  override int MaxLevel => 15;
     [NotMapped] public virtual int Attack { get; } = 200;

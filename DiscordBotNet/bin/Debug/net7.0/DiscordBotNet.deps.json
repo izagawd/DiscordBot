@@ -17,6 +17,7 @@
           "DSharpPlus.Rest": "5.0.0-nightly-01790",
           "DSharpPlus.SlashCommands": "5.0.0-nightly-01790",
           "DSharpPlus.VoiceNext": "5.0.0-nightly-01790",
+          "Microsoft.AspNetCore.Authentication.Certificate": "7.0.11",
           "Microsoft.EntityFrameworkCore": "7.0.11",
           "MySql.Data.EntityFramework": "8.1.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "7.0.11",
@@ -219,6 +220,17 @@
           "lib/net6.0/K4os.Hash.xxHash.dll": {
             "assemblyVersion": "1.0.8.0",
             "fileVersion": "1.0.8.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Certificate/7.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Caching.Memory": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.Certificate.dll": {
+            "assemblyVersion": "7.0.11.0",
+            "fileVersion": "7.0.1123.42502"
           }
         }
       },
@@ -878,6 +890,13 @@
       "sha512": "sha512-Wp2F7BamQ2Q/7Hk834nV9vRQapgcr8kgv9Jvfm8J3D0IhDqZMMl+a2yxUq5ltJitvXvQfB8W6K4F4fCbw/P6YQ==",
       "path": "k4os.hash.xxhash/1.0.8",
       "hashPath": "k4os.hash.xxhash.1.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Certificate/7.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R2ND4zgzy4RyyH41zCbVwUxeVjFM5U97Cbewn0QCd+UTf+wTdWIaNVnw1VPhMayOTwZSfZvrdOHjGc6gSL0YZg==",
+      "path": "microsoft.aspnetcore.authentication.certificate/7.0.11",
+      "hashPath": "microsoft.aspnetcore.authentication.certificate.7.0.11.nupkg.sha512"
     },
     "Microsoft.CSharp/4.7.0": {
       "type": "package",
