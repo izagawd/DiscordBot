@@ -23,7 +23,7 @@ public class WindSlash : Skill
         List<DamageResult> damageResults = new List<DamageResult>();
         foreach (var i in target.Team)
         {
-            damageResults.Add(i.Damage(new DamageArgs(this){Caster = owner,Damage = owner.Attack, DamageText = "The slash dealt $ damage!"}));
+            damageResults.Add(i.Damage(new DamageArgs(this){Caster = owner,Damage = owner.Attack * 1.7, DamageText = $"The slash dealt $ damage to {i}!"}));
         }
 
         return new UsageResult(this)
@@ -59,11 +59,12 @@ public class SimpleSlash : BasicAttack
                 target.Damage(new DamageArgs(this)
                 {
                     Caster = owner,
-                    Damage = owner.Attack * 1.2
+                    Damage = owner.Attack * 1.7
+                    
                 })
             },
             TargetType = TargetType.SingleTarget,
-            Text = $"{owner} does a simple slash!",
+            Text = $"{owner} does a simple slash to {target}!",
             User = owner,
             UsageType = usageType
         };
@@ -90,7 +91,7 @@ public class SlashOfPrecision : Surge
             Caster = owner,
             Damage = owner.Attack * 3,
             AlwaysCrits = true,
-            DamageText = $"The slash was so precise it dealt $ damage!",
+            DamageText = $"The slash was so precise it dealt $ damage to {target}!",
      
         });
 

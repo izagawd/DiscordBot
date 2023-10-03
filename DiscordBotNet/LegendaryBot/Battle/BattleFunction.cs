@@ -58,7 +58,7 @@ public static  class BattleFunction
     {
 
 
-        return (potentialDamage * 300) / (300 + defense);
+        return (potentialDamage * 600) / (300.0 + defense);
     }
     /// <returns>
     /// The user's level based on their stats

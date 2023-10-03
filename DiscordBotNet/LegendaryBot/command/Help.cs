@@ -55,12 +55,13 @@ public class Help : BaseCommandClass
                 {
                     embedToBuild.Title = foundCommand.Name;
                     embedToBuild.WithDescription(foundCommand.Description);
-                    embedToBuild.AddField("Example(s)",foundCommand.Example);
+             
                     foreach (var i in _commandResults[foundCommand.GetType()])
                     {
                         embedToBuild.AddField(foundCommand.Name + " " + i.Name,
                             i.Description);
                     }
+                    embedToBuild.AddField("Example(s)",foundCommand.Example);
                 }
 
             } else

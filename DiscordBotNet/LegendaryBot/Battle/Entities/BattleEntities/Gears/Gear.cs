@@ -121,9 +121,10 @@ public abstract class Gear : BattleEntity
             throw new Exception("Type is not a subclass of GearStat or is abstract");
 
         }
-        if (IsNew && Level == 1)
+        Rarity = rarity;
+        if (Level == 1)
         {
-            Rarity = rarity;
+    
             var statTypeCollection = GearStat.AllGearStatTypes.Where(i => i != GearStat.SpeedPercentageType);
             if (customMainStat is not null)
             {

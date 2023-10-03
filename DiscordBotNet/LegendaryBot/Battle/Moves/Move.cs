@@ -25,20 +25,20 @@ public abstract class Move
     {
 
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
-        var max = int.Max(image.Height, image.Width);
-        
+
+    
         image.Mutate(i => i
             .EntropyCrop()
-            .Resize(max, max)
-            .Draw(Color.Black, 8, new RectangleF(0, 0, max, max)));
+            .Resize(100, 100)
+            .Draw(Color.Black, 8, new RectangleF(0, 0, 100,100)));
   
         if (level is not null && level > 0)
         {
-            var options = new RichTextOptions(SystemFonts.CreateFont("Arial",max/ 3.0f));
+            var options = new RichTextOptions(SystemFonts.CreateFont("Arial",40));
             
-            options.Origin = new Vector2(10, 0);
+            options.Origin = new Vector2(8, 0);
 
-            var rectangle = new RectangleF(0, 0, 30, 30);
+            var rectangle = new RectangleF(0, 0, 40, 40);
             image.Mutate(i => i
                 .Draw(Color.Black,4,rectangle)
                 .Fill(Color.Black, rectangle)
@@ -107,7 +107,7 @@ public abstract class Move
 
     public virtual bool CanBeUsed(Character owner)
     {
-        return GetPossibleTargets(owner).Any() && GetType() != typeof(SurgeSample) && GetType() != typeof(SkillSample);
+        return GetPossibleTargets(owner).Any() && !owner.IsOverriden;
     }
 
     public override string ToString()

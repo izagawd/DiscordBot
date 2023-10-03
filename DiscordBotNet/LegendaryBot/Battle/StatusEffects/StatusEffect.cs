@@ -11,7 +11,7 @@ namespace DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 public abstract class StatusEffect
 {
     [Image]
-    public virtual string IconUrl => $"{Website.DomainName}/battle_images/status-effects/{GetType().Name}.png";
+    public virtual string IconUrl => $"{Website.DomainName}/battle_images/status_effects/{GetType().Name}.png";
     // is renewable means that if a new status effect of the same type should be added to the character,
     // if it has a higher level it will override the old ones level. if it has a higher duration it will override
     // the old ones duration
@@ -51,11 +51,15 @@ public abstract class StatusEffect
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         image.Mutate(ctx =>
         {
-            
+       
+        
+
+
             ctx.BackgroundColor(backgroundColor);
-            ctx.Resize(new Size(30, 30));
-            ctx.DrawText(Duration.ToString(), SystemFonts.CreateFont("Arial", 20),
-                Color.Black, new PointF(0, 0));
+            ctx.Resize(new Size(100, 100));
+            var font = SystemFonts.CreateFont("Arial", 70, FontStyle.Bold);
+            ctx.DrawText(Duration.ToString(), font, Brushes.Solid(Color.Black),
+                Pens.Solid(Color.White), new PointF(0, 0));
         });
         return image;
     }

@@ -69,7 +69,7 @@ public class Begin : BaseCommandClass
             player.UserData = userData;
         }
 
-        if (userData.Team.Count <= 0)
+        if (!userData.CharacterTeamArray.Any())
         {
             userData.AddToTeam(userData.Inventory.OfType<Player>().First());
         }
@@ -127,7 +127,7 @@ public class Begin : BaseCommandClass
         }
 
 
-        var userTeam = userData.Team;
+        var userTeam = userData.GetCharacterTeam(ctx.User);
         userTeam.Add(lily);
 
         BattleResult battleResult = await  new BattleSimulator(await  userTeam.LoadAsync(), await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx.Interaction, result.Message);

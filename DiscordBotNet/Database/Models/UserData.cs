@@ -24,7 +24,7 @@ public class UserData : Model,  ICanBeLeveledUp
     public UserData(){}
 
 
-    [NotMapped] public IReadOnlyList<Guid> Ids => Team.Select(i => i.Id).ToArray();
+    [NotMapped] public IEnumerable<Guid> Ids => CharacterTeamArray.Select(i => i.Id);
     public List<QuoteReaction> QuoteReactions { get; set; } = new();
 
     public void RemoveFromTeam(Character character)
@@ -46,9 +46,13 @@ public class UserData : Model,  ICanBeLeveledUp
             Character4 = null;
         }
     }
+    [NotMapped]
+    public IEnumerable<Character> CharacterTeamArray =>
+        new [] { Character1, Character2, Character3, Character4 }
+            .Where(i => i is not null).OfType<Character>().ToArray();
     public void AddToTeam(Character character)
     {
-        if(Team.Contains(character)) return;
+        if(CharacterTeamArray.Contains(character)) return;
         if (Character1 is null)
         {
             Character1 = character;
@@ -69,23 +73,24 @@ public class UserData : Model,  ICanBeLeveledUp
         character.UserDataId = Id;
         character.UserData = this;
     }
-    [NotMapped]
-    
-    public CharacterTeam Team {
-        get
+
+    /// <param name="userName">The username of the owner of the team</param>
+    public CharacterTeam GetCharacterTeam(string userName)
+    {
+        CharacterTeam team = new CharacterTeam(Id,userName);
+        Character?[] characterArray = {Character1,Character2,Character3,Character4};
+        foreach (var i in characterArray)
         {
-            CharacterTeam team = new CharacterTeam(Id);
-            Character?[] characterArray = {Character1,Character2,Character3,Character4};
-            foreach (var i in characterArray)
-            {
-                if (i is not null)
-                    team.Add(i);
-            }
-            return team;
+            if (i is not null)
+                team.Add(i);
         }
-        
+        return team;
     }
-    
+
+    public CharacterTeam GetCharacterTeam(DiscordUser user)
+    {
+        return GetCharacterTeam(user.Username);
+    }
     public async Task<Image<Rgba32>> GetInfoAsync(DiscordUser? user = null)
     {
         if (user is null)

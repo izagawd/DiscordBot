@@ -32,15 +32,15 @@ public class ShieldBash : BasicAttack
     {
         var usageResult =  new UsageResult(this)
         {
-            DamageResults = new DamageResult[]
+            DamageResults = new []
             {
                 target.Damage(new DamageArgs(this)
                 {
                     AlwaysCrits = true,
                     Caster = owner,
                     DamageText =
-                        $"Bashes {target}, making them receive $ damage!",
-                    Damage = owner.Attack * 1.2
+                        $"{owner} bashes {target} with his shield , making them receive $ damage!",
+                    Damage = owner.Attack * 1.7
 
                 }),
             },
@@ -78,9 +78,27 @@ public class IWillBeYourShield : Skill
         return "Increases the defense and gives a shield to the target and caster for 3 turns";
     }
 
+    public int GetShieldBasedOnDefense(int moveLevel)
+    {
+        switch (moveLevel)
+        {
+            case 0:
+                return 150;
+            case 1:
+                return 170;
+            case 2:
+                return 200;
+            case 3:
+                return 250;
+            case 4:
+                return 270;
+            default:
+                return 300;
+        }
+    }
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        target.StatusEffects.Add(new Shield(owner, 1000){Duration = 3});
+        target.StatusEffects.Add(new Shield(owner, (GetShieldBasedOnDefense(owner.GetMoveLevel(this)) * 0.01 * owner.Defense).Round()){Duration = 3});
         target.StatusEffects.Add(new DefenseBuff(owner) { Duration = 3 });
 
         return new UsageResult(this)
@@ -131,7 +149,7 @@ public class IWillProtectUs : Surge
     }
 }
 
-public class RoyalGuard : Character
+public class RoyalKnight : Character
 {
     public override Element Element { get; protected set; } = Element.Ice;
     public override int BaseMaxHealth => 1200 + (70 * Level);

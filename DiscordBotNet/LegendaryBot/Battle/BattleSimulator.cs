@@ -53,7 +53,7 @@ public class BattleSimulator
         int widest = 0;
         int length = 0;
         int yOffset = 0;
-        IImageProcessingContext? imageCtx = null;
+        IImageProcessingContext imageCtx = null!;
 
         image.Mutate(ctx => imageCtx = ctx);
         
@@ -116,7 +116,7 @@ public class BattleSimulator
         }
 
         imageCtx.EntropyCrop(0.005f);
-
+   
         return image;
     }
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
@@ -300,7 +300,8 @@ public class BattleSimulator
                      if (i.Duration <= 0) ActiveCharacter.StatusEffects.Remove(i);
                 }
             }
-            
+
+ 
             if (ActiveCharacter.IsDead)
                 AdditionalTexts.Add($"{ActiveCharacter} cannot take their turn because they are dead!");
             CheckAdditionalTexts();
@@ -308,9 +309,14 @@ public class BattleSimulator
 
 
             if (_additionalText == "") _additionalText = "No definition";
+            var name = "";
+            if (ActiveCharacter.Team.UserName is not null)
+            {
+                name = $" ({ActiveCharacter.Team.UserName})";
+            }
             DiscordEmbedBuilder embedToEdit = new DiscordEmbedBuilder()
                 .WithTitle("**BATTLE!!!**")
-                .WithAuthor(ActiveCharacter.Name, iconUrl: ActiveCharacter.IconUrl)
+                .WithAuthor($"{ActiveCharacter.Name}{name}", iconUrl: ActiveCharacter.IconUrl)
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, _additionalText)
                 .WithImageUrl("attachment://battle.png");
@@ -365,9 +371,33 @@ public class BattleSimulator
 
                 UsageResult overridenUsage  = mostPowerfulStatusEffect.OverridenUsage(ActiveCharacter,ref target, ref decision, UsageType.NormalUsage);
                 if (overridenUsage.Text is not null) _mainText = overridenUsage.Text;
-           
-                await Task.Delay(5000);
-          
+                using var buttonAwaitercancellationToken = new CancellationTokenSource();
+                using var delayCancellationToken = new CancellationTokenSource();
+
+                message.WaitForButtonAsync(e =>
+                {
+                    var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out decision);
+                    if (!didParse) return false;
+                    if (decision == BattleDecision.Forfeit)
+                    {
+                        var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
+                        if (forfeitedTeam is not null)
+                        {
+                            forfeited = forfeitedTeam;
+                            e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                            delayCancellationToken.Cancel();
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }, buttonAwaitercancellationToken.Token);
+                try
+                {
+                    await Task.Delay(5000,delayCancellationToken.Token);
+                }
+                catch { }
+                buttonAwaitercancellationToken.Cancel();
             }
             
             else if (!ActiveCharacter.Team.IsPlayerTeam)

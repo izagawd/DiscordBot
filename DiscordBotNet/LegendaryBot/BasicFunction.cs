@@ -13,45 +13,7 @@ public static class BasicFunction
 {
     public static Dictionary<string, Image<Rgba32>> EntityImages = new();
     public static MemoryCache UserImages { get; } = new(new MemoryCacheOptions());
-    /// <summary>
-    /// Caches some  images in the program. it caches images by accessing properties with the ImageAttribute
-    /// </summary>
-    /// <returns>The amount of  images cached</returns>
-    public static async Task<int> CacheSomeEntityImagesAsync()
-    {
-        var count = 0;
-        foreach (Type type in Bot.AllAssemblyTypes.Where(i => i is { IsAbstract: false, IsInterface: false, IsEnum: false }))
-        {
-            PropertyInfo[] propertiesWithAttribute = type.GetProperties()
-                .Where(prop => prop.GetCustomAttribute<ImageAttribute>() != null)
-                .ToArray();
 
-            if (propertiesWithAttribute.Length == 0) continue;
-            if(type.GetConstructors().All(i => i.GetParameters().Length != 0)) 
-                continue;
-            object? instance = Activator.CreateInstance(type);
-
-            foreach (var property in propertiesWithAttribute)
-            {
-                object? value = property.GetValue(instance);
-                if (value is string theString)
-                {
-                    await GetImageFromUrlAsync(theString);
-                    count++;
-                }
-                else if (value is IEnumerable<string> theEnumerable)
-                {
-                    foreach (var i in theEnumerable)
-                    {
-                        await GetImageFromUrlAsync(i);
-                        count++;
-                    }
-                }
-            }
-        }
-
-        return count;
-    }
 
      /// <summary>
      /// Gets the image as sixlabors image from the url provided, caches it, and returns it
@@ -63,38 +25,44 @@ public static class BasicFunction
         if (EntityImages.ContainsKey(url)) return EntityImages[url].Clone();
         if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!.Clone();
         try{
-            using var webClient = new HttpClient();
-            using var responseMessage = await webClient.GetAsync(url);
-            await using var memoryStream = await responseMessage.Content.ReadAsStreamAsync();
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback = 
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    if (cert != null && !cert.Verify())
+                    {
+                        if (httpRequestMessage.RequestUri is not null && httpRequestMessage.RequestUri.ToString().Contains(Website.DomainName))
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    if (cert == null) return false;
+                    return true;
+                };
+            using var webClient = new HttpClient(handler);
+  
+            await using var memoryStream = await webClient.GetStreamAsync(url);
             var characterImage = await Image.LoadAsync<Rgba32>(memoryStream);
             //checks if the image is from this bot's domain  so it can permanently cache it
             //instead of temporarily cache it
             if (url.Contains(Website.DomainName))
-            {
                 EntityImages[url] = characterImage;  
-            }
             else
-            {
                 UserImages.Set(url,characterImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
-            }
-
-
             return characterImage.Clone();
         }
-        catch
+        catch(Exception e)
         {
-         
-         
+            e.InnerException?.Print();
             var alternateImage =  await GetImageFromUrlAsync($"{Website.DomainName}/battle_images/moves/guilotine.png");
             if (url.Contains(Website.DomainName))
-            {
                 EntityImages[url] = alternateImage;
-            }
             else
-            {
                 UserImages.Set(url,alternateImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
-
-            }
             return alternateImage;
         }
     }

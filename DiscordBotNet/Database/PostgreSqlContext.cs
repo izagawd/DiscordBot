@@ -197,7 +197,8 @@ public class PostgreSqlContext :DbContext
             entity
                 .Property(i => i.SubStat4)
                 .HasConversion(GearStat.ValueConverter);
-  
+            entity.Property(i => i.Rarity)
+                .HasColumnName("Rarity");
 
         });
 

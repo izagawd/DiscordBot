@@ -52,8 +52,7 @@ public class Challenge :BaseCommandClass
         }
 
         var player2User = await DatabaseContext.UserData
-            .Include(j => j.Inventory)
-            .ThenInclude(j => (j as Character).Blessing)
+            .IncludeTeamWithAllEquipments()
             .Include(i => i.Inventory.Where(i => i is Character))
             .FindOrCreateAsync(player2.Id);
         if (player2User.IsOccupied)
@@ -109,7 +108,7 @@ public class Challenge :BaseCommandClass
         }
 
         await MakeOccupiedAsync(player2User);
-        var simulator = new BattleSimulator(await player1User.Team.LoadAsync(player1), await player2User.Team.LoadAsync(player2));
+        var simulator = new BattleSimulator(await player1User.GetCharacterTeam(player1).LoadAsync(player1), await player2User.GetCharacterTeam(player2).LoadAsync(player2));
         BattleResult battleResult = await simulator.StartAsync(ctx.Interaction,message);
         DiscordUser winnerDiscord;
         UserData winnerUserData;
@@ -124,8 +123,8 @@ public class Challenge :BaseCommandClass
             winnerUserData = player2User;
         }
 
-        var player2Team = player2User.Team;
-        var player1Team = player1User.Team;
+        var player2Team = player2User.GetCharacterTeam(player2);
+        var player1Team = player1User.GetCharacterTeam(player1);
         var expToGainForUser1 = BattleFunction.ExpGainFormula((int)player2Team.Average(i => i.Level));
         var expToGainForUser2 = BattleFunction.ExpGainFormula((int)player1Team.Average(i => i.Level));
         if (winnerUserData != player1User)

@@ -41,8 +41,7 @@ public class Quote : BaseCommandClass
                     dislikes = j.QuoteReactions.Count(k => !k.IsLike)
                 })
             .FirstAsync();
-        var ownerImageUrl = (await ctx.Client.GetUserAsync(randomQuote.UserDataId)).AvatarUrl;
-        var ownerImage = await BasicFunction.GetImageFromUrlAsync(ownerImageUrl);
+
         DiscordButtonComponent like = new(ButtonStyle.Primary,"like",null,false,new DiscordComponentEmoji("👍"));
         DiscordButtonComponent dislike = new(ButtonStyle.Primary, "dislike",null,false,new DiscordComponentEmoji("👎"));
         var ownerOfQuote = await ctx.Client.GetUserAsync(randomQuote.UserDataId);
@@ -50,12 +49,11 @@ public class Quote : BaseCommandClass
         
         var embedBuilder = new DiscordEmbedBuilder()
             .WithUser(ownerOfQuote)
-            .WithImageUrl("attachment://quote.png")
             .WithColor(randomQuote.UserData.Color)
             .WithTitle($"{ownerOfQuote.Username}'s quote")
             .WithDescription(randomQuote.QuoteValue)
             .WithFooter($"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
-        
+        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embedBuilder).AddComponents(like,dislike));
         var message = await ctx.GetOriginalResponseAsync();
         await message.WaitForButtonAsync(i =>
         {

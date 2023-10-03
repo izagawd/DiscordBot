@@ -8,6 +8,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 public class Avatar: BaseCommandClass
 {
     public override BotCommandType BotCommandType { get; } = BotCommandType.Other;
+    public override string Example => $"/avatar\n/avatar @Izagawd";
 
     [SlashCommand("avatar", "Displays your avatar, or someone elses avatar")]
     public async Task Execute(InteractionContext ctx, [Option("user", "User to challenge")] DiscordUser? user = null)

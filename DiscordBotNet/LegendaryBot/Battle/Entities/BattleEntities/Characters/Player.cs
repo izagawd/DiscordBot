@@ -29,7 +29,7 @@ public class FourthWallBreaker: BasicAttack
                     Caster = owner,
                     DamageText =
                         $"Breaks the fourth wall, causing {target} to cringe, and making them receive $ damage!",
-                    Damage = owner.Attack
+                    Damage = owner.Attack * 1.7
 
                 }),
             },
@@ -60,7 +60,7 @@ public class FireBall : Skill
     {  
         DamageResult damageResult = target.Damage(      new DamageArgs(this)
         {
-            Damage = owner.Attack * 1.9,
+            Damage = owner.Attack * 2.4,
             Caster = owner,
             CanCrit = true,
             DamageText =$"{owner} threw a fireball at {target} and dealt $ damage!",
@@ -96,17 +96,17 @@ public class Ignite : Surge
         switch (moveLevel)
         {
            case 0:
-               return 40;
-           case 1:
-               return 45;
-           case 2:
-               return 50;
-           case 3:
-               return 55;
-           case 4:
-               return 60;
-           default:
                return 70;
+           case 1:
+               return 75;
+           case 2:
+               return 80;
+           case 3:
+               return 85;
+           case 4:
+               return 90;
+           default:
+               return 100;
         }
     }
     public override IEnumerable<Character> GetPossibleTargets(Character owner)

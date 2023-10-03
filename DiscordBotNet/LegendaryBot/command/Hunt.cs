@@ -60,7 +60,7 @@ public class Hunt : BaseCommandClass
             .WithDescription($"A wild {enemy} has appeared!");
         await ctx.CreateResponseAsync(embedToBuild.Build());
         var message = await ctx.GetOriginalResponseAsync();
-        var userTeam = await userData.Team.LoadAsync(author);
+        var userTeam = await userData.GetCharacterTeam(author).LoadAsync(author);
         enemy.SetLevel(userTeam.Select(i => i.Level).Average().Round());
         var simulator = new BattleSimulator(userTeam, await new CharacterTeam(enemy).LoadAsync());
 
@@ -75,14 +75,15 @@ public class Hunt : BaseCommandClass
         string expGainText = userTeam.IncreaseExp(expToGain);
         embedToBuild = embedToBuild
             .WithTitle($"Nice going bud!")
-            .WithDescription("You won!\n"+ expGainText);
+            .WithDescription("You won!\n" + expGainText)
+            .WithImageUrl("");
         if (battleResult.Winners == userTeam)
         {
-            await message.ModifyAsync(new DiscordMessageBuilder(){Embed = embedToBuild.Build()});
+            await message.ModifyAsync(new DiscordMessageBuilder(){Embed = embedToBuild.Build() });
         }
         else
         {
-            embedToBuild = embedToBuild
+            embedToBuild
                 .WithTitle($"Ah, too bad")
                 .WithDescription($"You lost boii\n"+expGainText);
             await message.ModifyAsync(new DiscordMessageBuilder(){Embed = embedToBuild.Build()});

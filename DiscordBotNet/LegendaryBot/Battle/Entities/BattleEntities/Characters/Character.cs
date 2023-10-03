@@ -468,6 +468,29 @@ public abstract  class Character : BattleEntity
 
     [NotMapped] public virtual int BaseCriticalDamage => 150;
 
+    public void AddGear(Gear gear)
+    {
+        gear.UserDataId = UserDataId;
+        if (gear is Armor armor)
+        {
+            Armor = armor;
+        } else if (gear is Boots boots)
+        {
+            Boots = boots;
+        } else if (gear is Necklace necklace)
+        {
+            Necklace = necklace;
+        } else if (gear is Helmet helmet)
+        {
+            Helmet = helmet;
+        } else if (gear is Ring ring)
+        {
+            Ring = ring;
+        } else if (gear is Weapon weapon)
+        {
+            Weapon = weapon;
+        }
+    }
     public int CriticalDamage {
         get
         {
@@ -776,10 +799,11 @@ public abstract  class Character : BattleEntity
         }
 
     }
-    public override int MaxLevel => 100;
+    public override int MaxLevel => 60;
 
     public void SetLevel(int level)
     {
+        if (level > MaxLevel) level = MaxLevel;
         Level = level;
     }
     [NotMapped]
@@ -893,8 +917,12 @@ public abstract  class Character : BattleEntity
         }
 
         damage = (int)Math.Round(damage*0.01*(damageModifyPercentage+100));
-
-        if (BasicFunction.RandomChance(caster.CriticalChance)&& canCrit)
+        var chance = caster.CriticalChance;
+        if (damageArgs.AlwaysCrits)
+        {
+            chance = 100;
+        }
+        if (BasicFunction.RandomChance(chance)&& canCrit)
         {
             damage *= caster.CriticalDamage / 100.0;
             didCrit = true;
@@ -979,7 +1007,7 @@ public abstract  class Character : BattleEntity
         {
             damageText = $"{this} took $ fixed damage!";
         }
-        CurrentBattle.AdditionalTexts.Add(damageText.Replace("$", damage.ToString()));
+        CurrentBattle.AdditionalTexts.Add(damageText.Replace("$", damage.Round().ToString()));
         TakeDamageWhileConsideringShield(damage.Round());
         DamageResult damageResult;
         if (damageArgs.Move is not null)

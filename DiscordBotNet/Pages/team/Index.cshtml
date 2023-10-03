@@ -20,7 +20,7 @@
 <body>
 
 <div id="team_main_div" ondrop="AddToTeam( event)"  ondragover="event.preventDefault()">
-    @{ var team = Model.UserData.Team;}
+    @{ var team = Model.UserData.CharacterTeamArray;}
     @foreach (var i in team)
     {
         <a href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="the_href super_character_div character_in_team_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">

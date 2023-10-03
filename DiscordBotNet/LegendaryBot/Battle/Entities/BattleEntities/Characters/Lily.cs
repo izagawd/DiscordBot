@@ -31,10 +31,10 @@ public class ChamomileSachetWhack : BasicAttack
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            Damage = owner.Attack * 1.9,
+            Damage = owner.Attack * 1.7,
             Caster = owner,
             CanCrit = true,
-            DamageText = "That was a harsh snoozy whack that dealt $ damage!",
+            DamageText = $"That was a harsh snoozy whack that dealt $ damage on {target}!",
 
         });
         var result = new UsageResult(this)

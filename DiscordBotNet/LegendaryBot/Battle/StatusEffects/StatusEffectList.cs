@@ -28,6 +28,7 @@ public class StatusEffectList : ISet<StatusEffect>
 /// <returns>true if the status effect was successfully added</returns>
     public bool Add(StatusEffect statusEffect,int? effectiveness)
     {
+        if (Affected.IsDead) return false;
         List<StatusEffect> listOfType = this.Where(i => i.GetType() == statusEffect.GetType()).ToList();
 
         if (listOfType.Count < statusEffect.MaxStacks)

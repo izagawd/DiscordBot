@@ -23,7 +23,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/info.js"></script>
 <div id="super_character_div" >
-    <div style="display: flex;">
+    <div style="display: flex; top: 30%;">
         <div id="character_with_blessing" >
             <img style="width: 100px;height: 100px;" src="@Model.Character.IconUrl"/>
             <div style="margin-left: 30px; margin-right: 30px;">
@@ -57,7 +57,7 @@
     </div>
    
 </div>
-<div id="character_details">
+<div id="character_details" style="top: 30%;">
     <img width="400px" height="400px" src="@Website.RenderImageTag(await Model.Character.GetDetailsImageAsync())">
 </div>
 <div id="blessing_list_div" ondragover="event.preventDefault()" ondrop="RemoveBlessing('@Model.Character.Id.ToString()')" >

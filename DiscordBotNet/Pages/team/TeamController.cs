@@ -20,8 +20,8 @@ public class TeamController : Controller
             .IncludeTeam()
             .FindOrCreateAsync(User.GetDiscordUserId());
 
-        var userTeam = UserData.Team;
-        if (userTeam.Count <= 1) return Ok();
+        var userTeam = UserData.CharacterTeamArray;
+        if (userTeam.Count() <= 1) return Ok();
         var characterToRemove = userTeam.FirstOrDefault(i => i.Id == id);
         
         if (characterToRemove is not null)
