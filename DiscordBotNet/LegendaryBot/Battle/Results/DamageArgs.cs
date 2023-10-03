@@ -42,7 +42,7 @@ public class DamageArgs
         /// </summary>
         public bool AlwaysCrits { get; init; } = false;
         /// <summary>
-        /// can crit doesnt work in fixed damage
+        /// attack can always crit. doesnt work in fixed damage
         /// </summary>
         
         public bool CanCrit { get; init; } = true;

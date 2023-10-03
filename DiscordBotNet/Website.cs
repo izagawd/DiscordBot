@@ -14,19 +14,19 @@ namespace DiscordBotNet;
 
 public static class Website
 {
-    public static  readonly string DomainName = "https://localhost";
-    public static string RenderImageTag(Image image)
+    public static  readonly string DomainName = "https://legendarygawds.com";
+    public static async Task<string> RenderImageTagAsync(Image image)
     {
         if (image == null)
         {
             throw new ArgumentNullException(nameof(image));
         }
 
-        using var stream = new MemoryStream();
-        image.SaveAsPng(stream);  // Save the image to a stream
+        await using var stream = new MemoryStream();
+        await image.SaveAsPngAsync(stream);  // Save the image to a stream
         byte[] imageBytes = stream.ToArray();
-        string base64Image = Convert.ToBase64String(imageBytes);
-        string imageSrc = $"data:image/png;base64,{base64Image}";
+        var base64Image = Convert.ToBase64String(imageBytes);
+        var imageSrc = $"data:image/png;base64,{base64Image}";
         return imageSrc;
     }
     public static string GetDiscordUserName(this ClaimsPrincipal user)

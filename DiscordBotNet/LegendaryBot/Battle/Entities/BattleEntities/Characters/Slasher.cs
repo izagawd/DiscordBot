@@ -75,7 +75,7 @@ public class SlashOfPrecision : Surge
     public override int MaxEnhance { get; } = 5;
     public override string GetDescription(int moveLevel)
     {
-        return "Slashes the enemy many times. This attack will always deal a critical hit";
+        return "Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
     }
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)

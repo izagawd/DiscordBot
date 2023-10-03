@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\DiscordBotNet.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\blessings\\BlessingOfThePhoenix.png",
+      "PackagePath": "staticwebassets\\battle_images\\blessings\\BlessingOfThePhoenix.png"
+    },
+    {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\Blast.png",
       "PackagePath": "staticwebassets\\battle_images\\characters\\Blast.png"
     },
@@ -15,6 +19,14 @@
     {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\Lily.png",
       "PackagePath": "staticwebassets\\battle_images\\characters\\Lily.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\RoyalKnight.png",
+      "PackagePath": "staticwebassets\\battle_images\\characters\\RoyalKnight.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\Slasher.png",
+      "PackagePath": "staticwebassets\\battle_images\\characters\\Slasher.png"
     },
     {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\moves\\DancingFlames.jpg",

@@ -54,27 +54,14 @@ public class Bot
 
     private async Task DoShit()
     {
-        var ctx = new PostgreSqlContext();
-        ctx.RemoveRange(ctx.Entity.OfType<Gear>());
-        await ctx.Entity.OfType<Character>().ForEachAsync(i =>
-        {
-            foreach (var j in AllAssemblyTypes.Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(Gear))))
-            {
-                var gear = (Gear) Activator.CreateInstance(j)!;
-                gear.Initiate(Rarity.FiveStar);
-                gear.IncreaseExp(90000000);
-                i.AddGear(gear);
-                
-            }
-        });
-        await ctx.SaveChangesAsync();
+
     }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-        await DoShit();
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

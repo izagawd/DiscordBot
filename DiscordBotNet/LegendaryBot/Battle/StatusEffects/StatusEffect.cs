@@ -51,15 +51,15 @@ public abstract class StatusEffect
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         image.Mutate(ctx =>
         {
-       
-        
+            
 
 
             ctx.BackgroundColor(backgroundColor);
             ctx.Resize(new Size(100, 100));
-            var font = SystemFonts.CreateFont("Arial", 70, FontStyle.Bold);
-            ctx.DrawText(Duration.ToString(), font, Brushes.Solid(Color.Black),
-                Pens.Solid(Color.White), new PointF(0, 0));
+            ctx.Fill(Color.Black, new RectangleF(0, 0, 40, 40));
+            var font = SystemFonts.CreateFont("Arial", 40, FontStyle.Bold);
+            ctx.DrawText(Duration.ToString(), font, Color.White, new PointF(5, 0));
+
         });
         return image;
     }

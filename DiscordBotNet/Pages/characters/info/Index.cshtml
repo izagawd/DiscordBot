@@ -58,7 +58,7 @@
    
 </div>
 <div id="character_details" style="top: 30%;">
-    <img width="400px" height="400px" src="@Website.RenderImageTag(await Model.Character.GetDetailsImageAsync())">
+    <img width="400px" height="400px" src="@Website.RenderImageTagAsync(await Model.Character.GetDetailsImageAsync())">
 </div>
 <div id="blessing_list_div" ondragover="event.preventDefault()" ondrop="RemoveBlessing('@Model.Character.Id.ToString()')" >
     @foreach (var i in Model.Blessings)

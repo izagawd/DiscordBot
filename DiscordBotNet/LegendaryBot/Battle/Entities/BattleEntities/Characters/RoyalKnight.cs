@@ -36,7 +36,6 @@ public class ShieldBash : BasicAttack
             {
                 target.Damage(new DamageArgs(this)
                 {
-                    AlwaysCrits = true,
                     Caster = owner,
                     DamageText =
                         $"{owner} bashes {target} with his shield , making them receive $ damage!",

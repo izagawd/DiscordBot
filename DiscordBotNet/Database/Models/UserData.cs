@@ -103,7 +103,7 @@ public class UserData : Model,  ICanBeLeveledUp
         
 
 
-        var userImage = await BasicFunction.GetImageFromUrlAsync(user.AvatarUrl);
+        using var userImage = await BasicFunction.GetImageFromUrlAsync(user.AvatarUrl);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         image.Mutate(ctx =>

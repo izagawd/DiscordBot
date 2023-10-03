@@ -122,7 +122,7 @@ public abstract  class Character : BattleEntity
     public float HealthPercentage => (float)(Health * 1.0 / MaxHealth * 100.0);
     public sealed override async  Task<Image<Rgba32>> GetDetailsImageAsync()
     {
-        var characterImage = await GetInfoAsync();
+        using var characterImage = await GetInfoAsync();
         var image = new Image<Rgba32>(1280, 1000);
 
         var characterImageSize = characterImage.Size;
@@ -146,7 +146,7 @@ public abstract  class Character : BattleEntity
                     moveLevel = BasicAttackLevel;
                     break;
             }
-            var moveImage = await i.GetImageAsync(moveLevel);
+            using var moveImage = await i.GetImageAsync(moveLevel);
             moveImage.Mutate(j => j
                 .Resize(100,100)
             );
@@ -209,7 +209,7 @@ public abstract  class Character : BattleEntity
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
         var image = new Image<Rgba32>(1280, 720);
-        var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);;
+        using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);;
         
         characterImage.Mutate(ctx =>
         {
@@ -260,12 +260,12 @@ public abstract  class Character : BattleEntity
         
         int xOffSet = 0;
         int yOffSet = 100 + barHeight + 10;
-        int statusLength = 30;
+        
         int moveLength = 50;
         foreach (var i in MoveList)
         {
 
-            var moveImage = await i.GetImageAsync(GetMoveLevel(i));
+            using var moveImage = await i.GetImageAsync(GetMoveLevel(i));
             moveImage.Mutate(context =>
             {
                 context.Resize(new Size(moveLength, moveLength));
@@ -290,23 +290,24 @@ public abstract  class Character : BattleEntity
         
         xOffSet = 0;
         yOffSet += moveLength + 10;
+        int statusLength = 40;
         foreach (var i in StatusEffects)
         {
 
 
-            var statusImage = await i.GetImage();
+            using var statusImage = await i.GetImage();
 
             statusImage.Mutate(context =>
             {
                 context.Resize(new Size(statusLength, statusLength));
             });
-            if (xOffSet + statusLength + 5>= 300)
+            if (xOffSet + statusLength + 5>= 370)
             {
                 xOffSet = 0;
                 yOffSet += statusLength + 5;
             }
             ctx.DrawImage(statusImage, new Point(xOffSet, yOffSet), new GraphicsOptions());
-            xOffSet += 35;
+            xOffSet += statusLength+ 4;
 
         }
 
@@ -579,7 +580,7 @@ public abstract  class Character : BattleEntity
     }
     public async Task<Image<Rgba32>> GetInfoAsync()
     {
-        var userImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+        using var userImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         image.Mutate(ctx =>
@@ -1071,8 +1072,10 @@ public abstract  class Character : BattleEntity
 /// <returns></returns>
     public override ExperienceGainResult IncreaseExp(ulong exp)
     {
+        if (Level >= MaxLevel)
+            return new ExperienceGainResult() { ExcessExperience = exp, Text = $"{this} has already reached their max level!" };
         string expGainText = "";
-
+        
         var levelBefore = Level;
         Experience += exp;
 
@@ -1099,6 +1102,10 @@ public abstract  class Character : BattleEntity
         return new ExperienceGainResult(){ExcessExperience = excessExp, Text = expGainText};
     }
 
+    public void SetExperience(ulong experience)
+    {
+        Experience = experience;
+    }
     public Move? this[MoveType? moveType]
     {
         get

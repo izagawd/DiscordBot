@@ -47,7 +47,7 @@ public class BattleSimulator
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
-        var image = new Image<Rgba32>(1300, 1200);
+        var image = new Image<Rgba32>(1300, 3000);
 
         int xOffSet = 120;
         int widest = 0;
@@ -62,7 +62,7 @@ public class BattleSimulator
             foreach (var j in i)
             {
         
-                var characterImage = await j.GetCombatImageAsync();
+                using var characterImage = await j.GetCombatImageAsync();
 
                 if (characterImage.Width > widest)
                 {
@@ -87,7 +87,7 @@ public class BattleSimulator
         imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
         foreach (var i in characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
-            var characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(i.IconUrl);
+            using var characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(i.IconUrl);
             characterImageToDraw.Mutate(mutator =>
             {
                 mutator.Resize(60, 60);
@@ -237,6 +237,10 @@ public class BattleSimulator
             if (_additionalText != "") _additionalText += "\n";
             _additionalText += i;
         }
+
+        if (_additionalText.Length > 1024)
+            _additionalText = _additionalText.Substring(0, 1021) + "...";
+
         AdditionalTexts.Clear();
     }
 
@@ -257,12 +261,11 @@ public class BattleSimulator
                 
                 j.Team = i;
                 j.CurrentBattle = this;
-               
+
             }
             
             characters.AddRange(i);
         });
-
         _mainText = "Battle Begins!";
         _additionalText = "Have fun!";
      

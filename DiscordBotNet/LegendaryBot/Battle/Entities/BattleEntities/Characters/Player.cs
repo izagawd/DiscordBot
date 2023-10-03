@@ -25,7 +25,7 @@ public class FourthWallBreaker: BasicAttack
             {
                 target.Damage(new DamageArgs(this)
                 {
-                    AlwaysCrits = true,
+
                     Caster = owner,
                     DamageText =
                         $"Breaks the fourth wall, causing {target} to cringe, and making them receive $ damage!",
