@@ -24,13 +24,7 @@ public enum BattleDecision
     Forfeit, Surge, BasicAttack, Skill, Other,
 }
 
-public class TeamNotLoadedException : Exception
-{
-    public TeamNotLoadedException() : base("A team has not been loaded with the LoadAsync method")
-    {
-        
-    }
-}
+
 public class BattleSimulator
 {
    
@@ -212,14 +206,9 @@ public class BattleSimulator
             throw new Exception("one of the teams has no fighters");
         }
 
-        if (new[] {team1, team2 }.Any(i => !i.IsLoaded))
-        {
-            throw new TeamNotLoadedException();
-        }
         Team1 = team1;
         Team2 = team2;
-        Team1.CurrentBattle = this;
-        Team2.CurrentBattle = this;
+
 
 
     }
@@ -267,6 +256,15 @@ public class BattleSimulator
     /// </summary>
     public async Task<BattleResult> StartAsync(DiscordInteraction interaction, DiscordMessage? message = null)
     {
+        Team1.CurrentBattle = this;
+        Team2.CurrentBattle = this;
+        foreach (var i in CharacterTeams)
+        {
+            foreach (var j in i)
+            {
+                j.Team = i;
+            }
+        }
         _mainText = "Battle Begins!";
         _additionalText = "Have fun!";
      
@@ -358,7 +356,7 @@ public class BattleSimulator
             else message = await message.ModifyAsync(messageBuilder);
 ;
             _mainText = $"{ActiveCharacter} is thinking of a course of action...";
-            if (winners is not null)
+            if (winners is not null) 
             {
                 await Task.Delay(5000); break;
             }

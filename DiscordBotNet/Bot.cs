@@ -26,6 +26,7 @@ using DSharpPlus.VoiceNext;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Org.BouncyCastle.Asn1.X509.Qualified;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -53,26 +54,14 @@ public class Bot
     public static ulong Testersid => 266157684380663809;
     public static DiscordClient Client { get; private set; }
 
-    public static async Task DoShit()
-    {
-        foreach (var i in Enumerable.Range(0,100))
-        {
-            var intt =BasicFunction.GetRandomNumberInBetween(1, 6);
-            intt.Print();
-            if (intt < 1 || intt > 6)
-            {
-                Console.WriteLine("bruh");
-                break;
-            }
-        }
-     
-    }
+
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-  
+
+        
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

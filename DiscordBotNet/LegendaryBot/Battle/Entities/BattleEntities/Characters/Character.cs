@@ -24,7 +24,7 @@ public abstract  class Character : BattleEntity
 {
     public virtual bool IsInStandardBanner => true;
     [NotMapped]
-    public bool IsLoaded { get; private set; }
+
 
     public virtual Blessing? Blessing { get; set; }
     public Guid? BlessingId { get; set; }
@@ -190,7 +190,7 @@ public abstract  class Character : BattleEntity
     public Boots? Boots { get; set; }
     public Guid? BootsId { get; set; }
     [NotMapped]
-    public IEnumerable<Gear> Gears => new List<Gear?> { Armor, Helmet, Weapon, Necklace, Ring, Boots }
+    public IEnumerable<Gear> Gears => new Gear?[] { Armor, Helmet, Weapon, Necklace, Ring, Boots }
         .Where(i => i is not null).OfType<Gear>();
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
@@ -483,7 +483,7 @@ public abstract  class Character : BattleEntity
         get
         {
             double percentage = 0;
-            double originalCriticalDamage = BaseCriticalDamage;
+            double originalCriticalDamage = TotalCriticalDamage;
             var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<CriticalDamageModifierArgs>())
             {
@@ -756,7 +756,7 @@ public abstract  class Character : BattleEntity
         }
 
         Health = TotalMaxHealth.Round();
-        IsLoaded = true;
+   
     }
     
   
@@ -808,7 +808,7 @@ public abstract  class Character : BattleEntity
         var canCrit = damageArgs.CanCrit;
         bool didCrit = false;
         int damageModifyPercentage = 0;
-        damage = BattleFunction.DamageFormula(damage, Defense);
+        damage = BattleFunction.DamageFormula(damage, Defense.Print());
 
         switch (BattleFunction.GetAdvantageLevel(caster.Element, Element)){
             case ElementalAdvantage.Disadvantage:
@@ -828,6 +828,7 @@ public abstract  class Character : BattleEntity
         }
         if (BasicFunction.RandomChance(chance)&& canCrit)
         {
+
             damage *= caster.CriticalDamage / 100.0;
             didCrit = true;
         }

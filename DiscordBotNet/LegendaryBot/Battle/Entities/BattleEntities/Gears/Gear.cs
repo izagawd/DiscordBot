@@ -27,11 +27,70 @@ public abstract class Gear : BattleEntity
             return AllStats.FirstOrDefault(i => i.GetType() ==  type);
         }
     }
-
-
-
-    public override ExperienceGainResult IncreaseExp(ulong experience)
+    /// <summary>
+    /// Upgrades or adds a substat in the gear
+    /// </summary>
+    /// <param name="substatsToPrioritize">One of these substat types will be added/increment. If it can't it will direct attention to another substat </param>
+    public void UpgradeSubStats(params Type[] substatsToPrioritize)
     {
+        if (IsNew) throw new Exception("Gear has not been initiated");
+        if (substatsToPrioritize.Any() 
+            && !substatsToPrioritize.All(i => GearStat.AllGearStatTypes.Contains(i)))
+        {
+            throw new Exception("One of the substats to prioritize is not of a substat type or is abstract");
+        }
+
+        var availableStats = substatsToPrioritize
+            .Except(AllStatTypes);
+        if (!availableStats.Any())
+        {
+            availableStats = GearStat
+                .AllGearStatTypes
+                .Except(AllStatTypes);
+        }
+
+        var randomStatType = BasicFunction.RandomChoice(availableStats);
+        GearStat randomStat;
+        if (SubStat1 is null)
+        {
+            randomStat = SubStat1 = randomStatType;
+        }
+        else if (SubStat2 is null)
+        {
+            randomStat = SubStat2 = randomStatType;
+        }
+
+        else if (SubStat3 is null)
+        {
+            randomStat = SubStat3 = randomStatType;
+        }
+
+        else if (SubStat4 is null)
+        {
+            randomStat = SubStat4 = randomStatType;
+        }
+        else
+        {
+            var statsToUpgrade = Substats.Where(i => substatsToPrioritize.Contains(i.GetType()));
+            if (!statsToUpgrade.Any())
+                statsToUpgrade = Substats;
+            randomStat = BasicFunction.RandomChoice(statsToUpgrade);
+                    
+        }
+        randomStat.Increase(Rarity);
+        
+    }
+    ///<param name="substatsToPrioritize">These stats will take top priority when assigning or increasing substats. if it cannot be assigned or increased, it will pay attention to other substat types</param>
+
+    public ExperienceGainResult IncreaseExp(ulong experience, params Type[] substatsToPrioritize)
+    {
+        if (IsNew) throw new Exception("Gear has not been initiated");
+        if (substatsToPrioritize.Any() 
+            && !substatsToPrioritize.All(i => GearStat.AllGearStatTypes.Contains(i)))
+        {
+            throw new Exception("One of the substats to prioritize is not of a substat type or is abstract");
+        }
+
         var nextLevelEXP = BattleFunction.NextLevelFormula(Level);
         string expGainText = "";
         var levelBefore = Level;
@@ -40,47 +99,10 @@ public abstract class Gear : BattleEntity
         {
             Experience -= nextLevelEXP;
             Level += 1;
-            var allStats = GearStat.AllGearStatTypes
-                .Where(i => i != GearStat.SpeedPercentageType)
-                .ToArray();
             if (Level == 3 || Level == 6 || Level == 9 || Level == 12 || Level == 15)
             {
-                if (SubStat1 is null)
-                {
-                    var randomStat = BasicFunction.RandomChoice(allStats.Except(SubstatTypes));
-                    SubStat1 = randomStat;
-                    SubStat1.Increase(Rarity);
-                }
-                else if (SubStat2 is null)
-                {
-                    var randomStat = BasicFunction.RandomChoice(allStats.Except(SubstatTypes));
-                    SubStat2 = randomStat;
-                    SubStat2.Increase(Rarity);
-                }
-
-                else if (SubStat3 is null)
-                {
-                    var randomStat = BasicFunction.RandomChoice(allStats.Except(SubstatTypes));
-                    SubStat3 = randomStat;
-                    SubStat3.Increase(Rarity);
-                }
-
-                else if (SubStat4 is null)
-                {
-                    var randomStat = BasicFunction.RandomChoice(allStats.Except(SubstatTypes));
-                    SubStat4 = randomStat;
-                    SubStat4.Increase(Rarity);
-                }
-                else
-                {
-                    GearStat randomStat = BasicFunction.RandomChoice(Substats);
-                    randomStat.Increase(Rarity);
-                }
-                
-               
+                UpgradeSubStats(substatsToPrioritize);
             }
-            
-            nextLevelEXP = BattleFunction.NextLevelFormula(Level);
         }
         expGainText += $"{this} gear gained {experience} exp";
         if (levelBefore != Level)
@@ -101,8 +123,9 @@ public abstract class Gear : BattleEntity
 
     public bool IsNew { get; protected set; } = true;
  
-    public override async Task LoadAsync()
+    public sealed override async Task LoadAsync()
     {
+        if (IsNew) throw new Exception("Gear has not been initiated");
         await base.LoadAsync();
         MainStat.SetMainStat(Rarity,Level);
     }
@@ -111,68 +134,60 @@ public abstract class Gear : BattleEntity
     /// </summary>
     /// <param name="rarity">The rarity you want the gear to be</param>
     /// <param name="customMainStat">If the gear should have a main stat instead of being randomized, select it</param>
-
-    public void Initiate(Rarity rarity, Type?  customMainStat = null)
+    ///<param name="priorityTypes">These stats will take top priority when assigning substats yo this gear</param>
+    public void Initiate(Rarity rarity, Type?  customMainStat = null, params Type[] priorityTypes)
     {
-        if (!IsNew) return;
-
+        if (!IsNew) throw new Exception("Gear has already been initiated");
         if (customMainStat is not null && !GearStat.AllGearStatTypes.Contains(customMainStat))
-        {
-            throw new Exception("Type is not a subclass of GearStat or is abstract");
+            throw new Exception("CustomMainStatType Type is not a subclass of GearStat or is abstract");
+        if (priorityTypes.Any() && !priorityTypes.All(i => GearStat.AllGearStatTypes.Contains(i)))
+            throw new Exception("One of the priority types is not a subclass of GearStat or is abstract");
 
-        }
+        IEnumerable<Type> typesToUse = priorityTypes;
         Rarity = rarity;
-        if (Level == 1)
+        if(Level != 1)return;
+        if (customMainStat is not null && !PossibleMainStats.Contains(customMainStat))
+            throw new Exception("Custom main stat type cannot be assigned to this type of gear");
+
+        Type selectedType = customMainStat;
+        if (selectedType is null)
         {
-    
-            var statTypeCollection = GearStat.AllGearStatTypes.Where(i => i != GearStat.SpeedPercentageType);
-            if (customMainStat is not null)
-            {
-                if (!PossibleMainStats.Contains(customMainStat))
-                {
-                    throw new Exception("Gear of this type cannot have a mainstat of "+BasicFunction.Englishify(customMainStat.ToString()!));
-                }
-
-                MainStat =(GearStat) Activator.CreateInstance(customMainStat)!;
-
-            }
-            else
-            {
-                var selectedType = BasicFunction.RandomChoice(PossibleMainStats);
-                MainStat =(GearStat) Activator.CreateInstance(selectedType)!;
-            }
-         
-            for (int i = 0; i < (int)Rarity; i++)
-            {
-                var list = SubstatTypes.ToList();
-                list.Add(MainStat.GetType());
-                var randomStat = BasicFunction.RandomChoice(statTypeCollection.Except(list));
-                if (SubStat1 is null)
-                {
-                    SubStat1 = randomStat;
-                }
-                else if (SubStat2 is null)
-                {
-                    SubStat2 = randomStat;
-                }
-                else if (SubStat3 is null)
-                {
-                    SubStat3 = randomStat;
-                }
-                else if (SubStat4 is null)
-                {
-                    SubStat4 = randomStat;
-                }else
-                {
-                    throw new Exception("All SubStats are already assigned.");
-                }
-
-                this[randomStat]!.Increase(Rarity);
-            }
-
-            IsNew = false;
+            selectedType = BasicFunction.RandomChoice(PossibleMainStats);
         }
+        
+        MainStat =(GearStat) Activator.CreateInstance(selectedType)!;
+        
+        for (int i = 0; i < (int)Rarity; i++)
+        {
+            typesToUse = typesToUse.Except(AllStatTypes);
+            if (!typesToUse.Any())
+                typesToUse = GearStat.AllGearStatTypes;
+            var randomStat = BasicFunction.RandomChoice(typesToUse);
+            if (SubStat1 is null)
+            {
+                SubStat1 = randomStat;
+            }
+            else if (SubStat2 is null)
+            {
+                SubStat2 = randomStat;
+            }
+            else if (SubStat3 is null)
+            {
+                SubStat3 = randomStat;
+            }
+            else if (SubStat4 is null)
+            {
+                SubStat4 = randomStat;
+            }else
+            {
+                throw new Exception("All SubStats are already assigned.");
+            }
+
+            this[randomStat]!.Increase(Rarity);
+        }
+        IsNew = false;
     }
+    
     public sealed override int MaxLevel => 15;
     /// <summary>
     /// The list of all the possible mainstats a gear can have

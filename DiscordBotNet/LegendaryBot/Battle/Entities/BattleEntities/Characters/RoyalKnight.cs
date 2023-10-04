@@ -50,14 +50,14 @@ public class IWillBeYourShield : Skill
 
     public override int MaxEnhance { get; } = 5;
 
-    public override string Description=> "Increases the defense and gives a shield to the target and caster for 3 turns";
+    public override string Description=> "gives a shield to the target and caster for 3 turns. Shield strength is proportional to the caster's defense";
 
 
     public int ShieldBasedOnDefense => 300;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         target.StatusEffects.Add(new Shield(owner, (ShieldBasedOnDefense * 0.01 * owner.Defense).Round()){Duration = 3});
-        target.StatusEffects.Add(new DefenseBuff(owner) { Duration = 3 });
+
 
         return new UsageResult(this)
         {
@@ -79,7 +79,7 @@ public class IWillProtectUs : Surge
     public override int MaxCooldown => 5;
     public override int MaxEnhance { get; } = 5;
 
-    public override string Description=> "Increases the defense of all allies for 2 turns";
+    public override string Description=> "Increases the defense of all allies for 3 turns";
     
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)

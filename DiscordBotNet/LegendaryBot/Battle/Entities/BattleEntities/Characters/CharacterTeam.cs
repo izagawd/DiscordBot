@@ -64,10 +64,7 @@ public class CharacterTeam : ISet<Character>
         return this;
     }
 
-    /// <summary>
-    /// True if all characters in the team have been loaded with LoadAsync. throws an error in BattleSimulator if false
-    /// </summary>
-    public bool IsLoaded => Characters.All(i => i.IsLoaded);
+
     public async Task<CharacterTeam> LoadAsync(ClaimsPrincipal user)
     {
         foreach (var i in Characters)
@@ -91,20 +88,15 @@ public class CharacterTeam : ISet<Character>
         return GetEnumerator();
     }
 
-    public bool Add(Character character)
-    {
-        return Add(character, false);
-    }
+
 
         /// <param name="character"></param>
-        /// <param name="ignoreLoad">If true, will not throw exception if character is not loaded</param>
+
         /// <returns></returns>
 
-    public bool Add(Character character, bool ignoreLoad)
+    public bool Add(Character character)
     {
-        if (!character.IsLoaded && !ignoreLoad)
-            throw new Exception("Character that was attempted to be added to the team has not been loaded");
-        character.Team = this;
+      character.Team = this;
         return Characters.Add(character);
     }
 

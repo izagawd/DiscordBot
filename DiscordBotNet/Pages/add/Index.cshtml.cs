@@ -21,7 +21,7 @@ public class Index : PageModel
     {
         Console.WriteLine(type);
         Type theType = Bot.AllAssemblyTypes.First(i => i.Name == type);
-        Entity entity =(Entity) Activator.CreateInstance(theType);
+        Entity entity =(Entity) Activator.CreateInstance(theType)!;
         entity.UserDataId = User.GetDiscordUserId();
         await DatabaseContext.Entity.AddAsync(entity);
         await DatabaseContext.SaveChangesAsync();

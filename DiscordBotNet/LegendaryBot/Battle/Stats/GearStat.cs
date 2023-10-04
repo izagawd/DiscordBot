@@ -22,7 +22,7 @@ public abstract class GearStat
     [NotMapped]  public static Type ResistanceType { get; } = typeof(ResistanceGearStat);
     [NotMapped]  public static Type EffectivenessType { get; } = typeof(EffectivenessGearStat);
     [NotMapped] public static Type SpeedFlatType { get; } = typeof(SpeedFlatGearStat);
-    [NotMapped]  public static Type SpeedPercentageType { get; } = typeof(SpeedPercentageGearStat);
+
 
     /// <summary>
     /// This is called when the gear that owns this stat is loaded. It sets the main stat's value according to
@@ -87,7 +87,11 @@ public abstract class GearStat
 
         return (GearStat)Activator.CreateInstance(type)!;
     }
+    /// <summary>
+    /// Holds all the gear stat types that are not abstract
+    /// </summary>
     [NotMapped]
+    
     public static IEnumerable<Type> AllGearStatTypes { get; }
 
     static GearStat()

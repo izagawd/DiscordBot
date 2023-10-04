@@ -7,7 +7,7 @@ public class HealthFlatGearStat : GearStat
     public override int GetMainStat(Rarity rarity, int level)
     {
 
-        return (((int)rarity + 1) * (level / 15.0) * 600).Round() + 500;
+        return (((int)rarity + 1) * (level / 15.0) * 450).Round() + 450;
     }
 
     public override void AddStats(Character character)

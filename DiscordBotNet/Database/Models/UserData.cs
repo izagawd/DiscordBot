@@ -82,7 +82,7 @@ public class UserData : Model,  ICanBeLeveledUp
         foreach (var i in characterArray)
         {
             if (i is not null)
-                team.Add(i,true);
+                team.Add(i);
         }
         return team;
     }
