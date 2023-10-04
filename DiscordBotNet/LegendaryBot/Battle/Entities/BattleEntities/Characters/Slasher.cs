@@ -8,10 +8,8 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public class WindSlash : Skill
 {
     public override int MaxEnhance { get; } = 4;
-    public override string GetDescription(int moveLevel)
-    {
-        return "Attacks all enemies with a sharp wind";
-    }
+    public override string Description => "Attacks all enemies with a sharp wind";
+    
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
@@ -37,18 +35,13 @@ public class WindSlash : Skill
         };
     }
 
-    public override int GetMaxCooldown(int level)
-    {
-        return 2;
-    }
+    public override int MaxCooldown => 2;
 }
 
 public class SimpleSlash : BasicAttack
 {
-    public override string GetDescription(int moveLevel)
-    {
-        return "Does a simple slash";
-    }
+    public override string Description =>"Does a simple slash";
+    
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
@@ -73,10 +66,7 @@ public class SimpleSlash : BasicAttack
 public class SlashOfPrecision : Surge
 {
     public override int MaxEnhance { get; } = 5;
-    public override string GetDescription(int moveLevel)
-    {
-        return "Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
-    }
+    public override string Description=>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
@@ -104,10 +94,7 @@ public class SlashOfPrecision : Surge
         };
     }
 
-    public override int GetMaxCooldown(int level)
-    {
-        return 5;
-    }
+    public override int MaxCooldown => 5;
 }
 public class Slasher : Character
 {

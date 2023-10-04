@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
+using DiscordBotNet.LegendaryBot.Battle.Stats;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 
@@ -21,8 +22,8 @@ public abstract class Blessing : BattleEntity
 
     public sealed  override int MaxLevel => 15;
     [NotMapped] public virtual int Attack { get; } = 200;
-    [NotMapped] public virtual int Defense { get; } = 200;
-
+    [NotMapped] public virtual int Health{ get; } = 200;
+   
     public Character? Character { get; set; }
     public override ExperienceGainResult IncreaseExp(ulong experience)
     {

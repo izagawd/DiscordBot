@@ -19,14 +19,14 @@ public class CriticalChanceGearStat : GearStat
         switch (rarity)
         {
             case Rarity.OneStar:
-                return 2;
+                return 3;
             case Rarity.TwoStar:
             case Rarity.ThreeStar:
                 return 3;
             case Rarity.FourStar:
                 return 4;
             default:
-                return 5;
+                return 6;
         }
     }
 
@@ -39,7 +39,7 @@ public class CriticalChanceGearStat : GearStat
             case Rarity.TwoStar:
             case Rarity.ThreeStar:
             case Rarity.FourStar:
-                return 2;
+                return 3;
             default:
                 return 3;
         }

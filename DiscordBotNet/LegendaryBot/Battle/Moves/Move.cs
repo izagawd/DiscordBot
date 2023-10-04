@@ -18,10 +18,10 @@ public abstract class Move
     /// </summary>
     public abstract int MaxEnhance { get; } 
 
-    [Image]
+ 
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/moves/{GetType().Name}.png";
 
-    public async Task<Image<Rgba32>> GetImageAsync(int? level = null)
+    public async Task<Image<Rgba32>> GetImageAsync()
     {
 
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
@@ -32,44 +32,22 @@ public abstract class Move
             .Resize(100, 100)
             .Draw(Color.Black, 8, new RectangleF(0, 0, 100,100)));
   
-        if (level is not null && level > 0)
-        {
-            var options = new RichTextOptions(SystemFonts.CreateFont("Arial",40));
-            
-            options.Origin = new Vector2(8, 0);
-
-            var rectangle = new RectangleF(0, 0, 40, 40);
-            image.Mutate(i => i
-                .Draw(Color.Black,4,rectangle)
-                .Fill(Color.Black, rectangle)
-                .DrawText(options, $"{level}", Color.White));
-        }
 
         return image;
     }
+
     /// <summary>
     /// Gets the description of the Move, based on the MoveType
     /// </summary>
 
-    public  string GetDescription(Character owner)
-    {
-        switch (MoveType)
-        {
-            case MoveType.Skill:
-                return GetDescription(owner.SkillLevel);
-            case MoveType.BasicAttack:
-                return GetDescription(owner.BasicAttackLevel);
-            default:
-                return GetDescription(owner.SurgeLevel);
-        }
-    }
+    public abstract string Description { get; }
 
     public int MaxSkillEnhancement => 5;
 
     /// <summary>
     /// Gets the description of the Move, based on the move level
     /// </summary>
-    public abstract string GetDescription(int moveLevel);
+
 
 
     /// <summary>

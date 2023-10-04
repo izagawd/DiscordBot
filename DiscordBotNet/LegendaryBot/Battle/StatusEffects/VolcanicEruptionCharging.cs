@@ -34,17 +34,16 @@ public class VolcanicEruptionCharging : StatusEffect
                     DamageText =$"{affected} shot out a very powerful blast that dealt $ damage to {i}!"
                 });
                 damageResults.Add(damageResult);
-                return new UsageResult(this)
-                { 
-                    Text = "Blast!", 
-                    DamageResults = damageResults,
-                    UsageType = UsageType.NormalUsage,
-                    TargetType = TargetType.AOE,
-                    User = affected
-                    
-                };
-            }
 
+            }
+            return new UsageResult(this)
+            { 
+                Text = "Blast!", 
+                DamageResults = damageResults,
+                UsageType = UsageType.NormalUsage,
+                TargetType = TargetType.AOE,
+                User = affected
+            };
         }
         affected.CurrentBattle.AdditionalTexts.Add($"{affected} is charging up a very powerful attack. {Duration-1} more turns till it is released");
         return new UsageResult(this)

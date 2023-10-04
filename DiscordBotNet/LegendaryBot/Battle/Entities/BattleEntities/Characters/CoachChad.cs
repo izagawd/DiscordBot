@@ -7,11 +7,8 @@ using DSharpPlus.Entities;
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public class GigaPunch : BasicAttack
 {
-    public override string GetDescription(int moveLevel)
-    {
-        return "Punch is thrown gigaly";
-    }
-
+    public override string Description => "Punch is thrown gigaly";
+    
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         return new UsageResult(this)
@@ -37,10 +34,8 @@ public class GigaPunch : BasicAttack
 public class MuscleFlex : Surge
 {
     public override int MaxEnhance { get; }
-    public override string GetDescription(int moveLevel)
-    {
-        return "Flexes muscles";
-    }
+    public override string Description => "Flexes muscles";
+    
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
@@ -60,20 +55,15 @@ public class MuscleFlex : Surge
     
     }
 
-    public override int GetMaxCooldown(int level)
-    {
-        return 1;
-    }
+    public override int MaxCooldown => 1;
 }
 
 public class ThumbsUp : Skill
 {
     public override int MaxEnhance { get; } = 4;
 
-    public override string GetDescription(int moveLevel)
-    {
-        return "Gives the enemy a thumbs up!";
-    }
+    public override string Description => "Gives the enemy a thumbs up!";
+    
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
@@ -93,7 +83,7 @@ public class ThumbsUp : Skill
 
     }
 
-    public override int GetMaxCooldown(int level) => 1;
+    public override int MaxCooldown => 1;
 }
 public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBattleEvent<TurnEndEventArgs>
 {

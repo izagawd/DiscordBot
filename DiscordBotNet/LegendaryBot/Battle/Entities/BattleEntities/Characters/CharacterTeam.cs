@@ -31,6 +31,7 @@ public class CharacterTeam : ISet<Character>
 
         return text;
     }
+    public BattleSimulator CurrentBattle { get; set; }
     private HashSet<Character> Characters { get; }
     public IEnumerator<Character> GetEnumerator()
     {
@@ -44,9 +45,10 @@ public class CharacterTeam : ISet<Character>
     {
         foreach (var i in Characters)
         {
+            i.Team = this;
             await i.LoadAsync();
         }
-
+        
         return this;
     }
 
@@ -54,16 +56,23 @@ public class CharacterTeam : ISet<Character>
     {
         foreach (var i in Characters)
         {
+            i.Team = this;
             if (i is Player player) await player.LoadAsync(user);
             else await i.LoadAsync();
         }
-
+    
         return this;
     }
+
+    /// <summary>
+    /// True if all characters in the team have been loaded with LoadAsync. throws an error in BattleSimulator if false
+    /// </summary>
+    public bool IsLoaded => Characters.All(i => i.IsLoaded);
     public async Task<CharacterTeam> LoadAsync(ClaimsPrincipal user)
     {
         foreach (var i in Characters)
         {
+            i.Team = this;
             if (i is Player player)
             {
                 await player.LoadAsync(user);
@@ -74,6 +83,7 @@ public class CharacterTeam : ISet<Character>
             }
         }
 
+
         return this;
     }
     IEnumerator IEnumerable.GetEnumerator()
@@ -83,6 +93,18 @@ public class CharacterTeam : ISet<Character>
 
     public bool Add(Character character)
     {
+        return Add(character, false);
+    }
+
+        /// <param name="character"></param>
+        /// <param name="ignoreLoad">If true, will not throw exception if character is not loaded</param>
+        /// <returns></returns>
+
+    public bool Add(Character character, bool ignoreLoad)
+    {
+        if (!character.IsLoaded && !ignoreLoad)
+            throw new Exception("Character that was attempted to be added to the team has not been loaded");
+        character.Team = this;
         return Characters.Add(character);
     }
 
@@ -140,7 +162,7 @@ public class CharacterTeam : ISet<Character>
 
     void ICollection<Character>.Add(Character item)
     {
-        Characters.Add(item);
+        Add(item);
     }
 
     public void Clear()
@@ -158,7 +180,7 @@ public class CharacterTeam : ISet<Character>
     public CharacterTeam(ulong userId, string userName,params Character[] characters) : this(userName,characters)
     {
         UserId = userId;
-      
+        
     }
     public CharacterTeam(string userName,params Character[] characters) : this(characters)
     {

@@ -8,13 +8,14 @@ using DiscordBotNet.LegendaryBot;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using SixLabors.ImageSharp;
 
 namespace DiscordBotNet;
 
 public static class Website
 {
-    public static  readonly string DomainName = "https://legendarygawds.com";
+    public static  readonly string DomainName = "https://localhost";
     public static async Task<string> RenderImageTagAsync(Image image)
     {
         if (image == null)
@@ -50,6 +51,7 @@ public static class Website
     }
     public static void ConfigureServices(IServiceCollection services)
     {
+
         services.AddRazorPages();
         services.AddDbContext<PostgreSqlContext>();
         services.AddSession(i =>
@@ -91,6 +93,7 @@ public static class Website
     {
         var builder = WebApplication.CreateBuilder(args);
         ConfigureServices(builder.Services);
+
         var app = builder.Build();
         if (!app.Environment.IsDevelopment())
         {

@@ -33,12 +33,20 @@
       "PackagePath": "staticwebassets\\battle_images\\moves\\DancingFlames.jpg"
     },
     {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\moves\\VolcanicEruption.png",
+      "PackagePath": "staticwebassets\\battle_images\\moves\\VolcanicEruption.png"
+    },
+    {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\moves\\guilotine.png",
       "PackagePath": "staticwebassets\\battle_images\\moves\\guilotine.png"
     },
     {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\AttackBuff.png",
       "PackagePath": "staticwebassets\\battle_images\\status_effects\\AttackBuff.png"
+    },
+    {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Bomb.png",
+      "PackagePath": "staticwebassets\\battle_images\\status_effects\\Bomb.png"
     },
     {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Burn.png",

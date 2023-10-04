@@ -12,6 +12,7 @@ using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+using DiscordBotNet.LegendaryBot.Battle.Stats;
 using DiscordBotNet.LegendaryBot.command;
 
 using DSharpPlus;
@@ -52,16 +53,26 @@ public class Bot
     public static ulong Testersid => 266157684380663809;
     public static DiscordClient Client { get; private set; }
 
-    private async Task DoShit()
+    public static async Task DoShit()
     {
-
+        foreach (var i in Enumerable.Range(0,100))
+        {
+            var intt =BasicFunction.GetRandomNumberInBetween(1, 6);
+            intt.Print();
+            if (intt < 1 || intt > 6)
+            {
+                Console.WriteLine("bruh");
+                break;
+            }
+        }
+     
     }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-
+  
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

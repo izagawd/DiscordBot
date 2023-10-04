@@ -7,29 +7,12 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
 public class MethaneSlap : BasicAttack
 {
-    public override string GetDescription( int level)
-    {
-        
-        return $"Slaps the enemy, producing methane around the enemy, with a {GetDetonateChance(level)}% chance to detonate all the bombs the target has";
-    }
+    public override string Description => $"Slaps the enemy, producing methane around the enemy, with a {DetonateChance}% chance to detonate all the bombs the target has";
+    
 
     public override int MaxEnhance { get; } = 4;
 
-    public int GetDetonateChance(int level)
-    {
-        switch (level)
-        {
-            case 0:
-                return 40;
-            case 1:
-            case 2:    
-                return 50;
-            case 3:
-                return 60;
-            default:
-                return 75;
-        }
-    }
+    public int DetonateChance => 75;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         var damageResult = target.Damage(new DamageArgs(this)
@@ -50,7 +33,7 @@ public class MethaneSlap : BasicAttack
         };
         
     
-        if (BasicFunction.RandomChance(GetDetonateChance(owner.BasicAttackLevel)))
+        if (BasicFunction.RandomChance(DetonateChance))
         {
             foreach (var i in target.StatusEffects.OfType<Bomb>())
             {
@@ -63,27 +46,15 @@ public class MethaneSlap : BasicAttack
 }
 public class BlowAway : Skill
 {
-    public override int GetMaxCooldown(int level) => 4;
+    public override int MaxCooldown => 4;
+    public override string Description => $"Throws multiple bombs at the enemy, with a {BombInflictChance} each to inflict Bomb status effect";
+
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
     }
     public override int MaxEnhance { get; } = 4;
-    public int GetBombInflictChange(int level)
-    {
-        switch (level)
-        {
-            case 0:
-                return 65;
-            case 1:
-            case 2:    
-                return 75;
-            case 3:
-                return 85;
-            default:
-                return 100;
-        }
-    }
+    public int BombInflictChance => 100;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
                 
@@ -93,7 +64,7 @@ public class BlowAway : Skill
 
             foreach (var _ in Enumerable.Range(0,1))
             {
-                if (BasicFunction.RandomChance(GetBombInflictChange(owner.SkillLevel)))
+                if (BasicFunction.RandomChance(BombInflictChance))
                 {
                                 
                     i.StatusEffects.Add(new Bomb(owner){Duration = 2}, owner.Effectiveness);
@@ -106,20 +77,15 @@ public class BlowAway : Skill
         
     }
 
-    public override string GetDescription(int moveLevel)
-    {
-        return
-            $"Throws multiple bombs at the enemy, with a {GetBombInflictChange(moveLevel)} each to inflict Bomb status effect";
-    }
+
 }
 public class VolcanicEruption : Surge
 {
-    public override string GetDescription(int moveLevel)
-    {
-        return $"Makes the user charge up a very powerful explosion that hits all enemies for 4 turns!";
-    }
+    public override string Description
+    => $"Makes the user charge up a very powerful explosion that hits all enemies for 4 turns!";
+    
 
-    public override int GetMaxCooldown(int level)  => 6;
+    public override int MaxCooldown  => 6;
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);

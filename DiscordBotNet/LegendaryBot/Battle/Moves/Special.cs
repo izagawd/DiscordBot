@@ -9,19 +9,9 @@ public abstract class Special : Move
     /// The maximum cooldown of the move based on the move level
     /// </summary>
 
-    public abstract int GetMaxCooldown(int level);
+    public virtual int MaxCooldown { get; } = 3;
 
-    public int GetMaxCooldown(Character character)
-    {
-        switch(MoveType){
-            case MoveType.Skill:
-                return GetMaxCooldown(character.SkillLevel);
-            case MoveType.Surge:
-                return GetMaxCooldown(character.SurgeLevel);
-            default:
-                return 0;
-        }
-    }
+
     /// <summary>
     /// The cooldown of the move
     /// </summary>
@@ -45,16 +35,11 @@ public abstract class Special : Move
     {
         if (usageType == UsageType.NormalUsage)
         {
-            switch (MoveType)
-            {
-                case MoveType.Skill:
-                    Cooldown = GetMaxCooldown(owner.SkillLevel);
-                    break;
-                case MoveType.Surge:
-                    Cooldown = GetMaxCooldown(owner.SkillLevel);
-                    break;
-            }
+
+            Cooldown = MaxCooldown;
+
         }
+        
         return base.Utilize(owner, target, usageType);
     }
 }

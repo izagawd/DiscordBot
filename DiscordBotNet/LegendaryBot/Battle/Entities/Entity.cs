@@ -49,7 +49,8 @@ public abstract class Entity : ICloneable
         return clonedEntities;
     }
     public UserData? UserData { get; set; }
-    [NotMapped][Image]
+
+    [NotMapped]
     public virtual string IconUrl { get; protected set; }
 
     public Guid Id { get; protected set; } = Guid.NewGuid();

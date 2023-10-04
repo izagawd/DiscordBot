@@ -3,16 +3,16 @@
     position: relative;
 
     justify-content: center;
-    top: 20%;
+    top: 100px;
     width: 73%;
 }
 #character_details
 {
     display: flex;
-    position: relative;
+    position: fixed;
 
     justify-content: center;
-    top: 30%;
+    top: 40%;
     width: 73%;
 }
 .blessing_div{

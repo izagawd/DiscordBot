@@ -12,10 +12,8 @@ using DSharpPlus.EventArgs;
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public class FourthWallBreaker: BasicAttack
 {
-    public override string GetDescription(int moveLevel)
-    {
-       return "Damages the enemy by breaking the fourth wall";
-    }
+    public override string Description =>  "Damages the enemy by breaking the fourth wall";
+    
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
@@ -44,17 +42,15 @@ public class FourthWallBreaker: BasicAttack
 
 public class FireBall : Skill
 {
-    public override string GetDescription(int moveLevel)
-    {
-        return "Throws a fire ball at the enemy with a 40% chance to inflict burn";
-    }
+    public override string Description => "Throws a fire ball at the enemy with a 40% chance to inflict burn";
+    
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
     }
 
-    public override int GetMaxCooldown(int level) => 2;
+    public override int MaxCooldown=> 2;
     public override int MaxEnhance { get; } = 4;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {  
@@ -82,33 +78,14 @@ public class FireBall : Skill
 }
 public class Ignite : Surge
 {
-    public override int GetMaxCooldown(int level) => 1;
+    public override int MaxCooldown => 1;
 
     public override int MaxEnhance { get; } = 4;
 
-    public override string GetDescription(int moveLevel)
-    {
-        return $"Ignites the enemy with 3 burns. {IgniteChance(moveLevel)}% chance each";
-    }
+    public override string Description=>$"Ignites the enemy with 3 burns. {IgniteChance}% chance each";
+    
 
-    public int IgniteChance(int moveLevel)
-    {
-        switch (moveLevel)
-        {
-           case 0:
-               return 70;
-           case 1:
-               return 75;
-           case 2:
-               return 80;
-           case 3:
-               return 85;
-           case 4:
-               return 90;
-           default:
-               return 100;
-        }
-    }
+    public int IgniteChance  => 100;
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
@@ -119,7 +96,7 @@ public class Ignite : Surge
         owner.CurrentBattle.AdditionalTexts.Add($"{owner} attempts to make a human torch out of {target}!");
         for (int i = 0; i < 3; i++)
         {
-            if (BasicFunction.RandomChance(IgniteChance(owner.GetMoveLevel(this))))
+            if (BasicFunction.RandomChance(IgniteChance))
             {
                 target.StatusEffects.Add(new Burn(owner),owner.Effectiveness);
             }

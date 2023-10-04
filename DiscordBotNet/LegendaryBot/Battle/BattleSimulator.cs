@@ -23,6 +23,14 @@ public enum BattleDecision
 {
     Forfeit, Surge, BasicAttack, Skill, Other,
 }
+
+public class TeamNotLoadedException : Exception
+{
+    public TeamNotLoadedException() : base("A team has not been loaded with the LoadAsync method")
+    {
+        
+    }
+}
 public class BattleSimulator
 {
    
@@ -85,7 +93,7 @@ public class BattleSimulator
         var combatReadinessLineTRectangle = new Rectangle(40, 0, 15, length);
         imageCtx.Fill(Color.White, combatReadinessLineTRectangle);
         imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
-        foreach (var i in characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
+        foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
             using var characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(i.IconUrl);
             characterImageToDraw.Mutate(mutator =>
@@ -171,7 +179,8 @@ public class BattleSimulator
 
         return statsModifierArgsList.ToArray();
     }
-    public List<CharacterTeam> CharacterTeams { get; } 
+
+    public IEnumerable<CharacterTeam> CharacterTeams => new[] { Team1, Team2 };
 
     /// <summary>
     /// The amount of turns passed
@@ -184,19 +193,18 @@ public class BattleSimulator
     /// </summary>
     public Character ActiveCharacter { get; protected set; }
 
+
+
     /// <summary>
     /// All the characters in the battle
     /// </summary>
-    private List<Character> characters =  new();
-    /// <summary>
-    /// All the characters in the battle
-    /// </summary>
-    public IEnumerable<Character> Characters => characters.OrderByDescending(i => i.CombatReadiness);
+    public IEnumerable<Character> Characters => Team1.Union(Team2);
     /// <summary>
     /// Creates a new battle between two teams
     /// </summary>
     public CharacterTeam Team1 { get; }
     public CharacterTeam Team2 { get; }
+    
     public BattleSimulator(CharacterTeam team1, CharacterTeam team2)
     {
         if (team1.Count == 0 || team2.Count == 0)
@@ -204,9 +212,15 @@ public class BattleSimulator
             throw new Exception("one of the teams has no fighters");
         }
 
+        if (new[] {team1, team2 }.Any(i => !i.IsLoaded))
+        {
+            throw new TeamNotLoadedException();
+        }
         Team1 = team1;
         Team2 = team2;
-        CharacterTeams = new List<CharacterTeam> { team1, team2 };
+        Team1.CurrentBattle = this;
+        Team2.CurrentBattle = this;
+
 
     }
     private CharacterTeam? winners;
@@ -253,19 +267,6 @@ public class BattleSimulator
     /// </summary>
     public async Task<BattleResult> StartAsync(DiscordInteraction interaction, DiscordMessage? message = null)
     {
-        characters.Clear();
-        CharacterTeams.ForEach(i =>
-        {
-            foreach (var j in i)
-            {
-                
-                j.Team = i;
-                j.CurrentBattle = this;
-
-            }
-            
-            characters.AddRange(i);
-        });
         _mainText = "Battle Begins!";
         _additionalText = "Have fun!";
      
@@ -277,10 +278,10 @@ public class BattleSimulator
         while (true)
         {
             Turn += 1;
-            while (!characters.Any(i => i.CombatReadiness >= 100 && !i.IsDead))
+            while (!Characters.Any(i => i.CombatReadiness >= 100 && !i.IsDead))
             {
                 
-                foreach (var j in characters)
+                foreach (var j in Characters)
                 {
                    
                     if(!j.IsDead) j.CombatReadiness +=  (0.0025 * j.Speed);
@@ -290,7 +291,7 @@ public class BattleSimulator
             }
 
            
-            ActiveCharacter = BasicFunction.RandomChoice(characters.Where(i => i.CombatReadiness >= 100 && !i.IsDead));
+            ActiveCharacter = BasicFunction.RandomChoice(Characters.Where(i => i.CombatReadiness >= 100 && !i.IsDead));
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
 
             ActiveCharacter.CombatReadiness = 0;
@@ -497,7 +498,7 @@ public class BattleSimulator
                     {
                         if (e.User.Id == ActiveCharacter.Team.UserId)
                         {
-                            target = characters.First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
+                            target = Characters.First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
                             e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                         }
                         return false;

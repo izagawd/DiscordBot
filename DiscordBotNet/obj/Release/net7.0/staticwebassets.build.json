@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "I8EYScjwtva9H73ssdJ4dzDsdAhir9K2O4IGoMC1SG4=",
+  "Hash": "Tb1I4nWbx58gwtSz8oyW7ZEw1JW5tK5Z+5LoVbFpaVc=",
   "Source": "DiscordBotNet",
   "BasePath": "_content/DiscordBotNet",
   "Mode": "Default",
@@ -187,6 +187,23 @@
       "OriginalItemSpec": "wwwroot\\battle_images\\moves\\guilotine.png"
     },
     {
+      "Identity": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\moves\\VolcanicEruption.png",
+      "SourceId": "DiscordBotNet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\",
+      "BasePath": "_content/DiscordBotNet",
+      "RelativePath": "battle_images/moves/VolcanicEruption.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\battle_images\\moves\\VolcanicEruption.png"
+    },
+    {
       "Identity": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\AttackBuff.png",
       "SourceId": "DiscordBotNet",
       "SourceType": "Discovered",
@@ -202,6 +219,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\battle_images\\status_effects\\AttackBuff.png"
+    },
+    {
+      "Identity": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Bomb.png",
+      "SourceId": "DiscordBotNet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\",
+      "BasePath": "_content/DiscordBotNet",
+      "RelativePath": "battle_images/status_effects/Bomb.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\battle_images\\status_effects\\Bomb.png"
     },
     {
       "Identity": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Burn.png",

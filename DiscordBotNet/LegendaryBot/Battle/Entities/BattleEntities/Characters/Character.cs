@@ -23,7 +23,8 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public abstract  class Character : BattleEntity
 {
     public virtual bool IsInStandardBanner => true;
-
+    [NotMapped]
+    public bool IsLoaded { get; private set; }
 
     public virtual Blessing? Blessing { get; set; }
     public Guid? BlessingId { get; set; }
@@ -118,59 +119,58 @@ public abstract  class Character : BattleEntity
             return (float)(shield.GetShieldValue(this) * 1.0 / MaxHealth * 100.0);
         }
     }
-
     public float HealthPercentage => (float)(Health * 1.0 / MaxHealth * 100.0);
     public sealed override async  Task<Image<Rgba32>> GetDetailsImageAsync()
     {
         using var characterImage = await GetInfoAsync();
-        var image = new Image<Rgba32>(1280, 1000);
+        var image = new Image<Rgba32>(1800, 1000);
 
         var characterImageSize = characterImage.Size;
         IImageProcessingContext imageCtx = null;
         image.Mutate(i => imageCtx = i);
        
         int yOffSet = characterImageSize.Height + 50;
+        Font font = SystemFonts.CreateFont($"Arial", 40);
+         
+        RichTextOptions options = new RichTextOptions(font){WrappingLength = 1000};
+        var color = SixLabors.ImageSharp.Color.Black;
+
         foreach (var i in MoveList)
         {
 
-            int moveLevel;
-            switch (i.MoveType)
-            {
-                case MoveType.Skill:
-                    moveLevel = SkillLevel;
-                    break;
-                case MoveType.Surge:
-                    moveLevel = SurgeLevel;
-                    break;
-                default:
-                    moveLevel = BasicAttackLevel;
-                    break;
-            }
-            using var moveImage = await i.GetImageAsync(moveLevel);
+
+            using var moveImage = await i.GetImageAsync();
             moveImage.Mutate(j => j
                 .Resize(100,100)
             );
             int xOffset = 20;
-            
-            var description = i.GetDescription(this);
+
+            var description = i.Description;
             
             imageCtx.DrawImage(moveImage, new Point(xOffset, yOffSet), new GraphicsOptions());
-            Font font = SystemFonts.CreateFont($"Arial", 40);
-            
-            RichTextOptions options = new RichTextOptions(font){WrappingLength = 1000};
+    
+           
             options.Origin = new Vector2(120 + xOffset,   yOffSet);
 
             var fontRectangle = TextMeasurer.MeasureSize(description, options);
-            imageCtx.DrawText(options, description, SixLabors.ImageSharp.Color.Black);
+
+            imageCtx.DrawText(options, description,color );
  
             var max = float.Max(moveImage.Height, fontRectangle.Height);
             yOffSet += (20 + max + 10).Round();
             
         }
+        yOffSet = characterImageSize.Height + 50;
+        var xBarrier = 1300;
+        options.Origin = new Vector2(xBarrier, yOffSet);
+        string stats = $"Health: {TotalMaxHealth}\nAttack: {TotalAttack}\nDefense: {TotalDefense}\nSpeed: {TotalSpeed}\n" +
+                       $"Resistance: {TotalResistance}%\nEffectiveness: {TotalEffectiveness}%\nCritical Chance: {TotalCriticalChance}%\n" +
+                       $"Critical Damage: {TotalCriticalDamage}%";
+        imageCtx.DrawText(options, stats, color);
 
-        
         imageCtx.BackgroundColor(Color.ToImageSharpColor());
         imageCtx.DrawImage(characterImage, new Point(((image.Width / 2.0f)- (characterImage.Width /2.0f)).Round(), 20),new GraphicsOptions());
+        imageCtx.Resize((image.Width / 2.0).Round(), (image.Height / 2.0).Round());
         return image;
     }
     public Helmet? Helmet { get; set; }
@@ -192,20 +192,7 @@ public abstract  class Character : BattleEntity
     [NotMapped]
     public IEnumerable<Gear> Gears => new List<Gear?> { Armor, Helmet, Weapon, Necklace, Ring, Boots }
         .Where(i => i is not null).OfType<Gear>();
-    public int GetMoveLevel(Move move)
-    {
-        switch (move.MoveType)
-        {
-            case MoveType.Skill:
-                return SkillLevel;
-            case MoveType.Surge:
-                return SurgeLevel;
-            case MoveType.BasicAttack:
-                return BasicAttackLevel;
-            default:
-                return 0;
-        }
-    }
+
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
         var image = new Image<Rgba32>(1280, 720);
@@ -265,7 +252,7 @@ public abstract  class Character : BattleEntity
         foreach (var i in MoveList)
         {
 
-            using var moveImage = await i.GetImageAsync(GetMoveLevel(i));
+            using var moveImage = await i.GetImageAsync();
             moveImage.Mutate(context =>
             {
                 context.Resize(new Size(moveLength, moveLength));
@@ -546,12 +533,7 @@ public abstract  class Character : BattleEntity
     /// this will be used to get the items this character will drop if killed
     /// </summary>
     [NotMapped]
-    public virtual Entity[] DroppedItems {
-        get
-        {
-            return new Entity[0];
-        } 
-    }
+    public virtual Entity[] DroppedItems => Array.Empty<Entity>();
 
     /// <summary>
     /// Use this if you want this character to drop any extra items
@@ -559,25 +541,7 @@ public abstract  class Character : BattleEntity
     [NotMapped]
     public virtual List<Entity> ExtraItemsToDrop { get; set; } = new();
 
-    protected int _basicAttackLevel = 0;
-    public int BasicAttackLevel
-    {
-        get => _basicAttackLevel;
-        set
-        {
-            if (value < 0)
-            {
-                value = 0;
-            }
 
-            if (value > 5)
-            {
-                value = 5;
-            }
-
-            _basicAttackLevel = value;
-        } 
-    }
     public async Task<Image<Rgba32>> GetInfoAsync()
     {
         using var userImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
@@ -606,41 +570,8 @@ public abstract  class Character : BattleEntity
 
         return image;
     }
-    protected int _skillLevel = 0;
-    public int SkillLevel {        get => _skillLevel;
-        set
-        {
-            if (value < 0)
-            {
-                value = 0;
-            }
 
-            if (value > 5)
-            {
-                value = 5;
-            }
 
-            _skillLevel = value;
-        }  }
-
-    protected int _surgeLevel = 0;
-    public int SurgeLevel {         get => _surgeLevel;
-        set
-        {
-            if (value < 0)
-            {
-                value = 0;
-            }
-
-            if (value > 5)
-            {
-                value = 5;
-            }
-
-            _surgeLevel= value;
-        }
-        
-    }
 
    
     /// <summary>
@@ -763,8 +694,7 @@ public abstract  class Character : BattleEntity
 
     [NotMapped] public virtual int BaseCriticalChance => 20;
 
-    [NotMapped]
-    public BattleSimulator CurrentBattle { get; set; }
+    [NotMapped] public BattleSimulator CurrentBattle => Team?.CurrentBattle!;
 
     public Character() 
     {
@@ -772,34 +702,7 @@ public abstract  class Character : BattleEntity
 
     }
 
-    public void SetGear(Gear gear)
-    {
-        if (gear is Armor armor)
-        {
-            Armor = armor;
-        }
-        else if (gear is Boots boots)
-        {
-            Boots = boots;
-        }
-        else if (gear is Helmet helmet)
-        {
-            Helmet = helmet;
-        }
-        else if (gear is Weapon weapon)
-        {
-            Weapon = weapon;
-        }
-        else if (gear is Ring ring)
-        {
-            Ring = ring;
-        }
-        else if (gear is Necklace necklace)
-        {
-            Necklace = necklace;
-        }
 
-    }
     public override int MaxLevel => 60;
 
     public void SetLevel(int level)
@@ -849,11 +752,11 @@ public abstract  class Character : BattleEntity
         {
    
             TotalAttack += Blessing.Attack;
-            TotalDefense += Blessing.Defense;
+            TotalMaxHealth += Blessing.Health;
         }
 
         Health = TotalMaxHealth.Round();
-
+        IsLoaded = true;
     }
     
   
