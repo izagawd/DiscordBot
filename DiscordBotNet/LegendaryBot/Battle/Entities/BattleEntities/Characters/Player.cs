@@ -115,7 +115,7 @@ public class Player : Character
 {
     public override bool IsInStandardBanner => false;
 
-    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
+
     
     [NotMapped]
     public DiscordUser User { get; set; }

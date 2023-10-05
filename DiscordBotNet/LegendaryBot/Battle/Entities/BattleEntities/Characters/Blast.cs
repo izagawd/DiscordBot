@@ -93,15 +93,15 @@ public class VolcanicEruption : Surge
     public override int MaxEnhance { get; } = 4;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 4});
+        owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 3});
         owner.CurrentBattle.AdditionalTexts.Add($"{owner} is charging up a very powerful attack!");
-        return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner};
+        return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner, Text = "What's this?"};
     }
 }
 public class Blast : Character
 {
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
-    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
+
     public override Element Element { get; protected set; } = Element.Fire;
     public override int BaseMaxHealth => 1100 + (60 * Level);
     public override int BaseAttack => (120 + (13 * Level));

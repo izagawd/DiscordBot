@@ -86,9 +86,11 @@ public abstract  class Character : BattleEntity
         {
             if (_health <= 0 )return;
             var tempMaxHealth = MaxHealth;
-       
-            
+
+            if (value <= 0 && StatusEffects.Any(i => i is Immortality))
+                value = 1;
             _health = value;
+            
             if (_health <= 0)
             {
                 _health = 0;
@@ -107,7 +109,29 @@ public abstract  class Character : BattleEntity
         CurrentBattle.AdditionalTexts.Add($"{Name} has been revived");
     }
 
-
+    private bool _shouldTakeExtraTurn = false;
+    [NotMapped]
+    public bool ShouldTakeExtraTurn
+    {
+        get => _shouldTakeExtraTurn;
+        set
+        {
+            if (value)
+                throw new Exception("You cannot set this property to true. only false. " +
+                                    $"If u want to make this property true, use the {nameof(GrantExtraTurn)} method instead");
+            _shouldTakeExtraTurn = value;
+        }
+        
+    }
+    /// <summary>
+    /// Grants a character an extra trun
+    /// </summary>
+    public void GrantExtraTurn()
+    {
+        if(IsDead) return;
+        _shouldTakeExtraTurn = true;
+        CurrentBattle.AdditionalTexts.Add($"{this} has been granted an extra turn");
+    }
     public override string IconUrl =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
     public float ShieldPercentage
     {
@@ -885,7 +909,7 @@ public abstract  class Character : BattleEntity
         }
         return $"{Name} ({side}) ({Position})";
     }
-    public abstract override Rarity Rarity { get; }
+
     [NotMapped] public abstract Skill Skill { get; } 
     public int Position => Array.IndexOf(CurrentBattle.Characters.ToArray(),this) +1;
     [NotMapped] public abstract Surge Surge { get; }
@@ -943,20 +967,25 @@ public abstract  class Character : BattleEntity
         CurrentBattle.InvokeBattleEvent(new CharacterDamageEventArgs(damageResult));
         return damageResult;
     }
+
     /// <summary>
     /// Recovers the health of this character
     /// </summary>
     /// <param name="toRecover">Amount to recover</param>
+    /// <param name="recoveryText">text to say when health recovered. use $ to represent health recovered</param>
     /// <returns>Amount recovered</returns>
-    public virtual int RecoverHealth(int toRecover, bool mentionRecovery =  true)
+    public virtual int RecoverHealth(double toRecover,
+        string? recoveryText = null)
     {
+        var healthToRecover = toRecover.Round();
+        Health += healthToRecover;
+        if (recoveryText is null)
+            recoveryText = $"{this} recovered $ health!";
+
+        CurrentBattle.AdditionalTexts.Add(recoveryText.Replace("$",healthToRecover.ToString()));
         
-        Health +=  toRecover;
-        if (mentionRecovery)
-        {
-            CurrentBattle.AdditionalTexts.Add($"{this} recovered {toRecover} health!");
-        }
-        return  toRecover;
+
+        return healthToRecover;
     }
     /// <summary>
     /// checks if it is currently the character's turn

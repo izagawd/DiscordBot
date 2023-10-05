@@ -276,7 +276,15 @@ public class BattleSimulator
         while (true)
         {
             Turn += 1;
-            while (!Characters.Any(i => i.CombatReadiness >= 100 && !i.IsDead))
+            bool extraTurnGranted = false;
+            var extraTurners = Characters.Where(i => i.ShouldTakeExtraTurn);
+            if (extraTurners.Any())
+            {
+                ActiveCharacter = BasicFunction.RandomChoice(extraTurners);
+                ActiveCharacter.ShouldTakeExtraTurn = false;
+                extraTurnGranted = true;
+            }
+            while (!Characters.Any(i => i.CombatReadiness >= 100 && !i.IsDead) && !extraTurnGranted)
             {
                 
                 foreach (var j in Characters)
@@ -288,8 +296,11 @@ public class BattleSimulator
                 
             }
 
-           
-            ActiveCharacter = BasicFunction.RandomChoice(Characters.Where(i => i.CombatReadiness >= 100 && !i.IsDead));
+            if (!extraTurnGranted)
+            {
+                ActiveCharacter = BasicFunction.RandomChoice(Characters.Where(i => i.CombatReadiness >= 100 && !i.IsDead));
+
+            }
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
 
             ActiveCharacter.CombatReadiness = 0;

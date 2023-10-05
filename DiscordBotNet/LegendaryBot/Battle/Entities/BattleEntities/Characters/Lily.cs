@@ -66,7 +66,7 @@ public class BlossomTouch : Skill
 }
 public class LilyOfTheValley : Surge
 {
-    public override int MaxCooldown  => 4;
+    public override int MaxCooldown  => 5;
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
@@ -76,7 +76,7 @@ public class LilyOfTheValley : Surge
 
     public int PoisonInflictChance => 100;
     public override int MaxEnhance { get; } = 4;
-    public int StunInflictChance => 70;
+    public int StunInflictChance => 50;
     public override  string Description => $"Releases a poisonous gas to all enemies, with an {StunInflictChance}% chance of inflicting stun for 1 turn and a {PoisonInflictChance}% chance of inflicting poison for one turn";
     
 
@@ -138,7 +138,7 @@ public class Lily : Character
     public override Skill Skill { get;  } = new BlossomTouch();
     public override Surge Surge { get; } = new LilyOfTheValley();
     public override BasicAttack BasicAttack { get; } = new ChamomileSachetWhack();
-    public override Rarity Rarity { get; protected set; } = Rarity.FourStar;
+
     public override Element Element => Element.Earth;
 
 

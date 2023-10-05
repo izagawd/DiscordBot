@@ -15,7 +15,7 @@ namespace DiscordBotNet;
 
 public static class Website
 {
-    public static  readonly string DomainName = "https://localhost";
+    public static  readonly string DomainName = "https://legendarygawds.com";
     public static async Task<string> RenderImageTagAsync(Image image)
     {
         if (image == null)

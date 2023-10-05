@@ -99,8 +99,8 @@ public class SlashOfPrecision : Surge
 public class Slasher : Character
 {
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
-    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
-    public override Element Element { get; protected set; } = Element.Fire;
+
+    public override Element Element { get; protected set; } = Element.Earth;
     public override int BaseMaxHealth => 1100 + (60 * Level);
     public override int BaseAttack => (120 + (13 * Level));
     public override int BaseDefense => (100 + (5.2 * Level)).Round();

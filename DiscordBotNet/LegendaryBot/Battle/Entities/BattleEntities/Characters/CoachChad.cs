@@ -97,7 +97,7 @@ public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBatt
     public override int BaseResistance => 0;
 
     public override BasicAttack BasicAttack { get; } = new GigaPunch();
-    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
+
     public override Skill Skill { get;  } = new ThumbsUp();
     public override Surge Surge { get; } = new MuscleFlex();
 

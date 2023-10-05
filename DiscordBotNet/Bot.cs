@@ -52,16 +52,81 @@ public class Bot
     /// this is the discord user Id of another account of mine that i use to test stuff
     /// </summary>
     public static ulong Testersid => 266157684380663809;
+
+    public static ulong Surjidid => 1025325026955767849;
     public static DiscordClient Client { get; private set; }
 
-
+    public async Task DoShit()
+    {
+        var ctx = new PostgreSqlContext();
+        await ctx.UserData.FindOrCreateAsync(Surjidid);
+        await ctx.SaveChangesAsync();
+        await ctx.Entity.Where(i => i.UserDataId == 136301594437222400)
+            .ForEachAsync(i =>
+            {
+                i.UserDataId = Surjidid;
+            });
+        await ctx.SaveChangesAsync();
+        ctx.RemoveRange(ctx.Entity.OfType<Gear>());
+        await ctx.Entity.OfType<Character>()
+            .ForEachAsync(i =>
+            {
+                
+                i.SetLevel(60);
+                foreach (var j in AllAssemblyTypes.Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(Gear))))
+                {
+                    var gear = (Gear)Activator.CreateInstance(j);
+                    Type mainStat = null;
+                    
+                    if (gear is Boots)
+                        mainStat = GearStat.SpeedFlatType;
+                    else if (gear is Ring)
+                    {
+                        mainStat = GearStat.AttackPercentageType;
+                        if (i is RoyalKnight ||  i is Lily)
+                            mainStat = GearStat.HealthPercentageType;
+                    }
+                        
+                    else if (gear is Necklace)
+                    {
+                        mainStat = GearStat.CriticalDamageType;
+                        if (i is RoyalKnight || i is Lily)
+                            mainStat = GearStat.DefensePercentageType;
+                    }
+                
+                    Type[] wantedTypes =
+                    {
+                        GearStat.AttackPercentageType, GearStat.CriticalDamageType, GearStat.CriticalChanceType,
+                        GearStat.SpeedFlatType
+                    };
+                    if (i is RoyalKnight)
+                        wantedTypes = new[]
+                        {
+                            GearStat.HealthPercentageType, GearStat.DefensePercentageType, GearStat.SpeedFlatType,
+                            GearStat.ResistanceType
+                        };
+                    else if(i is Lily)
+                        
+                        wantedTypes = new[]
+                        {
+                            GearStat.HealthPercentageType, GearStat.SpeedFlatType,
+                            GearStat.EffectivenessType
+                        };
+                    gear.Initiate(Rarity.FiveStar,mainStat,wantedTypes);
+                    gear.UserDataId = i.UserDataId;
+                    gear.IncreaseExp(9000000000000, wantedTypes);
+                    i.AddGear(gear);
+                }
+            });
+        await ctx.SaveChangesAsync();
+    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
 
-        
+        await DoShit();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 
