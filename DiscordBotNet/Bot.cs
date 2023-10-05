@@ -126,7 +126,6 @@ public class Bot
     private async Task RunBotAsync(string[] args)
     {
 
-        await DoShit();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 
