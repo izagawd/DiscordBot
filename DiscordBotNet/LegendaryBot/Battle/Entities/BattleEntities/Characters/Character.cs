@@ -300,7 +300,7 @@ public abstract  class Character : BattleEntity
         xOffSet = 0;
         yOffSet += moveLength + 5;
         int statusLength = 20;
-        foreach (var i in StatusEffects)
+        foreach (var i in StatusEffects.Take(16))
         {
 
             using var statusImage = await i.GetImage();
