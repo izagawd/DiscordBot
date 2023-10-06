@@ -218,63 +218,59 @@ public abstract  class Character : BattleEntity
  public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
         
-        var image = new Image<Rgba32>(370, 300);
+        var image = new Image<Rgba32>(190, 150);
         var stop = new Stopwatch(); stop.Start();
         using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
 
-  
-     
         characterImage.Mutate(ctx =>
         {
-            ctx.Resize(new Size(100, 100));
-            
-            
+        ctx.Resize(new Size(50, 50));
         });
-     
+
         IImageProcessingContext ctx = null!;
         image.Mutate(idk => ctx = idk);
-  
-        ctx.DrawImage(characterImage, new Point(0,0), new GraphicsOptions());
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 2, new Rectangle(new Point(0,0),characterImage.Size));
-        ctx.DrawText($"{CombatReadiness.Round()}%", SystemFonts.CreateFont("Arial", 20),
-            SixLabors.ImageSharp.Color.Black, new PointF(110, 10));
 
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 2,
-            new RectangleF(105, 10, 70,23));
-        ctx.DrawText($"Lvl {Level}", SystemFonts.CreateFont("Arial", 20),
-            SixLabors.ImageSharp.Color.Black, new PointF(110, 40));
+        ctx.DrawImage(characterImage, new Point(0, 0), new GraphicsOptions());
+        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1, new Rectangle(new Point(0, 0), new Size(50, 50)));
+        ctx.DrawText($"{CombatReadiness.Round()}%", SystemFonts.CreateFont("Arial", 10),
+        SixLabors.ImageSharp.Color.Black, new PointF(55, 5));
 
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 2,
-            new RectangleF(105, 40, 140,23));
+        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
+        new RectangleF(52.5f, 5, 35, 11.5f));
+        ctx.DrawText($"Lvl {Level}", SystemFonts.CreateFont("Arial", 10),
+        SixLabors.ImageSharp.Color.Black, new PointF(55, 20));
 
-        ctx.DrawText(Name + $" [{Position}]", SystemFonts.CreateFont("Arial", 22),
-            SixLabors.ImageSharp.Color.Black, new PointF(110, 70));
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 2,
-            new RectangleF(105, 70, 230,25));
+        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
+        new RectangleF(52.5f, 20, 70, 11.5f));
+
+        ctx.DrawText(Name + $" [{Position}]", SystemFonts.CreateFont("Arial", 11),
+        SixLabors.ImageSharp.Color.Black, new PointF(55, 35));
+        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
+        new RectangleF(52.5f, 35, 115, 12.5f));
         var healthPercentage = HealthPercentage;
-        int width = 350;
-        int filledWidth = (width * healthPercentage/100.0).Round();
+        int width = 175;
+        int filledWidth = (width * healthPercentage / 100.0).Round();
         int filledShieldWidth = (width * ShieldPercentage / 100).Round();
         int barXOffset = 0;
-        int barHeight = 33;
-        ctx.Fill(SixLabors.ImageSharp.Color.Red, new Rectangle(barXOffset,100,width,barHeight));
-        ctx.Fill(SixLabors.ImageSharp.Color.Green, new Rectangle(barXOffset,100,filledWidth,barHeight));
+        int barHeight = 16;
+        ctx.Fill(SixLabors.ImageSharp.Color.Red, new Rectangle(barXOffset, 50, width, barHeight));
+        ctx.Fill(SixLabors.ImageSharp.Color.Green, new Rectangle(barXOffset, 50, filledWidth, barHeight));
         int shieldXposition = barXOffset + filledWidth;
         if (shieldXposition + filledShieldWidth > width)
         {
-            shieldXposition = width - filledShieldWidth;
+        shieldXposition = width - filledShieldWidth;
         }
-        ctx.Fill(SixLabors.ImageSharp.Color.White, new RectangleF(shieldXposition,100, filledShieldWidth, barHeight));
-        
-        //creates border for health bar
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1, new Rectangle(0, 100, width, barHeight));
-        ctx.DrawText($"{Health}/{MaxHealth}", SystemFonts.CreateFont("Arial", 29),
-            SixLabors.ImageSharp.Color.Black, new PointF(5, 100));
-        
+        ctx.Fill(SixLabors.ImageSharp.Color.White, new RectangleF(shieldXposition, 50, filledShieldWidth, barHeight));
+
+        // Creates a border for the health bar
+        ctx.Draw(SixLabors.ImageSharp.Color.Black, 0.5f, new Rectangle(0, 50, width, barHeight));
+        ctx.DrawText($"{Health}/{MaxHealth}", SystemFonts.CreateFont("Arial", 14),
+        SixLabors.ImageSharp.Color.Black, new PointF(2.5f, 50));
+
         int xOffSet = 0;
-        int yOffSet = 100 + barHeight + 10;
-        
-        int moveLength = 50;
+        int yOffSet = 50 + barHeight + 5;
+
+        int moveLength = 25;
         foreach (var i in MoveList)
         {
 
@@ -297,16 +293,15 @@ public abstract  class Character : BattleEntity
                 cooldownString = cooldown.ToString();
             }
             ctx.DrawText(cooldownString, SystemFonts.CreateFont("Arial", moveLength),
-                SixLabors.ImageSharp.Color.Black, new PointF(xOffSet+10, yOffSet));
+                SixLabors.ImageSharp.Color.Black, new PointF(xOffSet + 5, yOffSet));
             xOffSet += moveLength;
         }
-        
+
         xOffSet = 0;
-        yOffSet += moveLength + 10;
-        int statusLength = 40;
+        yOffSet += moveLength + 5;
+        int statusLength = 20;
         foreach (var i in StatusEffects)
         {
-
 
             using var statusImage = await i.GetImage();
 
@@ -314,21 +309,24 @@ public abstract  class Character : BattleEntity
             {
                 context.Resize(new Size(statusLength, statusLength));
             });
-            if (xOffSet + statusLength + 5>= 370)
+            if (xOffSet + statusLength + 2 >= 185)
             {
                 xOffSet = 0;
-                yOffSet += statusLength + 5;
+                yOffSet += statusLength + 2;
             }
             ctx.DrawImage(statusImage, new Point(xOffSet, yOffSet), new GraphicsOptions());
-            xOffSet += statusLength+ 4;
-
+            xOffSet += statusLength + 2;
         }
 
         if (IsDead)
         {
             ctx.Opacity(0.5f);
         }
+
+    
         ctx.EntropyCrop(0.05f);
+     
+
         return image;
     }
 

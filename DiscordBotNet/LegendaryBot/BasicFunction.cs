@@ -59,6 +59,7 @@ public static class BasicFunction
   
             await using var memoryStream = await webClient.GetStreamAsync(url);
             var characterImage = await Image.LoadAsync<Rgba32>(memoryStream);
+    
             //checks if the image is from this bot's domain  so it can permanently cache it
             //instead of temporarily cache it
             if (url.Contains(Website.DomainName))

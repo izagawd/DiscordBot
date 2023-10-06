@@ -45,10 +45,12 @@ public class BattleSimulator
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
-    
-        var image = new Image<Rgba32>(1300, 3000);
+        var stop = new Stopwatch(); stop.Start();
+        var heightToUse = CharacterTeams.Select(i => i.Count).Max() * 160;
+        
+        var image = new Image<Rgba32>(500, heightToUse);
 
-        int xOffSet = 120;
+        int xOffSet = 70;
         int widest = 0;
         int length = 0;
         int yOffset = 0;
@@ -60,8 +62,8 @@ public class BattleSimulator
         {
             foreach (var j in i)
             {
-        
-                
+
+           
                 using var characterImage = await j.GetCombatImageAsync();
 
                 if (characterImage.Width > widest)
@@ -69,7 +71,7 @@ public class BattleSimulator
                     widest = characterImage.Width;
                 }
                 imageCtx.DrawImage(characterImage, new Point(xOffSet, yOffset), new GraphicsOptions());
-                yOffset += characterImage.Height + 30;
+                yOffset += characterImage.Height + 15;
                 if (yOffset > length)
                 {
                     length = yOffset;
@@ -78,13 +80,14 @@ public class BattleSimulator
             }
 
             yOffset = 0;
-            xOffSet += widest + 300;
+            xOffSet += widest + 75;
         }
 
         imageCtx.BackgroundColor(Color.Gray);
-        var combatReadinessLineTRectangle = new Rectangle(40, 0, 15, length);
-        imageCtx.Fill(Color.White, combatReadinessLineTRectangle);
+        var combatReadinessLineTRectangle = new Rectangle(30, 0, 3, length);
+
         imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
+        imageCtx.Fill(Color.White, combatReadinessLineTRectangle);
         foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
           
@@ -93,7 +96,7 @@ public class BattleSimulator
 
             characterImageToDraw.Mutate(mutator =>
             {
-                mutator.Resize(60, 60);
+                mutator.Resize(30, 30);
                 if (i.Team == Team1)
                 {
                     mutator.BackgroundColor(Color.Blue);
@@ -114,12 +117,13 @@ public class BattleSimulator
             var circlePolygon = new EllipsePolygon(characterImageToDraw.Width / 2.0f + characterImagePoint.X,
                 characterImageToDraw.Height / 2.0f + characterImagePoint.Y,
                 characterImageToDraw.Height / 2.0f);
-            imageCtx.Draw(Color.Black, 3,
+            imageCtx.Draw(Color.Black, 2,
                 circlePolygon);
         }
-      
+     
         imageCtx.EntropyCrop();
 
+   
         return image;
     }
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
@@ -254,6 +258,7 @@ public class BattleSimulator
     /// </summary>
     public async Task<BattleResult> StartAsync(DiscordInteraction interaction, DiscordMessage? message = null)
     {
+
         Team1.CurrentBattle = this;
         Team2.CurrentBattle = this;
         foreach (var i in CharacterTeams)
@@ -261,6 +266,7 @@ public class BattleSimulator
             foreach (var j in i)
             {
                 j.Team = i;
+
             }
         }
         _mainText = "Battle Begins!";
