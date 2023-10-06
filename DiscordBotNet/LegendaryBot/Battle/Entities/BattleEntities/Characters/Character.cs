@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using DiscordBotNet.Extensions;
@@ -214,7 +215,7 @@ public abstract  class Character : BattleEntity
     public IEnumerable<Gear> Gears => new Gear?[] { Armor, Helmet, Weapon, Necklace, Ring, Boots }
         .Where(i => i is not null).OfType<Gear>();
 
-    public async Task<Image<Rgba32>> GetCombatImageAsync()
+  public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
         var image = new Image<Rgba32>(1280, 720);
         using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
@@ -331,8 +332,6 @@ public abstract  class Character : BattleEntity
         return image;
     }
 
-
-
     [NotMapped]
     public virtual int BaseMaxHealth { get; protected set; }
 
@@ -340,6 +339,7 @@ public abstract  class Character : BattleEntity
     {
         get
         {
+
             double percentage = 100;
             double originalMaxHealth = TotalMaxHealth;
             var modifiedStats =
@@ -366,6 +366,7 @@ public abstract  class Character : BattleEntity
             double newMaxHealth = originalMaxHealth  * percentage * 0.01;
             newMaxHealth += flat;
             if (newMaxHealth < 0) newMaxHealth = 0;
+    
             return newMaxHealth.Round();
         }
     }
@@ -447,6 +448,7 @@ public abstract  class Character : BattleEntity
     public int Attack { 
         get     
         {
+         
             double percentage = 100;
             double originalAttack = TotalAttack;
             var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
@@ -472,6 +474,7 @@ public abstract  class Character : BattleEntity
             double newAttack = originalAttack  * percentage * 0.01;
             newAttack += flat;
             if (newAttack < 0) newAttack = 0;
+
             return newAttack.Round();
         } 
     }
@@ -569,26 +572,25 @@ public abstract  class Character : BattleEntity
         using var userImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
+        var userImagePoint = new Point(20, 20);
+        var levelBarMaxLevelWidth = 300ul;
+        var gottenExp = levelBarMaxLevelWidth * (Experience/(GetRequiredExperienceToNextLevel() * 1.0f));
+        var levelBarY = userImage.Height - 30 + userImagePoint.Y;
+        var font = SystemFonts.CreateFont("Arial", 25);
+        var xPos = 135;
         image.Mutate(ctx =>
-        {
-            ctx.BackgroundColor(Color.ToImageSharpColor());
-            var userImagePoint = new Point(20, 20);
-            ctx.DrawImage(userImage,userImagePoint, new GraphicsOptions());
-            ctx.Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(userImagePoint,userImage.Size));
-            var levelBarMaxLevelWidth = 300ul;
-            var gottenExp = levelBarMaxLevelWidth * (Experience/(GetRequiredExperienceToNextLevel() * 1.0f));
-            var levelBarY = userImage.Height - 30 + userImagePoint.Y;
-            ;
-            ctx.Fill(SixLabors.ImageSharp.Color.Gray, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30));
-            ctx.Fill(SixLabors.ImageSharp.Color.Green, new RectangleF(130, levelBarY, gottenExp, 30));
-            ctx.Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30));
-            var font = SystemFonts.CreateFont("Arial", 25);
-            var xPos = 135;
-            ctx.DrawText($"{Experience}/{GetRequiredExperienceToNextLevel()}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY+2));
-            ctx.DrawText($"Name: {Name}", font, SixLabors.ImageSharp.Color.Black, new PointF(xPos, levelBarY -57));
-            ctx.DrawText($"Level: {Level}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY - 30));
-            ctx.Resize(1000, 300);
-        });
+        
+            ctx.BackgroundColor(Color.ToImageSharpColor())
+                .DrawImage(userImage,userImagePoint, new GraphicsOptions())
+                .Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(userImagePoint,userImage.Size))
+                .Fill(SixLabors.ImageSharp.Color.Gray, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30))
+               .Fill(SixLabors.ImageSharp.Color.Green, new RectangleF(130, levelBarY, gottenExp, 30))
+               .Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30))
+                .DrawText($"{Experience}/{GetRequiredExperienceToNextLevel()}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY+2))
+            .DrawText($"Name: {Name}", font, SixLabors.ImageSharp.Color.Black, new PointF(xPos, levelBarY -57))
+            .DrawText($"Level: {Level}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY - 30))
+            .Resize(1000, 300));
+        
 
         return image;
     }
@@ -830,7 +832,7 @@ public abstract  class Character : BattleEntity
         var canCrit = damageArgs.CanCrit;
         bool didCrit = false;
         int damageModifyPercentage = 0;
-        damage = BattleFunction.DamageFormula(damage, Defense.Print());
+        damage = BattleFunction.DamageFormula(damage, Defense);
 
         switch (BattleFunction.GetAdvantageLevel(caster.Element, Element)){
             case ElementalAdvantage.Disadvantage:

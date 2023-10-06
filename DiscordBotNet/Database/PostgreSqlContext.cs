@@ -1,7 +1,9 @@
 ﻿using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
+using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.Stats;
@@ -54,6 +56,67 @@ public class PostgreSqlContext :DbContext
         Database.EnsureDeleted();
         Database.EnsureCreated();
       
+    }
+
+    public async Task GivePowerToUserAsync(ulong idOfUser)
+    {
+        var user = await UserData
+            .Include(i => i.Inventory.Where(i => i is Character))
+            .FirstOrDefaultAsync(i => i.Id == idOfUser);
+        if (user is null) return;
+        foreach (var i in user.Inventory.OfType<Character>())
+        {
+            i.SetLevel(60);
+            foreach (var j in Bot.AllAssemblyTypes.Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(Gear))))
+            {
+                var gear = (Gear)Activator.CreateInstance(j)!;
+                Type mainStat = null;
+
+                if (gear is Boots)
+                    mainStat = GearStat.SpeedFlatType;
+                else if (gear is Ring)
+                {
+                    mainStat = GearStat.AttackPercentageType;
+                    if (i is RoyalKnight || i is Lily)
+                        mainStat = GearStat.HealthPercentageType;
+                }
+
+                else if (gear is Necklace)
+                {
+                    mainStat = GearStat.CriticalDamageType;
+                    if (i is RoyalKnight || i is Lily)
+                        mainStat = GearStat.DefensePercentageType;
+                }
+
+                Type[] wantedTypes =
+                {
+                    GearStat.AttackPercentageType, GearStat.CriticalDamageType, GearStat.CriticalChanceType,
+                    GearStat.SpeedFlatType
+                };
+                if (i is RoyalKnight)
+                    wantedTypes = new[]
+                    {
+                        GearStat.HealthPercentageType, GearStat.DefensePercentageType, GearStat.SpeedFlatType,
+                        GearStat.ResistanceType
+                    };
+                else if (i is Lily)
+
+                    wantedTypes = new[]
+                    {
+                        GearStat.HealthPercentageType, GearStat.SpeedFlatType,
+                        GearStat.EffectivenessType
+                    };
+                gear.Initiate(Rarity.FiveStar, mainStat, wantedTypes);
+                gear.UserDataId = i.UserDataId;
+                gear.IncreaseExp(9000000000000, wantedTypes);
+                i.AddGear(gear);
+                CharacterTeam team = user.GetCharacterTeam("");
+                if(team.Count < 4 && i is not CoachChad)
+                    user.AddToTeam(i);
+                    
+            }
+
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

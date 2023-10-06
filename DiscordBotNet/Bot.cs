@@ -50,95 +50,22 @@ public class Bot
 
     public async Task DoShit()
     {
-        
         var ctx = new PostgreSqlContext();
-        await ctx.UserData.FindOrCreateAsync(Surjidid);
+        var lex = await ctx.UserData.FindOrCreateAsync(136301594437222400);
+        lex.Character1 = new Lily(){UserDataId = lex.Id};
         await ctx.SaveChangesAsync();
-        await ctx.Entity.Where(i => i.UserDataId == 136301594437222400)
-            .ForEachAsync(i =>
-            {
-                i.UserDataId = Surjidid;
-            });
-        await ctx.SaveChangesAsync();
-        ctx.RemoveRange(ctx.Entity.OfType<Gear>());
-        await ctx.Entity.OfType<Character>()
-            .ForEachAsync(i =>
-            {
-                
-                i.SetLevel(60);
-                foreach (var j in AllAssemblyTypes.Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(Gear))))
-                {
-                    var gear = (Gear)Activator.CreateInstance(j);
-                    Type mainStat = null;
-                    
-                    if (gear is Boots)
-                        mainStat = GearStat.SpeedFlatType;
-                    else if (gear is Ring)
-                    {
-                        mainStat = GearStat.AttackPercentageType;
-                        if (i is RoyalKnight ||  i is Lily)
-                            mainStat = GearStat.HealthPercentageType;
-                    }
-                        
-                    else if (gear is Necklace)
-                    {
-                        mainStat = GearStat.CriticalDamageType;
-                        if (i is RoyalKnight || i is Lily)
-                            mainStat = GearStat.DefensePercentageType;
-                    }
-                
-                    Type[] wantedTypes =
-                    {
-                        GearStat.AttackPercentageType, GearStat.CriticalDamageType, GearStat.CriticalChanceType,
-                        GearStat.SpeedFlatType
-                    };
-                    if (i is RoyalKnight)
-                        wantedTypes = new[]
-                        {
-                            GearStat.HealthPercentageType, GearStat.DefensePercentageType, GearStat.SpeedFlatType,
-                            GearStat.ResistanceType
-                        };
-                    else if(i is Lily)
-                        
-                        wantedTypes = new[]
-                        {
-                            GearStat.HealthPercentageType, GearStat.SpeedFlatType,
-                            GearStat.EffectivenessType
-                        };
-                    gear.Initiate(Rarity.FiveStar,mainStat,wantedTypes);
-                    gear.UserDataId = i.UserDataId;
-                    gear.IncreaseExp(9000000000000, wantedTypes);
-                    i.AddGear(gear);
-                }
-            });
-        await ctx.SaveChangesAsync();
+        await ctx.Entity.Where(i => i.UserDataId == lex.Id).LoadAsync();
+     
+
     }
 
-    public async Task DoShit2()
-    {
-        IEnumerable<object> idk = (new Lily() * 1000).ToHashSet();
-        foreach (var i in idk.ToArray())
-        {
-            var stop = new Stopwatch(); stop.Start();
-            idk.ToArray();
-            var time= stop.Elapsed.TotalNanoseconds;
-            Console.WriteLine($"To array: {time}");
-            stop.Stop();
-            stop.Reset();
-            stop.Start();
-            idk.ToList();
-            time = stop.Elapsed.TotalNanoseconds;
-            Console.WriteLine($"To list: {time}");
 
-        }
-    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-        await DoShit2();
-        return;
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

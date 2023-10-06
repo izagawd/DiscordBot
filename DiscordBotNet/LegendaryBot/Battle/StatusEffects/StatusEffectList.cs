@@ -21,20 +21,18 @@ public class StatusEffectList : ISet<StatusEffect>
     {
         return Add(item, null);
     }
-/// <summary>
-/// if using this, effect resistance of the affected will be ignored
-/// </summary>
+
 /// <param name="effectiveness">the effectiveness of the caster</param>
 /// <returns>true if the status effect was successfully added</returns>
     public bool Add(StatusEffect statusEffect,int? effectiveness)
     {
         
         if (Affected.IsDead) return false;
-        IEnumerable<StatusEffect> arrayOfType =
+        var arrayOfType =
             this.Where(i => i.GetType() == statusEffect.GetType())
                 .ToArray();
 
-        if (arrayOfType.Count() < statusEffect.MaxStacks)
+        if (arrayOfType.Length < statusEffect.MaxStacks)
         {
             bool added = false;
             if (effectiveness is not null && statusEffect.EffectType == StatusEffectType.Debuff)

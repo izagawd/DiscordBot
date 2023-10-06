@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.Extensions;
+﻿using System.Diagnostics;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -44,6 +45,7 @@ public class BattleSimulator
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
+    
         var image = new Image<Rgba32>(1300, 3000);
 
         int xOffSet = 120;
@@ -59,6 +61,7 @@ public class BattleSimulator
             foreach (var j in i)
             {
         
+                
                 using var characterImage = await j.GetCombatImageAsync();
 
                 if (characterImage.Width > widest)
@@ -84,7 +87,10 @@ public class BattleSimulator
         imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
         foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
+          
             using var characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(i.IconUrl);
+
+
             characterImageToDraw.Mutate(mutator =>
             {
                 mutator.Resize(60, 60);
@@ -111,9 +117,9 @@ public class BattleSimulator
             imageCtx.Draw(Color.Black, 3,
                 circlePolygon);
         }
+      
+        imageCtx.EntropyCrop();
 
-        imageCtx.EntropyCrop(0.005f);
-   
         return image;
     }
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs

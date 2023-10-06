@@ -1,4 +1,6 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
+﻿using System.Diagnostics;
+using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -19,14 +21,10 @@ public abstract class Move
     {
 
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
-
-    
         image.Mutate(i => i
             .EntropyCrop()
             .Resize(100, 100)
             .Draw(Color.Black, 8, new RectangleF(0, 0, 100,100)));
-  
-
         return image;
     }
 

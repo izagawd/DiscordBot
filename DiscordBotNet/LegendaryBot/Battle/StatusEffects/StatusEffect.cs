@@ -71,7 +71,11 @@ public abstract class StatusEffect
    /// </summary>
     public int Level { get => _level;
         set { _level = value; if (_level > MaxLevel) _level = MaxLevel; if (_level <= 0) _level = 1; } }
-    public virtual void RenewWith(StatusEffect statusEffect)
+   /// <summary>
+   /// When status effect renewing has occured this will be called
+   /// </summary>
+   /// <param name="statusEffect">The status effect to renew with. the status effect instance that calls this method will be used as the status effect, not the parameter</param>
+   public virtual void RenewWith(StatusEffect statusEffect)
     {}
     public virtual int MaxStacks => int.MaxValue;
     /// <summary>

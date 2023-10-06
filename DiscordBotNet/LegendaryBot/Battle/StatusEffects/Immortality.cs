@@ -12,8 +12,5 @@ public class Immortality : StatusEffect
     {
     }
 
-    public override void RenewWith(StatusEffect statusEffect)
-    {
-        statusEffect.Duration = new[] { Duration, statusEffect.Duration }.Max();
-    }
+
 }
