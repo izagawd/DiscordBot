@@ -217,9 +217,13 @@ public abstract  class Character : BattleEntity
 
   public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
-        var image = new Image<Rgba32>(1280, 720);
-        using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
         
+        var image = new Image<Rgba32>(400, 300);
+        var stop = new Stopwatch(); stop.Start();
+        using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
+
+  
+     
         characterImage.Mutate(ctx =>
         {
             ctx.Resize(new Size(100, 100));
@@ -327,10 +331,12 @@ public abstract  class Character : BattleEntity
 
 
         ctx.EntropyCrop(0.05f);
-
-
+ 
+        image.Size.Print();
         return image;
     }
+
+
 
     [NotMapped]
     public virtual int BaseMaxHealth { get; protected set; }
