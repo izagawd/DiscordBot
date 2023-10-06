@@ -161,7 +161,7 @@ public abstract  class Character : BattleEntity
         {
 
 
-            using var moveImage = await i.GetImageAsync();
+            using var moveImage = await i.GetImageForCombatAsync();
             moveImage.Mutate(j => j
                 .Resize(100,100)
             );
@@ -258,7 +258,7 @@ public abstract  class Character : BattleEntity
         int shieldXposition = barXOffset + filledWidth;
         if (shieldXposition + filledShieldWidth > width)
         {
-        shieldXposition = width - filledShieldWidth;
+            shieldXposition = width - filledShieldWidth;
         }
         ctx.Fill(SixLabors.ImageSharp.Color.White, new RectangleF(shieldXposition, 50, filledShieldWidth, barHeight));
 
@@ -273,12 +273,7 @@ public abstract  class Character : BattleEntity
         int moveLength = 25;
         foreach (var i in MoveList)
         {
-
-            using var moveImage = await i.GetImageAsync();
-            moveImage.Mutate(context =>
-            {
-                context.Resize(new Size(moveLength, moveLength));
-            });
+            using var moveImage = await i.GetImageForCombatAsync();
             ctx.DrawImage(moveImage, new Point(xOffSet, yOffSet), new GraphicsOptions());
             xOffSet += moveLength;
             int cooldown = 0;
@@ -299,16 +294,12 @@ public abstract  class Character : BattleEntity
 
         xOffSet = 0;
         yOffSet += moveLength + 5;
-        int statusLength = 20;
+
         foreach (var i in StatusEffects.Take(16))
         {
 
-            using var statusImage = await i.GetImage();
-
-            statusImage.Mutate(context =>
-            {
-                context.Resize(new Size(statusLength, statusLength));
-            });
+            using var statusImage = await i.GetImageForCombatAsync();
+            var statusLength = statusImage.Size.Width;
             if (xOffSet + statusLength + 2 >= 185)
             {
                 xOffSet = 0;

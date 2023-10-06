@@ -37,7 +37,7 @@ public abstract class StatusEffect
     /// </summary>
     public virtual int MaxLevel => 1;
 
-    public async Task<Image<Rgba32>> GetImage()
+    public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
         var backgroundColor = Color.Red;
         if (EffectType == StatusEffectType.Buff)
@@ -48,15 +48,21 @@ public abstract class StatusEffect
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         image.Mutate(ctx =>
         {
-            
-
-
+            ctx.Resize(new Size(20, 20));
             ctx.BackgroundColor(backgroundColor);
-            ctx.Resize(new Size(100, 100));
-            ctx.Fill(Color.Black, new RectangleF(0, 0, 40, 40));
-            var font = SystemFonts.CreateFont("Arial", 40, FontStyle.Bold);
-            ctx.DrawText(Duration.ToString(), font, Color.White, new PointF(5, 0));
+            var x = 1;
+            var xOffset = 0;
+            var duration = Duration.ToString();
+            if (duration.Length > 1)
+            {
+                x = 0;
+                xOffset = 3;
+            }
 
+            ctx.Fill(Color.Black, new RectangleF(0, 0, 9+xOffset, 9));
+            var font = SystemFonts.CreateFont("Arial", 9, FontStyle.Bold);
+ 
+            ctx.DrawText(Duration.ToString(), font, Color.White, new PointF(x, 0));
         });
         return image;
     }

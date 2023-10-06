@@ -45,7 +45,7 @@ public class BattleSimulator
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
-        var stop = new Stopwatch(); stop.Start();
+ 
         var heightToUse = CharacterTeams.Select(i => i.Count).Max() * 160;
         
         var image = new Image<Rgba32>(500, heightToUse);
@@ -62,10 +62,8 @@ public class BattleSimulator
         {
             foreach (var j in i)
             {
-
-           
+                
                 using var characterImage = await j.GetCombatImageAsync();
-
                 if (characterImage.Width > widest)
                 {
                     widest = characterImage.Width;

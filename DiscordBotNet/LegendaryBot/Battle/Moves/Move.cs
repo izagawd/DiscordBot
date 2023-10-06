@@ -3,6 +3,7 @@ using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
+using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using SixLabors.ImageSharp.Drawing.Processing;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Moves;
@@ -17,14 +18,13 @@ public abstract class Move
  
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/moves/{GetType().Name}.png";
 
-    public async Task<Image<Rgba32>> GetImageAsync()
+    public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
 
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         image.Mutate(i => i
-            .EntropyCrop()
-            .Resize(100, 100)
-            .Draw(Color.Black, 8, new RectangleF(0, 0, 100,100)));
+            .Resize(25, 25)
+            .Draw(Color.Black, 3, new RectangleF(0, 0, 24,24)));
         return image;
     }
 
@@ -67,7 +67,7 @@ public abstract class Move
     public virtual UsageResult Utilize(Character owner, Character target, UsageType usageType)
     {
         var temp = HiddenUtilize(owner, target, usageType);
-
+        owner.StatusEffects.Add(new Bomb(owner) { Duration = 9 });
         owner.CurrentBattle.InvokeBattleEvent(new CharacterUseSkillEventArgs(temp));
         return temp;
     }
