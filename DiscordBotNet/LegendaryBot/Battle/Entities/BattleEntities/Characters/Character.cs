@@ -215,10 +215,10 @@ public abstract  class Character : BattleEntity
     public IEnumerable<Gear> Gears => new Gear?[] { Armor, Helmet, Weapon, Necklace, Ring, Boots }
         .Where(i => i is not null).OfType<Gear>();
 
-  public async Task<Image<Rgba32>> GetCombatImageAsync()
+ public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
         
-        var image = new Image<Rgba32>(400, 300);
+        var image = new Image<Rgba32>(370, 300);
         var stop = new Stopwatch(); stop.Start();
         using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
 
@@ -328,13 +328,10 @@ public abstract  class Character : BattleEntity
         {
             ctx.Opacity(0.5f);
         }
-
-
         ctx.EntropyCrop(0.05f);
- 
-        image.Size.Print();
         return image;
     }
+
 
 
 
