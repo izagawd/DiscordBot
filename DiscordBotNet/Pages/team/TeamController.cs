@@ -1,4 +1,5 @@
 ﻿using DiscordBotNet.Database;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ public class TeamController : Controller
             .FindOrCreateAsync(User.GetDiscordUserId());
 
         var userTeam = UserData.CharacterTeamArray;
-        if (userTeam.Count() <= 1) return Ok();
+        if (userTeam.Length <= 1) return Ok();
         var characterToRemove = userTeam.FirstOrDefault(i => i.Id == id);
         
         if (characterToRemove is not null)

@@ -1,5 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using Microsoft.EntityFrameworkCore;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Stats;
 

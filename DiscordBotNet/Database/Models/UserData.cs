@@ -1,16 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DSharpPlus.Entities;
-using Microsoft.EntityFrameworkCore;
 using SixLabors.Fonts;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace DiscordBotNet.Database.Models;
 
@@ -47,7 +44,7 @@ public class UserData : Model,  ICanBeLeveledUp
         }
     }
     [NotMapped]
-    public IEnumerable<Character> CharacterTeamArray =>
+    public Character[] CharacterTeamArray =>
         new [] { Character1, Character2, Character3, Character4 }
             .Where(i => i is not null).OfType<Character>().ToArray();
     public void AddToTeam(Character character)
@@ -104,6 +101,7 @@ public class UserData : Model,  ICanBeLeveledUp
 
 
         using var userImage = await BasicFunction.GetImageFromUrlAsync(user.AvatarUrl);
+        
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         image.Mutate(ctx =>
@@ -115,16 +113,12 @@ public class UserData : Model,  ICanBeLeveledUp
             var levelBarMaxLevelWidth = 300ul;
             var gottenExp = levelBarMaxLevelWidth * (Experience/(GetRequiredExperienceToNextLevel() * 1.0f));
             var levelBarY = userImage.Height - 30 + userImagePoint.Y;
-      ;
             ctx.Fill(SixLabors.ImageSharp.Color.Gray, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30));
             ctx.Fill(SixLabors.ImageSharp.Color.Green, new RectangleF(130, levelBarY, gottenExp, 30));
             ctx.Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30));
             var font = SystemFonts.CreateFont("Arial", 25);
-            
             ctx.DrawText($"{Experience}/{GetRequiredExperienceToNextLevel()}",font,SixLabors.ImageSharp.Color.Black,new PointF(140,levelBarY));
-        
             ctx.DrawText($"Level {Level}",font,SixLabors.ImageSharp.Color.Black,new PointF(140,levelBarY - 33));
-           
         });
 
         return image;

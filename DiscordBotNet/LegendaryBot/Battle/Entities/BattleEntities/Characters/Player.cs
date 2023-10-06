@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
 using System.Security.Claims;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
-using DSharpPlus;
-using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public class FourthWallBreaker: BasicAttack
@@ -51,7 +48,7 @@ public class FireBall : Skill
     }
 
     public override int MaxCooldown=> 2;
-    public override int MaxEnhance { get; } = 4;
+  
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {  
         DamageResult damageResult = target.Damage(      new DamageArgs(this)
@@ -80,7 +77,7 @@ public class Ignite : Surge
 {
     public override int MaxCooldown => 1;
 
-    public override int MaxEnhance { get; } = 4;
+
 
     public override string Description=>$"Ignites the enemy with 3 burns. {IgniteChance}% chance each";
     

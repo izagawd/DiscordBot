@@ -12,16 +12,16 @@ namespace DiscordBotNet.LegendaryBot.Battle;
 public class Dialogue
 {
 
-    public string Title { get; set; } = "untitled";
+    public string Title { get; init; } = "untitled";
     public List<DialogueArgument> Arguments { get; set; } = new();
     /// <summary>
     /// Responds to the interaction if true
     /// </summary>
-    public bool RespondInteraction { get; set; } = false;
+    public bool RespondInteraction { get; init; } 
         
-    public bool RemoveButtonsAtEnd { get; set; } = false;
-    private static DiscordButtonComponent next = new(ButtonStyle.Success, "next", "NEXT");
-    private static DiscordButtonComponent skip = new(ButtonStyle.Success, "skip", "SKIP");
+    public bool RemoveButtonsAtEnd { get; set; } 
+    private static readonly DiscordButtonComponent Next = new(ButtonStyle.Success, "next", "NEXT");
+    private static readonly DiscordButtonComponent Skip = new(ButtonStyle.Success, "skip", "SKIP");
     /// <summary>
     /// Initiates the dialogue of a character
     /// </summary>
@@ -47,7 +47,7 @@ public class Dialogue
             {
                 var dialogues = Arguments[i].Dialogues;
                 embedBuilder.WithDescription(dialogues[j]);
-                DiscordMessageBuilder messageBuilder = new DiscordMessageBuilder().AddEmbed(embedBuilder.Build()).AddComponents(next,skip);
+                DiscordMessageBuilder messageBuilder = new DiscordMessageBuilder().AddEmbed(embedBuilder.Build()).AddComponents(Next,Skip);
                 if(i == Arguments.Count-1 && j == Arguments[i].Dialogues.Count -1 && RemoveButtonsAtEnd)
                 {
                     messageBuilder.ClearComponents();
@@ -57,7 +57,7 @@ public class Dialogue
                 if (RespondInteraction && message is null)
                 {
                     DiscordInteractionResponseBuilder responseBuilder = new DiscordInteractionResponseBuilder()
-                        .AddEmbed(embedBuilder.Build()).AddComponents(next, skip);
+                        .AddEmbed(embedBuilder.Build()).AddComponents(Next, Skip);
       
                     if (i == Arguments.Count - 1 && RemoveButtonsAtEnd)
                     {
@@ -71,7 +71,7 @@ public class Dialogue
                 }
                 else if (message is null)
                 {
-                    message = await interaction.Channel.SendMessageAsync(messageBuilder); ;
+                    message = await interaction.Channel.SendMessageAsync(messageBuilder); 
                 } else
                 {
                     message = await message.ModifyAsync(messageBuilder);
@@ -114,7 +114,7 @@ public class Dialogue
         {
             Skipped = skipped,
             TimedOut = timedOut,
-            Message = message,
+            Message = message!,
                 
                 
         };

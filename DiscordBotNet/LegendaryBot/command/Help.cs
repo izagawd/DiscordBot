@@ -1,4 +1,5 @@
 ﻿using DiscordBotNet.Database;
+using DiscordBotNet.Extensions;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
@@ -40,11 +41,11 @@ public class Help : BaseCommandClass
         }
         else
         {
-            IEnumerable<BaseCommandClass> tempCommandList = Bot.CommandArray!.Where(i =>
-                i.Name == cmd.ToLower());
-            if (tempCommandList.Any())
+            IEnumerable<BaseCommandClass> tempCommandArray = Bot.CommandArray!.Where(i =>
+                i.Name == cmd.ToLower()).ToArray();
+            if (tempCommandArray.Any())
             {
-                BaseCommandClass foundCommand = tempCommandList.First();
+                BaseCommandClass foundCommand = tempCommandArray.First();
                 if (!foundCommand.HasSubCommands)
                 {
                     embedToBuild.WithTitle($"**{foundCommand.Name}**");

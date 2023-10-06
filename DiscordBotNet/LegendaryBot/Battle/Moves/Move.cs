@@ -1,13 +1,7 @@
-﻿
-using System.Numerics;
-using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
+﻿using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
-using SixLabors.Fonts;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Moves;
 
@@ -16,8 +10,8 @@ public abstract class Move
     /// <summary>
     /// The maximum amount this move can be enhanced to
     /// </summary>
-    public abstract int MaxEnhance { get; } 
-
+ 
+    
  
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/moves/{GetType().Name}.png";
 
@@ -56,7 +50,7 @@ public abstract class Move
 
     public abstract IEnumerable<Character> GetPossibleTargets(Character owner);
 
-    public virtual MoveType MoveType => MoveType.BasicAttack;
+
 
     /// <summary>
     /// This is where the custom functionality of a move is created

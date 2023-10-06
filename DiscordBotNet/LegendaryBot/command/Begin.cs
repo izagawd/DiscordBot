@@ -1,10 +1,10 @@
 ﻿using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Arguments;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -91,6 +91,7 @@ public class Begin : BaseCommandClass
                 }
             }, new()
             {
+                CharacterUrl = lily.IconUrl,
                 CharacterColor = lily.Color, CharacterName = lily.Name,
                 Dialogues = new List<string>{$"Let's give it our all {author.Username}!"}
             }
@@ -113,11 +114,14 @@ public class Begin : BaseCommandClass
             {
                 new DialogueArgument
                 {
-                    CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
+                    CharacterColor = coachChad.Color,
+                    CharacterName = coachChad.Name,
                     Dialogues =
-                        new List<string>{
-                        "I can't believe you slept off..."
-                    }
+                        new List<string>
+                        {
+                            "I can't believe you slept off..."
+                        },
+                    CharacterUrl = coachChad.IconUrl
                 }
             };
             theDialogue.RemoveButtonsAtEnd = true;
@@ -138,6 +142,7 @@ public class Begin : BaseCommandClass
             {
                 new()
                 {
+                    CharacterUrl = coachChad.IconUrl,
                     CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
                     Dialogues =
                         new List<string>{
@@ -183,11 +188,14 @@ public class Begin : BaseCommandClass
             {
                 new()
                 {
-                    CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
+                    CharacterColor = coachChad.Color,
+                    CharacterName = coachChad.Name,
                     Dialogues =
-                        new List<string>{
-                        "You slept off after becoming an adventurer... you are strange..."
-                    }
+                        new List<string>
+                        {
+                            "You slept off after becoming an adventurer... you are strange..."
+                        },
+                    CharacterUrl = coachChad.IconUrl
                 }
             };
             await theDialogue.LoadAsync(ctx.Interaction, result.Message);

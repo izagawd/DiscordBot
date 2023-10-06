@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Moves;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
@@ -10,7 +11,7 @@ public class MethaneSlap : BasicAttack
     public override string Description => $"Slaps the enemy, producing methane around the enemy, with a {DetonateChance}% chance to detonate all the bombs the target has";
     
 
-    public override int MaxEnhance { get; } = 4;
+   
 
     public int DetonateChance => 75;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
@@ -53,13 +54,13 @@ public class BlowAway : Skill
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
     }
-    public override int MaxEnhance { get; } = 4;
+
     public int BombInflictChance => 100;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
                 
         owner.CurrentBattle.AdditionalTexts.Add($"{owner} threw multiple bombs at the opposing team!");
-        foreach (var i in target.Team)
+        foreach (var i in GetPossibleTargets(owner))
         {
 
             foreach (var _ in Enumerable.Range(0,1))
@@ -90,7 +91,7 @@ public class VolcanicEruption : Surge
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
     }
-    public override int MaxEnhance { get; } = 4;
+
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 3});

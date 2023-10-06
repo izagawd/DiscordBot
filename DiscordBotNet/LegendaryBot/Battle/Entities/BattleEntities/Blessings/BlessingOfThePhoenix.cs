@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.BattleEvents;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.BattleEvents;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
@@ -19,7 +20,7 @@ public class BlessingOfThePhoenix : Blessing, IBattleEvent<CharacterDamageEventA
     {
         if (eventArgs.DamageResult.DamageReceiver != owner) return;
 
-        var recovered = owner.RecoverHealth((GetHealthPercentRecovering(Level) *  0.01 * owner.MaxHealth).Round(),$"{owner} recovered $ health via the blessing of the phoenix");
+         owner.RecoverHealth((GetHealthPercentRecovering(Level) *  0.01 * owner.MaxHealth).Round(),$"{owner} recovered $ health via the blessing of the phoenix");
   
 
     }

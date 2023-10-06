@@ -21,7 +21,11 @@
 
 <div id="team_main_div" ondrop="AddToTeam( event)"  ondragover="event.preventDefault()">
     @{ var team = Model.UserData.CharacterTeamArray;}
-    @foreach (var i in team)
+
+    @{
+        var characters = team as Character[] ?? team.ToArray();
+    }
+    @foreach (var i in characters)
     {
         <a href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="the_href super_character_div character_in_team_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">
             <div class="character_div">
@@ -38,7 +42,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="js/team.js"></script>
 <div id="character_list_div" ondrop="RemoveFromTeam( event)"  ondragover="event.preventDefault()">
-    @foreach (var i in Model.UserData.Inventory.OfType<Character>().Where(j => !team.Contains(j)))
+    @foreach (var i in Model.UserData.Inventory.OfType<Character>().Where(j => !characters.Contains(j)))
     {
         <div class="super_character_div character_in_list_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">
             <a draggable="false" href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="character_div the_href">

@@ -9,7 +9,7 @@ public abstract class Special : Move
     /// The maximum cooldown of the move based on the move level
     /// </summary>
 
-    public virtual int MaxCooldown { get; } = 3;
+    public abstract int MaxCooldown { get; } 
 
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DSharpPlus.Entities;
@@ -7,7 +7,7 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
 public class WindSlash : Skill
 {
-    public override int MaxEnhance { get; } = 4;
+
     public override string Description => "Attacks all enemies with a sharp wind";
     
 
@@ -19,7 +19,7 @@ public class WindSlash : Skill
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         List<DamageResult> damageResults = new List<DamageResult>();
-        foreach (var i in target.Team)
+        foreach (var i in GetPossibleTargets(owner))
         {
             damageResults.Add(i.Damage(new DamageArgs(this){Caster = owner,Damage = owner.Attack * 1.7, DamageText = $"The slash dealt $ damage to {i}!"}));
         }
@@ -65,7 +65,7 @@ public class SimpleSlash : BasicAttack
 }
 public class SlashOfPrecision : Surge
 {
-    public override int MaxEnhance { get; } = 5;
+
     public override string Description=>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)

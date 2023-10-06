@@ -1,9 +1,4 @@
-﻿using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Numerics;
-using DiscordBotNet.Database;
-using DiscordBotNet.Database.Models;
-using SixLabors.Fonts;
-using SixLabors.ImageSharp.Drawing.Processing;
+﻿using DiscordBotNet.Database.Models;
 
 namespace DiscordBotNet.LegendaryBot;
 

@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.Stats;
 
-namespace DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 
 public abstract class Gear : BattleEntity
 {
@@ -40,8 +39,8 @@ public abstract class Gear : BattleEntity
             throw new Exception("One of the substats to prioritize is not of a substat type or is abstract");
         }
 
-        var availableStats = substatsToPrioritize
-            .Except(AllStatTypes);
+        IEnumerable<Type> availableStats = substatsToPrioritize
+            .Except(AllStatTypes).ToArray();
         if (!availableStats.Any())
         {
             availableStats = GearStat
@@ -71,9 +70,9 @@ public abstract class Gear : BattleEntity
         }
         else
         {
-            var statsToUpgrade = Substats.Where(i => substatsToPrioritize.Contains(i.GetType()));
+            var statsToUpgrade = Substats.Where(i => substatsToPrioritize.Contains(i.GetType())).ToArray();
             if (!statsToUpgrade.Any())
-                statsToUpgrade = Substats;
+                statsToUpgrade = Substats.ToArray();
             randomStat = BasicFunction.RandomChoice(statsToUpgrade);
                     
         }
@@ -143,7 +142,7 @@ public abstract class Gear : BattleEntity
         if (priorityTypes.Any() && !priorityTypes.All(i => GearStat.AllGearStatTypes.Contains(i)))
             throw new Exception("One of the priority types is not a subclass of GearStat or is abstract");
 
-        IEnumerable<Type> typesToUse = priorityTypes;
+        var typesToUse = priorityTypes.ToArray();
         Rarity = rarity;
         if(Level != 1)return;
         if (customMainStat is not null && !PossibleMainStats.Contains(customMainStat))
@@ -159,9 +158,9 @@ public abstract class Gear : BattleEntity
         
         for (int i = 0; i < (int)Rarity; i++)
         {
-            typesToUse = typesToUse.Except(AllStatTypes);
+            typesToUse = typesToUse.Except(AllStatTypes).ToArray();
             if (!typesToUse.Any())
-                typesToUse = GearStat.AllGearStatTypes;
+                typesToUse = GearStat.AllGearStatTypes.ToArray();
             var randomStat = BasicFunction.RandomChoice(typesToUse);
             if (SubStat1 is null)
             {

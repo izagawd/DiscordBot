@@ -4,7 +4,7 @@ using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 namespace DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 public class StatusEffectList : ISet<StatusEffect>
 {
-    private HashSet<StatusEffect> statusEffects = new HashSet<StatusEffect>();
+    private readonly HashSet<StatusEffect> statusEffects = new HashSet<StatusEffect>();
 
     public int Count => statusEffects.Count;
     public Character Affected { get;  }
@@ -28,10 +28,13 @@ public class StatusEffectList : ISet<StatusEffect>
 /// <returns>true if the status effect was successfully added</returns>
     public bool Add(StatusEffect statusEffect,int? effectiveness)
     {
+        
         if (Affected.IsDead) return false;
-        List<StatusEffect> listOfType = this.Where(i => i.GetType() == statusEffect.GetType()).ToList();
+        IEnumerable<StatusEffect> arrayOfType =
+            this.Where(i => i.GetType() == statusEffect.GetType())
+                .ToArray();
 
-        if (listOfType.Count < statusEffect.MaxStacks)
+        if (arrayOfType.Count() < statusEffect.MaxStacks)
         {
             bool added = false;
             if (effectiveness is not null && statusEffect.EffectType == StatusEffectType.Debuff)
@@ -63,9 +66,9 @@ public class StatusEffectList : ISet<StatusEffect>
 
             return added;
         }
-        if (!statusEffect.IsStackable && listOfType.Any() && statusEffect.IsRenewable)
+        if (!statusEffect.IsStackable && arrayOfType.Any() && statusEffect.IsRenewable)
         {
-            StatusEffect onlyStatus = listOfType.First();
+            StatusEffect onlyStatus = arrayOfType.First();
             if (statusEffect.Level > onlyStatus.Level)
             {
                 onlyStatus.Level = statusEffect.Level;

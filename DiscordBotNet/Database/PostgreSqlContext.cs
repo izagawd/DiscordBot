@@ -1,16 +1,12 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
-using DiscordBotNet.Database.Models;
+﻿using DiscordBotNet.Database.Models;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.Stats;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Newtonsoft.Json;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -18,8 +14,8 @@ namespace DiscordBotNet.Database;
 
 public class PostgreSqlContext :DbContext
 {
-    private static Type[] entityClasses;
-    private static Type[] gearStatClasses;
+    private static readonly Type[] EntityClasses;
+    private static readonly Type[] GearStatClasses;
     public DbSet<UserData> UserData { get; set; }
     public DbSet<GuildData> GuildData{ get; set; }
     public DbSet<Entity> Entity { get; set; }
@@ -30,9 +26,9 @@ public class PostgreSqlContext :DbContext
     static PostgreSqlContext()
     {
 
-        entityClasses = Bot.AllAssemblyTypes
+        EntityClasses = Bot.AllAssemblyTypes
             .Where(type => type.IsRelatedToType(typeof(Entity))).ToArray();
-        gearStatClasses =
+        GearStatClasses =
             Bot.AllAssemblyTypes
                 .Where(type => type.IsRelatedToType(typeof(GearStat)) && !type.IsAbstract)
                 .ToArray();
@@ -62,16 +58,16 @@ public class PostgreSqlContext :DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        foreach (var entityType in entityClasses)
+        foreach (var entityType in EntityClasses)
         {
             modelBuilder.Entity(entityType);
         }
 
-        foreach (var i in gearStatClasses)
+        foreach (var i in GearStatClasses)
         {
             modelBuilder.Owned(i);
         }
-        ///makes sure the characterid properties are not the same, even across tables
+        //makes sure the character id properties are not the same, even across tables
         modelBuilder.Entity<UserData>()
 
             .ToTable(i => i.HasCheckConstraint("CK_character_id_properties_should_not_be_the_same",
@@ -186,17 +182,17 @@ public class PostgreSqlContext :DbContext
                 .HasConversion(GearStat.ValueConverter);
             entity
                 .Property(i => i.SubStat1)
-                .HasConversion(GearStat.ValueConverter);
+                .HasConversion(GearStat.ValueConverter!);
             entity
                 .Property(i => i.SubStat2)
-                .HasConversion(GearStat.ValueConverter);
+                .HasConversion(GearStat.ValueConverter!);
             entity
                 .Property(i => i.SubStat3)
-                .HasConversion(GearStat.ValueConverter);
+                .HasConversion(GearStat.ValueConverter!);
 
             entity
                 .Property(i => i.SubStat4)
-                .HasConversion(GearStat.ValueConverter);
+                .HasConversion(GearStat.ValueConverter!);
             entity.Property(i => i.Rarity)
                 .HasColumnName("Rarity");
 

@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Moves;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
@@ -48,8 +49,7 @@ public class IWillBeYourShield : Skill
         return owner.Team.Where(i =>!i.IsDead);
     }
 
-    public override int MaxEnhance { get; } = 5;
-
+  
     public override string Description=> "gives a shield to the target and caster for 3 turns. Shield strength is proportional to the caster's defense";
 
 
@@ -77,7 +77,7 @@ public class IWillProtectUs : Surge
     }
 
     public override int MaxCooldown => 5;
-    public override int MaxEnhance { get; } = 5;
+  
 
     public override string Description=> "Increases the defense of all allies for 3 turns";
     

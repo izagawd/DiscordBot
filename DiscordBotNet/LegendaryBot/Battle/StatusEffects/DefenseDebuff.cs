@@ -7,7 +7,7 @@ public class DefenseDebuff: StatusEffect,IStatsModifier
 {
     public override bool IsRenewable => true;
 
-    public float DefensePercentage
+    private float DefensePercentage
     {
         get
         {

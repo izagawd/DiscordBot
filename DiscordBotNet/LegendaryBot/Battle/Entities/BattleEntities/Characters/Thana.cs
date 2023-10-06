@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Moves;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
@@ -31,7 +32,7 @@ public class SoulAttack : BasicAttack
 
 public class YourLifeEnergyIsMine : Skill
 {
-    public override int MaxEnhance { get; }
+
 
     public override string Description { get; } =
         "Sucks the life energy out of the enemy, recovering 20% of damage dealt as hp";
@@ -56,16 +57,20 @@ public class YourLifeEnergyIsMine : Skill
             {
                 damageResult
             },
+            Text = "Your lifespan is mine!",
             User = owner,
             TargetType = TargetType.SingleTarget,
             UsageType = usageType
         };
     }
+
+    public override int MaxCooldown { get; } = 3;
 }
 public class Arise : Surge
 {
-    public override int MaxEnhance { get; }
-    
+
+    public override int MaxCooldown { get; } = 5;
+
     public override string Description =>
         $"Grants all allies immortality, increases the caster's attack for 2 turns, and grants her an extra turn";
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
@@ -77,7 +82,7 @@ public class Arise : Surge
     {
         owner.CurrentBattle.AdditionalTexts.Add($"With her necromancy powers, {owner} attempts to bring back all her dead allies!");
 
-        foreach (var i in target.Team)
+        foreach (var i in GetPossibleTargets(owner))
         {
             if(i.IsDead)
                 i.Revive();
@@ -94,16 +99,13 @@ public class Arise : Surge
         {
             User = owner,
             TargetType = TargetType.AOE,
-            Text = $"Necromancy!",
+            Text = "Necromancy!",
             UsageType = usageType
         };
     }
 }
 public class Thana : Character
 {
-   
-    
-
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
     public override int BaseMaxHealth => 1500 + (60 * Level);
     public override int BaseAttack => (100 + (10 * Level));

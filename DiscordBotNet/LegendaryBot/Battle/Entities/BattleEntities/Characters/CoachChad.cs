@@ -33,7 +33,7 @@ public class GigaPunch : BasicAttack
 
 public class MuscleFlex : Surge
 {
-    public override int MaxEnhance { get; }
+  
     public override string Description => "Flexes muscles";
     
 
@@ -60,7 +60,6 @@ public class MuscleFlex : Surge
 
 public class ThumbsUp : Skill
 {
-    public override int MaxEnhance { get; } = 4;
 
     public override string Description => "Gives the enemy a thumbs up!";
     

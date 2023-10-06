@@ -25,7 +25,7 @@ public class BasicAttackSample : BasicAttack
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             User = owner,
-            DamageResults = new List<DamageResult> { damageResult }
+            DamageResults = new[] { damageResult }
         };
     }
 }

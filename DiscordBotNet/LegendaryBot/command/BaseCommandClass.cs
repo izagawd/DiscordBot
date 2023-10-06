@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
-using DiscordBotNet.LegendaryBot.Battle;
-using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
 

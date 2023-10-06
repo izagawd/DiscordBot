@@ -1,9 +1,9 @@
 ﻿using DiscordBotNet.Database;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
-using SixLabors.ImageSharp;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
@@ -11,13 +11,13 @@ public class Detail : BaseCommandClass
 {
     [SlashCommand("detail", "Changes the color of the embed messages I send to you")]
     public async Task Execute(InteractionContext ctx,
-        [Option("entity_id","the id of the thing you want to get details about")] string entity_id)
+        [Option("entity_id","the id of the thing you want to get details about")] string entityId)
     {
         var embedBuilder = new DiscordEmbedBuilder()
             .WithUser(ctx.User)
             .WithTitle("Hmm")
             .WithDescription("Invalid id");
-        if (!Guid.TryParse(entity_id, out Guid entityId))
+        if (!Guid.TryParse(entityId, out Guid entityIdGuid))
         {
             var userColor = await DatabaseContext.UserData.FindOrCreateSelectAsync(ctx.User.Id, i => i.Color);
             embedBuilder.WithColor(userColor);
@@ -26,12 +26,12 @@ public class Detail : BaseCommandClass
         }
   
         var userData = await DatabaseContext.UserData
-            .Include(i => i.Inventory.Where(j => j.Id == entityId))
+            .Include(i => i.Inventory.Where(j => j.Id == entityIdGuid))
             .FindOrCreateAsync(ctx.User.Id);
         embedBuilder.WithColor(userData.Color);
         if (!userData.Inventory.Any())
         {
-            embedBuilder.WithDescription($"You do not have a blessing, gear or character with the id {entity_id}");
+            embedBuilder.WithDescription($"You do not have a blessing, gear or character with the id {entityId}");
             await ctx.CreateResponseAsync(embedBuilder.Build());
             return;
         }

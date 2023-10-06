@@ -1,32 +1,23 @@
 ﻿using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.InteropServices.Marshalling;
 using DiscordBotNet.Database;
-using DiscordBotNet.Database.Models;
-using DiscordBotNet.LegendaryBot;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle;
-using DiscordBotNet.LegendaryBot.Battle.Entities;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.Stats;
 using DiscordBotNet.LegendaryBot.command;
 
 using DSharpPlus;
-using DSharpPlus.Entities;
+
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Org.BouncyCastle.Asn1.X509.Qualified;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -36,9 +27,10 @@ namespace DiscordBotNet;
 
 public class Bot
 {
-    
-    public static BaseCommandClass[]? CommandArray;
-    public static readonly Type[] AllAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray();
+
+    public static BaseCommandClass[] CommandArray { get; private set; } = null!;
+    public static readonly Type[] AllAssemblyTypes = Assembly.GetExecutingAssembly()
+        .GetTypes().ToArray();
 
 
     private static async Task Main(string[] args) => await new Bot().RunBotAsync(args);
@@ -58,6 +50,7 @@ public class Bot
 
     public async Task DoShit()
     {
+        
         var ctx = new PostgreSqlContext();
         await ctx.UserData.FindOrCreateAsync(Surjidid);
         await ctx.SaveChangesAsync();
@@ -120,12 +113,32 @@ public class Bot
             });
         await ctx.SaveChangesAsync();
     }
+
+    public async Task DoShit2()
+    {
+        IEnumerable<object> idk = (new Lily() * 1000).ToHashSet();
+        foreach (var i in idk.ToArray())
+        {
+            var stop = new Stopwatch(); stop.Start();
+            idk.ToArray();
+            var time= stop.Elapsed.TotalNanoseconds;
+            Console.WriteLine($"To array: {time}");
+            stop.Stop();
+            stop.Reset();
+            stop.Start();
+            idk.ToList();
+            time = stop.Elapsed.TotalNanoseconds;
+            Console.WriteLine($"To list: {time}");
+
+        }
+    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-
+        await DoShit2();
+        return;
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

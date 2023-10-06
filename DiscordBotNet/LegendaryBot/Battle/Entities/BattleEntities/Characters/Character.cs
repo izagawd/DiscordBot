@@ -1,10 +1,10 @@
-﻿using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Numerics;
 using System.Reflection;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
-using DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
@@ -12,9 +12,6 @@ using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.Fonts;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -109,7 +106,7 @@ public abstract  class Character : BattleEntity
         CurrentBattle.AdditionalTexts.Add($"{Name} has been revived");
     }
 
-    private bool _shouldTakeExtraTurn = false;
+    private bool _shouldTakeExtraTurn;
     [NotMapped]
     public bool ShouldTakeExtraTurn
     {
@@ -150,7 +147,7 @@ public abstract  class Character : BattleEntity
         var image = new Image<Rgba32>(1800, 1000);
 
         var characterImageSize = characterImage.Size;
-        IImageProcessingContext imageCtx = null;
+        IImageProcessingContext imageCtx = null!;
         image.Mutate(i => imageCtx = i);
        
         int yOffSet = characterImageSize.Height + 50;
@@ -220,7 +217,7 @@ public abstract  class Character : BattleEntity
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
         var image = new Image<Rgba32>(1280, 720);
-        using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);;
+        using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
         
         characterImage.Mutate(ctx =>
         {
@@ -229,7 +226,7 @@ public abstract  class Character : BattleEntity
             
         });
      
-        IImageProcessingContext ctx = null;
+        IImageProcessingContext ctx = null!;
         image.Mutate(idk => ctx = idk);
   
         ctx.DrawImage(characterImage, new Point(0,0), new GraphicsOptions());
@@ -345,7 +342,8 @@ public abstract  class Character : BattleEntity
         {
             double percentage = 100;
             double originalMaxHealth = TotalMaxHealth;
-            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+            var modifiedStats =
+                GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<MaxHealthPercentageModifierArgs>())
             {
                 originalMaxHealth += originalMaxHealth * 0.01 * i.ValueToChangeWith;
@@ -383,7 +381,7 @@ public abstract  class Character : BattleEntity
             double percentage = 100;
             double originalSpeed = TotalSpeed;
 
-            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<SpeedPercentageModifierArgs>())
             {
                 originalSpeed += originalSpeed * 0.01 * i.ValueToChangeWith;
@@ -417,7 +415,7 @@ public abstract  class Character : BattleEntity
         {
             double percentage = 100;
             double originalDefense = TotalDefense;
-            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<DefensePercentageModifierArgs>())
             {
                 originalDefense += originalDefense * 0.01 * i.ValueToChangeWith;
@@ -451,7 +449,7 @@ public abstract  class Character : BattleEntity
         {
             double percentage = 100;
             double originalAttack = TotalAttack;
-            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<AttackPercentageModifierArgs>())
             {
                 originalAttack += originalAttack * 0.01 * i.ValueToChangeWith;
@@ -508,7 +506,7 @@ public abstract  class Character : BattleEntity
         {
             double percentage = 0;
             double originalCriticalDamage = TotalCriticalDamage;
-            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<CriticalDamageModifierArgs>())
             {
                 originalCriticalDamage += i.ValueToChangeWith;
@@ -536,7 +534,7 @@ public abstract  class Character : BattleEntity
             {
                 double percentage = 0;
                 double originalResistance = TotalResistance;
-                var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+                var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
                 foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<ResistanceModifierArgs>())
                 {
                     originalResistance += i.ValueToChangeWith;
@@ -613,14 +611,14 @@ public abstract  class Character : BattleEntity
         if(Surge.CanBeUsed(this))
             possibleDecisions.Add(BattleDecision.Surge);
 
-        IEnumerable<Character> possibleTargets = new List<Character>();
+        Character[] possibleTargets = {};
         Move move;
         BattleDecision moveDecision = BattleDecision.BasicAttack;
         while (!possibleTargets.Any())
         {
             moveDecision =BasicFunction.RandomChoice<BattleDecision>(possibleDecisions);
             move = this[moveDecision]!;
-            possibleTargets = move.GetPossibleTargets(this);
+            possibleTargets = move.GetPossibleTargets(this).ToArray();
             possibleDecisions.Remove(moveDecision);
         }
 
@@ -662,7 +660,7 @@ public abstract  class Character : BattleEntity
         {
             double percentage =0;
             double originalEffectiveness = TotalEffectiveness;
-            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+            var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<EffectivenessModifierArgs>())
             {
                 originalEffectiveness += i.ValueToChangeWith;
@@ -694,7 +692,7 @@ public abstract  class Character : BattleEntity
             {
                 double percentage = 0;
                 double originalCriticalChance = TotalCriticalChance;
-                var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>();
+                var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
                 foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<CriticalChanceModifierArgs>())
                 {
                     originalCriticalChance += i.ValueToChangeWith;
@@ -1039,24 +1037,7 @@ public abstract  class Character : BattleEntity
     {
         Experience = experience;
     }
-    public Move? this[MoveType? moveType]
-    {
-        get
-        {
-            switch (moveType)
-            {
-                case  MoveType.Skill:
-                    return Skill;
-                case MoveType.BasicAttack:
-                    return BasicAttack;
-                        
-                case MoveType.Surge:
-                    return Surge;
-                default:
-                    return null;
-            } 
-        } set{}
-    }
+
 
 
 

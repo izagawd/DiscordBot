@@ -1,9 +1,7 @@
 ﻿@page
-@using DiscordBotNet.LegendaryBot
 @using DiscordBotNet.LegendaryBot.Battle
 @using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters
 @using System.Web
-@using DiscordBotNet
 @using DiscordBotNet.Database
 
 
@@ -58,36 +56,41 @@
 @{
 
     string color = "white";
-    IEnumerable<Character> filteredCharactersEnumerable = Model.Characters;
+    IEnumerable<Character> filteredCharactersList = Model.Characters;
     if (Model.Element is not null)
     {
-        filteredCharactersEnumerable = filteredCharactersEnumerable.Where(i => i.Element == Model.Element);
+        filteredCharactersList = filteredCharactersList.Where(i => i.Element == Model.Element).ToArray();
 
     }
 
-    foreach (var i in filteredCharactersEnumerable.OfType<Player>())
+    foreach (var i in filteredCharactersList.OfType<Player>())
     {
         await i.LoadAsync(User);
     }
     if (Model.Name.Length > 0)
     {
-        filteredCharactersEnumerable = filteredCharactersEnumerable.Where(i => i.Name.ToLower().Contains(Model.Name.ToLower()));
+        filteredCharactersList = filteredCharactersList
+            .Where(i => i.Name.ToLower().Contains(Model.Name.ToLower()))
+            .ToArray();
     }
 
     switch (Model.Sort)
     {
         case "element":
-            filteredCharactersEnumerable = filteredCharactersEnumerable.OrderBy(i => i.Element);
+            filteredCharactersList = filteredCharactersList.OrderBy(i => i.Element)
+                .ToArray();
             break;
         case "name":
-            filteredCharactersEnumerable = filteredCharactersEnumerable.OrderBy(i => i.Name);
+            filteredCharactersList = filteredCharactersList.OrderBy(i => i.Name)
+                .ToArray();
             break;
         default:
-            filteredCharactersEnumerable = filteredCharactersEnumerable.OrderBy(i => i.Level);
+            filteredCharactersList = filteredCharactersList.OrderBy(i => i.Level)
+                .ToArray();
             break;
 
     }
-    var filteredCharacters = filteredCharactersEnumerable.ToArray();
+    var filteredCharacters = filteredCharactersList.ToArray();
 
 }
 

@@ -1,11 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using DiscordBotNet.LegendaryBot.Battle;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
-using Microsoft.Extensions.Caching.Memory;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace DiscordBotNet.LegendaryBot;
 
@@ -98,7 +91,7 @@ public static class BasicFunction
     {
         
         Random random = new();
-        int index = random.Next(elements.Count());
+        int index = random.Next(elements.Length);
         return elements[index];
     }
     /// <returns>
@@ -106,10 +99,8 @@ public static class BasicFunction
     /// </returns>
     public static T RandomChoice<T>(IEnumerable<T> elements)
     {
+        return RandomChoice(elements.ToArray());
 
-        Random random = new();
-        int index = random.Next(elements.Count());
-        return elements.ToArray()[index];
     }
     /// <summary>
     /// Makes the first letter of each word in a string capital

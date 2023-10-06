@@ -1,15 +1,12 @@
 ﻿
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
+using DiscordBotNet.Extensions;
 using DSharpPlus;
-using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI;
 
 
 namespace DiscordBotNet.LegendaryBot.command;

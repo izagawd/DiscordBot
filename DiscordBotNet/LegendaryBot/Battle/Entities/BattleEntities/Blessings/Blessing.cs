@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
-using DiscordBotNet.LegendaryBot.Battle.Stats;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 

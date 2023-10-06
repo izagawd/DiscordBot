@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 
@@ -30,7 +29,7 @@ public class UsageResult
     /// <summary>
     /// if the skill deals any sort of damage, the damage results should be in this list
     /// </summary>
-    private DamageResult[] _damageResults = Array.Empty<DamageResult>();
+    private readonly DamageResult[] _damageResults = Array.Empty<DamageResult>();
     public IEnumerable<DamageResult> DamageResults
     {
         get => _damageResults;

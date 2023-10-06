@@ -1,21 +1,15 @@
 using System.Globalization;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using AspNet.Security.OAuth.Discord;
-using crypto;
 using DiscordBotNet.Database;
-using DiscordBotNet.LegendaryBot;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
-using SixLabors.ImageSharp;
 
 namespace DiscordBotNet;
 
 public static class Website
 {
-    public static  readonly string DomainName = "https://legendarygawds.com";
+    public static  readonly string DomainName = "https://localhost";
     public static async Task<string> RenderImageTagAsync(Image image)
     {
         if (image == null)

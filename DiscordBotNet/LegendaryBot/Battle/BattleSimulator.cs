@@ -1,6 +1,4 @@
-﻿
-using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -11,11 +9,8 @@ using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace DiscordBotNet.LegendaryBot.Battle;
 
@@ -176,10 +171,7 @@ public class BattleSimulator
 
     public IEnumerable<CharacterTeam> CharacterTeams => new[] { Team1, Team2 };
 
-    /// <summary>
-    /// The amount of turns passed
-    /// </summary>
-    private int _turnNumber;
+
     private string? _mainText;
     private string _additionalText = "";
     /// <summary>
@@ -277,10 +269,12 @@ public class BattleSimulator
         {
             Turn += 1;
             bool extraTurnGranted = false;
-            var extraTurners = Characters.Where(i => i.ShouldTakeExtraTurn);
+            var extraTurners =
+                Characters.Where(i => i.ShouldTakeExtraTurn)
+                    .ToArray();
             if (extraTurners.Any())
             {
-                ActiveCharacter = BasicFunction.RandomChoice(extraTurners);
+                ActiveCharacter = BasicFunction.RandomChoice(extraTurners.AsEnumerable());
                 ActiveCharacter.ShouldTakeExtraTurn = false;
                 extraTurnGranted = true;
             }

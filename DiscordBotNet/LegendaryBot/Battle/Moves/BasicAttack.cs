@@ -5,8 +5,8 @@ namespace DiscordBotNet.LegendaryBot.Battle.Moves;
 
 public abstract class BasicAttack : Move
 {
-    public sealed override MoveType MoveType => MoveType.BasicAttack;
-    public override int MaxEnhance { get; } = 4;
+
+
 
 
 

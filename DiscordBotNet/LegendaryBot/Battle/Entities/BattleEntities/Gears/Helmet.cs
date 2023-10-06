@@ -1,6 +1,6 @@
 ﻿using DiscordBotNet.LegendaryBot.Battle.Stats;
 
-namespace DiscordBotNet.LegendaryBot.Battle.Entities.Gears;
+namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 
 public class Helmet : Gear
 {

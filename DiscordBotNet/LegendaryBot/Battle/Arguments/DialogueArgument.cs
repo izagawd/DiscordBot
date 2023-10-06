@@ -4,11 +4,11 @@ namespace DiscordBotNet.LegendaryBot.Battle.Arguments;
 
 public class DialogueArgument
 {
-    public DiscordColor CharacterColor { get; set; }
+    public DiscordColor CharacterColor { get; init; }
 
-    public string CharacterName { get; set; } 
+    public required string CharacterName { get;init; } 
 
-    public string CharacterUrl { get; set; }
-    public List<string> Dialogues { get; set; }
+    public required string CharacterUrl { get; init; }
+    public required List<string> Dialogues { get; init; }
 
 }

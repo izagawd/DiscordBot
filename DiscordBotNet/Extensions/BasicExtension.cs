@@ -1,9 +1,8 @@
-﻿using System.Diagnostics;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Text;
 using DSharpPlus.Entities;
 
-namespace DiscordBotNet.LegendaryBot;
+namespace DiscordBotNet.Extensions;
 
 public static class BasicExtension
 {
@@ -11,7 +10,7 @@ public static class BasicExtension
     public static string Multiply(this string theString, uint value)
     {
         var idk = "";
-        foreach (var i in Enumerable.Range(1,(int) value))
+        foreach (var unused in Enumerable.Range(1,(int) value))
         {
             idk += theString;
         }
@@ -46,7 +45,7 @@ public static class BasicExtension
     }
     public static string Represent<T>(this IEnumerable<T> it,bool print = true)
     {
-        var a =  "{ " + String.Join(", ", it.Select(i => i.ToString())) + " }";
+        var a =  "{ " + String.Join(", ", it.Select(i => i?.ToString())) + " }";
         if (print)
         {
             Console.WriteLine(a);
@@ -76,16 +75,11 @@ public static class BasicExtension
         return idk;
     }
 
-    public static U Map<T, U>(this T theObject, Expression<Func<T, U>> expression)
+    public static TExpressionResult Map<TObject, TExpressionResult>(this TObject theObject, Expression<Func<TObject, TExpressionResult>> expression)
     {
         return expression.Compile().Invoke(theObject);
     }
 
-    public static int IndexOfLastElement<T>(this IEnumerable<T> _enumerable)
-    {
-        return  _enumerable.Count() - 1;
-    }
 
-    
 
 }

@@ -1,5 +1,6 @@
-﻿using DiscordBotNet.Database;
+﻿
 using DiscordBotNet.Database.Models;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
@@ -14,8 +15,8 @@ namespace DiscordBotNet.LegendaryBot.command;
 public class Challenge :BaseCommandClass
 {   
     public override BotCommandType BotCommandType { get; } = BotCommandType.Adventure;
-    private static DiscordButtonComponent yes = new(ButtonStyle.Primary, "yes", "YES");
-    private static DiscordButtonComponent no = new(ButtonStyle.Primary, "no", "NO");
+    private static readonly DiscordButtonComponent yes = new(ButtonStyle.Primary, "yes", "YES");
+    private static readonly DiscordButtonComponent no = new(ButtonStyle.Primary, "no", "NO");
 
     [SlashCommand("challenge", "Challenge other players to a duel!")]
     public async Task Execute(InteractionContext ctx,[Option("user", "User to challenge")] DiscordUser opponent)
