@@ -1,4 +1,6 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+﻿using System.Diagnostics;
+using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -36,6 +38,7 @@ public abstract class StatusEffect
     /// The max level of a status effects
     /// </summary>
     public virtual int MaxLevel => 1;
+    
 
     public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
@@ -44,7 +47,6 @@ public abstract class StatusEffect
         {
             backgroundColor = Color.ParseHex("#67B0D8");
         }
-
         var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         image.Mutate(ctx =>
         {
@@ -60,7 +62,7 @@ public abstract class StatusEffect
             }
 
             ctx.Fill(Color.Black, new RectangleF(0, 0, 9+xOffset, 9));
-            var font = SystemFonts.CreateFont("Arial", 9, FontStyle.Bold);
+            var font = SystemFonts.CreateFont(Bot.GlobalFontName, 9, FontStyle.Bold);
  
             ctx.DrawText(Duration.ToString(), font, Color.White, new PointF(x, 0));
         });
@@ -120,7 +122,6 @@ public abstract class StatusEffect
     /// <param name="caster">The one who casted the status effect</param>
     public StatusEffect(Character caster)
     {
-
         Caster = caster;
     }
 

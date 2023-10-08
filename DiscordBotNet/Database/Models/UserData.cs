@@ -88,6 +88,7 @@ public class UserData : Model,  ICanBeLeveledUp
     {
         return GetCharacterTeam(user.Username);
     }
+    
     public async Task<Image<Rgba32>> GetInfoAsync(DiscordUser? user = null)
     {
         if (user is null)
@@ -97,11 +98,7 @@ public class UserData : Model,  ICanBeLeveledUp
         {
             throw new Exception("Bruh");
         }
-        
-
-
         using var userImage = await BasicFunction.GetImageFromUrlAsync(user.AvatarUrl);
-        
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         image.Mutate(ctx =>

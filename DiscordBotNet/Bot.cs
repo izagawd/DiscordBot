@@ -3,10 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
-using DiscordBotNet.LegendaryBot.Battle.Stats;
 using DiscordBotNet.LegendaryBot.command;
 
 using DSharpPlus;
@@ -18,6 +15,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.Fonts;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -59,12 +57,19 @@ public class Bot
 
     }
 
+    public static string GlobalFontName => "Arial";
 
+
+    public async Task DoShit2()
+    {
+
+    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
+
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 

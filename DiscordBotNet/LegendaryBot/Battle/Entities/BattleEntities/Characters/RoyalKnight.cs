@@ -3,6 +3,7 @@ using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
+using Barrier = DiscordBotNet.LegendaryBot.Battle.StatusEffects.Barrier;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public class ShieldBash : BasicAttack
@@ -56,7 +57,7 @@ public class IWillBeYourShield : Skill
     public int ShieldBasedOnDefense => 300;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        target.StatusEffects.Add(new Shield(owner, (ShieldBasedOnDefense * 0.01 * owner.Defense).Round()){Duration = 3});
+        target.StatusEffects.Add(new Barrier(owner, (ShieldBasedOnDefense * 0.01 * owner.Defense).Round()){Duration = 3});
 
 
         return new UsageResult(this)

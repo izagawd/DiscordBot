@@ -9,7 +9,7 @@ namespace DiscordBotNet;
 
 public static class Website
 {
-    public static  readonly string DomainName = "https://localhost";
+    public static readonly string DomainName = "https://legendarygawds.com";
     public static async Task<string> RenderImageTagAsync(Image image)
     {
         if (image == null)
@@ -28,7 +28,7 @@ public static class Website
     {
         var claim = user.FindFirst(i => i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
         return 
-            claim.Value;
+            claim?.Value!;
     }
 
     public static ulong GetDiscordUserId(this ClaimsPrincipal user)
@@ -41,7 +41,7 @@ public static class Website
     {
         var claim = user.FindFirst(i =>
             i.Type == "urn:discord:avatar:url");
-        return claim!.Value;
+        return claim?.Value!;
     }
     public static void ConfigureServices(IServiceCollection services)
     {

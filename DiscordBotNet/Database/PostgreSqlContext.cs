@@ -3,7 +3,6 @@ using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Battle.Stats;

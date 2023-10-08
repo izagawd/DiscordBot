@@ -69,7 +69,7 @@ public class YourLifeEnergyIsMine : Skill
 public class Arise : Surge
 {
 
-    public override int MaxCooldown { get; } = 5;
+    public override int MaxCooldown =>6;
 
     public override string Description =>
         $"Grants all allies immortality, increases the caster's attack for 2 turns, and grants her an extra turn";

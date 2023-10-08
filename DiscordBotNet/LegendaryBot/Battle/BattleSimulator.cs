@@ -45,24 +45,18 @@ public class BattleSimulator
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
- 
         var heightToUse = CharacterTeams.Select(i => i.Count).Max() * 160;
-        
         var image = new Image<Rgba32>(500, heightToUse);
-
         int xOffSet = 70;
         int widest = 0;
         int length = 0;
         int yOffset = 0;
         IImageProcessingContext imageCtx = null!;
-
         image.Mutate(ctx => imageCtx = ctx);
-        
         foreach (var i in CharacterTeams)
         {
             foreach (var j in i)
             {
-                
                 using var characterImage = await j.GetCombatImageAsync();
                 if (characterImage.Width > widest)
                 {
@@ -74,38 +68,29 @@ public class BattleSimulator
                 {
                     length = yOffset;
                 }
-                
             }
-
             yOffset = 0;
             xOffSet += widest + 75;
-        }
-
+        } 
         imageCtx.BackgroundColor(Color.Gray);
         var combatReadinessLineTRectangle = new Rectangle(30, 0, 3, length);
-
         imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
         imageCtx.Fill(Color.White, combatReadinessLineTRectangle);
         foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
-          
             using var characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(i.IconUrl);
-
-
+            var circleColor = Color.Blue;
+            if (i.Team == Team2)
+                circleColor = Color.Red;
             characterImageToDraw.Mutate(mutator =>
             {
+                var circleBgColor = Color.DarkBlue;
+                if (i.Team == Team2)
+                    circleBgColor = Color.DarkRed;
                 mutator.Resize(30, 30);
-                if (i.Team == Team1)
-                {
-                    mutator.BackgroundColor(Color.Blue);
-                }
-                else
-                {
-                    mutator.BackgroundColor(Color.Red);
-                }
+                mutator.BackgroundColor(circleBgColor);
                 mutator.ConvertToAvatar();
             });
-
             var characterImagePoint =
                 new Point(((combatReadinessLineTRectangle.X + (combatReadinessLineTRectangle.Width / 2.0))
                            - (characterImageToDraw.Width / 2.0)).Round(),
@@ -115,13 +100,10 @@ public class BattleSimulator
             var circlePolygon = new EllipsePolygon(characterImageToDraw.Width / 2.0f + characterImagePoint.X,
                 characterImageToDraw.Height / 2.0f + characterImagePoint.Y,
                 characterImageToDraw.Height / 2.0f);
-            imageCtx.Draw(Color.Black, 2,
+            imageCtx.Draw(circleColor, 2,
                 circlePolygon);
         }
-     
         imageCtx.EntropyCrop();
-
-   
         return image;
     }
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
@@ -212,7 +194,7 @@ public class BattleSimulator
 
 
     }
-    private CharacterTeam? winners;
+    private CharacterTeam? _winners;
 
 
 
@@ -225,7 +207,7 @@ public class BattleSimulator
         {
             if (i.All(j => j.IsDead))
             {
-                winners = CharacterTeams.First(k => k != i);
+                _winners = CharacterTeams.First(k => k != i);
                 break;
             }
         }
@@ -338,19 +320,22 @@ public class BattleSimulator
                 .AddField(_mainText, _additionalText)
                 .WithImageUrl("attachment://battle.png");
             var combatImage = await GetCombatImageAsync();
+    
             await using var stream = new MemoryStream();
             await combatImage.SaveAsPngAsync(stream);
+       
             stream.Position = 0;
             DiscordMessageBuilder messageBuilder =new DiscordMessageBuilder()
                 .AddEmbed(embedToEdit.Build())
                 .AddFile("battle.png", stream);
                 
-   
+       
             CheckForWinnerIfTeamIsDead();
+
             var components = new List<DiscordComponent> {  };
             if (!(!ActiveCharacter.Team.IsPlayerTeam || ActiveCharacter.IsOverriden) 
                 && !ActiveCharacter.IsDead 
-                && winners is null)
+                && _winners is null)
             {
         
                 components.Add(basicAttackButton);
@@ -363,15 +348,16 @@ public class BattleSimulator
                     components.Add(surgeButton);
                 }
             }
+          
             components.Add(forfeitButton);
             messageBuilder
                 .AddComponents(components);
             if (message is null)
                 message = await interaction.Channel.SendMessageAsync(messageBuilder);
             else message = await message.ModifyAsync(messageBuilder);
-;
+
             _mainText = $"{ActiveCharacter} is thinking of a course of action...";
-            if (winners is not null) 
+            if (_winners is not null) 
             {
                 await Task.Delay(5000); break;
             }
@@ -413,7 +399,11 @@ public class BattleSimulator
                 {
                     await Task.Delay(5000,delayCancellationToken.Token);
                 }
-                catch { }
+                catch
+                { 
+                    // ignored
+                }
+
                 buttonAwaitercancellationToken.Cancel();
             }
             
@@ -481,7 +471,7 @@ public class BattleSimulator
                 if (results.TimedOut)
                 {
                     timedOut = ActiveCharacter.Team;
-                    winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
+                    _winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
                     break;
                 }
                 List<DiscordSelectComponentOption> enemiesToSelect = new();
@@ -531,7 +521,7 @@ public class BattleSimulator
                     if (results1.TimedOut)
                     {
                         timedOut = ActiveCharacter.Team;
-                        winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
+                        _winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
                         break;
                     }
                 }
@@ -539,10 +529,10 @@ public class BattleSimulator
 
             if (forfeited is not null)
             {
-                winners = CharacterTeams.First(i => i != forfeited);
+                _winners = CharacterTeams.First(i => i != forfeited);
                 break;
             }
-            if (winners is not null)
+            if (_winners is not null)
             {
             
                 await Task.Delay(5000); break;
@@ -591,7 +581,7 @@ public class BattleSimulator
         {
             Turns = Turn,
             Forfeited = forfeited,
-            Winners = winners,
+            Winners = _winners,
             TimedOut = timedOut
         };
     }

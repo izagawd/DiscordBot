@@ -2,7 +2,7 @@
 
 namespace DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 
-public class Shield : StatusEffect
+public class Barrier : StatusEffect
 {
     public override bool IsRenewable => true;
     public override int MaxStacks => 1;
@@ -35,11 +35,11 @@ public class Shield : StatusEffect
         _shieldValue = value;
         
     }
-    public Shield(Character caster) : base(caster)
+    public Barrier(Character caster) : base(caster)
     {
         
     }
-    public Shield(Character caster, int shieldValue) : this(caster)
+    public Barrier(Character caster, int shieldValue) : this(caster)
     {
         _shieldValue = shieldValue;
     }

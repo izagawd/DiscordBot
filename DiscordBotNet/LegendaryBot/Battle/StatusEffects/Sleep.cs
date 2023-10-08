@@ -19,8 +19,8 @@ public class Sleep: StatusEffect, IBattleEvent<CharacterDamageEventArgs>
 
     public void OnBattleEvent(CharacterDamageEventArgs eventArgs, Character owner)
     {
-        if(eventArgs.DamageResult.DamageReceiver != owner && eventArgs.DamageResult.StatusEffect is not null) return;
-
+        if(eventArgs.DamageResult.DamageReceiver != owner) return;
+        if (eventArgs.DamageResult.StatusEffect is not null) return;
         owner.StatusEffects.Remove(this);
         owner.CurrentBattle.AdditionalTexts.Add($"{this} has been dispelled from {owner} due to an attack!");
   

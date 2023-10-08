@@ -13,6 +13,7 @@ using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.Fonts;
+using Barrier = DiscordBotNet.LegendaryBot.Battle.StatusEffects.Barrier;
 
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -27,7 +28,7 @@ public abstract  class Character : BattleEntity
     public virtual Blessing? Blessing { get; set; }
     public Guid? BlessingId { get; set; }
 
-    public Shield? Shield => StatusEffects.OfType<Shield>().FirstOrDefault();
+    public Barrier? Shield => StatusEffects.OfType<Barrier>().FirstOrDefault();
 
     [NotMapped] public IEnumerable<Move> MoveList => new Move[] { BasicAttack, Skill, Surge };
 
@@ -50,12 +51,12 @@ public abstract  class Character : BattleEntity
     }
     
     public static Type[] CharacterTypeArray { get; }
+
     static Character()
     {
         var allTypes = Assembly.GetExecutingAssembly().GetTypes();
         CharacterTypeArray = allTypes.Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(Character)))
             .ToArray();
-
     }
     [NotMapped]
     private int _health = 1;
@@ -142,6 +143,7 @@ public abstract  class Character : BattleEntity
         }
     }
     public float HealthPercentage => (float)(Health * 1.0 / MaxHealth * 100.0);
+
     public sealed override async  Task<Image<Rgba32>> GetDetailsImageAsync()
     {
         using var characterImage = await GetInfoAsync();
@@ -152,11 +154,12 @@ public abstract  class Character : BattleEntity
         image.Mutate(i => imageCtx = i);
        
         int yOffSet = characterImageSize.Height + 50;
-        Font font = SystemFonts.CreateFont($"Arial", 40);
+
          
-        RichTextOptions options = new RichTextOptions(font){WrappingLength = 1000};
+        RichTextOptions options = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 40)){WrappingLength = 1000};
         var color = SixLabors.ImageSharp.Color.Black;
 
+        
         foreach (var i in MoveList)
         {
 
@@ -215,62 +218,62 @@ public abstract  class Character : BattleEntity
     public IEnumerable<Gear> Gears => new Gear?[] { Armor, Helmet, Weapon, Necklace, Ring, Boots }
         .Where(i => i is not null).OfType<Gear>();
 
+    
  public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
         
         var image = new Image<Rgba32>(190, 150);
-        var stop = new Stopwatch(); stop.Start();
+
         using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
 
         characterImage.Mutate(ctx =>
         {
         ctx.Resize(new Size(50, 50));
         });
-
+     
         IImageProcessingContext ctx = null!;
         image.Mutate(idk => ctx = idk);
-
+       
         ctx.DrawImage(characterImage, new Point(0, 0), new GraphicsOptions());
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 1, new Rectangle(new Point(0, 0), new Size(50, 50)));
-        ctx.DrawText($"{CombatReadiness.Round()}%", SystemFonts.CreateFont("Arial", 10),
-        SixLabors.ImageSharp.Color.Black, new PointF(55, 5));
 
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
-        new RectangleF(52.5f, 5, 35, 11.5f));
-        ctx.DrawText($"Lvl {Level}", SystemFonts.CreateFont("Arial", 10),
-        SixLabors.ImageSharp.Color.Black, new PointF(55, 20));
+        ctx.DrawText($"Lvl {Level}", SystemFonts.CreateFont(Bot.GlobalFontName, 10),
+        SixLabors.ImageSharp.Color.Black, new PointF(55, 21.5f));
 
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
         new RectangleF(52.5f, 20, 70, 11.5f));
-
-        ctx.DrawText(Name + $" [{Position}]", SystemFonts.CreateFont("Arial", 11),
-        SixLabors.ImageSharp.Color.Black, new PointF(55, 35));
+    
+        ctx.DrawText(Name + $" [{Position}]", SystemFonts.CreateFont(Bot.GlobalFontName, 11),
+        SixLabors.ImageSharp.Color.Black, new PointF(55, 36.2f));
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
         new RectangleF(52.5f, 35, 115, 12.5f));
         var healthPercentage = HealthPercentage;
         int width = 175;
+        var shieldPercentage = ShieldPercentage;
         int filledWidth = (width * healthPercentage / 100.0).Round();
-        int filledShieldWidth = (width * ShieldPercentage / 100).Round();
-        int barXOffset = 0;
-        int barHeight = 16;
-        ctx.Fill(SixLabors.ImageSharp.Color.Red, new Rectangle(barXOffset, 50, width, barHeight));
-        ctx.Fill(SixLabors.ImageSharp.Color.Green, new Rectangle(barXOffset, 50, filledWidth, barHeight));
-        int shieldXposition = barXOffset + filledWidth;
+        int filledShieldWidth = (width * shieldPercentage / 100).Round();
+        int barHeight = 16; 
+        if(healthPercentage < 100)
+            ctx.Fill(SixLabors.ImageSharp.Color.Red, new Rectangle(0, 50, width, barHeight));
+        ctx.Fill(SixLabors.ImageSharp.Color.Green, new Rectangle(0, 50, filledWidth, barHeight));
+        int shieldXposition =  filledWidth;
         if (shieldXposition + filledShieldWidth > width)
         {
             shieldXposition = width - filledShieldWidth;
         }
-        ctx.Fill(SixLabors.ImageSharp.Color.White, new RectangleF(shieldXposition, 50, filledShieldWidth, barHeight));
+        if(shieldPercentage > 0)
+            ctx.Fill(SixLabors.ImageSharp.Color.White, new RectangleF(shieldXposition, 50, filledShieldWidth, barHeight));
 
         // Creates a border for the health bar
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 0.5f, new Rectangle(0, 50, width, barHeight));
-        ctx.DrawText($"{Health}/{MaxHealth}", SystemFonts.CreateFont("Arial", 14),
-        SixLabors.ImageSharp.Color.Black, new PointF(2.5f, 50));
+        ctx.DrawText($"{Health}/{MaxHealth}", SystemFonts.CreateFont(Bot.GlobalFontName, 14),
+        SixLabors.ImageSharp.Color.Black, new PointF(2.5f, 51.5f));
 
         int xOffSet = 0;
         int yOffSet = 50 + barHeight + 5;
 
-        int moveLength = 25;
+        int moveLength = 25; 
+    
         foreach (var i in MoveList)
         {
             using var moveImage = await i.GetImageForCombatAsync();
@@ -282,19 +285,21 @@ public abstract  class Character : BattleEntity
                 cooldown = special.Cooldown;
             }
 
-            var cooldownString = "";
+            var cooldownString = ""; 
             if (cooldown > 0)
             {
                 cooldownString = cooldown.ToString();
             }
-            ctx.DrawText(cooldownString, SystemFonts.CreateFont("Arial", moveLength),
+            ctx.DrawText(cooldownString, SystemFonts.CreateFont(Bot.GlobalFontName, moveLength),
                 SixLabors.ImageSharp.Color.Black, new PointF(xOffSet + 5, yOffSet));
             xOffSet += moveLength;
         }
+     
 
         xOffSet = 0;
         yOffSet += moveLength + 5;
 
+  
         foreach (var i in StatusEffects.Take(16))
         {
 
@@ -308,16 +313,15 @@ public abstract  class Character : BattleEntity
             ctx.DrawImage(statusImage, new Point(xOffSet, yOffSet), new GraphicsOptions());
             xOffSet += statusLength + 2;
         }
-
+       
         if (IsDead)
         {
             ctx.Opacity(0.5f);
         }
 
-    
         ctx.EntropyCrop(0.05f);
      
-
+  
         return image;
     }
 
@@ -568,7 +572,7 @@ public abstract  class Character : BattleEntity
         var levelBarMaxLevelWidth = 300ul;
         var gottenExp = levelBarMaxLevelWidth * (Experience/(GetRequiredExperienceToNextLevel() * 1.0f));
         var levelBarY = userImage.Height - 30 + userImagePoint.Y;
-        var font = SystemFonts.CreateFont("Arial", 25);
+        var font = SystemFonts.CreateFont(Bot.GlobalFontName, 25);
         var xPos = 135;
         image.Mutate(ctx =>
         
@@ -779,7 +783,7 @@ public abstract  class Character : BattleEntity
 
     protected void TakeDamageWhileConsideringShield(int damage)
     {
-        Shield? shield = Shield;
+        Barrier? shield = Shield;
 
         if (shield is null)
         {
@@ -903,7 +907,7 @@ public abstract  class Character : BattleEntity
     }
 
     [NotMapped] public abstract Skill Skill { get; } 
-    public int Position => Array.IndexOf(CurrentBattle.Characters.ToArray(),this) +1;
+    public int Position => Array.IndexOf(CurrentBattle.Characters.OrderByDescending(i => i.CombatReadiness).ToArray(),this) +1;
     [NotMapped] public abstract Surge Surge { get; }
     /// <summary>
     /// Checks if something overrides the player turn eg stun status effect preventing the player from doing anything

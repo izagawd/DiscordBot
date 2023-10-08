@@ -1,6 +1,5 @@
 ﻿using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Battle.Entities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
@@ -20,7 +19,7 @@ public class Index : PageModel
 
     public async Task OnPostAsync(string type)
     {
-        Console.WriteLine(type);
+
         Type theType = Bot.AllAssemblyTypes.First(i => i.Name == type);
         Entity entity =(Entity) Activator.CreateInstance(theType)!;
         entity.UserDataId = User.GetDiscordUserId();

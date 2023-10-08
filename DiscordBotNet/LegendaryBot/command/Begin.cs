@@ -1,5 +1,4 @@
-﻿using DiscordBotNet.Database;
-using DiscordBotNet.Database.Models;
+﻿using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Arguments;
