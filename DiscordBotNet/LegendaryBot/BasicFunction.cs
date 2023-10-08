@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DiscordBotNet.LegendaryBot;
 
 public static class BasicFunction
 {
-    private static Dictionary<string, Image<Rgba32>> EntityImages { get; } = new();
+    private static ConcurrentDictionary<string, Image<Rgba32>> EntityImages { get; } = new();
 
     private static MemoryCache UserImages { get; } = new(new MemoryCacheOptions());
 

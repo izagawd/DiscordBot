@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
@@ -299,11 +300,16 @@ public abstract  class Character : BattleEntity
         xOffSet = 0;
         yOffSet += moveLength + 5;
 
-  
-        foreach (var i in StatusEffects.Take(16))
+        var statusEffectsToUse = StatusEffects.Take(16).ToArray();
+        ConcurrentBag<Image<Rgba32>> statusEffectImages =  new ConcurrentBag<Image<Rgba32>>();
+
+        await Parallel.ForEachAsync(statusEffectsToUse, async (statusEffect, images) =>
+        {
+            statusEffectImages.Add(await statusEffect.GetImageForCombatAsync());
+        });
+        foreach (var statusImage in statusEffectImages)
         {
 
-            using var statusImage = await i.GetImageForCombatAsync();
             var statusLength = statusImage.Size.Width;
             if (xOffSet + statusLength + 2 >= 185)
             {
@@ -646,7 +652,7 @@ public abstract  class Character : BattleEntity
     }
 
     [NotMapped]
-    public StatusEffectList StatusEffects { get; set; } 
+    public StatusEffectSet StatusEffects { get; set; } 
 
     [NotMapped]
     public virtual DiscordColor Color { get; protected set; }

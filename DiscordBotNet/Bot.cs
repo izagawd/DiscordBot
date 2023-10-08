@@ -60,17 +60,13 @@ public class Bot
     public static string GlobalFontName => "Arial";
 
 
-    public async Task DoShit2()
-    {
 
-    }
     /// <summary>
     /// this is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-
-
+    
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

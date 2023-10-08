@@ -91,7 +91,7 @@ public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBatt
     public override int BaseMaxHealth => 9000;
     public override int BaseAttack => 100;
     public override int BaseSpeed => 120;
-    public override int BaseDefense => 100;
+    public override int BaseDefense => 500;
     public override int BaseCriticalDamage => 150;
     public override int BaseResistance => 0;
 

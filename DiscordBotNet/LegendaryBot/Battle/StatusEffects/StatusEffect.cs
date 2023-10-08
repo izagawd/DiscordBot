@@ -7,7 +7,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 
 namespace DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 
-public abstract class StatusEffect
+public abstract class StatusEffect : ICloneable 
 {
    
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/status_effects/{GetType().Name}.png";
@@ -135,4 +135,30 @@ public abstract class StatusEffect
         return Name;
     }
 
+    object ICloneable.Clone()
+    {
+        return Clone();
+    }
+
+    public StatusEffect Clone()
+    {
+        return (StatusEffect) MemberwiseClone();
+    }
+
+    public static IEnumerable<StatusEffect> operator *(StatusEffect effect, int number)
+    {
+        if (number <= 0)
+        {
+            throw new Exception("Entity times a negative number or 0 doesn't make sense");
+            
+        }
+
+        List<StatusEffect> clonedStatusEffects = new List<StatusEffect>();
+        foreach (var i in Enumerable.Range(0, number))
+        {
+            clonedStatusEffects.Add(effect.Clone());
+        }
+
+        return clonedStatusEffects;
+    }
 }

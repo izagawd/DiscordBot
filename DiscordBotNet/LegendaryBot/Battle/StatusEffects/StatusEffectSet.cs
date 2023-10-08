@@ -2,14 +2,14 @@
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
 namespace DiscordBotNet.LegendaryBot.Battle.StatusEffects;
-public class StatusEffectList : ISet<StatusEffect>
+public class StatusEffectSet : ISet<StatusEffect>
 {
     private readonly HashSet<StatusEffect> statusEffects = new HashSet<StatusEffect>();
 
     public int Count => statusEffects.Count;
     public Character Affected { get;  }
     public bool IsReadOnly => false;
-    public StatusEffectList(Character affected)
+    public StatusEffectSet(Character affected)
     {
         Affected = affected;
     }
@@ -22,7 +22,17 @@ public class StatusEffectList : ISet<StatusEffect>
         return Add(item, null);
     }
 
-/// <param name="effectiveness">the effectiveness of the caster</param>
+  
+
+    public void AddRange(IEnumerable<StatusEffect> statusEffectEnumerable)
+    {
+        foreach (var i in statusEffectEnumerable)
+        {
+            Add(i);
+        }
+    }
+
+    /// <param name="effectiveness">the effectiveness of the caster</param>
 /// <returns>true if the status effect was successfully added</returns>
     public bool Add(StatusEffect statusEffect,int? effectiveness)
     {

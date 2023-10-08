@@ -35,7 +35,7 @@ public class Info : BaseCommandClass
         await image.SaveAsPngAsync(stream);
         stream.Position = 0;
         var response = new DiscordInteractionResponseBuilder()
-            .AddEmbed(embedBuilder.Build())
+            .AddEmbed(embedBuilder)
             .AddFile("info.png", stream);
         await ctx.CreateResponseAsync(response);
 

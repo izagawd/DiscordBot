@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Diagnostics;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents.EventArgs;
@@ -24,7 +26,11 @@ public enum BattleDecision
 public class BattleSimulator
 {
    
-
+    public struct CharacterWithImage
+    {
+        public Character Character;
+        public Image<Rgba32> Image;
+    }
     public static DiscordButtonComponent basicAttackButton = new(ButtonStyle.Secondary, "BasicAttack", null,emoji: new DiscordComponentEmoji("⚔️"));
     public static DiscordButtonComponent skillButton = new(ButtonStyle.Secondary, "Skill", null, emoji: new DiscordComponentEmoji("🪄"));
     public static DiscordButtonComponent surgeButton = new(ButtonStyle.Secondary, "Surge", null, emoji: new DiscordComponentEmoji("⚡"));
@@ -45,6 +51,8 @@ public class BattleSimulator
 
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
+
+
         var heightToUse = CharacterTeams.Select(i => i.Count).Max() * 160;
         var image = new Image<Rgba32>(500, heightToUse);
         int xOffSet = 70;
@@ -53,29 +61,43 @@ public class BattleSimulator
         int yOffset = 0;
         IImageProcessingContext imageCtx = null!;
         image.Mutate(ctx => imageCtx = ctx);
+        var characterImagesInTeam1 = new ConcurrentBag<Image<Rgba32>>();
+        var characterImagesInTeam2 = new ConcurrentBag<Image<Rgba32>>();
+        await Parallel.ForEachAsync(Characters, async (character, token) =>
+        {
+            if(character.Team == Team1)
+                characterImagesInTeam1.Add(await character.GetCombatImageAsync());
+            else
+                characterImagesInTeam2.Add(await character.GetCombatImageAsync());
+            
+        });
         foreach (var i in CharacterTeams)
         {
-            foreach (var j in i)
+            var characterImagesInTeam = characterImagesInTeam1;
+            if (i == Team2)
+                characterImagesInTeam = characterImagesInTeam2;
+            foreach (var gottenImage in characterImagesInTeam)
             {
-                using var characterImage = await j.GetCombatImageAsync();
-                if (characterImage.Width > widest)
+                if (gottenImage.Width > widest)
                 {
-                    widest = characterImage.Width;
+                    widest = gottenImage.Width;
                 }
-                imageCtx.DrawImage(characterImage, new Point(xOffSet, yOffset), new GraphicsOptions());
-                yOffset += characterImage.Height + 15;
+                imageCtx.DrawImage(gottenImage, new Point(xOffSet, yOffset), new GraphicsOptions());
+                yOffset += gottenImage.Height + 15;
                 if (yOffset > length)
                 {
                     length = yOffset;
                 }
+                gottenImage.Dispose();
             }
             yOffset = 0;
             xOffSet += widest + 75;
-        } 
+        }
         imageCtx.BackgroundColor(Color.Gray);
         var combatReadinessLineTRectangle = new Rectangle(30, 0, 3, length);
         imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
-        imageCtx.Fill(Color.White, combatReadinessLineTRectangle);
+        imageCtx.Fill(Color.White, combatReadinessLineTRectangle);   
+
         foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
             using var characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(i.IconUrl);
@@ -103,7 +125,9 @@ public class BattleSimulator
             imageCtx.Draw(circleColor, 2,
                 circlePolygon);
         }
+
         imageCtx.EntropyCrop();
+
         return image;
     }
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
