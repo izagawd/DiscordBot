@@ -70,7 +70,7 @@ public class UserData : Model,  ICanBeLeveledUp
         character.UserDataId = Id;
         character.UserData = this;
     }
-
+    
     /// <param name="userName">The username of the owner of the team</param>
     public CharacterTeam GetCharacterTeam(string userName)
     {
@@ -157,7 +157,7 @@ public class UserData : Model,  ICanBeLeveledUp
     public DiscordColor Color { get; set; } = DiscordColor.Green;
     public string Language { get; set; } = "english";
     public List<Entity> Inventory { get; protected set; } = new();
-
+    
 
 
 }

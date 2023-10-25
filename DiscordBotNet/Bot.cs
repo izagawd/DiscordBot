@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.command;
 
 using DSharpPlus;
@@ -15,7 +14,6 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
-using SixLabors.Fonts;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -48,13 +46,7 @@ public class Bot
 
     public async Task DoShit()
     {
-        var ctx = new PostgreSqlContext();
-        var lex = await ctx.UserData.FindOrCreateAsync(136301594437222400);
-        lex.Character1 = new Lily(){UserDataId = lex.Id};
-        await ctx.SaveChangesAsync();
-        await ctx.Entity.Where(i => i.UserDataId == lex.Id).LoadAsync();
-     
-
+        
     }
 
     public static string GlobalFontName => "Arial";
@@ -62,16 +54,16 @@ public class Bot
 
 
     /// <summary>
-    /// this is where the program starts
+    /// This is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-    
+        
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
-
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
         stopwatch.Start();
+
         await using (var ctx = new PostgreSqlContext())
         {
             await ctx.UserData

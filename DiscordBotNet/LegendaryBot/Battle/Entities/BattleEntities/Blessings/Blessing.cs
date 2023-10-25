@@ -10,11 +10,7 @@ public abstract class Blessing : BattleEntity
     /// The description of the blessing in relation to the level provided
     /// </summary>
 
-    public virtual string GetDescription(int level)
-    {
-        return "";
-        
-    }
+    public abstract string GetDescription(int level);
 
     public string Description => GetDescription(Level);
     public override string IconUrl => $"{Website.DomainName}/battle_images/blessings/{GetType().Name}.png";

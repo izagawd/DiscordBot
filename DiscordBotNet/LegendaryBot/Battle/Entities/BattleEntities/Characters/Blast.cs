@@ -9,10 +9,6 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 public class MethaneSlap : BasicAttack
 {
     public override string Description => $"Slaps the enemy, producing methane around the enemy, with a {DetonateChance}% chance to detonate all the bombs the target has";
-    
-
-   
-
     public int DetonateChance => 75;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
@@ -24,7 +20,6 @@ public class MethaneSlap : BasicAttack
             DamageText = $"That was a harsh slap on {target} dealt $ damage!"
         });
         var damageResultList = new []{ damageResult };
- 
         var result = new UsageResult(this)
         {
             Text = "Methane Slap!",User = owner,
@@ -32,14 +27,10 @@ public class MethaneSlap : BasicAttack
             TargetType = TargetType.SingleTarget,
             DamageResults = damageResultList
         };
-        
-    
         if (BasicFunction.RandomChance(DetonateChance))
         {
             foreach (var i in target.StatusEffects.OfType<Bomb>())
-            {
                 i.Detonate(target);
-            }
         }
         return result;
 
@@ -110,5 +101,5 @@ public class Blast : Character
     public override int BaseSpeed => 105;
     public override Surge Surge { get;  } = new VolcanicEruption();
     public override Skill Skill { get; } = new BlowAway();
-    public override BasicAttack BasicAttack { get;  } = new MethaneSlap();
+    public override BasicAttack BasicAttack { get; } = new MethaneSlap();
 }

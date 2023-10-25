@@ -107,6 +107,7 @@ public class LilyOfTheValley : Surge
 }
 public class Lily : Character
 {
+    public void RandomMethod(){}
     public override int BaseMaxHealth => 1500 + (60 * Level);
     public override int BaseAttack => (100 + (8 * Level));
     public override int BaseDefense => (100 + (7.2 * Level)).Round();

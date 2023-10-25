@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle.BattleEvents;
@@ -40,7 +39,7 @@ public class BattleSimulator
 
 
 
-
+    
     /// <summary>
     /// 
     /// This will be used to invoke an event if it happens
@@ -48,10 +47,10 @@ public class BattleSimulator
     /// </summary>
     /// <param name="eventArgs">The argument instance of the battle event</param>
     /// <typeparam name="T">the type of argument of the battle event</typeparam>
-
+    
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
-
+        var stop = new Stopwatch(); stop.Start();
 
         var heightToUse = CharacterTeams.Select(i => i.Count).Max() * 160;
         var image = new Image<Rgba32>(500, heightToUse);
@@ -127,7 +126,7 @@ public class BattleSimulator
         }
 
         imageCtx.EntropyCrop();
-
+        stop.Elapsed.TotalMilliseconds.Print();
         return image;
     }
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
@@ -155,7 +154,7 @@ public class BattleSimulator
         }
     }
 
-    public StatsModifierArgs[] GetAllStatsModifierArgsInBattle()
+    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
         List<StatsModifierArgs> statsModifierArgsList = new List<StatsModifierArgs>();
         foreach (var i in Characters)
@@ -180,7 +179,7 @@ public class BattleSimulator
             }
         }
 
-        return statsModifierArgsList.ToArray();
+        return statsModifierArgsList;
     }
 
     public IEnumerable<CharacterTeam> CharacterTeams => new[] { Team1, Team2 };
@@ -343,7 +342,7 @@ public class BattleSimulator
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, _additionalText)
                 .WithImageUrl("attachment://battle.png");
-            var combatImage = await GetCombatImageAsync();
+            using var combatImage = await GetCombatImageAsync();
     
             await using var stream = new MemoryStream();
             await combatImage.SaveAsPngAsync(stream);
@@ -600,9 +599,12 @@ public class BattleSimulator
 
         }
 
-        
         return new BattleResult
         {
+            Coins =(ulong) (CharacterTeams
+                .First(i => i != _winners)
+                .Average(i => i.Level) * 500).Round(),
+                
             Turns = Turn,
             Forfeited = forfeited,
             Winners = _winners,

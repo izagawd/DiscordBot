@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;

@@ -4,6 +4,7 @@ namespace DiscordBotNet.LegendaryBot.Battle.Results;
 
 public class BattleResult
 {
+    public required ulong Coins { get; init; }
     public required CharacterTeam Winners { get; init; }
 
     public required int Turns { get; init; }

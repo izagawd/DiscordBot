@@ -23,8 +23,6 @@ public class Sleep: StatusEffect, IBattleEvent<CharacterDamageEventArgs>
         if (eventArgs.DamageResult.StatusEffect is not null) return;
         owner.StatusEffects.Remove(this);
         owner.CurrentBattle.AdditionalTexts.Add($"{this} has been dispelled from {owner} due to an attack!");
-  
-        
     }
 
     public override UsageResult OverridenUsage(Character affected, ref Character target, ref BattleDecision decision, UsageType usageType)

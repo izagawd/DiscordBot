@@ -26,16 +26,8 @@ public abstract class BaseCommandClass : ApplicationCommandModule
             _slashCommandGroupAttributes.Add(i, i.GetCustomAttribute<SlashCommandGroupAttribute>());
 
             var typeEnumerables = i.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(j =>
-                {
-            
-                    return j.GetCustomAttribute<SlashCommandAttribute>() is not null;
-                })
-                .Select(j =>
-                {
-                    return j.GetCustomAttribute<SlashCommandAttribute>()!;
-                    
-                });
+                .Where(j => j.GetCustomAttribute<SlashCommandAttribute>() is not null)
+                .Select(j => j.GetCustomAttribute<SlashCommandAttribute>()!);
             _commandResults.Add(i, typeEnumerables);
 
         }
@@ -67,9 +59,9 @@ public abstract class BaseCommandClass : ApplicationCommandModule
         await DatabaseContext.DisposeAsync();
     }
 
-    protected List<UserData> OccupiedUserDatas { get; } = new();
+    private List<UserData> OccupiedUserDatas { get; } = new();
 
-    public async Task MakeOccupiedAsync(params UserData[] userDatas)
+    protected async Task MakeOccupiedAsync(params UserData[] userDatas)
     {
         foreach (var i in userDatas)
         {
@@ -77,12 +69,11 @@ public abstract class BaseCommandClass : ApplicationCommandModule
         }
         OccupiedUserDatas.AddRange(userDatas);
         var ids = userDatas.Select(i => i.Id).ToArray();
-        var tempCtx = new PostgreSqlContext();
+        await using var tempCtx = new PostgreSqlContext();
         await tempCtx.UserData
             .Where(i => ids.Contains(i.Id))
             .ForEachAsync(i => i.IsOccupied = true);
         await tempCtx.SaveChangesAsync();
-        tempCtx.DisposeAsync();
     }
     protected PostgreSqlContext DatabaseContext { get; private set; }
     public BaseCommandClass()

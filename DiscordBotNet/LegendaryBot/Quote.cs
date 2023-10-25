@@ -19,7 +19,7 @@ public class QuoteReaction
 public class Quote
 {
     public Guid Id { get; protected set; } = Guid.NewGuid();
-    public bool IsPermitted { get; set; } = false;
+    public bool IsPermitted { get; set; } 
     public ulong UserDataId { get; set; }
     public string QuoteValue { get; set; } = "Nothing";
     public UserData UserData { get; set; }

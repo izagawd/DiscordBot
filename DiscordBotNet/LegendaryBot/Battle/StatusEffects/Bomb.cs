@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
 
 namespace DiscordBotNet.LegendaryBot.Battle.StatusEffects;
@@ -25,7 +26,6 @@ public class Bomb : StatusEffect
 
     public DamageResult Detonate(Character affected)
     {
-
         affected.StatusEffects.Remove(this);
         return affected.Damage(        new DamageArgs(this)
         {

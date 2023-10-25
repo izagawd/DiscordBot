@@ -13,9 +13,9 @@ namespace DiscordBotNet.Extensions;
 
 public static class PostgreExtension
 {
-    public async static Task<T?> RandomAsync<T>(this IQueryable<T> queryable)
+    public static Task<T?> RandomAsync<T>(this IQueryable<T> queryable)
     {
-       return await queryable.OrderBy(i => EF.Functions.Random()).FirstOrDefaultAsync();
+       return queryable.OrderBy(i => EF.Functions.Random()).FirstOrDefaultAsync();
     }
 
     public static T? Random<T>(this IQueryable<T> queryable)

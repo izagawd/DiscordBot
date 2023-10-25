@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using DiscordBotNet.Extensions;
@@ -257,13 +256,13 @@ public abstract  class Character : BattleEntity
         if(healthPercentage < 100)
             ctx.Fill(SixLabors.ImageSharp.Color.Red, new Rectangle(0, 50, width, barHeight));
         ctx.Fill(SixLabors.ImageSharp.Color.Green, new Rectangle(0, 50, filledWidth, barHeight));
-        int shieldXposition =  filledWidth;
-        if (shieldXposition + filledShieldWidth > width)
+        int shieldXPosition =  filledWidth;
+        if (shieldXPosition + filledShieldWidth > width)
         {
-            shieldXposition = width - filledShieldWidth;
+            shieldXPosition = width - filledShieldWidth;
         }
         if(shieldPercentage > 0)
-            ctx.Fill(SixLabors.ImageSharp.Color.White, new RectangleF(shieldXposition, 50, filledShieldWidth, barHeight));
+            ctx.Fill(SixLabors.ImageSharp.Color.White, new RectangleF(shieldXPosition, 50, filledShieldWidth, barHeight));
 
         // Creates a border for the health bar
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 0.5f, new Rectangle(0, 50, width, barHeight));

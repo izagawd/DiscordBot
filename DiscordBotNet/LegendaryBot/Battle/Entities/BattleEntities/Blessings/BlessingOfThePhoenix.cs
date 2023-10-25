@@ -24,4 +24,9 @@ public class BlessingOfThePhoenix : Blessing, IBattleEvent<CharacterDamageEventA
   
 
     }
+
+    public override string GetDescription(int level)
+    {
+        return $"Everytime the owner is hit, they recover {GetHealthPercentRecovering(level)}% of their hp";
+    }
 }

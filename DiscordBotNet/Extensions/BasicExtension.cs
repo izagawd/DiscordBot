@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Text;
 using DSharpPlus.Entities;
 
 namespace DiscordBotNet.Extensions;
@@ -7,38 +6,11 @@ namespace DiscordBotNet.Extensions;
 public static class BasicExtension
 {
 
-    public static string Multiply(this string theString, uint value)
-    {
-        var idk = "";
-        foreach (var unused in Enumerable.Range(1,(int) value))
-        {
-            idk += theString;
-        }
-
-        return idk;
-    }
     public static Color ToImageSharpColor(this DiscordColor color)
     {
         return Color.ParseHex(color.ToString());
     }
 
-
-    public static string AddNewlines(this string input, int charactersPerLine)
-    {
-        StringBuilder result = new StringBuilder();
-        int charCount = 0;
-        foreach (string word in input.Split(' '))
-        {
-            if (charCount + word.Length + 1 > charactersPerLine)
-            {
-                result.Append('\n');
-                charCount = 0;
-            }
-            result.Append(word).Append(' ');
-            charCount += word.Length + 1;
-        }
-        return result.ToString().Trim();
-    }
     public static DiscordEmbedBuilder WithUser(this DiscordEmbedBuilder embedBuilder, DiscordUser user)
     {
         return embedBuilder.WithAuthor(user.Username, iconUrl: user.AvatarUrl);
@@ -66,6 +38,7 @@ public static class BasicExtension
     }
     public static int Round(this float theFloat)
     {
+        
         return (int) Math.Round(theFloat);
     }
     public static T Print<T>(this T idk)

@@ -82,10 +82,6 @@
               "target": "Package",
               "version": "[7.0.11, )"
             },
-            "MySql.Data.EntityFramework": {
-              "target": "Package",
-              "version": "[8.1.0, )"
-            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[7.0.11, )"

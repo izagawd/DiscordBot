@@ -30,22 +30,18 @@ public class Detail : BaseCommandClass
         embedBuilder.WithColor(userData.Color);
         if (!userData.Inventory.Any())
         {
-            embedBuilder.WithDescription($"You do not have a blessing, gear or character with the id {entityId}");
+            embedBuilder.WithDescription($"You do not have anything with the id {entityId}");
             await ctx.CreateResponseAsync(embedBuilder.Build());
             return;
         }
 
         var entity = userData.Inventory.First();
         if (entity is Player player)
-        {
             await player.LoadAsync(ctx.User);
-        }
         else
-        {
             await entity.LoadAsync();
-        }
         
-        await using MemoryStream stream = new MemoryStream();
+        await using var stream = new MemoryStream();
         await (await entity.GetDetailsImageAsync()).SaveAsPngAsync(stream);
         stream.Position = 0;
         embedBuilder.WithImageUrl("attachment://description.png");
