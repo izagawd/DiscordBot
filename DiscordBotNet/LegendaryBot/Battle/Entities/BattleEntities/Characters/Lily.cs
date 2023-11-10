@@ -124,6 +124,7 @@ public class Lily : Character
             target = Surge.GetPossibleTargets(this).First();
             return;
         }
+
         var teamMateWithLowestHealth = Team.OrderBy(i => i.Health).First();
         if (Skill.CanBeUsed(this) && teamMateWithLowestHealth.Health < teamMateWithLowestHealth.MaxHealth * 0.7)
         {

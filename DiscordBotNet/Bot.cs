@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Battle.Moves;
 using DiscordBotNet.LegendaryBot.command;
 
 using DSharpPlus;
@@ -21,7 +23,8 @@ namespace DiscordBotNet;
 
 
 
-public class Bot
+
+public class Bot 
 {
 
     public static BaseCommandClass[] CommandArray { get; private set; } = null!;
@@ -44,21 +47,24 @@ public class Bot
     public static ulong Surjidid => 1025325026955767849;
     public static DiscordClient Client { get; private set; }
 
-    public async Task DoShit()
-    {
-        
-    }
+
 
     public static string GlobalFontName => "Arial";
 
-
-
+    public async Task DoShit()
+    {
+        var postre = new PostgreSqlContext();
+        var iza = await postre.UserData.FindOrCreateAsync(Izasid);
+        iza.Coins = 90000;
+        await postre.SaveChangesAsync();
+    }
+  
     /// <summary>
     /// This is where the program starts
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-        
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

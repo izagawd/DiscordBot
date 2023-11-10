@@ -13,7 +13,7 @@ using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace DiscordBotNet.Database;
 
-public class PostgreSqlContext :DbContext
+public class PostgreSqlContext : DbContext
 {
     private static readonly Type[] EntityClasses;
     private static readonly Type[] GearStatClasses;
