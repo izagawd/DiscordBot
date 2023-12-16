@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Caching.Memory;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot;
 

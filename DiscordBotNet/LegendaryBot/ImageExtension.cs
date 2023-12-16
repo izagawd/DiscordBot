@@ -1,5 +1,6 @@
 ﻿using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot;
 

@@ -2,6 +2,7 @@
 using DiscordBotNet.LegendaryBot.Battle.Results;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 

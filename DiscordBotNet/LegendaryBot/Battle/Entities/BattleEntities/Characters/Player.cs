@@ -16,7 +16,7 @@ public class FourthWallBreaker: BasicAttack
     {
         return new UsageResult(this)
         {
-            DamageResults = new DamageResult[]
+            DamageResults = new[]
             {
                 target.Damage(new DamageArgs(this)
                 {
@@ -26,7 +26,7 @@ public class FourthWallBreaker: BasicAttack
                         $"Breaks the fourth wall, causing {target} to cringe, and making them receive $ damage!",
                     Damage = owner.Attack * 1.7
 
-                }),
+                })
             },
             User = owner,
             TargetType = TargetType.SingleTarget,

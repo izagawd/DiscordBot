@@ -13,6 +13,7 @@ using DiscordBotNet.LegendaryBot.Battle.StatusEffects;
 using DSharpPlus.Entities;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.Fonts;
+using SixLabors.ImageSharp.PixelFormats;
 using Barrier = DiscordBotNet.LegendaryBot.Battle.StatusEffects.Barrier;
 
 

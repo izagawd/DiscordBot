@@ -107,7 +107,8 @@ public class LilyOfTheValley : Surge
 }
 public class Lily : Character
 {
-    public void RandomMethod(){}
+
+
     public override int BaseMaxHealth => 1500 + (60 * Level);
     public override int BaseAttack => (100 + (8 * Level));
     public override int BaseDefense => (100 + (7.2 * Level)).Round();
@@ -134,6 +135,7 @@ public class Lily : Character
         }
 
         decision = BattleDecision.BasicAttack;
+        
         target = BasicAttack.GetPossibleTargets(this).OrderBy(i => i.Health).First();
 
     }
@@ -141,7 +143,6 @@ public class Lily : Character
     public override Skill Skill { get;  } = new BlossomTouch();
     public override Surge Surge { get; } = new LilyOfTheValley();
     public override BasicAttack BasicAttack { get; } = new ChamomileSachetWhack();
-
     public override Element Element => Element.Earth;
 
 
