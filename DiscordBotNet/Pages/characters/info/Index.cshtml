@@ -74,7 +74,7 @@
                     {
                         if (i.Character is Player player)
                         {
-                            await player.LoadAsync(User);
+                            await player.LoadAsync();
                         }
                         <a href="/characters/info?characterId=@HttpUtility.UrlEncode(i.Character.Id.ToString())">
                             <img src="@i.Character.IconUrl" style="width: 25px; height: 25px;"/>

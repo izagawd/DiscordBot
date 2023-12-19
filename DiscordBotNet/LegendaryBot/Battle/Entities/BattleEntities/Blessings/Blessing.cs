@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Battle.Results;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 
@@ -75,7 +78,18 @@ public abstract class Blessing : BattleEntity
     public sealed  override int MaxLevel => 15;
     [NotMapped] public virtual int Attack { get; } = 200;
     [NotMapped] public virtual int Health{ get; } = 200;
-    
+
+
+    public override async Task<Image<Rgba32>> GetDetailsImageAsync()
+    {
+        var blessingImageSize = 500;
+        var blessingImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+        blessingImage.Mutate(i => i.Resize(blessingImageSize,blessingImageSize));
+        return blessingImage;
+
+
+    }
+
     public virtual bool CanBeWished { get; set; } = true;
     public Character? Character { get; set; }
     public override ExperienceGainResult IncreaseExp(ulong experience)

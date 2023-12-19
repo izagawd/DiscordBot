@@ -50,15 +50,10 @@ public class Index : PageModel
         }
 
         Nullable<int> idk = 4;
-        if (Character is Player player)
-        {
-            await player.LoadAsync(User);
-        }
-        else
-        {
-            await Character.LoadAsync();
 
-        }
+        await Character.LoadAsync();
+
+        
         return null;
     }
 }

@@ -203,6 +203,7 @@ public abstract partial  class Character : BattleEntity
     public sealed override async  Task<Image<Rgba32>> GetDetailsImageAsync()
     {
         using var characterImage = await GetInfoAsync();
+        await LoadAsync();
         var image = new Image<Rgba32>(1800, 1000);
 
         var characterImageSize = characterImage.Size;

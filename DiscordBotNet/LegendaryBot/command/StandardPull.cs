@@ -65,19 +65,31 @@ public class StandardPull : BaseCommandClass
         if (acquiredType is not null)
         {
             userData.StandardPrayers--;
-            userData.Inventory.Add((BattleEntity)Activator.CreateInstance(acquiredType));
+            BattleEntity acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType);
+            userData.Inventory.Add(acquiredEntity);
             await DatabaseContext.SaveChangesAsync();
             embed.WithTitle("Nice!!")
                 .WithDescription($"You got {acquiredType.Name}!");
-            
+            using var stream = new MemoryStream();
+            using var detailsImage =await acquiredEntity.GetDetailsImageAsync();
+            await detailsImage.SaveAsPngAsync(stream);
+            stream.Position = 0;
+            embed
+                .WithImageUrl("attachment://pull.png");
+            var response = new DiscordInteractionResponseBuilder()
+                .AddEmbed(embed)
+                .AddFile("pull.png",stream);
+            await ctx.CreateResponseAsync(response);
+
         }
         else
         {
             embed.WithTitle("hmm")
                 .WithDescription("something went wrong boi");
+            await ctx.CreateResponseAsync(embed);
         }
-
-        await ctx.CreateResponseAsync(embed);
+    
+ 
     }
 
  
