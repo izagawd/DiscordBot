@@ -31,7 +31,7 @@ public class Detail : BaseCommandClass
         if (!userData.Inventory.Any())
         {
             embedBuilder.WithDescription($"You do not have anything with the id {entityId}");
-            await ctx.CreateResponseAsync(embedBuilder.Build());
+            await ctx.CreateResponseAsync(embedBuilder);
             return;
         }
 

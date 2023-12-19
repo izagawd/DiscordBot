@@ -13,7 +13,7 @@ public class Dialogue
 {
 
     public string Title { get; init; } = "untitled";
-    public List<DialogueArgument> Arguments { get; set; } = new();
+    public IEnumerable<DialogueArgument> Arguments { get; set; } = [];
     /// <summary>
     /// Responds to the interaction if true
     /// </summary>
@@ -31,24 +31,24 @@ public class Dialogue
 
     public async Task<DialogueResult> LoadAsync(DiscordInteraction interaction,DiscordMessage? message = null)
     {
-      
 
+        var loadedDialogueArguments = Arguments.ToArray();
         DiscordEmbedBuilder embedBuilder = new DiscordEmbedBuilder()
             .WithTitle(Title);
 
         bool timedOut = false;
         bool skipped = false;
         bool finished = false;
-        for(int i = 0; i < Arguments.Count; i++)
+        for(int i = 0; i < loadedDialogueArguments.Length; i++)
         {
-            embedBuilder.WithAuthor(Arguments[i].CharacterName, iconUrl: Arguments[i].CharacterUrl)
-                .WithColor(Arguments[i].CharacterColor);
-            for (int j = 0; j < Arguments[i].Dialogues.Count;   j++)
+            embedBuilder.WithAuthor(loadedDialogueArguments[i].CharacterName, iconUrl: loadedDialogueArguments[i].CharacterUrl)
+                .WithColor(loadedDialogueArguments[i].CharacterColor);
+            for (int j = 0; j < loadedDialogueArguments[i].Dialogues.Count;   j++)
             {
-                var dialogues = Arguments[i].Dialogues;
+                var dialogues = loadedDialogueArguments[i].Dialogues;
                 embedBuilder.WithDescription(dialogues[j]);
                 DiscordMessageBuilder messageBuilder = new DiscordMessageBuilder().AddEmbed(embedBuilder.Build()).AddComponents(Next,Skip);
-                if(i == Arguments.Count-1 && j == Arguments[i].Dialogues.Count -1 && RemoveButtonsAtEnd)
+                if(i == loadedDialogueArguments.Length-1 && j == loadedDialogueArguments[i].Dialogues.Count -1 && RemoveButtonsAtEnd)
                 {
                     messageBuilder.ClearComponents();
           
@@ -59,7 +59,7 @@ public class Dialogue
                     DiscordInteractionResponseBuilder responseBuilder = new DiscordInteractionResponseBuilder()
                         .AddEmbed(embedBuilder.Build()).AddComponents(Next, Skip);
       
-                    if (i == Arguments.Count - 1 && RemoveButtonsAtEnd)
+                    if (i == loadedDialogueArguments.Length - 1 && RemoveButtonsAtEnd)
                     {
                         responseBuilder.ClearComponents();
                     }
@@ -76,7 +76,7 @@ public class Dialogue
                 {
                     message = await message.ModifyAsync(messageBuilder);
                 }
-                if (i == Arguments.Count - 1 && RemoveButtonsAtEnd && j == dialogues.Count -1)
+                if (i == loadedDialogueArguments.Length - 1 && RemoveButtonsAtEnd && j == dialogues.Count -1)
                 {
                     finished = true;
                     break;

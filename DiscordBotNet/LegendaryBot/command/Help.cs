@@ -10,7 +10,7 @@ public class Help : BaseCommandClass
 
 
     
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Other;
+    public override BotCommandType BotCommandType  => BotCommandType.Other;
     [SlashCommand("help","the help")]
     public async Task Execute(InteractionContext ctx,
     [Option("command","put if you want to check information about a command")] string? cmd = null)

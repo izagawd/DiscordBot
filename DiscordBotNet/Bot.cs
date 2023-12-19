@@ -51,7 +51,10 @@ public class Bot
 
     public async Task DoShit()
     {
+        
+   
 
+        
     }
   
     /// <summary>
@@ -59,7 +62,7 @@ public class Bot
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-  
+        await DoShit();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
@@ -110,7 +113,7 @@ public class Bot
     {
         Console.WriteLine(ev.Exception);
         await using var databaseContext = new PostgreSqlContext();
-        var involvedUsers = new List<DiscordUser>();
+        List<DiscordUser> involvedUsers = [];
         involvedUsers.Add(ev.Context.User);
         if (ev.Context.ResolvedUserMentions is not null)
             involvedUsers.AddRange(ev.Context.ResolvedUserMentions);

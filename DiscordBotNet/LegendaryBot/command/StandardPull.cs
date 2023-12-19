@@ -1,0 +1,84 @@
+﻿using System.Reflection;
+using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Battle;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
+using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
+
+namespace DiscordBotNet.LegendaryBot.command;
+ 
+public class StandardPull : BaseCommandClass
+{
+
+    private static readonly Dictionary<PullChoice, double> pullChances = new ()
+    {
+        { PullChoice.FiveStarCharacter, 2.0 },
+        { PullChoice.FiveStarBlessing, 2.5 },
+        { PullChoice.FourStarCharacter, 10.0 },
+        { PullChoice.FourStarBlessing, 10.0 },
+        { PullChoice.ThreeStarCharacter, 35.25 }, // Adjusted to maintain a total of 100%
+        { PullChoice.ThreeStarBlessing, 40.25 } // Adjusted to maintain a total of 100%
+    };
+    [SlashCommand("standard_pull", "Pull for a character and add it to your collection!")]
+    public async Task Execute(InteractionContext ctx)
+    {
+        var userData = await DatabaseContext.UserData.FindOrCreateAsync(ctx.User.Id);
+        var embed = new DiscordEmbedBuilder()
+            .WithUser(ctx.User)
+            .WithColor(userData.Color);
+        if (userData.StandardPrayers <= 0)
+        {
+            embed.WithTitle("Hmm")
+                .WithDescription($"{ctx.User.Username} does not have any Supreme Prayers");
+            await ctx.CreateResponseAsync(embed);
+            return;
+        }
+        var choice  = BasicFunction.GetRandom(pullChances);
+
+        Type acquiredType = null;
+ 
+        switch (choice)
+        {
+            case PullChoice.ThreeStarBlessing:
+                acquiredType = BasicFunction.RandomChoice(Blessing.ThreeStarBlessingExamples).GetType();
+                break;
+            case PullChoice.FourStarBlessing:
+                acquiredType = BasicFunction.RandomChoice(Blessing.FourStarBlessingExamples).GetType();
+                break;
+            case PullChoice.FiveStarBlessing:
+                acquiredType = BasicFunction.RandomChoice(Blessing.FiveStarBlessingExamples).GetType();
+                break;
+            case PullChoice.ThreeStarCharacter:
+                acquiredType = BasicFunction.RandomChoice(Character.ThreeStarCharacterExamples).GetType();
+                break;
+            case PullChoice.FourStarCharacter:
+                acquiredType = BasicFunction.RandomChoice(Character.FourStarCharacterExamples).GetType();
+                break;
+
+            case PullChoice.FiveStarCharacter:
+                acquiredType = BasicFunction.RandomChoice(Character.FiveStarCharacterExamples).GetType();
+                break;
+        }
+
+        if (acquiredType is not null)
+        {
+            userData.StandardPrayers--;
+            userData.Inventory.Add((BattleEntity)Activator.CreateInstance(acquiredType));
+            await DatabaseContext.SaveChangesAsync();
+            embed.WithTitle("Nice!!")
+                .WithDescription($"You got {acquiredType.Name}!");
+            
+        }
+        else
+        {
+            embed.WithTitle("hmm")
+                .WithDescription("something went wrong boi");
+        }
+
+        await ctx.CreateResponseAsync(embed);
+    }
+
+ 
+}

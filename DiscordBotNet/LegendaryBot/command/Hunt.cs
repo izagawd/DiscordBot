@@ -40,7 +40,7 @@ public class Hunt : BaseCommandClass
             return;
         }
         
-        var characterType = Character.CharacterTypeArray.FirstOrDefault(
+        var characterType = Character.CharacterTypes.FirstOrDefault(
             i =>  i.Name.ToLower() == characterName.ToLower().Replace(" ", "") && i.IsSubclassOf(typeof(Character)) && !i.IsRelatedToType(typeof(Player)));
         if (characterType is null)
         {

@@ -114,7 +114,7 @@ public class Lily : Character
     public override int BaseDefense => (100 + (7.2 * Level)).Round();
     public override int BaseSpeed => 115;
     
-
+    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
     public override DiscordColor Color { get; protected set; } = DiscordColor.HotPink;
 
     public override void NonPlayerCharacterAi(ref Character target, ref BattleDecision decision)

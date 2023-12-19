@@ -157,7 +157,7 @@ public class BattleSimulator
 
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
-        List<StatsModifierArgs> statsModifierArgsList = new List<StatsModifierArgs>();
+        List<StatsModifierArgs> statsModifierArgsList = [];
         foreach (var i in Characters)
         {
             if (i is IStatsModifier statsModifierCharacter)
@@ -356,7 +356,7 @@ public class BattleSimulator
        
             CheckForWinnerIfTeamIsDead();
 
-            var components = new List<DiscordComponent> {  };
+            var components = new List<DiscordComponent>();
             if (!(!ActiveCharacter.Team.IsPlayerTeam || ActiveCharacter.IsOverriden) 
                 && !ActiveCharacter.IsDead 
                 && _winners is null)
@@ -499,7 +499,7 @@ public class BattleSimulator
                     break;
                 }
                 List<DiscordSelectComponentOption> enemiesToSelect = new();
-                List<Character> possibleTargets = new List<Character>();
+                List<Character> possibleTargets = [];
                 
                 if ( ActiveCharacter[decision] is Move theMove)
                 {

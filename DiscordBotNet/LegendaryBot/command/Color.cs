@@ -28,7 +28,7 @@ public class Color : BaseCommandClass
         
         bool colorIsValid = true;
         DiscordColor newColor;
-        switch (colorName)
+        switch (colorName.ToLower())
         {
             case "blue":
                 newColor = DiscordColor.Blue;

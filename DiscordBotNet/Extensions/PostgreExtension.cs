@@ -146,10 +146,10 @@ public static class PostgreExtension
                 .Select(u => u.Id)
                 .ToArrayAsync();
             var missingIds = idsAsArray.Except(existingIds);
-            List<T> missingInstances = new List<T>();
+            List<T> missingInstances = [];
             foreach (var i in missingIds)
             {
-                var missingInstance = new T() { Id = i };
+                var missingInstance = new T { Id = i };
                 data.Add(missingInstance);
                 missingInstances.Add(missingInstance);
             }
@@ -183,7 +183,7 @@ public static class PostgreExtension
                 .Select(u => u.Id)
                 .ToArrayAsync();
             var missingIds = idsAsArray.Except(existingIds);
-            List<T> missingInstances = new List<T>();
+            List<T> missingInstances = [];
             foreach (var i in missingIds)
             {
                 var missingInstance = new T{ Id = i };

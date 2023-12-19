@@ -20,8 +20,70 @@ using Barrier = DiscordBotNet.LegendaryBot.Battle.StatusEffects.Barrier;
 namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
 
 
-public abstract  class Character : BattleEntity
+public abstract partial  class Character : BattleEntity
 {
+        private static Type[] _characterTypes = Assembly.GetExecutingAssembly().GetTypes()
+        .Where(i => i.IsSubclassOf(typeof(Character)) && !i.IsAbstract).ToArray();
+
+    public static Type[] CharacterTypes => _characterTypes.ToArray();
+    public static Character[] ThreeStarCharacterExamples => _threeStarCharacterExamples.ToArray();
+    public static Character[] OneStarCharacterExamples => _oneStarCharacterExamples.ToArray();
+    public static Character[] TwoStarCharacterExamples => _twoStarCharacterExamples.ToArray();
+    public static Character[] FourStarCharacterExamples => _fourStarCharacterExamples.ToArray();
+
+    public static Character[] FiveStarCharacterExamples => _fiveStarCharacterExamples.ToArray();
+    
+
+ 
+    private static List<Character> _oneStarCharacterExamples = [];
+    private static List<Character> _twoStarCharacterExamples = [];
+    private static List<Character> _threeStarCharacterExamples = [];
+    private static List<Character> _fourStarCharacterExamples = [];
+    private static List<Character> _fiveStarCharacterExamples = [];
+
+    public static Character[] CharacterExamples => _characterExamples.ToArray();
+
+    private static List<Character> _characterExamples = [];
+    static Character()
+    {
+
+        var types = CharacterTypes;
+        foreach (var i in types)
+        {
+           
+            var instance = Activator.CreateInstance(i);
+            if (instance is Character characterInstance)
+            {
+            
+        
+                _characterExamples.Add(characterInstance);
+            }
+        }
+
+
+        foreach (var character in _characterExamples)
+        {
+            switch (character.Rarity)
+            {
+                case Rarity.OneStar:
+                    _oneStarCharacterExamples.Add(character);
+                    break;
+                case Rarity.TwoStar:
+                    _twoStarCharacterExamples.Add(character);
+                    break;
+                case Rarity.ThreeStar:
+                    _threeStarCharacterExamples.Add(character);
+                    break;
+                case Rarity.FourStar:
+                    _fourStarCharacterExamples.Add(character);
+                    break;
+                case Rarity.FiveStar:
+                    _fiveStarCharacterExamples.Add(character);
+                    break;
+                // Add more cases if needed for higher rarities
+            }
+        }
+    }
     public virtual bool IsInStandardBanner => true;
     [NotMapped]
 
@@ -47,18 +109,11 @@ public abstract  class Character : BattleEntity
                 .OfType<T>()
                 .Where(i => i.CharacterToAffect == this);
         }
-        
-        return Array.Empty<T>();
+
+        return [];
     }
     
-    public static Type[] CharacterTypeArray { get; }
 
-    static Character()
-    {
-        var allTypes = Assembly.GetExecutingAssembly().GetTypes();
-        CharacterTypeArray = allTypes.Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(Character)))
-            .ToArray();
-    }
     [NotMapped]
     private int _health = 1;
     [NotMapped]
@@ -607,7 +662,7 @@ public abstract  class Character : BattleEntity
     /// <param name="decision"></param>
     public virtual void NonPlayerCharacterAi(ref Character target, ref BattleDecision decision)
     {
-        List<BattleDecision> possibleDecisions = new() { BattleDecision.BasicAttack };
+        List<BattleDecision> possibleDecisions = [BattleDecision.BasicAttack];
 
 
         if(Skill.CanBeUsed(this))
@@ -728,7 +783,7 @@ public abstract  class Character : BattleEntity
 
     }
 
-
+    public virtual bool IsLimited { get; set; } = true;
     public override int MaxLevel => 60;
 
     public void SetLevel(int level)

@@ -18,7 +18,7 @@ public class WindSlash : Skill
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        List<DamageResult> damageResults = new List<DamageResult>();
+        List<DamageResult> damageResults = [];
         foreach (var i in GetPossibleTargets(owner))
         {
             damageResults.Add(i.Damage(new DamageArgs(this){Caster = owner,Damage = owner.Attack * 1.7, DamageText = $"The slash dealt $ damage to {i}!"}));
@@ -87,7 +87,7 @@ public class SlashOfPrecision : Surge
 
         return new UsageResult(this)
         {
-            DamageResults = new List<DamageResult>() { damageResult },
+            DamageResults =  [damageResult],
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             User = owner
@@ -98,6 +98,7 @@ public class SlashOfPrecision : Surge
 }
 public class Slasher : Character
 {
+    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
 
     public override Element Element { get; protected set; } = Element.Earth;

@@ -7,6 +7,8 @@ namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 
 public class BlessingOfThePhoenix : Blessing, IBattleEvent<CharacterDamageEventArgs>
 {
+    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
+
     public int GetHealthPercentRecovering(int level)
     {
         if (level >= 15) return 10;
@@ -16,6 +18,7 @@ public class BlessingOfThePhoenix : Blessing, IBattleEvent<CharacterDamageEventA
         if (level >= 3) return 6;
         return 5;
     }
+
     public void OnBattleEvent(CharacterDamageEventArgs eventArgs, Character owner)
     {
         if (eventArgs.DamageResult.DamageReceiver != owner) return;

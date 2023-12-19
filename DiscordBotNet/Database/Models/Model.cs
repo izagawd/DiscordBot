@@ -1,5 +1,8 @@
 ﻿
 
+using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.Extensions;
+
 namespace DiscordBotNet.Database.Models;
 
 

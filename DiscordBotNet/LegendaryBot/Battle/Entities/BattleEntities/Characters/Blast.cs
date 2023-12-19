@@ -38,6 +38,7 @@ public class MethaneSlap : BasicAttack
 }
 public class BlowAway : Skill
 {
+    
     public override int MaxCooldown => 4;
     public override string Description => $"Throws multiple bombs at the enemy, with a {BombInflictChance} each to inflict Bomb status effect";
 
@@ -92,6 +93,7 @@ public class VolcanicEruption : Surge
 }
 public class Blast : Character
 {
+    public override Rarity Rarity { get; protected set; } = Rarity.FourStar;
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
 
     public override Element Element { get; protected set; } = Element.Fire;

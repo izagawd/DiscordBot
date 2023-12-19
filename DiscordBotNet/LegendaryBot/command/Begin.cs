@@ -76,25 +76,26 @@ public class Begin : BaseCommandClass
     
         coachChad.SetLevel(100);
 
-        List<DialogueArgument> dialogueArguments = new List<DialogueArgument>()
-        {
+        DialogueArgument[] dialogueArguments =
+        [
             new()
             {
                 CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
                 CharacterUrl = coachChad.IconUrl,
                 Dialogues =
-                new List<string>{
-                    "Hey Izagawd! my name is Chad. So you want to register as an adventurer? That's great!",
-                    "But before you go on your adventure, I would need to confirm if you are strong enough to **Battle**!",
-                    "Lily will accompany you just for this fight. When you feel like you have gotten the hang of **BATTLE**, click on **FORFEIT!**"
-                }
-            }, new()
+                    [
+                        "Hey Izagawd! my name is Chad. So you want to register as an adventurer? That's great!",
+                        "But before you go on your adventure, I would need to confirm if you are strong enough to **Battle**!",
+                        "Lily will accompany you just for this fight. When you feel like you have gotten the hang of **BATTLE**, click on **FORFEIT!**"
+                    ]
+            },
+            new()
             {
                 CharacterUrl = lily.IconUrl,
                 CharacterColor = lily.Color, CharacterName = lily.Name,
-                Dialogues = new List<string>{$"Let's give it our all {author.Username}!"}
+                Dialogues = [$"Let's give it our all {author.Username}!"]
             }
-        };
+        ];
             
 
 
@@ -109,20 +110,20 @@ public class Begin : BaseCommandClass
         DialogueResult result = await theDialogue.LoadAsync(ctx.Interaction);
         if (result.TimedOut)
         {
-            theDialogue.Arguments = new List<DialogueArgument>
-            {
+            theDialogue.Arguments = 
+            [
                 new DialogueArgument
                 {
                     CharacterColor = coachChad.Color,
                     CharacterName = coachChad.Name,
                     Dialogues =
-                        new List<string>
-                        {
+                       
+                        [
                             "I can't believe you slept off..."
-                        },
+                        ],
                     CharacterUrl = coachChad.IconUrl
                 }
-            };
+            ];
             theDialogue.RemoveButtonsAtEnd = true;
 
             await theDialogue.LoadAsync(ctx.Interaction,result.Message);
@@ -137,18 +138,15 @@ public class Begin : BaseCommandClass
         theDialogue.RemoveButtonsAtEnd = true;
         if (battleResult.TimedOut is not null)
         {
-            theDialogue.Arguments = new List<DialogueArgument>
-            {
+            theDialogue.Arguments = 
+            [
                 new()
                 {
                     CharacterUrl = coachChad.IconUrl,
                     CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
-                    Dialogues =
-                        new List<string>{
-                        "I can't believe you slept off during a battle..."
-                    }
+                    Dialogues = ["I can't believe you slept off during a battle..."]
                 }
-            };
+            ];
             
 
             await theDialogue.LoadAsync(ctx.Interaction, result.Message);
@@ -156,20 +154,20 @@ public class Begin : BaseCommandClass
         }
 
         theDialogue = new Dialogue() { RemoveButtonsAtEnd = true, RespondInteraction = false,Title = "Tutorial"};
-        theDialogue.Arguments = new List<DialogueArgument>
-        {
+        theDialogue.Arguments =
+        [
             new ()
             {
                 CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
                 CharacterUrl = coachChad.IconUrl,
                 Dialogues =
-                    new List<string>{
+                   [
                     "Seems like you have gotten more used to battle.",
                     "You have completed the registration and you are now a **Bronze** tier adventurer! the lowest tier! you gotta work your way up the ranks!",
                     "I will see you later then! I have other new adventurers to attend to! Let's go attend to them Lily!"
-                }
+                    ]
             }
-        };
+        ];
 
 
         userData.Tier = await DatabaseContext.UserData.FindOrCreateSelectAsync(author.Id, i => i.Tier);
@@ -183,20 +181,20 @@ public class Begin : BaseCommandClass
         if (result.TimedOut)
         {
             theDialogue.RemoveButtonsAtEnd = true;
-            theDialogue.Arguments = new List<DialogueArgument>
-            {
+            theDialogue.Arguments = 
+            [
                 new()
                 {
                     CharacterColor = coachChad.Color,
                     CharacterName = coachChad.Name,
                     Dialogues =
-                        new List<string>
-                        {
+                     
+                        [
                             "You slept off after becoming an adventurer... you are strange..."
-                        },
+                        ],
                     CharacterUrl = coachChad.IconUrl
                 }
-            };
+            ];
             await theDialogue.LoadAsync(ctx.Interaction, result.Message);
         }
         if (result.Skipped)

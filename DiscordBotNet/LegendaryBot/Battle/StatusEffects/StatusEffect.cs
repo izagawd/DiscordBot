@@ -152,7 +152,7 @@ public abstract class StatusEffect : ICloneable
             
         }
 
-        List<StatusEffect> clonedStatusEffects = new List<StatusEffect>();
+        List<StatusEffect> clonedStatusEffects = [];
         foreach (var i in Enumerable.Range(0, number))
         {
             clonedStatusEffects.Add(effect.Clone());

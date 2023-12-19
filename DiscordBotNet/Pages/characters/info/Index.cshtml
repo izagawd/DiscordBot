@@ -33,10 +33,10 @@
         </div>
         @{
             var blessing = Model.Character.Blessing;
-            string iconUrl = "";
-            string id = "";
-            int level = 0;
-            string name = "None";
+            var iconUrl = "";
+            var id = "";
+            var level = 0;
+            var name = "None";
             var draggable = false;
             if (blessing is not null)
             {
@@ -76,9 +76,7 @@
                         {
                             await player.LoadAsync(User);
                         }
-                        
                         <a href="/characters/info?characterId=@HttpUtility.UrlEncode(i.Character.Id.ToString())">
-                            
                             <img src="@i.Character.IconUrl" style="width: 25px; height: 25px;"/>
                         </a>
                     }

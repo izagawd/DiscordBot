@@ -39,7 +39,7 @@ public abstract class Entity : ICloneable
             
         }
 
-        List<Entity> clonedEntities = new List<Entity>();
+        List<Entity> clonedEntities = [];
         foreach (var i in Enumerable.Range(0, number))
         {
             clonedEntities.Add((Entity) a.Clone());

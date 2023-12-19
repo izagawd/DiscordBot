@@ -1,6 +1,9 @@
 ﻿using System.Collections.Concurrent;
+using DiscordBotNet.LegendaryBot.Battle;
+using DiscordBotNet.LegendaryBot.command;
 using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp.PixelFormats;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace DiscordBotNet.LegendaryBot;
 
@@ -35,8 +38,8 @@ public static class BasicFunction
      /// </summary>
     /// <returns></returns>
     public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
-     {
-        if (EntityImages.ContainsKey(url)) return EntityImages[url].Clone();
+    {
+        if (EntityImages.TryGetValue(url, out var image)) return image.Clone();
         if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!.Clone();
         try{
             var handler = new HttpClientHandler();
@@ -50,10 +53,8 @@ public static class BasicFunction
                         {
                             return true;
                         }
-
                         return false;
                     }
-
                     if (cert == null) return false;
                     return true;
                 };
@@ -79,7 +80,7 @@ public static class BasicFunction
             else
                 UserImages.Set(url,alternateImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
             return alternateImage.Clone();
-        }
+        } 
     }
 
 
@@ -92,7 +93,8 @@ public static class BasicFunction
     /// </returns>
     public static T RandomChoice<T>(params T[] elements)
     {
-        
+        if (elements.Length <= 0)
+            throw new Exception("There is no element in the input");
         Random random = new();
         int index = random.Next(elements.Length);
         return elements[index];
@@ -104,6 +106,33 @@ public static class BasicFunction
     {
         return RandomChoice(elements.ToArray());
 
+    }
+    /// <summary>
+    /// Note: chances MUST add up to 100%. there must be at least one key
+    /// </summary>
+
+    public static TValue GetRandom<TValue>(Dictionary<TValue, double> chances) where TValue : notnull
+    {
+
+        if (chances.Count <= 0) 
+            throw new Exception($"Dictionary must have at least one key");
+        
+        if(chances.Select(i => i.Value).Sum() != 100.0) 
+            throw new Exception("Sum of dictionary values must be 100");
+        double totalWeight = chances.Sum(kv => kv.Value);
+      
+        double randomValue = new Random().NextDouble() * totalWeight;
+        foreach (var kvp in chances)
+        {
+            if (randomValue < kvp.Value)
+            {
+                return kvp.Key;
+            }
+
+            randomValue -= kvp.Value;
+        }
+
+        throw new Exception("Unexpected error");
     }
     /// <summary>
     /// Makes the first letter of each word in a string capital

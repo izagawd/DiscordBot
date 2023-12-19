@@ -21,7 +21,7 @@ public class UserData : Model,  ICanBeLeveledUp
     }
     public UserData(){}
 
-
+    
     [NotMapped] public IEnumerable<Guid> Ids => CharacterTeamArray.Select(i => i.Id);
     public List<QuoteReaction> QuoteReactions { get; set; } = new();
 
@@ -97,7 +97,7 @@ public class UserData : Model,  ICanBeLeveledUp
             user = await Bot.Client.GetUserAsync(Id);
         } else if (user.Id != Id)
         {
-            throw new Exception("Bruh");
+            throw new Exception("discord user's ID does not match user data's id");
         }
         using var userImage = await BasicFunction.GetImageFromUrlAsync(user.AvatarUrl);
         var image = new Image<Rgba32>(500, 150);
@@ -140,6 +140,9 @@ public class UserData : Model,  ICanBeLeveledUp
         throw new NotImplementedException();
     }
 
+    public ulong StandardPrayers { get; set; } = 0;
+    
+    public ulong SupremePrayers { get; set; } = 0;
     public ulong Coins { get; set; } = 5000;
 
     public List<Guid?> CharacterIdList =>

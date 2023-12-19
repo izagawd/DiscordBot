@@ -27,6 +27,6 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp
         get;
         protected set;
     }
-    [NotMapped]
-    public virtual Rarity Rarity { get; protected set; }
+
+    [NotMapped] public virtual Rarity Rarity { get; protected set; } = Rarity.OneStar;
 }

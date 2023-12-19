@@ -69,7 +69,7 @@ public class FireBall : Skill
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             User = owner,
-            DamageResults = new List<DamageResult> { damageResult }
+            DamageResults =[damageResult]
         };
     }
 }
@@ -111,7 +111,7 @@ public class Ignite : Surge
 public class Player : Character
 {
     public override bool IsInStandardBanner => false;
-
+    public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
 
     
     [NotMapped]

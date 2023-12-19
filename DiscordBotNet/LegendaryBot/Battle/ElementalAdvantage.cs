@@ -1,6 +1,7 @@
 ﻿namespace DiscordBotNet.LegendaryBot.Battle;
 
-public enum ElementalAdvantage
+public enum ElementalAdvantage 
 {
     Advantage,Disadvantage,Neutral
 }
+

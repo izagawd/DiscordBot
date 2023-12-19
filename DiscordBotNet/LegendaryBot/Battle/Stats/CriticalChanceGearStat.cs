@@ -7,6 +7,7 @@ public class CriticalChanceGearStat : GearStat
 {
     public override int GetMainStat(Rarity rarity, int level)
     {
+
         return (((int) rarity + 1) * (level / 15.0) * 9).Round() + 10;
     }
 
