@@ -1,6 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using DiscordBotNet.LegendaryBot.Battle;
-using DiscordBotNet.LegendaryBot.command;
 using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;

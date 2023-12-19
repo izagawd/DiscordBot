@@ -121,8 +121,20 @@ public class UserData : Model,  ICanBeLeveledUp
 
         return image;
     }
-
+    /// <summary>
+    /// Time that this player started their journey
+    /// </summary>
     public DateTime StartTime { get; protected set; } = DateTime.UtcNow;
+
+    /// <summary>
+    /// Call this method if you want this instance to update it's values if it should be updated because it is a new day
+    /// 
+    /// </summary>
+    public void CheckForNewDay()
+    {
+        
+    }
+    public DateTime LastTimePlayed { get;  set; } = DateTime.UtcNow;
     public List<Quote> Quotes { get; protected set; } = new();
     public bool IsOccupied { get; set; } = false;
     public ulong Experience { get; protected set; }

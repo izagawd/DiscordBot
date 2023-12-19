@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using DiscordBotNet.Extensions;
+﻿using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Battle;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities;
 using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
@@ -69,7 +68,7 @@ public class StandardPull : BaseCommandClass
             userData.Inventory.Add(acquiredEntity);
             await DatabaseContext.SaveChangesAsync();
             embed.WithTitle("Nice!!")
-                .WithDescription($"You got {acquiredType.Name}!");
+                .WithDescription($"You pulled a {BasicFunction.Englishify(choice.ToString())} called {acquiredType.Name}!");
             using var stream = new MemoryStream();
             using var detailsImage =await acquiredEntity.GetDetailsImageAsync();
             await detailsImage.SaveAsPngAsync(stream);

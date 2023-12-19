@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Results;
-
-namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
+﻿namespace DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
 
 public class FourStarBlessing : Blessing
 {

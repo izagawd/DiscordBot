@@ -19,7 +19,7 @@ public class Quote : BaseCommandClass
     {
 
         var color = await DatabaseContext.UserData.FindOrCreateSelectAsync(ctx.User.Id, i => i.Color);
-        LegendaryBot.Quote randomQuote = (await DatabaseContext.Quote.Where(i => i.IsPermitted)
+        LegendaryBot.Quote randomQuote = (await DatabaseContext.Quote.Where(i => i.IsApproved)
             .Include(i => i.UserData).RandomAsync())!;
 
         if (randomQuote is null)

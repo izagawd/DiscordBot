@@ -1,9 +1,4 @@
-﻿
-
-using DSharpPlus.Entities;
-using DSharpPlus.Interactivity.Extensions;
-
-namespace DiscordBotNet.Database.Models;
+﻿namespace DiscordBotNet.Database.Models;
 
 
 public abstract class Model
