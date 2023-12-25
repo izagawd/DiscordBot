@@ -10,12 +10,13 @@ public class GooeyStrike : BasicAttack
     public override string Description => "Slams it's body on the enemy";
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        var damageResult=target.Damage(new DamageArgs(this)
+        var damageResult = target.Damage(new DamageArgs(this)
         {
             Caster = owner,
-            Damage = 5
+            Damage = 5,
+            DamageText = $"{owner} used a slime attack at {target} and dealt $ damage!"
         });
-        owner.CurrentBattle.AdditionalTexts.Add($"{owner} used a slime attack at {target}!");
+
         return new UsageResult(this)
         {
             DamageResults = [damageResult],
@@ -28,6 +29,7 @@ public class GooeyStrike : BasicAttack
 }
 public class Slime : Character
 {
+    
     public override BasicAttack BasicAttack { get; } = new GooeyStrike();
     public override Skill? Skill => null;
     public override Surge? Surge  => null;

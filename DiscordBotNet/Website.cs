@@ -69,7 +69,7 @@ public static class Website
             {
 
                 options.ClientId = "340054610989416460";
-                options.ClientSecret = "IV9wq7ljxtCasXJrMHs_osm-ObL6vhQm";
+                options.ClientSecret = "n-Jy3ogvEmMnaFRIVmguqzpLgW8pYp2m";
                 options.SaveTokens = true;
                 options.CallbackPath = "/signin-discord";
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;

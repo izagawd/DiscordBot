@@ -129,7 +129,7 @@ public class BattleSimulator
         }
 
         imageCtx.EntropyCrop();
-        stop.Elapsed.TotalMilliseconds.Print();
+
         return image;
     }
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs

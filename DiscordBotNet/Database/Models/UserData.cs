@@ -132,34 +132,14 @@ public class UserData : Model,  ICanBeLeveledUp
     /// Call this method if you want this instance to update it's values if it should be updated because it is a new day
     /// 
     /// </summary>
-    public void CheckForNewDay()
-    {
-        var currentDateTime = DateTime.UtcNow;
-        if (currentDateTime.Date != LastTimeChecked.Date)
-        {
-            GenerateQuests();
 
-        }
 
-        LastTimeChecked = currentDateTime;
-    }
-
-    public void GenerateQuests()
-    {
-        Quests.Clear();
-        
-        foreach (var i in Quest.ExampleQuests)
-        {
-            if(Quests.Select(j => j.GetType()).Contains(i.GetType())) continue;
-            Quests.Add((Quest) Activator.CreateInstance(i.GetType())!);
-        }
-    }
 
     public List<Quest> Quests { get; set; } = [];
     /// <summary>
     /// This is used to refresh stuff like daily quests
     /// </summary>
-    public DateTime LastTimeChecked { get; private set; } = DateTime.UtcNow.AddDays(-1);
+    public DateTime LastTimeChecked { get; set; } = DateTime.UtcNow.AddDays(-1);
     public List<Quote> Quotes { get; protected set; } = new();
     public bool IsOccupied { get; set; } = false;
     public ulong Experience { get; protected set; }

@@ -98,7 +98,8 @@ public abstract partial  class Character : BattleEntity
 
     public Barrier? Shield => StatusEffects.OfType<Barrier>().FirstOrDefault();
 
-    [NotMapped] public IEnumerable<Move> MoveList => new Move[] { BasicAttack, Skill, Surge };
+    [NotMapped] public IEnumerable<Move> MoveList => new Move[] { BasicAttack, Skill, Surge }.Where(i => i is not null)
+        .ToArray();
 
     /// <summary>
     /// 
@@ -393,8 +394,7 @@ public abstract partial  class Character : BattleEntity
 
 
 
-    [NotMapped]
-    public virtual int BaseMaxHealth { get; protected set; }
+    [NotMapped] public virtual int BaseMaxHealth { get; protected set; } = 100;
 
     public int MaxHealth
     {

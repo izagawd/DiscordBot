@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.Extensions;
+﻿using DiscordBotNet.Database;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Quests;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -15,16 +16,18 @@ public class QuestCommand : BaseCommandClass
     {
         var author = ctx.User;
 
+        await PostgreSqlContext.CheckForNewDayAsync(author.Id);
         var userData = await DatabaseContext.UserData
             .Include(i => i.Quests)
             .FindOrCreateAsync(author.Id);
+        
+
         var questString = "";
         var embed = new DiscordEmbedBuilder()
             .WithUser(author)
             .WithColor(userData.Color)
             .WithTitle("Hmm")
             .WithDescription("you have no quests");
-
         if (userData.Quests.Count <= 0)
         {
            await ctx.CreateResponseAsync(embed);
@@ -59,9 +62,8 @@ public class QuestCommand : BaseCommandClass
         var message =await  ctx.GetOriginalResponseAsync();
         
         Quest quest = null;
-        var result = await message.WaitForButtonAsync(i =>
+        await message.WaitForButtonAsync(i =>
         {
-            i.Id.Print();
             if (i.User.Id != userData.Id) return false;
             if (!possibleIds.Contains(i.Id)) return false;
             quest = userData.Quests[int.Parse(i.Id) -1];
@@ -73,14 +75,14 @@ public class QuestCommand : BaseCommandClass
         }
 
         var succeeded = await quest.StartQuest(ctx, message);
-
+        
         if (succeeded)
         {
+            quest.Completed = true;
+            var rewardString = userData.ReceiveRewards(ctx.User.Username, quest.GetQuestRewards());
             embed
                 .WithTitle("Nice!!")
-                .WithDescription("You completed the quest!");
-            quest.Completed = true;
-            userData.ReceiveRewards(ctx.User.Username, quest.GetQuestRewards());
+                .WithDescription("You completed the quest!\n" +rewardString);
             await DatabaseContext.SaveChangesAsync();
             await message.ModifyAsync(new DiscordMessageBuilder() { Embed = embed });
             return;

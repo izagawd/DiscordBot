@@ -26,6 +26,32 @@ public class PostgreSqlContext : DbContext
    
     public DbSet<Quote> Quote { get; set; }
 
+    /// <summary>
+    /// this should be called before any query if u want to use it
+    /// </summary>
+    /// <param name="userId"> the user id u want  to refresh to a new da</param>
+    public static async Task CheckForNewDayAsync(ulong userId)
+    {
+        await using var context = new PostgreSqlContext();
+        var user = await context.UserData
+            .Include(i => i.Quests)
+            .FindOrCreateAsync(userId);
+        var rightNowUtc = DateTime.UtcNow;
+        if (user.LastTimeChecked.Date == rightNowUtc.Date) return;
+        
+        user.Quests.Clear();
+        foreach (var i in QuestTypes)
+        {
+            if (user.Quests.Any(j => j.GetType() == i)) continue;
+            
+            user.Quests.Add((Quest)Activator.CreateInstance(i));
+            
+        }
+
+        user.LastTimeChecked = DateTime.UtcNow;
+        await context.SaveChangesAsync();
+
+    }
     static PostgreSqlContext()
     {
 

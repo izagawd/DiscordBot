@@ -15,8 +15,8 @@ public class KillSlimesQuest : Quest
 
     public override async  Task<bool> StartQuest(InteractionContext context,DiscordMessage? message = null)
     {
-        CharacterTeam slimeTeam = new CharacterTeam();
-        slimeTeam.AddRange([new Slime(),new Slime(),new Slime(), new Slime(), new Slime()]);
+        CharacterTeam slimeTeam = new CharacterTeam([new Slime(),new Slime(),new Slime(), new Slime()]);
+  
         var postgre = new PostgreSqlContext();
         var userData = await postgre.UserData
             .IncludeTeamWithAllEquipments()
@@ -37,8 +37,8 @@ public class KillSlimesQuest : Quest
         
         await Task.Delay(2000);
         var playerTeam = await userData.GetCharacterTeam(context.User).LoadAsync();
-        var battleSimulator = new BattleSimulator(await slimeTeam.LoadAsync()
-            , playerTeam );
+
+        var battleSimulator = new BattleSimulator(playerTeam,await slimeTeam.LoadAsync());
         var result = await battleSimulator.StartAsync(context, message);
         return result.Winners == playerTeam;
     }

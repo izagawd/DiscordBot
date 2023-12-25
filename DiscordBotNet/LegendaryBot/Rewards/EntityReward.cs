@@ -28,12 +28,11 @@ public class EntityReward : Reward
         {
             if(nameSorter.ContainsKey(i.Name))
             {
-                nameSorter[i.Name] = 1;
-          
+                nameSorter[i.Name]++;
             }
             else
             {
-                nameSorter[i.Name]++;
+                nameSorter[i.Name] = 1;
             }
         }
 
