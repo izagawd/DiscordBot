@@ -1,8 +1,10 @@
-﻿using DSharpPlus.Entities;
+﻿using System.Collections.Immutable;
+using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus;
@@ -22,12 +24,15 @@ namespace DiscordBotNet;
 
 
 
-public class Bot 
+public class Bot
 {
 
-    public static BaseCommandClass[] CommandArray { get; private set; } = null!;
-    public static readonly Type[] AllAssemblyTypes = Assembly.GetExecutingAssembly()
-        .GetTypes().ToArray();
+    public static IEnumerable<BaseCommandClass> Commands { get; private set; } = [];
+
+
+
+    public static readonly IEnumerable<Type> AllAssemblyTypes = Assembly.GetExecutingAssembly()
+        .GetTypes().ToImmutableArray();
 
 
     private static async Task Main(string[] args) => await new Bot().RunBotAsync(args);
@@ -53,11 +58,7 @@ public class Bot
     public async Task DoShit()
     {
         
-        var postgre = new PostgreSqlContext();
 
-        var iza =  await postgre.UserData.FindOrCreateAsync(Izasid);
-        iza.GenerateQuests();
-        await postgre.SaveChangesAsync();
     }
   
     /// <summary>
@@ -65,7 +66,6 @@ public class Bot
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
@@ -82,7 +82,8 @@ public class Bot
         }
 
         
-        CommandArray = Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
+        Commands = 
+            Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
         var config = new DiscordConfiguration
         {
             Token = ConfigurationManager.AppSettings["BotToken"]!,

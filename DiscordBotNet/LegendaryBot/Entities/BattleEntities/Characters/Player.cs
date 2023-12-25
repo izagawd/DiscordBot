@@ -120,7 +120,7 @@ public class Player : Character
     private Surge fireSurge { get; } = new Ignite();
     [NotMapped]
     private Skill fireSkill { get; } = new FireBall();
-    public override Skill Skill
+    public override Skill? Skill
     {
         get
         {
@@ -138,7 +138,7 @@ public class Player : Character
     public override BasicAttack BasicAttack { get; } = new FourthWallBreaker();
 
 
-    public override Surge Surge
+    public override Surge? Surge
     {
         get
         {

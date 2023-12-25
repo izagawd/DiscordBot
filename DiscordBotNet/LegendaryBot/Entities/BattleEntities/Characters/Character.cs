@@ -20,7 +20,11 @@ using Barrier = DiscordBotNet.LegendaryBot.StatusEffects.Barrier;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
-
+/// <summary>
+/// Don't forget to load the character with LoadAsync before using it in combat.
+/// Characters can also be loaded at once if they are in a CharacterTeam and LoadAsync is called
+/// from the CharacterTeam
+/// </summary>
 public abstract partial  class Character : BattleEntity
 {
         private static Type[] _characterTypes = Assembly.GetExecutingAssembly().GetTypes()
@@ -665,9 +669,9 @@ public abstract partial  class Character : BattleEntity
         List<BattleDecision> possibleDecisions = [BattleDecision.BasicAttack];
 
 
-        if(Skill.CanBeUsed(this))
+        if(Skill is not null && Skill.CanBeUsed(this))
             possibleDecisions.Add(BattleDecision.Skill);
-        if(Surge.CanBeUsed(this))
+        if(Surge is not null && Surge.CanBeUsed(this))
             possibleDecisions.Add(BattleDecision.Surge);
 
         Character[] possibleTargets = {};
@@ -963,9 +967,9 @@ public abstract partial  class Character : BattleEntity
         return $"{Name} ({side}) ({Position})";
     }
 
-    [NotMapped] public abstract Skill Skill { get; } 
+    [NotMapped] public abstract Skill? Skill { get; } 
     public int Position => Array.IndexOf(CurrentBattle.Characters.OrderByDescending(i => i.CombatReadiness).ToArray(),this) +1;
-    [NotMapped] public abstract Surge Surge { get; }
+    [NotMapped] public abstract Surge? Surge { get; }
     /// <summary>
     /// Checks if something overrides the player turn eg stun status effect preventing the player from doing anything
     /// </summary>

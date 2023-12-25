@@ -97,8 +97,8 @@ public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBatt
 
     public override BasicAttack BasicAttack { get; } = new GigaPunch();
 
-    public override Skill Skill { get;  } = new ThumbsUp();
-    public override Surge Surge { get; } = new MuscleFlex();
+    public override Skill? Skill { get;  } = new ThumbsUp();
+    public override Surge? Surge { get; } = new MuscleFlex();
 
     public override DiscordColor Color => DiscordColor.Purple;
 

@@ -13,7 +13,6 @@ public abstract class Move
     /// </summary>
  
     
- 
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/moves/{GetType().Name}.png";
 
     public async Task<Image<Rgba32>> GetImageForCombatAsync()

@@ -11,6 +11,7 @@ using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.SlashCommands;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -19,6 +20,7 @@ namespace DiscordBotNet.LegendaryBot;
 
 public enum BattleDecision
 {
+    
     Forfeit, Surge, BasicAttack, Skill, Other,
 }
 
@@ -31,9 +33,9 @@ public class BattleSimulator
         public Character Character;
         public Image<Rgba32> Image;
     }
-    public static DiscordButtonComponent basicAttackButton = new(ButtonStyle.Secondary, "BasicAttack", null,emoji: new DiscordComponentEmoji("⚔️"));
-    public static DiscordButtonComponent skillButton = new(ButtonStyle.Secondary, "Skill", null, emoji: new DiscordComponentEmoji("🪄"));
-    public static DiscordButtonComponent surgeButton = new(ButtonStyle.Secondary, "Surge", null, emoji: new DiscordComponentEmoji("⚡"));
+    public static DiscordButtonComponent basicAttackButton = new(ButtonStyle.Secondary, nameof(BasicAttack), null,emoji: new DiscordComponentEmoji("⚔️"));
+    public static DiscordButtonComponent skillButton = new(ButtonStyle.Secondary, nameof(Skill), null, emoji: new DiscordComponentEmoji("🪄"));
+    public static DiscordButtonComponent surgeButton = new(ButtonStyle.Secondary, nameof(Surge), null, emoji: new DiscordComponentEmoji("⚡"));
     public static DiscordButtonComponent forfeitButton = new(ButtonStyle.Danger, "Forfeit", "Forfeit");
 
     public static DiscordButtonComponent proceed = new(ButtonStyle.Success, "Proceed", "Proceed");
@@ -259,7 +261,7 @@ public class BattleSimulator
     /// <summary>
     /// Initiates a new battle between two teams
     /// </summary>
-    public async Task<BattleResult> StartAsync(DiscordInteraction interaction, DiscordMessage? message = null)
+    public async Task<BattleResult> StartAsync(InteractionContext context, DiscordMessage? message = null)
     {
 
         Team1.CurrentBattle = this;
@@ -363,11 +365,11 @@ public class BattleSimulator
             {
         
                 components.Add(basicAttackButton);
-                if (ActiveCharacter.Skill.CanBeUsed(ActiveCharacter))
+                if (ActiveCharacter.Skill is not null &&  ActiveCharacter.Skill.CanBeUsed(ActiveCharacter))
                 {
                     components.Add(skillButton);
                 }
-                if (ActiveCharacter.Surge.CanBeUsed(ActiveCharacter))
+                if (ActiveCharacter.Surge is not null && ActiveCharacter.Surge.CanBeUsed(ActiveCharacter))
                 {
                     components.Add(surgeButton);
                 }
@@ -377,7 +379,7 @@ public class BattleSimulator
             messageBuilder
                 .AddComponents(components);
             if (message is null)
-                message = await interaction.Channel.SendMessageAsync(messageBuilder);
+                message = await context.Channel.SendMessageAsync(messageBuilder);
             else message = await message.ModifyAsync(messageBuilder);
 
             _mainText = $"{ActiveCharacter} is thinking of a course of action...";
@@ -386,7 +388,7 @@ public class BattleSimulator
                 await Task.Delay(5000); break;
             }
 
-            BattleDecision decision =BattleDecision.Other;
+            var decision =BattleDecision.Other;
  
             StatusEffect? mostPowerfulStatusEffect = null;
             if (ActiveCharacter.StatusEffects.Any())

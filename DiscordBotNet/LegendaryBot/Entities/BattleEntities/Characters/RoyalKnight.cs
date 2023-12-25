@@ -111,6 +111,6 @@ public class RoyalKnight : Character
     public override int BaseSpeed => 99;
     public override BasicAttack BasicAttack { get; } = new ShieldBash();
     public override Rarity Rarity => Rarity.ThreeStar;
-    public override Surge Surge { get; } = new IWillProtectUs();
-    public override Skill Skill { get;  } = new IWillBeYourShield();
+    public override Surge? Surge { get; } = new IWillProtectUs();
+    public override Skill? Skill { get;  } = new IWillBeYourShield();
 }

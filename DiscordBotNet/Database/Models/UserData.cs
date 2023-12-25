@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Quests;
 using DiscordBotNet.LegendaryBot.Results;
+using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.Fonts;
@@ -169,7 +171,33 @@ public class UserData : Model,  ICanBeLeveledUp
     {
         return GetRequiredExperienceToNextLevel(Level);
     }
+    /// <summary>
+    /// Receives rewards
+    /// </summary>
+    /// <param name="name">the name of the user</param>
+    /// <param name="rewards">the rewards</param>
+    /// <returns>the receive rewards text</returns>
+    public string ReceiveRewards(string name, params Reward[] rewards)
+    {
+        var rewardStringBuilder = new StringBuilder();
+        foreach (var i in rewards)
+        {
+            rewardStringBuilder.Append($"{i.GiveRewardTo(this, name)}\n");
 
+        }
+
+        return rewardStringBuilder.ToString();
+    }
+    /// <summary>
+    /// Receives rewards
+    /// </summary>
+    /// <param name="name">the name of the user</param>
+    /// <param name="rewards">the rewards</param>
+    /// <returns>the receive rewards text</returns>
+    public string ReceiveRewards(string name,IEnumerable<Reward> rewards)
+    {
+        return ReceiveRewards(name,rewards.ToArray());
+    }
     public ExperienceGainResult IncreaseExp(ulong exp)
     {
 

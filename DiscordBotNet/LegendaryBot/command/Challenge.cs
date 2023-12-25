@@ -109,7 +109,7 @@ public class Challenge :BaseCommandClass
 
         await MakeOccupiedAsync(player2User);
         var simulator = new BattleSimulator(await player1User.GetCharacterTeam(player1).LoadAsync(player1), await player2User.GetCharacterTeam(player2).LoadAsync(player2));
-        BattleResult battleResult = await simulator.StartAsync(ctx.Interaction,message);
+        BattleResult battleResult = await simulator.StartAsync(ctx,message);
         DiscordUser winnerDiscord;
         UserData winnerUserData;
         if (battleResult.Winners.UserId == player1.Id)

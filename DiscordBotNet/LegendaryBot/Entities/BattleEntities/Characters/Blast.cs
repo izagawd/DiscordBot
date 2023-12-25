@@ -101,7 +101,7 @@ public class Blast : Character
     public override int BaseAttack => (120 + (13 * Level));
     public override int BaseDefense => (100 + (5.2 * Level)).Round();
     public override int BaseSpeed => 105;
-    public override Surge Surge { get;  } = new VolcanicEruption();
-    public override Skill Skill { get; } = new BlowAway();
+    public override Surge? Surge { get;  } = new VolcanicEruption();
+    public override Skill? Skill { get; } = new BlowAway();
     public override BasicAttack BasicAttack { get; } = new MethaneSlap();
 }

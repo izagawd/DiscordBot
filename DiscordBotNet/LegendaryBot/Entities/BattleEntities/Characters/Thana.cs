@@ -115,6 +115,6 @@ public class Thana : Character
     public override Element Element { get; protected set; } = Element.Earth;
     public override BasicAttack BasicAttack { get; } = new SoulAttack();
 
-    public override Skill Skill { get; } = new YourLifeEnergyIsMine();
-    public override Surge Surge { get; } = new Arise();
+    public override Skill? Skill { get; } = new YourLifeEnergyIsMine();
+    public override Surge? Surge { get; } = new Arise();
 }

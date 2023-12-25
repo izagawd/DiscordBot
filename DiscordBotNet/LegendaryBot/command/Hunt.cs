@@ -63,7 +63,7 @@ public class Hunt : BaseCommandClass
 
  
 
-        var battleResult = await simulator.StartAsync(ctx.Interaction, message);
+        var battleResult = await simulator.StartAsync(ctx, message);
         var expToGain = BattleFunction.ExpGainFormula(enemy.Level);
         if (battleResult.Winners != userTeam)
         {

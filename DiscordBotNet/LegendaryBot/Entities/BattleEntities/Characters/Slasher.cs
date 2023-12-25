@@ -107,7 +107,7 @@ public class Slasher : Character
     public override int BaseDefense => (100 + (5.2 * Level)).Round();
     public override int BaseSpeed => 105;
     public override int BaseCriticalChance => base.BaseCriticalChance;
-    public override Surge Surge { get; } = new SlashOfPrecision();
-    public override Skill Skill { get; } = new WindSlash();
+    public override Surge? Surge { get; } = new SlashOfPrecision();
+    public override Skill? Skill { get; } = new WindSlash();
     public override BasicAttack BasicAttack { get;  } = new SimpleSlash();
 }

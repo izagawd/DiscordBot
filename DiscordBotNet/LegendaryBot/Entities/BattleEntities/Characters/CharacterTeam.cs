@@ -100,7 +100,15 @@ public class CharacterTeam : ISet<Character>
         return Characters.Add(character);
     }
 
-
+    public void AddRange(IEnumerable<Character> characters)
+    {
+        
+        foreach (var i in Characters)
+        {
+            if(i is null) continue;
+            Add(i);
+        }
+    }
     public void ExceptWith(IEnumerable<Character> other)
     {
         Characters.ExceptWith(other);

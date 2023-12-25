@@ -140,8 +140,8 @@ public class Lily : Character
 
     }
 
-    public override Skill Skill { get;  } = new BlossomTouch();
-    public override Surge Surge { get; } = new LilyOfTheValley();
+    public override Skill? Skill { get;  } = new BlossomTouch();
+    public override Surge? Surge { get; } = new LilyOfTheValley();
     public override BasicAttack BasicAttack { get; } = new ChamomileSachetWhack();
     public override Element Element => Element.Earth;
 
