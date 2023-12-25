@@ -4,7 +4,7 @@ using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.command;
-
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -52,9 +52,7 @@ public class Bot
     public async Task DoShit()
     {
         
-   
 
-        
     }
   
     /// <summary>
@@ -62,7 +60,7 @@ public class Bot
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-        await DoShit();
+  
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

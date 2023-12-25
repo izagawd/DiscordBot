@@ -5,7 +5,7 @@ namespace DiscordBotNet.Extensions;
 
 public static class BasicExtension
 {
-
+   
     public static Color ToImageSharpColor(this DiscordColor color)
     {
         return Color.ParseHex(color.ToString());

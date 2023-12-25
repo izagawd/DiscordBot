@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
-using DiscordBotNet.LegendaryBot.Battle;
-using DiscordBotNet.LegendaryBot.Battle.Entities;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Results;
+using DiscordBotNet.LegendaryBot.Entities;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Quests;
+using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -15,6 +15,8 @@ namespace DiscordBotNet.Database.Models;
 
 public class UserData : Model,  ICanBeLeveledUp
 {
+
+
     public UserData(ulong id)
     {
         Id = id;
@@ -85,17 +87,14 @@ public class UserData : Model,  ICanBeLeveledUp
         return team;
     }
 
-    public CharacterTeam GetCharacterTeam(DiscordUser user)
-    {
-        return GetCharacterTeam(user.Username);
-    }
-    
+    public CharacterTeam GetCharacterTeam(DiscordUser user) => GetCharacterTeam(user.Username);
     public async Task<Image<Rgba32>> GetInfoAsync(DiscordUser? user = null)
     {
         if (user is null)
         {
             user = await Bot.Client.GetUserAsync(Id);
-        } else if (user.Id != Id)
+        } 
+        else if (user.Id != Id)
         {
             throw new Exception("discord user's ID does not match user data's id");
         }
@@ -132,9 +131,26 @@ public class UserData : Model,  ICanBeLeveledUp
     /// </summary>
     public void CheckForNewDay()
     {
+        var currentDateTime = DateTime.UtcNow;
+        if (currentDateTime.Date != LastTimeChecked.Date)
+        {
+            GenerateQuests();
+
+        }
+
+        LastTimeChecked = currentDateTime;
+    }
+
+    public void GenerateQuests()
+    {
         
     }
-    public DateTime LastTimePlayed { get;  set; } = DateTime.UtcNow;
+
+    public List<Quest> Quests { get; set; } = [];
+    /// <summary>
+    /// This is used to refresh stuff like daily quests
+    /// </summary>
+    public DateTime LastTimeChecked { get; private set; } = DateTime.UtcNow.AddDays(-1);
     public List<Quote> Quotes { get; protected set; } = new();
     public bool IsOccupied { get; set; } = false;
     public ulong Experience { get; protected set; }
@@ -149,6 +165,8 @@ public class UserData : Model,  ICanBeLeveledUp
 
     public ExperienceGainResult IncreaseExp(ulong exp)
     {
+
+
         throw new NotImplementedException();
     }
 
@@ -156,9 +174,7 @@ public class UserData : Model,  ICanBeLeveledUp
     
     public ulong SupremePrayers { get; set; } = 0;
     public ulong Coins { get; set; } = 5000;
-
-    public List<Guid?> CharacterIdList =>
-        new () { Character1Id, Character2Id, Character3Id, Character4Id };
+    public List<Guid?> CharacterIdList => new () { Character1Id, Character2Id, Character3Id, Character4Id };
     public Guid? Character1Id { get; set; }
     public Character? Character1 { get; set; }
     public Guid? Character2Id { get; set; }
@@ -174,6 +190,4 @@ public class UserData : Model,  ICanBeLeveledUp
     public string Language { get; set; } = "english";
     public List<Entity> Inventory { get; protected set; } = new();
     
-
-
 }

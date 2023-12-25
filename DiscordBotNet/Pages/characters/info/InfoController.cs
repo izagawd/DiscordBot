@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using DiscordBotNet.Database;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Blessings;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

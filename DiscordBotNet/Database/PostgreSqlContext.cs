@@ -1,11 +1,13 @@
-﻿using DiscordBotNet.Database.Models;
+﻿using System.Reflection;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
-using DiscordBotNet.LegendaryBot.Battle;
-using DiscordBotNet.LegendaryBot.Battle.Entities;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Battle.Entities.BattleEntities.Gears;
-using DiscordBotNet.LegendaryBot.Battle.Stats;
+using DiscordBotNet.LegendaryBot.Entities;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
+using DiscordBotNet.LegendaryBot.Quests;
+using DiscordBotNet.LegendaryBot.Rewards;
+using DiscordBotNet.LegendaryBot.Stats;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
@@ -20,7 +22,7 @@ public class PostgreSqlContext : DbContext
     public DbSet<UserData> UserData { get; set; }
     public DbSet<GuildData> GuildData{ get; set; }
     public DbSet<Entity> Entity { get; set; }
-
+    public DbSet<Quest> Quests { get; set; }
    
     public DbSet<Quote> Quote { get; set; }
 
@@ -60,7 +62,7 @@ public class PostgreSqlContext : DbContext
     public async Task GivePowerToUserAsync(ulong idOfUser)
     {
         var user = await UserData
-            .Include(i => i.Inventory.Where(i => i is Character))
+            .Include(i => i.Inventory.Where(j => j is Character))
             .FirstOrDefaultAsync(i => i.Id == idOfUser);
         if (user is null) return;
         foreach (var i in user.Inventory.OfType<Character>())
@@ -118,8 +120,17 @@ public class PostgreSqlContext : DbContext
         }
     }
 
+    private static IEnumerable<Type> QuestTypes =
+        Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(i => i.IsSubclassOf(typeof(Quest)) 
+                        && !i.IsAbstract).ToArray();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        foreach (var i in QuestTypes)
+        {
+            modelBuilder.Entity(i);
+        }
         foreach (var entityType in EntityClasses)
         {
             modelBuilder.Entity(entityType);
@@ -168,7 +179,6 @@ public class PostgreSqlContext : DbContext
             .HasForeignKey<UserData>(u => u.Character2Id)
             .OnDelete(DeleteBehavior.SetNull);
 
-        
         modelBuilder.Entity<UserData>()
             .HasOne(u => u.Character3)
             .WithOne()
@@ -190,6 +200,10 @@ public class PostgreSqlContext : DbContext
             .Property(i => i.Element)
             .HasColumnName("Element");
 
+        modelBuilder.Entity<UserData>()
+            .HasMany(i => i.Quests)
+            .WithOne()
+            .HasForeignKey(i => i.UserDataId);
 
         modelBuilder.Entity<Character>()
             .HasOne(i => i.Helmet)

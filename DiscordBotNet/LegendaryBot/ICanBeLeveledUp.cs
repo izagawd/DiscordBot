@@ -1,4 +1,4 @@
-﻿using DiscordBotNet.LegendaryBot.Battle.Results;
+﻿using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot;
 
