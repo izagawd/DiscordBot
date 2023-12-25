@@ -48,11 +48,16 @@ public class Bot
 
 
     public static string GlobalFontName => "Arial";
-
+    
+ 
     public async Task DoShit()
     {
         
+        var postgre = new PostgreSqlContext();
 
+        var iza =  await postgre.UserData.FindOrCreateAsync(Izasid);
+        iza.GenerateQuests();
+        await postgre.SaveChangesAsync();
     }
   
     /// <summary>
@@ -60,7 +65,7 @@ public class Bot
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
-  
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

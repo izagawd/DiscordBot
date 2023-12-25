@@ -29,7 +29,7 @@ public class StandardPull : BaseCommandClass
         if (userData.StandardPrayers <= 0)
         {
             embed.WithTitle("Hmm")
-                .WithDescription($"{ctx.User.Username} does not have any Supreme Prayers");
+                .WithDescription($"{ctx.User.Username} does not have any Standard/s Prayers");
             await ctx.CreateResponseAsync(embed);
             return;
         }

@@ -6,6 +6,7 @@ using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Quests;
 using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
+using Microsoft.EntityFrameworkCore;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -143,7 +144,13 @@ public class UserData : Model,  ICanBeLeveledUp
 
     public void GenerateQuests()
     {
+        Quests.Clear();
         
+        foreach (var i in Quest.ExampleQuests)
+        {
+            if(Quests.Select(j => j.GetType()).Contains(i.GetType())) continue;
+            Quests.Add((Quest) Activator.CreateInstance(i.GetType())!);
+        }
     }
 
     public List<Quest> Quests { get; set; } = [];
@@ -174,7 +181,7 @@ public class UserData : Model,  ICanBeLeveledUp
     
     public ulong SupremePrayers { get; set; } = 0;
     public ulong Coins { get; set; } = 5000;
-    public List<Guid?> CharacterIdList => new () { Character1Id, Character2Id, Character3Id, Character4Id };
+    public List<Guid?> CharacterIdList => [Character1Id, Character2Id, Character3Id, Character4Id];
     public Guid? Character1Id { get; set; }
     public Character? Character1 { get; set; }
     public Guid? Character2Id { get; set; }
