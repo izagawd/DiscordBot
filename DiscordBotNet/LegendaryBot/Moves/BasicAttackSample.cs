@@ -7,7 +7,7 @@ namespace DiscordBotNet.LegendaryBot.Moves;
 /// </summary>
 public class BasicAttackSample : BasicAttack
 {
-    public override string Description => "Take that!";
+    public override string GetDescription(Character character) => "Take that!";
     
     protected  override UsageResult HiddenUtilize(Character owner,Character target, UsageType usageType)
     {

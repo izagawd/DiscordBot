@@ -8,7 +8,7 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class WindSlash : Skill
 {
 
-    public override string Description => "Attacks all enemies with a sharp wind";
+    public override string GetDescription(Character character) => "Attacks all enemies with a sharp wind";
     
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
@@ -40,7 +40,7 @@ public class WindSlash : Skill
 
 public class SimpleSlash : BasicAttack
 {
-    public override string Description =>"Does a simple slash";
+    public override string GetDescription(Character character) =>"Does a simple slash";
     
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
@@ -66,11 +66,11 @@ public class SimpleSlash : BasicAttack
 public class SlashOfPrecision : Surge
 {
 
-    public override string Description=>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
+    public override string GetDescription(Character character) =>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team);
+        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
     }
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)

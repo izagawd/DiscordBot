@@ -21,7 +21,7 @@ public class Burn : StatusEffect
         affected.Damage(        new DamageArgs(this)
         {
        
-            Damage = _characterAttack *4,
+            Damage = _characterAttack *3,
             Caster = Caster,
             CanCrit = false,
             DamageText =$"{affected} took $ damage from burn!"

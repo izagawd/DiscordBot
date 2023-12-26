@@ -17,10 +17,11 @@ namespace DiscordBotNet.Database;
 
 public class PostgreSqlContext : DbContext
 {
+    
     private static readonly Type[] EntityClasses;
     private static readonly Type[] GearStatClasses;
     public DbSet<UserData> UserData { get; set; }
-    public DbSet<GuildData> GuildData{ get; set; }
+    public DbSet<GuildData> GuildData { get; set; }
     public DbSet<Entity> Entity { get; set; }
     public DbSet<Quest> Quests { get; set; }
    
@@ -29,7 +30,7 @@ public class PostgreSqlContext : DbContext
     /// <summary>
     /// this should be called before any query if u want to use it
     /// </summary>
-    /// <param name="userId"> the user id u want  to refresh to a new da</param>
+    /// <param name="userId"> the user id u want  to refresh to a new day</param>
     public static async Task CheckForNewDayAsync(ulong userId)
     {
         await using var context = new PostgreSqlContext();
@@ -40,14 +41,22 @@ public class PostgreSqlContext : DbContext
         if (user.LastTimeChecked.Date == rightNowUtc.Date) return;
         
         user.Quests.Clear();
-        foreach (var i in QuestTypes)
+        var availableQuests = Quest.QuestSampleInstances
+            .Where(i => i.QuestTier == user.Tier)
+            .Select(i => i.GetType())
+            .ToList();
+
+        while (user.Quests.Count < 4)
         {
-            if (user.Quests.Any(j => j.GetType() == i)) continue;
-            
-            user.Quests.Add((Quest)Activator.CreateInstance(i));
+            if(availableQuests.Count <= 0) break;
+            var randomQuestType = BasicFunction.RandomChoice(availableQuests.AsEnumerable());
+            availableQuests.Remove(randomQuestType);
+            if (user.Quests.Any(j => j.GetType() == randomQuestType)) continue;
+            user.Quests.Add((Quest) Activator.CreateInstance(randomQuestType)!);
             
         }
 
+        
         user.LastTimeChecked = DateTime.UtcNow;
         await context.SaveChangesAsync();
 
@@ -64,9 +73,6 @@ public class PostgreSqlContext : DbContext
 
     }
 
-
-
-  
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         

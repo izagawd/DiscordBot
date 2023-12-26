@@ -7,6 +7,7 @@ using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
+using DiscordBotNet.LegendaryBot.Rewards;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -53,8 +54,8 @@ public class BattleSimulator
     
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
-        var stop = new Stopwatch(); stop.Start();
 
+        var stop = new Stopwatch(); stop.Start();
         var heightToUse = CharacterTeams.Select(i => i.Count).Max() * 160;
         var image = new Image<Rgba32>(500, heightToUse);
         int xOffSet = 70;
@@ -63,23 +64,23 @@ public class BattleSimulator
         int yOffset = 0;
         IImageProcessingContext imageCtx = null!;
         image.Mutate(ctx => imageCtx = ctx);
-        var characterImagesInTeam1 = new ConcurrentBag<Image<Rgba32>>();
-        var characterImagesInTeam2 = new ConcurrentBag<Image<Rgba32>>();
+        var characterImagesInTeam1 = new ConcurrentDictionary<Character,Image<Rgba32>>();
+        var characterImagesInTeam2 = new ConcurrentDictionary<Character, Image<Rgba32>>();
         await Parallel.ForEachAsync(Characters, async (character, token) =>
         {
-            if(character.Team == Team1)
-                characterImagesInTeam1.Add(await character.GetCombatImageAsync());
+            if (character.Team == Team1)
+                characterImagesInTeam1[character] = await character.GetCombatImageAsync();
             else
-                characterImagesInTeam2.Add(await character.GetCombatImageAsync());
-            
+                characterImagesInTeam2[character] = await character.GetCombatImageAsync();
         });
         foreach (var i in CharacterTeams)
         {
             var characterImagesInTeam = characterImagesInTeam1;
             if (i == Team2)
                 characterImagesInTeam = characterImagesInTeam2;
-            foreach (var gottenImage in characterImagesInTeam)
+            foreach (var j in i)
             {
+                var gottenImage = characterImagesInTeam[j];
                 if (gottenImage.Width > widest)
                 {
                     widest = gottenImage.Width;
@@ -129,9 +130,10 @@ public class BattleSimulator
         }
 
         imageCtx.EntropyCrop();
-
+        stop.Elapsed.TotalMilliseconds.Print();
         return image;
     }
+
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
     {
         foreach (var i in Characters)
@@ -602,12 +604,23 @@ public class BattleSimulator
 
         }
 
+        var losers = CharacterTeams.First(i => i != _winners);
+        var _rewards = new List<Reward>();
+
+        var coinsToGain = (ulong)(losers
+                .Average(i => i.Level) * 500 * losers.Count * 0.75f)
+            .Round();
+        _rewards.Add(new CoinsReward(coinsToGain));
+        foreach (var i in losers)
+        {
+            if (i.IsDead) _rewards.AddRange(i.DroppedRewards);
+        }
+        
+
+
         return new BattleResult
         {
-            Coins =(ulong) (CharacterTeams
-                .First(i => i != _winners)
-                .Average(i => i.Level) * 500).Round(),
-                
+            BattleRewards = _rewards,
             Turns = Turn,
             Forfeited = forfeited,
             Winners = _winners,

@@ -7,7 +7,7 @@ using DSharpPlus.Entities;
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class SoulAttack : BasicAttack
 {
-    public override string Description { get; } = "Uses the souls of the dead to attack, with a 25% chance to sleep!";
+    public override string GetDescription(Character character) => "Uses the souls of the dead to attack, with a 25% chance to sleep!";
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         var damageResult = target.Damage(new DamageArgs(this)
@@ -34,8 +34,7 @@ public class YourLifeEnergyIsMine : Skill
 {
 
 
-    public override string Description { get; } =
-        "Sucks the life energy out of the enemy, recovering 20% of damage dealt as hp";
+    public override string GetDescription(Character character) => "Sucks the life energy out of the enemy, recovering 20% of damage dealt as hp";
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
@@ -71,7 +70,7 @@ public class Arise : Surge
 
     public override int MaxCooldown =>6;
 
-    public override string Description =>
+    public override string GetDescription(Character character) =>
         $"Grants all allies immortality, increases the caster's attack for 2 turns, and grants her an extra turn";
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {

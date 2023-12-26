@@ -160,10 +160,13 @@ public class UserData : Model,  ICanBeLeveledUp
     public string ReceiveRewards(string name, params Reward[] rewards)
     {
         var rewardStringBuilder = new StringBuilder();
-        foreach (var i in rewards)
+        var mergedRewards = Reward.MergeAllRewards(rewards)
+            .Order();
+        
+        foreach (var i in mergedRewards)
         {
+            if(!i.IsValid) continue;
             rewardStringBuilder.Append($"{i.GiveRewardTo(this, name)}\n");
-
         }
 
         return rewardStringBuilder.ToString();

@@ -8,7 +8,7 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 public class ChamomileSachetWhack : BasicAttack
 {
-    public override string Description=> $"With the power of Chamomile, whacks an enemy with a sack filled with Chamomile, with a {SleepChance}% chance of making the enemy sleep";
+    public override string GetDescription(Character character) => $"With the power of Chamomile, whacks an enemy with a sack filled with Chamomile, with a {SleepChance}% chance of making the enemy sleep";
     
 
     public int SleepChance => 40;
@@ -50,7 +50,7 @@ public class BlossomTouch : Skill
 
     public int HealthHealScaling => 30;
   
-    public override string Description =>  $"With the power of flowers, recovers the hp of an ally with {HealthHealScaling}% of the caster's max health, dispelling one debuff";
+    public override string GetDescription(Character character) =>  $"With the power of flowers, recovers the hp of an ally with {HealthHealScaling}% of the caster's max health, dispelling one debuff";
     
  
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
@@ -78,7 +78,7 @@ public class LilyOfTheValley : Surge
     public int PoisonInflictChance => 100;
 
     public int StunInflictChance => 50;
-    public override  string Description => $"Releases a poisonous gas to all enemies, with an {StunInflictChance}% chance of inflicting stun for 1 turn and a {PoisonInflictChance}% chance of inflicting poison for one turn";
+    public override  string GetDescription(Character character) => $"Releases a poisonous gas to all enemies, with an {StunInflictChance}% chance of inflicting stun for 1 turn and a {PoisonInflictChance}% chance of inflicting poison for one turn";
     
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)

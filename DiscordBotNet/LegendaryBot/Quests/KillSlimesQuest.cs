@@ -15,8 +15,7 @@ public class KillSlimesQuest : Quest
 
     public override async  Task<bool> StartQuest(InteractionContext context,DiscordMessage? message = null)
     {
-        CharacterTeam slimeTeam = new CharacterTeam([new Slime(),new Slime(),new Slime(), new Slime()]);
-  
+        var slimeTeam = new CharacterTeam([new Slime(),new Slime(),new Slime(), new Slime()]);
         var postgre = new PostgreSqlContext();
         var userData = await postgre.UserData
             .IncludeTeamWithAllEquipments()
@@ -32,19 +31,17 @@ public class KillSlimesQuest : Quest
         }
         else
         {
-            message = await message.ModifyAsync(new DiscordMessageBuilder(){Embed = embed});
+            message = await message.ModifyAsync(new DiscordMessageBuilder {Embed = embed});
         }
-        
         await Task.Delay(2000);
         var playerTeam = await userData.GetCharacterTeam(context.User).LoadAsync();
 
         var battleSimulator = new BattleSimulator(playerTeam,await slimeTeam.LoadAsync());
         var result = await battleSimulator.StartAsync(context, message);
+        QuestRewards = result.BattleRewards;
         return result.Winners == playerTeam;
+        
     }
 
-    public override IEnumerable<Reward> GetQuestRewards()
-    {
-        return [new CoinsReward(200), new EntityReward([new SmallFireShard()])];
-    }
+    public override IEnumerable<Reward> QuestRewards { get; protected set; } = [];
 }

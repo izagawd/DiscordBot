@@ -7,7 +7,13 @@ namespace DiscordBotNet.LegendaryBot.Rewards;
 public class CoinsReward : Reward
 {
     public ulong Coins { get; }
-    
+    public override Reward MergeWith(Reward reward)
+    {
+        if (reward is not CoinsReward coinsReward) throw new Exception("Reward type given is not of same type");
+        return new CoinsReward(Coins + coinsReward.Coins);
+    }
+
+    public override bool IsValid => Coins > 0;
   
     public CoinsReward(ulong coins)
     {

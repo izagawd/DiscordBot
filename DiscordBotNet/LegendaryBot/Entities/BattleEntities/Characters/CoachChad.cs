@@ -7,7 +7,7 @@ using DSharpPlus.Entities;
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class GigaPunch : BasicAttack
 {
-    public override string Description => "Punch is thrown gigaly";
+    public override string GetDescription(Character character) => "Punch is thrown gigaly";
     
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
@@ -34,7 +34,7 @@ public class GigaPunch : BasicAttack
 public class MuscleFlex : Surge
 {
   
-    public override string Description => "Flexes muscles";
+    public override string GetDescription(Character character) => "Flexes muscles";
     
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
@@ -61,7 +61,7 @@ public class MuscleFlex : Surge
 public class ThumbsUp : Skill
 {
 
-    public override string Description => "Gives the enemy a thumbs up!";
+    public override string GetDescription(Character character) => "Gives the enemy a thumbs up!";
     
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)

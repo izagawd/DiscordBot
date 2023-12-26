@@ -9,7 +9,7 @@ using DSharpPlus.Entities;
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class FourthWallBreaker: BasicAttack
 {
-    public override string Description =>  "Damages the enemy by breaking the fourth wall";
+    public override string GetDescription(Character character) =>  "Damages the enemy by breaking the fourth wall";
     
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
@@ -39,7 +39,7 @@ public class FourthWallBreaker: BasicAttack
 
 public class FireBall : Skill
 {
-    public override string Description => "Throws a fire ball at the enemy with a 40% chance to inflict burn";
+    public override string GetDescription(Character character) => "Throws a fire ball at the enemy with a 40% chance to inflict burn";
     
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
@@ -79,7 +79,7 @@ public class Ignite : Surge
 
 
 
-    public override string Description=>$"Ignites the enemy with 3 burns. {IgniteChance}% chance each";
+    public override string GetDescription(Character character) =>$"Ignites the enemy with 3 burns. {IgniteChance}% chance each";
     
 
     public int IgniteChance  => 100;

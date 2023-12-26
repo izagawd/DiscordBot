@@ -10,6 +10,7 @@ using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Quests;
 using DiscordBotNet.LegendaryBot.Results;
+using DiscordBotNet.LegendaryBot.Rewards;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus.Entities;
 using SixLabors.Fonts;
@@ -231,7 +232,7 @@ public abstract partial  class Character : BattleEntity
             );
             int xOffset = 20;
 
-            var description = i.Description;
+            var description = i.GetDescription(this);
             
             imageCtx.DrawImage(moveImage, new Point(xOffset, yOffSet), new GraphicsOptions());
     
@@ -615,11 +616,12 @@ public abstract partial  class Character : BattleEntity
             }
         } 
     }
+
     /// <summary>
     /// this will be used to get the items this character will drop if killed
     /// </summary>
     [NotMapped]
-    public virtual Entity[] DroppedItems => Array.Empty<Entity>();
+    public virtual IEnumerable<Reward> DroppedRewards => [];
 
     /// <summary>
     /// Use this if you want this character to drop any extra items

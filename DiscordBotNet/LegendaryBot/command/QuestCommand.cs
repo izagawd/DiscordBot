@@ -62,7 +62,7 @@ public class QuestCommand : BaseCommandClass
         var message =await  ctx.GetOriginalResponseAsync();
         
         Quest quest = null;
-        await message.WaitForButtonAsync(i =>
+        var buttonResult = await message.WaitForButtonAsync(i =>
         {
             if (i.User.Id != userData.Id) return false;
             if (!possibleIds.Contains(i.Id)) return false;
@@ -74,12 +74,15 @@ public class QuestCommand : BaseCommandClass
             return;
         }
 
+        await buttonResult.Result
+            .Interaction
+            .CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
         var succeeded = await quest.StartQuest(ctx, message);
         
         if (succeeded)
         {
             quest.Completed = true;
-            var rewardString = userData.ReceiveRewards(ctx.User.Username, quest.GetQuestRewards());
+            var rewardString = userData.ReceiveRewards(ctx.User.Username, quest.QuestRewards);
             embed
                 .WithTitle("Nice!!")
                 .WithDescription("You completed the quest!\n" +rewardString);

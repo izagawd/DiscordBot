@@ -8,7 +8,7 @@ using Barrier = DiscordBotNet.LegendaryBot.StatusEffects.Barrier;
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class ShieldBash : BasicAttack
 {
-    public override string Description=> $"Bashes the shield to the enemy, with a {ShieldStunChanceByBash}% chance to stun"!;
+    public override string GetDescription(Character character) => $"Bashes the shield to the enemy, with a {ShieldStunChanceByBash}% chance to stun"!;
 
 
     public int ShieldStunChanceByBash => 10;
@@ -51,7 +51,7 @@ public class IWillBeYourShield : Skill
     }
 
   
-    public override string Description=> "gives a shield to the target and caster for 3 turns. Shield strength is proportional to the caster's defense";
+    public override string GetDescription(Character character) => "gives a shield to the target and caster for 3 turns. Shield strength is proportional to the caster's defense";
 
 
     public int ShieldBasedOnDefense => 300;
@@ -80,7 +80,7 @@ public class IWillProtectUs : Surge
     public override int MaxCooldown => 5;
   
 
-    public override string Description=> "Increases the defense of all allies for 3 turns";
+    public override string GetDescription(Character character) => "Increases the defense of all allies for 3 turns";
     
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)

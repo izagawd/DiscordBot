@@ -8,7 +8,15 @@ namespace DiscordBotNet.LegendaryBot.Rewards;
 /// </summary>
 public class EntityReward : Reward
 {
-    
+    public override int Priority => 2;
+
+    public override Reward MergeWith(Reward reward)
+    {
+        if (reward is not EntityReward entityReward) throw new Exception("Reward type given is not of same type");
+        return new EntityReward(EntitiesToReward.Union(entityReward.EntitiesToReward));
+    }
+
+    public override bool IsValid => EntitiesToReward.Count() > 0;
     public IEnumerable<Entity> EntitiesToReward { get;  }
     public EntityReward(IEnumerable<Entity> entitiesToReward)
     {
@@ -19,21 +27,16 @@ public class EntityReward : Reward
 
     public override string GiveRewardTo(UserData userData, string name)
     {
-        var stringBuilder = new StringBuilder($"Nice! {name} got: \n");
+        var stringBuilder = new StringBuilder($"{name} got: \n");
         userData.Inventory.AddRange(EntitiesToReward);
 
 
         Dictionary<string, int> nameSorter = [];
         foreach (var i in EntitiesToReward)
         {
-            if(nameSorter.ContainsKey(i.Name))
-            {
-                nameSorter[i.Name]++;
-            }
-            else
-            {
-                nameSorter[i.Name] = 1;
-            }
+            var asString = i.ToString();
+            if(nameSorter.ContainsKey(asString)) nameSorter[asString]++;
+            else nameSorter[asString] = 1;
         }
 
         foreach (var i in nameSorter)

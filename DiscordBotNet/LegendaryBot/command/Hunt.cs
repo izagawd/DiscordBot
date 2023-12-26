@@ -70,12 +70,15 @@ public class Hunt : BaseCommandClass
             expToGain /= 2;
         }
         string expGainText = userTeam.IncreaseExp(expToGain);
-        embedToBuild = embedToBuild
-            .WithTitle($"Nice going bud!")
-            .WithDescription("You won!\n" + expGainText)
-            .WithImageUrl("");
+        
         if (battleResult.Winners == userTeam)
         {
+            var rewardText = userData.ReceiveRewards(author.Username, battleResult.BattleRewards);
+            embedToBuild
+                .WithTitle($"Nice going bud!")
+                .WithDescription("You won!\n" + expGainText  +$"\n{rewardText}")
+                .WithImageUrl("");
+
             await message.ModifyAsync(new DiscordMessageBuilder(){Embed = embedToBuild.Build() });
         }
         else

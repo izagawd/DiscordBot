@@ -3,10 +3,13 @@ using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
 using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
+using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -57,8 +60,10 @@ public class Bot
  
     public async Task DoShit()
     {
-        
 
+        var postgre = new PostgreSqlContext();
+        await postgre.GivePowerToUserAsync(Izasid);
+        await postgre.SaveChangesAsync();
     }
   
     /// <summary>
@@ -66,6 +71,8 @@ public class Bot
     /// </summary>
     private async Task RunBotAsync(string[] args)
     {
+
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

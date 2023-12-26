@@ -30,9 +30,12 @@ public abstract class Move
     /// Gets the description of the Move, based on the MoveType
     /// </summary>
 
-    public abstract string Description { get; }
 
-
+    /// <summary>
+    /// Gets description based on character. The description is mostly affected by the character's level
+    /// </summary>
+    /// <param name="level"></param>
+    public abstract string GetDescription(Character character);
 
     /// <summary>
     /// Gets the description of the Move, based on the move level

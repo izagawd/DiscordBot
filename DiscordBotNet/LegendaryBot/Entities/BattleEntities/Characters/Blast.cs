@@ -8,7 +8,7 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 public class MethaneSlap : BasicAttack
 {
-    public override string Description => $"Slaps the enemy, producing methane around the enemy, with a {DetonateChance}% chance to detonate all the bombs the target has";
+    public override string GetDescription(Character character) => $"Slaps the enemy, producing methane around the enemy, with a {DetonateChance}% chance to detonate all the bombs the target has";
     public int DetonateChance => 75;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
@@ -40,7 +40,7 @@ public class BlowAway : Skill
 {
     
     public override int MaxCooldown => 4;
-    public override string Description => $"Throws multiple bombs at the enemy, with a {BombInflictChance} each to inflict Bomb status effect";
+    public override string GetDescription(Character character) => $"Throws multiple bombs at the enemy, with a {BombInflictChance} each to inflict Bomb status effect";
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
@@ -74,8 +74,7 @@ public class BlowAway : Skill
 }
 public class VolcanicEruption : Surge
 {
-    public override string Description
-    => $"Makes the user charge up a very powerful explosion that hits all enemies for 4 turns!";
+    public override string GetDescription(Character character) => $"Makes the user charge up a very powerful explosion that hits all enemies for 4 turns!";
     
 
     public override int MaxCooldown  => 6;

@@ -1,10 +1,12 @@
 ﻿using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Rewards;
 
 namespace DiscordBotNet.LegendaryBot.Results;
 
 public class BattleResult
 {
-    public required ulong Coins { get; init; }
+    public IEnumerable<Reward> BattleRewards { get; init; } = [];
+
     public required CharacterTeam Winners { get; init; }
 
     public required int Turns { get; init; }
