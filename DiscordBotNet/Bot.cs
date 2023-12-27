@@ -123,15 +123,15 @@ public class Bot
     private async  Task OnSlashCommandError(SlashCommandsExtension extension,SlashCommandErrorEventArgs ev)
     {
         Console.WriteLine(ev.Exception);
-        await using var databaseContext = new PostgreSqlContext();
-        List<DiscordUser> involvedUsers = [];
-        involvedUsers.Add(ev.Context.User);
+
+        List<DiscordUser> involvedUsers = [ev.Context.User];
         if (ev.Context.ResolvedUserMentions is not null)
             involvedUsers.AddRange(ev.Context.ResolvedUserMentions);
         var involvedIds = involvedUsers.Select(i => i.Id).ToArray();
-        await databaseContext.UserData.Where(i => involvedIds.Contains(i.Id))
-            .ForEachAsync(i =>
-                i.IsOccupied = false);
+        await using var databaseContext = new PostgreSqlContext();
+        await databaseContext.UserData
+            .Where(i => involvedIds.Contains(i.Id))
+            .ForEachAsync(i => i.IsOccupied = false);
         var color = await databaseContext.UserData.FindOrCreateSelectAsync(ev.Context.User.Id, i => i.Color);
         await databaseContext.SaveChangesAsync();
         var embed = new DiscordEmbedBuilder()

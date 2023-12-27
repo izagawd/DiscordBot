@@ -63,3 +63,4 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\discordbotnet\bin\Debug\ne
 C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\DSharpPlus.Core.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Certificate.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\Polly.dll
+C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\Polly.Core.dll

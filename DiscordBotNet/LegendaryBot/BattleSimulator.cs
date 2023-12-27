@@ -258,6 +258,45 @@ public class BattleSimulator
 
 
 
+    private DiscordMessage _message;
+    /// <summary>
+    /// The team that has forfeited
+    /// </summary>
+    private CharacterTeam? _forfeited;
+    private async Task CheckForForfeitAsync()
+    {
+        using var buttonAwaitercancellationToken = new CancellationTokenSource();
+        using var delayCancellationToken = new CancellationTokenSource();
+
+        _message.WaitForButtonAsync(e =>
+        {
+            var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out BattleDecision decision);
+            if (!didParse) return false;
+            if (decision == BattleDecision.Forfeit)
+            {
+                var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
+                if (forfeitedTeam is not null)
+                {
+                    _forfeited = forfeitedTeam;
+                    e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                    delayCancellationToken.Cancel();
+                    return true;
+                }
+            }
+
+            return false;
+        }, buttonAwaitercancellationToken.Token);
+        try
+        {
+            await Task.Delay(5000,delayCancellationToken.Token);
+        }
+        catch
+        { 
+            // ignored
+        }
+
+        buttonAwaitercancellationToken.Cancel();
+    }
     public int Turn { get; set; } = 0;
     public List<string> AdditionalTexts { get; } = new();
     /// <summary>
@@ -265,7 +304,7 @@ public class BattleSimulator
     /// </summary>
     public async Task<BattleResult> StartAsync(InteractionContext context, DiscordMessage? message = null)
     {
-
+        _message = message;
         Team1.CurrentBattle = this;
         Team2.CurrentBattle = this;
         foreach (var i in CharacterTeams)
@@ -280,7 +319,7 @@ public class BattleSimulator
         _additionalText = "Have fun!";
      
         CharacterTeam? timedOut = null;
-        CharacterTeam? forfeited = null;
+
         
         Character? target = null;
         Turn = 0;
@@ -380,9 +419,9 @@ public class BattleSimulator
             components.Add(forfeitButton);
             messageBuilder
                 .AddComponents(components);
-            if (message is null)
-                message = await context.Channel.SendMessageAsync(messageBuilder);
-            else message = await message.ModifyAsync(messageBuilder);
+            if (_message is null)
+                _message = await context.Channel.SendMessageAsync(messageBuilder);
+            else _message = await _message.ModifyAsync(messageBuilder);
 
             _mainText = $"{ActiveCharacter} is thinking of a course of action...";
             if (_winners is not null) 
@@ -397,83 +436,23 @@ public class BattleSimulator
                 mostPowerfulStatusEffect = ActiveCharacter.StatusEffects.OrderByDescending(i => i.OverrideTurnType).First();
             if (ActiveCharacter.IsDead) await Task.Delay(5000);
  
-            else if ( decision != BattleDecision.Forfeit && mostPowerfulStatusEffect is not null &&  mostPowerfulStatusEffect.OverrideTurnType > 0 )
+            else if ( mostPowerfulStatusEffect is not null &&  mostPowerfulStatusEffect.OverrideTurnType > 0 )
             {
 
-                UsageResult overridenUsage  = mostPowerfulStatusEffect.OverridenUsage(ActiveCharacter,ref target, ref decision, UsageType.NormalUsage);
+                UsageResult overridenUsage  = mostPowerfulStatusEffect.OverridenUsage(ActiveCharacter,ref target!, ref decision, UsageType.NormalUsage);
                 if (overridenUsage.Text is not null) _mainText = overridenUsage.Text;
-                using var buttonAwaitercancellationToken = new CancellationTokenSource();
-                using var delayCancellationToken = new CancellationTokenSource();
-
-                message.WaitForButtonAsync(e =>
-                {
-                    var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out decision);
-                    if (!didParse) return false;
-                    if (decision == BattleDecision.Forfeit)
-                    {
-                        var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
-                        if (forfeitedTeam is not null)
-                        {
-                            forfeited = forfeitedTeam;
-                            e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-                            delayCancellationToken.Cancel();
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }, buttonAwaitercancellationToken.Token);
-                try
-                {
-                    await Task.Delay(5000,delayCancellationToken.Token);
-                }
-                catch
-                { 
-                    // ignored
-                }
-
-                buttonAwaitercancellationToken.Cancel();
+                await CheckForForfeitAsync();
             }
             
             else if (!ActiveCharacter.Team.IsPlayerTeam)
             {
-               ActiveCharacter.NonPlayerCharacterAi(ref target, ref decision);
-               using var buttonAwaitercancellationToken = new CancellationTokenSource();
-               using var delayCancellationToken = new CancellationTokenSource();
-
-               message.WaitForButtonAsync(e =>
-               {
-                   var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out decision);
-                   if (!didParse) return false;
-                   if (decision == BattleDecision.Forfeit)
-                   {
-                       var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
-                       if (forfeitedTeam is not null)
-                       {
-                           forfeited = forfeitedTeam;
-                           e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-                           delayCancellationToken.Cancel();
-                           return true;
-                       }
-                   }
-
-                   return false;
-               }, buttonAwaitercancellationToken.Token);
-               try
-               {
-                   await Task.Delay(5000,delayCancellationToken.Token);
-               }
-               catch
-               {
-                   // ignored
-               }
-                
-               buttonAwaitercancellationToken.Cancel();
+               ActiveCharacter.NonPlayerCharacterAi(ref target!, ref decision);
+               await CheckForForfeitAsync();
             }
             else
             {
   
-                var results = await message.WaitForButtonAsync(e =>
+                var results = await _message.WaitForButtonAsync(e =>
                 {
                     var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out decision);
                     if (!didParse) return false;
@@ -482,7 +461,7 @@ public class BattleSimulator
                         var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
                         if (forfeitedTeam is not null)
                         {
-                            forfeited = forfeitedTeam;
+                            _forfeited = forfeitedTeam;
                             e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                             return true;
                         }
@@ -523,9 +502,9 @@ public class BattleSimulator
                         .AddComponents(proceed)
                         .AddComponents(selectTarget)
                         .AddEmbed(embedToEdit.Build());
-                    message = await message.ModifyAsync(messageBuilder);
-                    using CancellationTokenSource buttonAwaiterToken = new CancellationTokenSource();
-                    message.WaitForSelectAsync(e =>
+                    _message = await _message.ModifyAsync(messageBuilder);
+                    using var buttonAwaiterToken = new CancellationTokenSource();
+                    _message.WaitForSelectAsync(e =>
                     {
                         if (e.User.Id == ActiveCharacter.Team.UserId)
                         {
@@ -535,7 +514,7 @@ public class BattleSimulator
                         return false;
                     },buttonAwaiterToken.Token);
                 
-                    var results1 = await  message.WaitForButtonAsync(e =>
+                    var results1 = await  _message.WaitForButtonAsync(e =>
                     {
                         if (e.User.Id == ActiveCharacter.Team.UserId && e.Interaction.Data.CustomId == "Proceed")
                         {
@@ -555,9 +534,9 @@ public class BattleSimulator
                 }
             }
 
-            if (forfeited is not null)
+            if (_forfeited is not null)
             {
-                _winners = CharacterTeams.First(i => i != forfeited);
+                _winners = CharacterTeams.First(i => i != _forfeited);
                 break;
             }
             if (_winners is not null)
@@ -567,17 +546,13 @@ public class BattleSimulator
                 
             }
             var move = ActiveCharacter[decision];
-   
 
 
-            if (move is not null)
-            {
-                var moveResult =  move.Utilize(ActiveCharacter,target, UsageType.NormalUsage);
+            var moveResult =  move?.Utilize(ActiveCharacter,target, UsageType.NormalUsage);
                 
-                if (moveResult.Text is not null)
-                {
-                    _mainText = moveResult.Text;
-                }
+            if (moveResult?.Text != null)
+            {
+                _mainText = moveResult.Text;
             }
 
 
@@ -605,24 +580,24 @@ public class BattleSimulator
         }
 
         var losers = CharacterTeams.First(i => i != _winners);
-        var _rewards = new List<Reward>();
+        var rewards = new List<Reward>();
 
         var coinsToGain = (ulong)(losers
                 .Average(i => i.Level) * 500 * losers.Count * 0.75f)
             .Round();
-        _rewards.Add(new CoinsReward(coinsToGain));
+        rewards.Add(new CoinsReward(coinsToGain));
         foreach (var i in losers)
         {
-            if (i.IsDead) _rewards.AddRange(i.DroppedRewards);
+            if (i.IsDead) rewards.AddRange(i.DroppedRewards);
         }
         
 
 
         return new BattleResult
         {
-            BattleRewards = _rewards,
+            BattleRewards = rewards,
             Turns = Turn,
-            Forfeited = forfeited,
+            Forfeited = _forfeited,
             Winners = _winners,
             TimedOut = timedOut
         };

@@ -9,14 +9,14 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="8.0.0" />
-    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01790" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01790" />
+    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01918" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01918" />
     <PackageReference Include="DSharpPlus.Core" Version="5.0.0-nightly-01576" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="5.0.0-nightly-01790" />
-    <PackageReference Include="DSharpPlus.Lavalink" Version="5.0.0-nightly-01790" />
-    <PackageReference Include="DSharpPlus.Rest" Version="5.0.0-nightly-01790" />
-    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01790" />
-    <PackageReference Include="DSharpPlus.VoiceNext" Version="5.0.0-nightly-01790" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="5.0.0-nightly-01918" />
+    <PackageReference Include="DSharpPlus.Lavalink" Version="5.0.0-nightly-01918" />
+    <PackageReference Include="DSharpPlus.Rest" Version="5.0.0-nightly-01918" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01918" />
+    <PackageReference Include="DSharpPlus.VoiceNext" Version="5.0.0-nightly-01918" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />

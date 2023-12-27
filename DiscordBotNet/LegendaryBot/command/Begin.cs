@@ -1,9 +1,10 @@
 ﻿using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.Arguments;
+using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Results;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,7 @@ public class Begin : BaseCommandClass
         DiscordColor userColor = userData.Color;
         if (userData.IsOccupied)
         {
+           
             embedToBuild
                 .WithTitle("Hmm")
                 .WithAuthor(author.Username, iconUrl: author.AvatarUrl)
@@ -43,6 +45,7 @@ public class Begin : BaseCommandClass
 
         if (userData.Tier != Tier.Unranked)
         {
+            
             embedToBuild
                 .WithTitle("Hmm")
                 .WithAuthor(author.Username, iconUrl: author.AvatarUrl)
@@ -71,17 +74,22 @@ public class Begin : BaseCommandClass
         {
             userData.AddToTeam(userData.Inventory.OfType<Player>().First());
         }
-        CoachChad coachChad = new CoachChad();
+        var coachChad = new CoachChad();
     
         coachChad.SetLevel(100);
-
-        DialogueArgument[] dialogueArguments =
+        var coachChadProfile = new DialogueProfile
+        {
+            CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
+            CharacterUrl = coachChad.IconUrl,
+        };
+        
+        
+        DialogueNormalArgument[] dialogueArguments =
         [
             new()
             {
-                CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
-                CharacterUrl = coachChad.IconUrl,
-                Dialogues =
+                Profile = coachChadProfile,
+                DialogueTexts =
                     [
                         "Hey Izagawd! my name is Chad. So you want to register as an adventurer? That's great!",
                         "But before you go on your adventure, I would need to confirm if you are strong enough to **Battle**!",
@@ -90,42 +98,42 @@ public class Begin : BaseCommandClass
             },
             new()
             {
-                CharacterUrl = lily.IconUrl,
-                CharacterColor = lily.Color, CharacterName = lily.Name,
-                Dialogues = [$"Let's give it our all {author.Username}!"]
+                Profile = lily.DialogueProfile,
+                DialogueTexts = [$"Let's give it our all {author.Username}!"]
             }
         ];
-            
+
 
 
         Dialogue theDialogue = new()
         {
+            NormalArguments = dialogueArguments,
 
-            Arguments = dialogueArguments,
             Title = "Tutorial",
             RespondInteraction = true,
 
         };
-        DialogueResult result = await theDialogue.LoadAsync(ctx.Interaction);
+        DialogueResult result = await theDialogue.LoadAsync(ctx);
+
         if (result.TimedOut)
         {
-            theDialogue.Arguments = 
-            [
-                new DialogueArgument
-                {
-                    CharacterColor = coachChad.Color,
-                    CharacterName = coachChad.Name,
-                    Dialogues =
-                       
-                        [
+            theDialogue = new Dialogue()
+            {
+                NormalArguments =
+                [
+                    new DialogueNormalArgument
+                    {
+                        Profile = coachChadProfile,
+                        DialogueTexts = [
                             "I can't believe you slept off..."
                         ],
-                    CharacterUrl = coachChad.IconUrl
-                }
-            ];
-            theDialogue.RemoveButtonsAtEnd = true;
+                    }
+                ],
+                RemoveButtonsAtEnd = true
+            };
 
-            await theDialogue.LoadAsync(ctx.Interaction,result.Message);
+
+            await theDialogue.LoadAsync(ctx,result.Message);
             return;
         }
 
@@ -134,39 +142,48 @@ public class Begin : BaseCommandClass
         userTeam.Add(lily);
 
         BattleResult battleResult = await  new BattleSimulator(await  userTeam.LoadAsync(), await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx, result.Message);
-        theDialogue.RemoveButtonsAtEnd = true;
+
         if (battleResult.TimedOut is not null)
         {
-            theDialogue.Arguments = 
-            [
-                new()
-                {
-                    CharacterUrl = coachChad.IconUrl,
-                    CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
-                    Dialogues = ["I can't believe you slept off during a battle..."]
-                }
-            ];
+            theDialogue = new Dialogue
+            {
+                Title = "Begin!",
+                NormalArguments =
+                [
+                    new()
+                    {
+                        Profile = coachChadProfile,
+                        DialogueTexts = ["I can't believe you slept off during a battle..."]
+                    }
+                ],
+                RemoveButtonsAtEnd = true
+            };
+    
             
 
-            await theDialogue.LoadAsync(ctx.Interaction, result.Message);
+            await theDialogue.LoadAsync(ctx, result.Message);
             return;
         }
 
-        theDialogue = new Dialogue() { RemoveButtonsAtEnd = true, RespondInteraction = false,Title = "Tutorial"};
-        theDialogue.Arguments =
-        [
-            new ()
-            {
-                CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
-                CharacterUrl = coachChad.IconUrl,
-                Dialogues =
-                   [
-                    "Seems like you have gotten more used to battle.",
-                    "You have completed the registration and you are now a **Bronze** tier adventurer! the lowest tier! you gotta work your way up the ranks!",
-                    "I will see you later then! I have other new adventurers to attend to! Let's go attend to them Lily!"
+        theDialogue = new Dialogue()
+        {
+
+            NormalArguments =        [
+                new ()
+                {
+                    Profile = coachChadProfile,
+                    DialogueTexts =
+                    [
+                        "Seems like you have gotten more used to battle.",
+                        "You have completed the registration and you are now a **Bronze** tier adventurer! the lowest tier! you gotta work your way up the ranks!",
+                        "I will see you later then! I have other new adventurers to attend to! Let's go attend to them Lily!"
                     ]
-            }
-        ];
+                }
+            ],
+            RemoveButtonsAtEnd = true, 
+            RespondInteraction = false,
+            Title = "Tutorial"
+        };
 
 
         userData.Tier = await DatabaseContext.UserData.FindOrCreateSelectAsync(author.Id, i => i.Tier);
@@ -176,25 +193,29 @@ public class Begin : BaseCommandClass
             userData.Tier = Tier.Bronze;
         };
         await DatabaseContext.SaveChangesAsync();
-        result =  await theDialogue.LoadAsync(ctx.Interaction, result.Message);
+        result =  await theDialogue.LoadAsync(ctx, result.Message);
         if (result.TimedOut)
         {
-            theDialogue.RemoveButtonsAtEnd = true;
-            theDialogue.Arguments = 
-            [
-                new()
-                {
-                    CharacterColor = coachChad.Color,
-                    CharacterName = coachChad.Name,
-                    Dialogues =
-                     
+            theDialogue = new Dialogue
+            {
+                RemoveButtonsAtEnd = true,
+                NormalArguments =
+                [
+                    new DialogueNormalArgument
+                    {
+                        Profile = coachChadProfile,
+                        DialogueTexts =
+
                         [
                             "You slept off after becoming an adventurer... you are strange..."
                         ],
-                    CharacterUrl = coachChad.IconUrl
-                }
-            ];
-            await theDialogue.LoadAsync(ctx.Interaction, result.Message);
+   
+                    }
+                ]
+            };
+                
+
+            await theDialogue.LoadAsync(ctx, result.Message);
         }
         if (result.Skipped)
         {

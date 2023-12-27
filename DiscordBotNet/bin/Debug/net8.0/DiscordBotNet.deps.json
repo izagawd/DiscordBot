@@ -9,14 +9,14 @@
       "DiscordBotNet/1.0.0": {
         "dependencies": {
           "AspNet.Security.OAuth.Discord": "8.0.0",
-          "DSharpPlus": "5.0.0-nightly-01790",
-          "DSharpPlus.CommandsNext": "5.0.0-nightly-01790",
+          "DSharpPlus": "5.0.0-nightly-01918",
+          "DSharpPlus.CommandsNext": "5.0.0-nightly-01918",
           "DSharpPlus.Core": "5.0.0-nightly-01576",
-          "DSharpPlus.Interactivity": "5.0.0-nightly-01790",
-          "DSharpPlus.Lavalink": "5.0.0-nightly-01790",
-          "DSharpPlus.Rest": "5.0.0-nightly-01790",
-          "DSharpPlus.SlashCommands": "5.0.0-nightly-01790",
-          "DSharpPlus.VoiceNext": "5.0.0-nightly-01790",
+          "DSharpPlus.Interactivity": "5.0.0-nightly-01918",
+          "DSharpPlus.Lavalink": "5.0.0-nightly-01918",
+          "DSharpPlus.Rest": "5.0.0-nightly-01918",
+          "DSharpPlus.SlashCommands": "5.0.0-nightly-01918",
+          "DSharpPlus.VoiceNext": "5.0.0-nightly-01918",
           "Microsoft.AspNetCore.Authentication.Certificate": "8.0.0",
           "Microsoft.EntityFrameworkCore": "8.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.0",
@@ -46,28 +46,28 @@
           }
         }
       },
-      "DSharpPlus/5.0.0-nightly-01790": {
+      "DSharpPlus/5.0.0-nightly-01918": {
         "dependencies": {
           "Microsoft.Extensions.Caching.Memory": "8.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
           "Newtonsoft.Json": "13.0.3",
-          "Polly": "7.2.3"
+          "Polly": "8.0.0"
         },
         "runtime": {
-          "lib/net7.0/DSharpPlus.dll": {
+          "lib/net8.0/DSharpPlus.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
         }
       },
-      "DSharpPlus.CommandsNext/5.0.0-nightly-01790": {
+      "DSharpPlus.CommandsNext/5.0.0-nightly-01918": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01790",
+          "DSharpPlus": "5.0.0-nightly-01918",
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         },
         "runtime": {
-          "lib/net7.0/DSharpPlus.CommandsNext.dll": {
+          "lib/net8.0/DSharpPlus.CommandsNext.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
@@ -84,59 +84,59 @@
           }
         }
       },
-      "DSharpPlus.Interactivity/5.0.0-nightly-01790": {
+      "DSharpPlus.Interactivity/5.0.0-nightly-01918": {
         "dependencies": {
           "ConcurrentHashSet": "1.3.0",
-          "DSharpPlus": "5.0.0-nightly-01790"
+          "DSharpPlus": "5.0.0-nightly-01918"
         },
         "runtime": {
-          "lib/net7.0/DSharpPlus.Interactivity.dll": {
+          "lib/net8.0/DSharpPlus.Interactivity.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
         }
       },
-      "DSharpPlus.Lavalink/5.0.0-nightly-01790": {
+      "DSharpPlus.Lavalink/5.0.0-nightly-01918": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01790"
+          "DSharpPlus": "5.0.0-nightly-01918"
         },
         "runtime": {
-          "lib/net7.0/DSharpPlus.Lavalink.dll": {
+          "lib/net8.0/DSharpPlus.Lavalink.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
         }
       },
-      "DSharpPlus.Rest/5.0.0-nightly-01790": {
+      "DSharpPlus.Rest/5.0.0-nightly-01918": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01790"
+          "DSharpPlus": "5.0.0-nightly-01918"
         },
         "runtime": {
-          "lib/net7.0/DSharpPlus.Rest.dll": {
+          "lib/net8.0/DSharpPlus.Rest.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
         }
       },
-      "DSharpPlus.SlashCommands/5.0.0-nightly-01790": {
+      "DSharpPlus.SlashCommands/5.0.0-nightly-01918": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01790",
+          "DSharpPlus": "5.0.0-nightly-01918",
           "Microsoft.Extensions.DependencyInjection": "8.0.0"
         },
         "runtime": {
-          "lib/net7.0/DSharpPlus.SlashCommands.dll": {
+          "lib/net8.0/DSharpPlus.SlashCommands.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
         }
       },
-      "DSharpPlus.VoiceNext/5.0.0-nightly-01790": {
+      "DSharpPlus.VoiceNext/5.0.0-nightly-01918": {
         "dependencies": {
-          "DSharpPlus": "5.0.0-nightly-01790",
+          "DSharpPlus": "5.0.0-nightly-01918",
           "DSharpPlus.VoiceNext.Natives": "1.0.0"
         },
         "runtime": {
-          "lib/net7.0/DSharpPlus.VoiceNext.dll": {
+          "lib/net8.0/DSharpPlus.VoiceNext.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
@@ -297,11 +297,22 @@
           }
         }
       },
-      "Polly/7.2.3": {
+      "Polly/8.0.0": {
+        "dependencies": {
+          "Polly.Core": "8.0.0"
+        },
         "runtime": {
-          "lib/netstandard2.0/Polly.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.2.3.0"
+          "lib/net6.0/Polly.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.0.2195"
+          }
+        }
+      },
+      "Polly.Core/8.0.0": {
+        "runtime": {
+          "lib/net6.0/Polly.Core.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.0.2195"
           }
         }
       },
@@ -394,19 +405,19 @@
       "path": "concurrenthashset/1.3.0",
       "hashPath": "concurrenthashset.1.3.0.nupkg.sha512"
     },
-    "DSharpPlus/5.0.0-nightly-01790": {
+    "DSharpPlus/5.0.0-nightly-01918": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-b9JziHOfHhkAJ5db9R95ZCWHLxpdzit3w/8xx4mbEfgxeZlXyOfOCuAdWXtRZAkKHlIW21FUVIWyhI0uP3PluQ==",
-      "path": "dsharpplus/5.0.0-nightly-01790",
-      "hashPath": "dsharpplus.5.0.0-nightly-01790.nupkg.sha512"
+      "sha512": "sha512-IqGFx4pDEDQD/ZMqg7ZjU2kH1lWQv+Q3udl3ZHE4hMhS0BgjomDOs0nIDHY5LEUhGu2WD+s/aZ7PwfMAMsPGug==",
+      "path": "dsharpplus/5.0.0-nightly-01918",
+      "hashPath": "dsharpplus.5.0.0-nightly-01918.nupkg.sha512"
     },
-    "DSharpPlus.CommandsNext/5.0.0-nightly-01790": {
+    "DSharpPlus.CommandsNext/5.0.0-nightly-01918": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-qSyyRImR2hPetDStS/wOjWS+wPT+TZlC6GSRTnfQATVbSAifon5kRu7WN8voNigKEL9AN5Co6SzsJbtESxvbvw==",
-      "path": "dsharpplus.commandsnext/5.0.0-nightly-01790",
-      "hashPath": "dsharpplus.commandsnext.5.0.0-nightly-01790.nupkg.sha512"
+      "sha512": "sha512-+2OpHUacoFINXdXgOMZ7pG71CemrskH9vLj7N6TiQEZf53n2APOIjQMfTYFxB+lpCQgOO2j1u6PZEyYfy9ROWw==",
+      "path": "dsharpplus.commandsnext/5.0.0-nightly-01918",
+      "hashPath": "dsharpplus.commandsnext.5.0.0-nightly-01918.nupkg.sha512"
     },
     "DSharpPlus.Core/5.0.0-nightly-01576": {
       "type": "package",
@@ -415,40 +426,40 @@
       "path": "dsharpplus.core/5.0.0-nightly-01576",
       "hashPath": "dsharpplus.core.5.0.0-nightly-01576.nupkg.sha512"
     },
-    "DSharpPlus.Interactivity/5.0.0-nightly-01790": {
+    "DSharpPlus.Interactivity/5.0.0-nightly-01918": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-oSgyHm2c8nKXgUSxuqI6hoF3nGbqStLU9tRZsvOdr5yGo9Aq9iMstX89ZGuuB7zPEFbU3P3ToL8RyYbFpDnWkw==",
-      "path": "dsharpplus.interactivity/5.0.0-nightly-01790",
-      "hashPath": "dsharpplus.interactivity.5.0.0-nightly-01790.nupkg.sha512"
+      "sha512": "sha512-Zc4DsqvgqPGyev+67rDLb6/HuTb/zBmDguTsylY065PPqwNtjdLWXKHx757DFPphzhyZdekEBNx2v2XPP+hh5w==",
+      "path": "dsharpplus.interactivity/5.0.0-nightly-01918",
+      "hashPath": "dsharpplus.interactivity.5.0.0-nightly-01918.nupkg.sha512"
     },
-    "DSharpPlus.Lavalink/5.0.0-nightly-01790": {
+    "DSharpPlus.Lavalink/5.0.0-nightly-01918": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-vdwyKQrw/TrvZaQgomihs47ZCHBHDCZDftq64wluE/vH4r90mEsJ0bhzuDiv8tjIZyIzIkfK1d2Q1tBzAlTfmw==",
-      "path": "dsharpplus.lavalink/5.0.0-nightly-01790",
-      "hashPath": "dsharpplus.lavalink.5.0.0-nightly-01790.nupkg.sha512"
+      "sha512": "sha512-s9pPu0EG8wOxbWIZbaEkJBCVtSsX14GWK3JTC6P8zGTYYYlf7Ty/KRWlFS66SkgihCoH4o+52iiauYuTcOf0bQ==",
+      "path": "dsharpplus.lavalink/5.0.0-nightly-01918",
+      "hashPath": "dsharpplus.lavalink.5.0.0-nightly-01918.nupkg.sha512"
     },
-    "DSharpPlus.Rest/5.0.0-nightly-01790": {
+    "DSharpPlus.Rest/5.0.0-nightly-01918": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-n+8X4d6MqvUWcQNAeZoicgH95xOujB9SdzHYo4yNCeFLioY0oozvQ3GcgN/c6EuyESeI5WCnHT/iWWXV8gJURA==",
-      "path": "dsharpplus.rest/5.0.0-nightly-01790",
-      "hashPath": "dsharpplus.rest.5.0.0-nightly-01790.nupkg.sha512"
+      "sha512": "sha512-WIwyGaoM5qUkoEfrXBkOj9qLT1pZONTPG+uYqdGTTr/UzW/SnSOu9UR/yFt9CzPFeUYWmxzljMTPOb2FE/IC0g==",
+      "path": "dsharpplus.rest/5.0.0-nightly-01918",
+      "hashPath": "dsharpplus.rest.5.0.0-nightly-01918.nupkg.sha512"
     },
-    "DSharpPlus.SlashCommands/5.0.0-nightly-01790": {
+    "DSharpPlus.SlashCommands/5.0.0-nightly-01918": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-d5YUkxYeD/AgSn+qm+qdvij4ndaexpNkQ1RvNUZ1GPNLvF2OCrXnrwqOshv055W4l4VdCtv4YWvtBiaxpY6fsg==",
-      "path": "dsharpplus.slashcommands/5.0.0-nightly-01790",
-      "hashPath": "dsharpplus.slashcommands.5.0.0-nightly-01790.nupkg.sha512"
+      "sha512": "sha512-nmzOWu7EfCf7b3Xkm4HcgmRFopMzbhIatPAhBDh9bhk96nxGNZdj028aF3WDHIIKZFMGiweE2uM3OvIcfe096g==",
+      "path": "dsharpplus.slashcommands/5.0.0-nightly-01918",
+      "hashPath": "dsharpplus.slashcommands.5.0.0-nightly-01918.nupkg.sha512"
     },
-    "DSharpPlus.VoiceNext/5.0.0-nightly-01790": {
+    "DSharpPlus.VoiceNext/5.0.0-nightly-01918": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-UeAFONulZT33jBjI8z03qaaCqIqYcrcmZpgbBBqE24UviBFPbnGHyGLY/XyuiDwGC9LTvNAhtAu8lSdPbu8IwQ==",
-      "path": "dsharpplus.voicenext/5.0.0-nightly-01790",
-      "hashPath": "dsharpplus.voicenext.5.0.0-nightly-01790.nupkg.sha512"
+      "sha512": "sha512-kgW5TMlMO+07WhS7WKbSIhr5UCFCh/Fs2ymNy1nRnmXl8QTUzKvIjoNtKlRDH7UphIDa0x5m3b6XAn+tHMzuIg==",
+      "path": "dsharpplus.voicenext/5.0.0-nightly-01918",
+      "hashPath": "dsharpplus.voicenext.5.0.0-nightly-01918.nupkg.sha512"
     },
     "DSharpPlus.VoiceNext.Natives/1.0.0": {
       "type": "package",
@@ -583,12 +594,19 @@
       "path": "npgsql.entityframeworkcore.postgresql/8.0.0",
       "hashPath": "npgsql.entityframeworkcore.postgresql.8.0.0.nupkg.sha512"
     },
-    "Polly/7.2.3": {
+    "Polly/8.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-DeCY0OFbNdNxsjntr1gTXHJ5pKUwYzp04Er2LLeN3g6pWhffsGuKVfMBLe1lw7x76HrPkLxKEFxBlpRxS2nDEQ==",
-      "path": "polly/7.2.3",
-      "hashPath": "polly.7.2.3.nupkg.sha512"
+      "sha512": "sha512-vwIDGI+vUCrufIFi2IpN0EnMyKFRyKHCiJ47yQUvBtAkE76f8xgFjrI7cLmLWv4NwSXZH6DxUG088QmEuHwIFw==",
+      "path": "polly/8.0.0",
+      "hashPath": "polly.8.0.0.nupkg.sha512"
+    },
+    "Polly.Core/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-g+8HnRjFTs8Ujz4Si4slrVrEK9M92DjvF75WvNpnF/lbT8M3/xW+tuD2udTiv2KuOsFOsRfOcZ12PddizrtXVA==",
+      "path": "polly.core/8.0.0",
+      "hashPath": "polly.core.8.0.0.nupkg.sha512"
     },
     "SixLabors.Fonts/2.0.1": {
       "type": "package",

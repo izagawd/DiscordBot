@@ -46,7 +46,7 @@ public abstract class BaseCommandClass : ApplicationCommandModule
         {
             i.IsOccupied = false;
         }
-        if(OccupiedUserDatas.Any())
+        if(OccupiedUserDatas.Count != 0)
         {
             var ids = OccupiedUserDatas.Select(i => i.Id).ToArray();
             await using var tempCtx = new PostgreSqlContext();
@@ -75,6 +75,9 @@ public abstract class BaseCommandClass : ApplicationCommandModule
             .ForEachAsync(i => i.IsOccupied = true);
         await tempCtx.SaveChangesAsync();
     }
+    /// <summary>
+    /// This exists cuz it's disposed at the end of a slash command and cuz I tend to forget to dispose disposable stuff
+    /// </summary>
     protected PostgreSqlContext DatabaseContext { get; private set; }
     public BaseCommandClass()
     {

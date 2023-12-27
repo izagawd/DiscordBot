@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Reflection;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.ModifierInterfaces;
@@ -616,6 +617,16 @@ public abstract partial  class Character : BattleEntity
             }
         } 
     }
+    /// <summary>
+    /// Derives dialogue profile from character properties
+    /// </summary>
+    public DialogueProfile DialogueProfile =>
+        new()
+        {
+            CharacterColor = Color,
+            CharacterName = Name,
+            CharacterUrl = IconUrl
+        };
 
     /// <summary>
     /// this will be used to get the items this character will drop if killed

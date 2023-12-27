@@ -46,11 +46,11 @@
             },
             "DSharpPlus": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01790, )"
+              "version": "[5.0.0-nightly-01918, )"
             },
             "DSharpPlus.CommandsNext": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01790, )"
+              "version": "[5.0.0-nightly-01918, )"
             },
             "DSharpPlus.Core": {
               "target": "Package",
@@ -58,23 +58,23 @@
             },
             "DSharpPlus.Interactivity": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01790, )"
+              "version": "[5.0.0-nightly-01918, )"
             },
             "DSharpPlus.Lavalink": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01790, )"
+              "version": "[5.0.0-nightly-01918, )"
             },
             "DSharpPlus.Rest": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01790, )"
+              "version": "[5.0.0-nightly-01918, )"
             },
             "DSharpPlus.SlashCommands": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01790, )"
+              "version": "[5.0.0-nightly-01918, )"
             },
             "DSharpPlus.VoiceNext": {
               "target": "Package",
-              "version": "[5.0.0-nightly-01790, )"
+              "version": "[5.0.0-nightly-01918, )"
             },
             "Microsoft.AspNetCore.Authentication.Certificate": {
               "target": "Package",
