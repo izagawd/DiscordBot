@@ -16,7 +16,7 @@ public class Dialogue
 {
 
     public string Title { get; init; } = "untitled";
-    public required IEnumerable<DialogueNormalArgument> NormalArguments { get; init; } = [];
+    public IEnumerable<DialogueNormalArgument> NormalArguments { get; init; } = [];
     /// <summary>
     /// Whether or not the dialogue can be skipped
     /// </summary>
@@ -25,7 +25,7 @@ public class Dialogue
     /// <summary>
     /// Set it to something when you want the user to make a decision at the end of the dialogue
     /// </summary>
-    public DialogueDecisionArgument? DialogueDecision { get; init; }
+    public DialogueDecisionArgument? DecisionArgument { get; init; }
 
     /// <summary>
     /// Responds to the interaction of the provided context if true. Used if the command is being responded to
@@ -52,13 +52,18 @@ public class Dialogue
     private async Task HandleArgumentDisplay(string text, bool isLast,
         params DiscordActionRowComponent[] discordActionRows)
     {
-
+    
         if (discordActionRows.Any(i =>
                 i.Components.Any(j => j.CustomId == "skip")))
         {
             discordActionRows.ToList().ForEach(i => i.Components.ToList().ForEach(j =>j.CustomId.Print()));
             throw new Exception("No discord component in the provided action rows should have an Id of \"skip\"\n" +
                                 "since it is already preserved for another purpose");
+        }
+
+        if (discordActionRows.Any(i => i.Components.Any(j => j is not DiscordButtonComponent)))
+        {
+            throw new Exception("Only buttons are allowed in the action rows");
         }
         var lastActionRow = discordActionRows.LastOrDefault();
 
@@ -76,7 +81,7 @@ public class Dialogue
             .AddEmbed(_embedBuilder)
             .AddComponents(discordActionRows.AsEnumerable());
         
-        if(isLast && RemoveButtonsAtEnd && DialogueDecision is null)
+        if(isLast && RemoveButtonsAtEnd && DecisionArgument is null)
         {
             messageBuilder.ClearComponents();
           
@@ -88,7 +93,7 @@ public class Dialogue
             var responseBuilder = new DiscordInteractionResponseBuilder()
                 .AddEmbed(_embedBuilder.Build()).AddComponents(Next, Skip);
       
-            if (isLast && RemoveButtonsAtEnd && DialogueDecision is null)
+            if (isLast && RemoveButtonsAtEnd && DecisionArgument is null)
             {
                 responseBuilder.ClearComponents();
             }
@@ -141,6 +146,10 @@ public class Dialogue
     /// <returns></returns>
     public async Task<DialogueResult> LoadAsync(InteractionContext context,DiscordMessage? message = null)
     {
+        if (NormalArguments.Count() <= 0 && DecisionArgument is null)
+        {
+            throw new Exception("There is no decision argument provided");
+        }
         _interactionContext = context;
 
 
@@ -167,7 +176,7 @@ public class Dialogue
                     [new DiscordActionRowComponent([Next])]);
 
                 
-                if(isLast && RemoveButtonsAtEnd && DialogueDecision is null) break;
+                if(isLast && RemoveButtonsAtEnd && DecisionArgument is null) break;
                 var result = await _message
                     .WaitForButtonAsync(e => e.User == _interactionContext.User);
                 await HandleInteractionResultAsync(result);
@@ -180,13 +189,13 @@ public class Dialogue
         }
 
         string? decision = null;
-        if (!_finished && DialogueDecision is not null)
+        if (!_finished && DecisionArgument is not null)
         {
             _embedBuilder
-                .WithAuthor(DialogueDecision.CharacterName, iconUrl: DialogueDecision.CharacterUrl)
-                .WithColor(DialogueDecision.CharacterColor);
-            await HandleArgumentDisplay(DialogueDecision.DialogueText, true,
-                DialogueDecision.ActionRows.ToArray());
+                .WithAuthor(DecisionArgument.CharacterName, iconUrl: DecisionArgument.CharacterUrl)
+                .WithColor(DecisionArgument.CharacterColor);
+            await HandleArgumentDisplay(DecisionArgument.DialogueText, true,
+                DecisionArgument.ActionRows.ToArray());
             var result = await _message.WaitForButtonAsync(e
                 => e.User == _interactionContext.User);
             decision = result.Result.Id;

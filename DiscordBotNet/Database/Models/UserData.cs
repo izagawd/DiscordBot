@@ -159,7 +159,7 @@ public class UserData : Model,  ICanBeLeveledUp
     /// <returns>the receive rewards text</returns>
     public string ReceiveRewards(string name, params Reward[] rewards)
     {
-        var rewardStringBuilder = new StringBuilder();
+        var rewardStringBuilder = new StringBuilder("");
         var mergedRewards = Reward.MergeAllRewards(rewards)
             .Order();
         

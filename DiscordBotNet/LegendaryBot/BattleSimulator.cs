@@ -136,6 +136,8 @@ public class BattleSimulator
 
     public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
     {
+        if(this is IBattleEvent<T> battleSimulatorEvent)
+            battleSimulatorEvent.OnBattleEvent(eventArgs,null);
         foreach (var i in Characters)
         {
             if (i is IBattleEvent<T> iAsEvent)
@@ -567,7 +569,7 @@ public class BattleSimulator
                 }
             }
             InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
-            foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
+            foreach (var i in ActiveCharacter.StatusEffects.ToArray())
             {
                 if (i.ExecuteStatusEffectAfterTurn)
                 {

@@ -47,25 +47,25 @@ public class QuestCommand : BaseCommandClass
         var questsShouldDisable = userData.Quests.Select(i => i.Completed).ToList();
         while(questsShouldDisable.Count < 4)
             questsShouldDisable.Add(true);
-        DiscordButtonComponent One = new DiscordButtonComponent(ButtonStyle.Primary, "1", "1",
+        DiscordButtonComponent one = new DiscordButtonComponent(ButtonStyle.Primary, "1", "1",
             questsShouldDisable[0]);
-        DiscordButtonComponent Two = new DiscordButtonComponent(ButtonStyle.Primary, "2", "2",questsShouldDisable[1]);
-        DiscordButtonComponent Three = new DiscordButtonComponent(ButtonStyle.Primary, "3", "3",questsShouldDisable[2]);
-        DiscordButtonComponent Four = new DiscordButtonComponent(ButtonStyle.Primary, "4", "4",questsShouldDisable[3]);
+        DiscordButtonComponent two = new DiscordButtonComponent(ButtonStyle.Primary, "2", "2",questsShouldDisable[1]);
+        DiscordButtonComponent three = new DiscordButtonComponent(ButtonStyle.Primary, "3", "3",questsShouldDisable[2]);
+        DiscordButtonComponent four = new DiscordButtonComponent(ButtonStyle.Primary, "4", "4",questsShouldDisable[3]);
         embed
             .WithTitle("These are your available quests")
             .WithDescription(questString);
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
-            .AddComponents([One, Two, Three, Four])
+            .AddComponents([one, two, three, four])
             .AddEmbed(embed));
-        IEnumerable<string> possibleIds = ["1", "2", "3", "4"];
-        var message =await  ctx.GetOriginalResponseAsync();
+        IEnumerable<string> possibleCustomIds = ["1", "2", "3", "4"];
+        var message =await ctx.GetOriginalResponseAsync();
         
         Quest quest = null;
         var buttonResult = await message.WaitForButtonAsync(i =>
         {
             if (i.User.Id != userData.Id) return false;
-            if (!possibleIds.Contains(i.Id)) return false;
+            if (!possibleCustomIds.Contains(i.Id)) return false;
             quest = userData.Quests[int.Parse(i.Id) -1];
             return true;
         });

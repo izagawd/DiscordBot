@@ -4,10 +4,10 @@ namespace DiscordBotNet.LegendaryBot.DialogueNamespace;
 
 public abstract class DialogueArgument
 {
-    public required DialogueProfile Profile { get; init; }
-    public DiscordColor CharacterColor => Profile.CharacterColor;
+    public required DialogueProfile DialogueProfile { get; init; }
+    public DiscordColor CharacterColor => DialogueProfile.CharacterColor;
 
-    public string CharacterName => Profile.CharacterName;
+    public string CharacterName => DialogueProfile.CharacterName;
 
-    public string CharacterUrl => Profile.CharacterUrl;
+    public string CharacterUrl => DialogueProfile.CharacterUrl;
 }

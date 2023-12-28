@@ -88,7 +88,7 @@ public class Begin : BaseCommandClass
         [
             new()
             {
-                Profile = coachChadProfile,
+                DialogueProfile = coachChadProfile,
                 DialogueTexts =
                     [
                         "Hey Izagawd! my name is Chad. So you want to register as an adventurer? That's great!",
@@ -98,7 +98,7 @@ public class Begin : BaseCommandClass
             },
             new()
             {
-                Profile = lily.DialogueProfile,
+                DialogueProfile = lily.DialogueProfile,
                 DialogueTexts = [$"Let's give it our all {author.Username}!"]
             }
         ];
@@ -123,7 +123,7 @@ public class Begin : BaseCommandClass
                 [
                     new DialogueNormalArgument
                     {
-                        Profile = coachChadProfile,
+                        DialogueProfile = coachChadProfile,
                         DialogueTexts = [
                             "I can't believe you slept off..."
                         ],
@@ -152,7 +152,7 @@ public class Begin : BaseCommandClass
                 [
                     new()
                     {
-                        Profile = coachChadProfile,
+                        DialogueProfile = coachChadProfile,
                         DialogueTexts = ["I can't believe you slept off during a battle..."]
                     }
                 ],
@@ -171,7 +171,7 @@ public class Begin : BaseCommandClass
             NormalArguments =        [
                 new ()
                 {
-                    Profile = coachChadProfile,
+                    DialogueProfile = coachChadProfile,
                     DialogueTexts =
                     [
                         "Seems like you have gotten more used to battle.",
@@ -203,7 +203,7 @@ public class Begin : BaseCommandClass
                 [
                     new DialogueNormalArgument
                     {
-                        Profile = coachChadProfile,
+                        DialogueProfile = coachChadProfile,
                         DialogueTexts =
 
                         [
