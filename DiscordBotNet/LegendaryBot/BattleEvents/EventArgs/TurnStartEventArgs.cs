@@ -2,7 +2,7 @@
 
 namespace DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 
-public class TurnStartEventArgs : System.EventArgs
+public class TurnStartEventArgs : BattleEventArgs
 {
     /// <summary>
     /// The character that the turn was started with

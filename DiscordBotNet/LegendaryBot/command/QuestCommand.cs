@@ -20,14 +20,20 @@ public class QuestCommand : BaseCommandClass
         var userData = await DatabaseContext.UserData
             .Include(i => i.Quests)
             .FindOrCreateAsync(author.Id);
-        
-
         var questString = "";
         var embed = new DiscordEmbedBuilder()
             .WithUser(author)
             .WithColor(userData.Color)
             .WithTitle("Hmm")
             .WithDescription("you have no quests");
+        if (userData.Tier == Tier.Unranked)
+        {
+            
+            embed.WithDescription("Use the begin command before doing any quests");
+            await ctx.CreateResponseAsync(embed);
+            return;
+        }
+
         if (userData.Quests.Count <= 0)
         {
            await ctx.CreateResponseAsync(embed);

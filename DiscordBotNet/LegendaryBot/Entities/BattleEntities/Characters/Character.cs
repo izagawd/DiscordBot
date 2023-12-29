@@ -9,7 +9,6 @@ using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Moves;
-using DiscordBotNet.LegendaryBot.Quests;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.Rewards;
 using DiscordBotNet.LegendaryBot.StatusEffects;
@@ -687,7 +686,7 @@ public abstract partial  class Character : BattleEntity
         if(Surge is not null && Surge.CanBeUsed(this))
             possibleDecisions.Add(BattleDecision.Surge);
 
-        Character[] possibleTargets = {};
+        Character[] possibleTargets = [];
         Move move;
         BattleDecision moveDecision = BattleDecision.BasicAttack;
         while (!possibleTargets.Any())
@@ -800,7 +799,7 @@ public abstract partial  class Character : BattleEntity
 
     }
 
-    public virtual bool IsLimited { get; set; } = true;
+    public virtual bool IsLimited { get; protected set; } = false;
     public override int MaxLevel => 60;
 
     public void SetLevel(int level)
@@ -855,9 +854,9 @@ public abstract partial  class Character : BattleEntity
     
   
 
-    protected void TakeDamageWhileConsideringShield(int damage)
+    public void TakeDamageWhileConsideringShield(int damage)
     {
-        Barrier? shield = Shield;
+        var shield = Shield;
 
         if (shield is null)
         {
@@ -904,17 +903,23 @@ public abstract partial  class Character : BattleEntity
         int damageModifyPercentage = 0;
         damage = BattleFunction.DamageFormula(damage, Defense);
 
-        switch (BattleFunction.GetAdvantageLevel(caster.Element, Element)){
-            case ElementalAdvantage.Disadvantage:
-                damageModifyPercentage -= 30;
-                break;
-            case ElementalAdvantage.Advantage:
 
-                damageModifyPercentage += 30;
-                break;
+        var advantageLevel = BattleFunction.GetAdvantageLevel(caster.Element, Element);
+        if (damageArgs.AffectedByCasterElement)
+        {
+            switch (advantageLevel){
+                case ElementalAdvantage.Disadvantage:
+                    damageModifyPercentage -= 30;
+                    break;
+                case ElementalAdvantage.Advantage:
+
+                    damageModifyPercentage += 30;
+                    break;
+            }
         }
 
-        damage = (int)Math.Round(damage*0.01*(damageModifyPercentage+100));
+
+        damage = (damage * 0.01 * (damageModifyPercentage + 100)).Round();
         var chance = caster.CriticalChance;
         if (damageArgs.AlwaysCrits)
         {
@@ -930,12 +935,27 @@ public abstract partial  class Character : BattleEntity
         int actualDamage = damage.Round();
         if (damageText is null)
         {
-            damageText = $"{caster} dealt {actualDamage} damage!";
+            damageText = $"{caster} dealt {actualDamage} damage to {this}!";
         }
 
         damageText = damageText.Replace("$", actualDamage.ToString());
+        if (damageArgs.AffectedByCasterElement)
+        {
+            switch (advantageLevel)
+            {
+                case ElementalAdvantage.Advantage:
+                    damageText = "It's super effective! " + damageText;
+                    break;
+                case ElementalAdvantage.Disadvantage:
+                    damageText = "It's not that effective... " + damageText;
+                    break;
+            }
+        }
+
         if (didCrit)
             damageText = "A critical hit! " + damageText;
+
+    
         CurrentBattle.AdditionalTexts.Add(damageText);
         
         TakeDamageWhileConsideringShield(actualDamage);
@@ -970,10 +990,10 @@ public abstract partial  class Character : BattleEntity
     [NotMapped]
     public abstract BasicAttack BasicAttack { get; }
     
-    public string GetNameWithPosition(bool IsEnemy)
+    public string GetNameWithPosition(bool isEnemy)
     {
         string side = "enemy";
-        if (!IsEnemy)
+        if (!isEnemy)
         {
             side = "team mate";
         }
@@ -1063,7 +1083,7 @@ public abstract partial  class Character : BattleEntity
     public bool IsActive => CurrentBattle.ActiveCharacter == this;
 
 
-
+ 
     public override ulong GetRequiredExperienceToNextLevel(int level)
     {
        return BattleFunction.NextLevelFormula(Level);

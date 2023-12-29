@@ -15,7 +15,7 @@ namespace DiscordBotNet.LegendaryBot.DialogueNamespace;
 public class Dialogue
 {
 
-    public string Title { get; init; } = "untitled";
+    public  required string Title { get; init; } = "untitled";
     public IEnumerable<DialogueNormalArgument> NormalArguments { get; init; } = [];
     /// <summary>
     /// Whether or not the dialogue can be skipped

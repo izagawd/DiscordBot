@@ -6,7 +6,6 @@ using DiscordBotNet.LegendaryBot.Entities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Quests;
-using DiscordBotNet.LegendaryBot.Rewards;
 using DiscordBotNet.LegendaryBot.Stats;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +27,7 @@ public class PostgreSqlContext : DbContext
     public DbSet<Quote> Quote { get; set; }
 
     /// <summary>
-    /// this should be called before any query if u want to use it
+    /// this should be called before any query if u want to ever use this method
     /// </summary>
     /// <param name="userId"> the user id u want  to refresh to a new day</param>
     public static async Task CheckForNewDayAsync(ulong userId)
@@ -61,13 +60,14 @@ public class PostgreSqlContext : DbContext
         await context.SaveChangesAsync();
 
     }
+
+    private static readonly Type[] _assemblyTypes;
     static PostgreSqlContext()
     {
-
-        EntityClasses = Bot.AllAssemblyTypes
+        _assemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
+        EntityClasses = _assemblyTypes
             .Where(type => type.IsRelatedToType(typeof(Entity))).ToArray();
-        GearStatClasses =
-            Bot.AllAssemblyTypes
+        GearStatClasses = _assemblyTypes
                 .Where(type => type.IsRelatedToType(typeof(GearStat)) && !type.IsAbstract)
                 .ToArray();
 
@@ -100,7 +100,7 @@ public class PostgreSqlContext : DbContext
         foreach (var i in user.Inventory.OfType<Character>())
         {
             i.SetLevel(60);
-            foreach (var j in Bot.AllAssemblyTypes.Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(Gear))))
+            foreach (var j in _assemblyTypes.Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(Gear))))
             {
                 var gear = (Gear)Activator.CreateInstance(j)!;
                 Type mainStat = null;
@@ -152,7 +152,7 @@ public class PostgreSqlContext : DbContext
         }
     }
 
-    private static IEnumerable<Type> QuestTypes =
+    private static readonly IEnumerable<Type> QuestTypes =
         Assembly.GetExecutingAssembly()
             .GetTypes()
             .Where(i => i.IsSubclassOf(typeof(Quest)) 

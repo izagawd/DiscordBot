@@ -3,7 +3,7 @@ using DiscordBotNet.LegendaryBot.StatusEffects;
 
 namespace DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 
-public class CharacterAddStatusEffectEvent : System.EventArgs
+public class CharacterAddStatusEffectEvent : BattleEventArgs
 {
     public Character CharacterThatCausedTheAdding { get; }
     public Character CharacterToAddTo { get;}

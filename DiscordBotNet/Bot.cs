@@ -2,14 +2,10 @@
 using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
+
 using DiscordBotNet.Database;
-using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
-using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -19,6 +15,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
+
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -27,18 +24,72 @@ namespace DiscordBotNet;
 
 
 
-public class Bot
+public static class Bot
 {
 
-    public static IEnumerable<BaseCommandClass> Commands { get; private set; } = [];
+    public static ImmutableArray<BaseCommandClass> CommandInstanceSamples { get; private set; } = [];
 
 
 
-    public static readonly IEnumerable<Type> AllAssemblyTypes = Assembly.GetExecutingAssembly()
+    private static readonly IEnumerable<Type> AllAssemblyTypes = Assembly.GetExecutingAssembly()
         .GetTypes().ToImmutableArray();
 
+    public static async Task DoShit()
+    {
 
-    private static async Task Main(string[] args) => await new Bot().RunBotAsync(args);
+    }
+
+
+    
+    private static async Task Main(string[] args)
+    {
+
+        var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
+        var stopwatch = new Stopwatch(); 
+        Console.WriteLine("Making all users unoccupied...");
+        stopwatch.Start();
+
+        await using (var ctx = new PostgreSqlContext())
+        {
+            await ctx.UserData
+                .ForEachAsync(i => i.IsOccupied = false);
+            var count = await ctx.UserData.CountAsync();
+            await ctx.SaveChangesAsync();
+
+            Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to make {count} users unoccupied");
+        }
+
+        CommandInstanceSamples = commandArrayType
+            .Select(i => (BaseCommandClass)Activator.CreateInstance(i)!)
+            .ToImmutableArray();
+
+        var config = new DiscordConfiguration
+        {
+            Token = ConfigurationManager.AppSettings["BotToken"]!,
+            Intents = DiscordIntents.All,
+            AutoReconnect = true,
+        };
+        
+        
+        Client = new DiscordClient(config);
+        
+        var slashCommandsExtension = Client.UseSlashCommands();
+        
+        slashCommandsExtension.RegisterCommands(Assembly.GetExecutingAssembly());
+        
+        slashCommandsExtension.SlashCommandErrored += OnSlashCommandError;
+        Client.UseVoiceNext(new VoiceNextConfiguration { AudioFormat = AudioFormat.Default});
+        var interactivityConfiguration = new InteractivityConfiguration
+        {
+            Timeout = TimeSpan.FromMinutes(2),
+        };
+        Client.UseInteractivity(interactivityConfiguration);
+        Client.SocketOpened += OnReady;
+  
+        await Client.ConnectAsync();
+
+        await Website.Start(args);
+    }
 
 
     /// <summary>
@@ -56,71 +107,9 @@ public class Bot
 
 
     public static string GlobalFontName => "Arial";
-    
- 
-    public async Task DoShit()
-    {
-
-        var postgre = new PostgreSqlContext();
-        await postgre.GivePowerToUserAsync(Izasid);
-        await postgre.SaveChangesAsync();
-    }
-  
-    /// <summary>
-    /// This is where the program starts
-    /// </summary>
-    private async Task RunBotAsync(string[] args)
-    {
 
 
-        var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
-        var stopwatch = new Stopwatch(); 
-        Console.WriteLine("Making all users unoccupied...");
-        stopwatch.Start();
-
-        await using (var ctx = new PostgreSqlContext())
-        {
-            await ctx.UserData
-                .ForEachAsync(i => i.IsOccupied = false);
-            var count = await ctx.UserData.CountAsync();
-            await ctx.SaveChangesAsync();
-
-            Console.WriteLine($"Took a total of {stopwatch.Elapsed.TotalMilliseconds}ms to make {count} users unoccupied");
-        }
-
-        
-        Commands = 
-            Array.ConvertAll(commandArrayType, element => (BaseCommandClass)Activator.CreateInstance(element)!)!;
-        var config = new DiscordConfiguration
-        {
-            Token = ConfigurationManager.AppSettings["BotToken"]!,
-            Intents = DiscordIntents.All,
-            AutoReconnect = true,
-        };
-        
-        var client = new DiscordClient(config);
-        Client = client;
-        var slashCommandsExtension = client.UseSlashCommands();
-        
-        slashCommandsExtension.RegisterCommands(Assembly.GetExecutingAssembly());
-        
-        slashCommandsExtension.SlashCommandErrored += OnSlashCommandError;
-        client.UseVoiceNext(new VoiceNextConfiguration { AudioFormat = AudioFormat.Default});
-        var interactivityConfiguration = new InteractivityConfiguration
-        {
-            Timeout = TimeSpan.FromMinutes(2),
-        };
-        client.UseInteractivity(interactivityConfiguration);
-        client.SocketOpened += OnReady;
-  
-        await client.ConnectAsync();
-
-        await Website.Start(args);
-        
-    }
-
-
-    private async  Task OnSlashCommandError(SlashCommandsExtension extension,SlashCommandErrorEventArgs ev)
+    private static async  Task OnSlashCommandError(SlashCommandsExtension extension,SlashCommandErrorEventArgs ev)
     {
         Console.WriteLine(ev.Exception);
 
@@ -143,9 +132,8 @@ public class Bot
     }
     
 
-    private Task OnReady(DiscordClient client, SocketEventArgs e)
+    private static Task OnReady(DiscordClient client, SocketEventArgs e)
     {
-
         Console.WriteLine("Ready!");
         return Task.CompletedTask;
     }

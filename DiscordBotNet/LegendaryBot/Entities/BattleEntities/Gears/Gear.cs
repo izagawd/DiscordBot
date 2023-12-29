@@ -79,7 +79,9 @@ public abstract class Gear : BattleEntity
         }
         else
         {
-            var statsToUpgrade = Substats.Where(i => substatsToPrioritize.Contains(i.GetType())).ToArray();
+            var statsToUpgrade = Substats
+                .Where(i => substatsToPrioritize.Contains(i.GetType()))
+                .ToArray();
             if (!statsToUpgrade.Any())
                 statsToUpgrade = Substats.ToArray();
             randomStat = BasicFunction.RandomChoice(statsToUpgrade);

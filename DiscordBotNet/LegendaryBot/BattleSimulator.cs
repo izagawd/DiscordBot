@@ -134,8 +134,9 @@ public class BattleSimulator
         return image;
     }
 
-    public void InvokeBattleEvent<T>(T eventArgs) where T : EventArgs
+    public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
+
         if(this is IBattleEvent<T> battleSimulatorEvent)
             battleSimulatorEvent.OnBattleEvent(eventArgs,null);
         foreach (var i in Characters)
@@ -601,7 +602,8 @@ public class BattleSimulator
             Turns = Turn,
             Forfeited = _forfeited,
             Winners = _winners,
-            TimedOut = timedOut
+            TimedOut = timedOut,
+            Message = _message
         };
     }
 }

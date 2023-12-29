@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
 using SixLabors.ImageSharp.PixelFormats;
@@ -22,7 +23,8 @@ public abstract class Blessing : BattleEntity
     public static Blessing[] FourStarBlessingExamples => _fourStarBlessingExamples.ToArray();
     public static Blessing[] FiveStarBlessingExamples => _fiveStarBlessingExamples.ToArray();
     
-    private static Type[] _blessingTypes = Bot.AllAssemblyTypes.Where(i =>i.IsSubclassOf(typeof(Blessing)) && !i.IsAbstract)
+    private static Type[] _blessingTypes = Assembly.GetExecutingAssembly().GetTypes()
+        .Where(i =>i.IsSubclassOf(typeof(Blessing)) && !i.IsAbstract)
         .ToArray();
 
     public static Type[] BlessingTypes => _blessingTypes.ToArray();
@@ -88,7 +90,7 @@ public abstract class Blessing : BattleEntity
 
     }
 
-    public virtual bool CanBeWished { get; set; } = true;
+    public virtual bool IsLimited => false;
     public Character? Character { get; set; }
     public override ExperienceGainResult IncreaseExp(ulong experience)
     {

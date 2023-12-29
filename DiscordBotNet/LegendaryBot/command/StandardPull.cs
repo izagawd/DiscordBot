@@ -40,19 +40,24 @@ public class StandardPull : BaseCommandClass
         switch (choice)
         {
             case PullChoice.ThreeStarBlessing:
-                acquiredType = BasicFunction.RandomChoice(Blessing.ThreeStarBlessingExamples).GetType();
+                acquiredType = BasicFunction.RandomChoice(Blessing.ThreeStarBlessingExamples
+                    .Where(i => !i.IsLimited)).GetType();
                 break;
             case PullChoice.FourStarBlessing:
-                acquiredType = BasicFunction.RandomChoice(Blessing.FourStarBlessingExamples).GetType();
+                acquiredType = BasicFunction.RandomChoice(Blessing.FourStarBlessingExamples
+                    .Where(i => !i.IsLimited)).GetType();
                 break;
             case PullChoice.FiveStarBlessing:
-                acquiredType = BasicFunction.RandomChoice(Blessing.FiveStarBlessingExamples).GetType();
+                acquiredType = BasicFunction.RandomChoice(Blessing.FiveStarBlessingExamples
+                    .Where(i => !i.IsLimited)).GetType();
                 break;
             case PullChoice.ThreeStarCharacter:
-                acquiredType = BasicFunction.RandomChoice(Character.ThreeStarCharacterExamples).GetType();
+                acquiredType = BasicFunction.RandomChoice(Character.ThreeStarCharacterExamples
+                    .Where(i => !i.IsLimited)).GetType();
                 break;
             case PullChoice.FourStarCharacter:
-                acquiredType = BasicFunction.RandomChoice(Character.FourStarCharacterExamples).GetType();
+                acquiredType = BasicFunction.RandomChoice(Character.FourStarCharacterExamples
+                    .Where(i => !i.IsLimited)).GetType();
                 break;
 
             case PullChoice.FiveStarCharacter:

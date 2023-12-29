@@ -6,6 +6,8 @@ namespace DiscordBotNet.LegendaryBot.Results;
 
 public class DamageArgs
 {
+
+    public bool AffectedByCasterElement { get; init; } = true;
     public Move? Move { get; private set; }
     public StatusEffect? StatusEffect { get; private set; }
 

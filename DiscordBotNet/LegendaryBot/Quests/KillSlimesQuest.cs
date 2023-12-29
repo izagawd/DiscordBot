@@ -1,8 +1,6 @@
 ﻿using DiscordBotNet.Database;
-using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Entities.Items.Shards;
 using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -15,7 +13,7 @@ public class KillSlimesQuest : Quest
 
     public override async  Task<bool> StartQuest(InteractionContext context,DiscordMessage? message = null)
     {
-        var slimeTeam = new CharacterTeam([new Slime(),new Slime(),new Slime(), new Slime()]);
+        var slimeTeam = new CharacterTeam([new Slime(),new Slime()]);
         var postgre = new PostgreSqlContext();
         var userData = await postgre.UserData
             .IncludeTeamWithAllEquipments()

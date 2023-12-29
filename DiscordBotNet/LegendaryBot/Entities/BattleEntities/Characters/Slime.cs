@@ -1,6 +1,4 @@
 ﻿using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.BattleEvents;
-using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.Rewards;
@@ -19,7 +17,7 @@ public class GooeyStrike : BasicAttack
         var damageResult = target.Damage(new DamageArgs(this)
         {
             Caster = owner,
-            Damage = owner.Attack * 2,
+            Damage = owner.Attack * 1.7,
             DamageText = $"{owner} used a slime attack at {target} and dealt $ damage!"
         });
         if (BasicFunction.RandomChance(10))

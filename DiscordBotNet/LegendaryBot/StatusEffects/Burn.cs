@@ -20,8 +20,8 @@ public class Burn : StatusEffect
         base.PassTurn(affected);
         affected.Damage(        new DamageArgs(this)
         {
-       
-            Damage = _characterAttack *3,
+            AffectedByCasterElement = false,
+            Damage = _characterAttack * 1.7,
             Caster = Caster,
             CanCrit = false,
             DamageText =$"{affected} took $ damage from burn!"

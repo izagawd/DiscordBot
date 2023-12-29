@@ -18,10 +18,6 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/theiz/OneDrive/Documents/coding/CS-Workspace/DiscordBotNet/Pages/add/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcYWRkXEluZGV4LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/theiz/OneDrive/Documents/coding/CS-Workspace/DiscordBotNet/Pages/blessings/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcYmxlc3NpbmdzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -40,6 +36,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/theiz/OneDrive/Documents/coding/CS-Workspace/DiscordBotNet/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/theiz/OneDrive/Documents/coding/CS-Workspace/DiscordBotNet/Pages/modify/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcbW9kaWZ5XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/theiz/OneDrive/Documents/coding/CS-Workspace/DiscordBotNet/Pages/Privacy.cshtml]

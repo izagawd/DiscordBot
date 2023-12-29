@@ -7,6 +7,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
+using static System.Threading.Tasks.Task<bool>;
 
 
 namespace DiscordBotNet.LegendaryBot.command;
@@ -52,10 +53,13 @@ public class Quote : BaseCommandClass
             .WithFooter($"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {counts.likes} Dislikes: {counts.dislikes}");
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embedBuilder).AddComponents(like,dislike));
         var message = await ctx.GetOriginalResponseAsync();
+
         await message.WaitForButtonAsync(i =>
         {
-            Task.Run(async () =>
+            
+             Task.Run(async () =>
             {
+                
                 var choice = i.Interaction.Data.CustomId;
                 if (!new[] { "like", "dislike" }.Contains(choice)) return;
                 var newDbContext = new PostgreSqlContext();

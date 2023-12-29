@@ -2,7 +2,7 @@
 
 namespace DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 
-public class TurnEndEventArgs : System.EventArgs
+public class TurnEndEventArgs : BattleEventArgs
 {
     /// <summary>
     /// The character that the turn was ended with

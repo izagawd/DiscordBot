@@ -4,5 +4,5 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 
 public class Weapon : Gear
 {
-    public sealed override IEnumerable<Type> PossibleMainStats { get; } = new[] { GearStat.AttackFlatType };
+    public sealed override IEnumerable<Type> PossibleMainStats { get; } = [GearStat.AttackFlatType];
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 using System.Text.Json.Nodes;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -54,8 +55,8 @@ public abstract class GearStat
             {
                 var doc = JsonNode.Parse(i).AsObject();
 
-                var type = Bot.AllAssemblyTypes.First(i =>
-                    i.IsRelatedToType(typeof(GearStat)) && i.Name == doc["Discriminator"]!.GetValue<string>());
+                var type = AllGearStatTypes.First(j =>
+                    j.IsRelatedToType(typeof(GearStat)) && j.Name == doc["Discriminator"]!.GetValue<string>());
                 var stat = (GearStat)Activator.CreateInstance(type)!;
                 stat.TimesIncreased = doc["TimesIncreased"]!.GetValue<int>();
                 stat.Value = doc["Value"]!.GetValue<int>();
@@ -97,8 +98,9 @@ public abstract class GearStat
 
     static GearStat()
     {
-
-        AllGearStatTypes = Bot.AllAssemblyTypes.Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(GearStat)));
+        
+        AllGearStatTypes = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(GearStat)));
     }
     
     public override string ToString()

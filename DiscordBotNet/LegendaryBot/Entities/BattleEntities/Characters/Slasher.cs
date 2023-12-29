@@ -79,7 +79,7 @@ public class SlashOfPrecision : Surge
         {
             CanCrit = true,
             Caster = owner,
-            Damage = owner.Attack * 1.7 * 2,
+            Damage = owner.Attack * 1.7 *2,
             AlwaysCrits = true,
             DamageText = $"The slash was so precise it dealt $ damage to {target}!",
      

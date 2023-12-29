@@ -28,7 +28,7 @@ public class VolcanicEruptionCharging : StatusEffect
                 DamageResult damageResult =  i.Damage(                new DamageArgs(this)
                 {
             
-                    Damage = affected.Attack * 4,
+                    Damage = affected.Attack * 1.7 * 2,
                     Caster = affected,
                     CanCrit = true,
                     DamageText =$"{affected} shot out a very powerful blast that dealt $ damage to {i}!"

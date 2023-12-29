@@ -110,6 +110,7 @@ public class Ignite : Surge
 }
 public class Player : Character
 {
+    public override bool IsLimited => true;
     public override bool IsInStandardBanner => false;
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
 
@@ -189,9 +190,9 @@ public class Player : Character
             Color = UserData.Color;
         } 
     }
-    public override async Task LoadAsync()
+    public override Task LoadAsync()
     {
-        await LoadAsync(discordUser: null);
+        return LoadAsync(discordUser: null);
     }
     public override string Name { get; protected set; }
 

@@ -2,7 +2,7 @@
 
 namespace DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 
-public class CharacterDeathEventArgs : System.EventArgs
+public class CharacterDeathEventArgs : BattleEventArgs
 {
     public Character Killed { get;}
 

@@ -4,7 +4,6 @@ using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Results;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
@@ -119,6 +118,7 @@ public class Begin : BaseCommandClass
         {
             theDialogue = new Dialogue()
             {
+                Title = "Beginning Of Journey",
                 NormalArguments =
                 [
                     new DialogueNormalArgument
@@ -191,6 +191,7 @@ public class Begin : BaseCommandClass
         if (userData.Tier == Tier.Unranked)
         {
             userData.Tier = Tier.Bronze;
+            userData.LastTimeChecked = DateTime.UtcNow.AddDays(-1);
         };
         await DatabaseContext.SaveChangesAsync();
         result =  await theDialogue.LoadAsync(ctx, result.Message);
@@ -198,6 +199,7 @@ public class Begin : BaseCommandClass
         {
             theDialogue = new Dialogue
             {
+                Title = "Beginning of journey",
                 RemoveButtonsAtEnd = true,
                 NormalArguments =
                 [

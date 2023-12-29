@@ -23,6 +23,7 @@ public static class PostgreExtension
     {
         return queryable.OrderBy(i => EF.Functions.Random()).FirstOrDefault();
     }
+
     public static DbContext GetDbContext(this IQueryable query) 
     {
 
@@ -210,7 +211,6 @@ public static class PostgreExtension
         {
             var tempData = new T { Id = id };
             await queryable.GetDbContext().AddRangeAsync(tempData);
-            
             data = tempData.Map(selectExpression);
         }
         return data;

@@ -28,8 +28,8 @@ public class Bomb : StatusEffect
         affected.StatusEffects.Remove(this);
         return affected.Damage(        new DamageArgs(this)
         {
-         
-            Damage = Attack * 1.871,
+            AffectedByCasterElement = false,
+            Damage = Attack * 3,
             Caster = Caster,
             CanCrit = false,
             DamageText = $"Bomb detonated on {affected} and dealt $ damage!"

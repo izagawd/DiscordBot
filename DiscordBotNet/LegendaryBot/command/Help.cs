@@ -30,7 +30,7 @@ public class Help : BaseCommandClass
             {
                 
                 string commandString = "";
-                foreach (var j in Bot.Commands
+                foreach (var j in Bot.CommandInstanceSamples
                              .Where(k => k.BotCommandType == i))
                 {
                     commandString += $"`{j.Name}` ";
@@ -40,7 +40,7 @@ public class Help : BaseCommandClass
         }
         else
         {
-            IEnumerable<BaseCommandClass> tempCommandArray = Bot.Commands!.Where(i =>
+            IEnumerable<BaseCommandClass> tempCommandArray = Bot.CommandInstanceSamples!.Where(i =>
                 i.Name == cmd.ToLower()).ToArray();
             if (tempCommandArray.Any())
             {
