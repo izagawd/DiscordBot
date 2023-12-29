@@ -2,11 +2,11 @@
 
 namespace DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 
-public class CharacterUseSkillEventArgs : BattleEventArgs
+public class CharacterUseMoveEventArgs : BattleEventArgs
 {
     public UsageResult UsageResult { get; }
 
-    public CharacterUseSkillEventArgs(UsageResult usageResult)
+    public CharacterUseMoveEventArgs(UsageResult usageResult)
     {
         UsageResult = usageResult;
     }

@@ -68,7 +68,7 @@ public abstract class Move
     public virtual UsageResult Utilize(Character owner, Character target, UsageType usageType)
     {
         var temp = HiddenUtilize(owner, target, usageType);
-        owner.CurrentBattle.InvokeBattleEvent(new CharacterUseSkillEventArgs(temp));
+        owner.CurrentBattle.InvokeBattleEvent(new CharacterUseMoveEventArgs(temp));
         return temp;
     }
     /// <summary>

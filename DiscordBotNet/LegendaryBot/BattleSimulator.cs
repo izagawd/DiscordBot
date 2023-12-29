@@ -127,13 +127,14 @@ public class BattleSimulator
         }
 
         imageCtx.EntropyCrop();
-        stop.Elapsed.TotalMilliseconds.Print();
+        $"battle simulator image time: {stop.Elapsed.TotalMilliseconds.Print()}".Print();
         return image;
     }
 
     public event BattleEventDelegate BattleEventDelegates;
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
+        var stop = new Stopwatch(); stop.Start();
         BattleEventDelegates?.Invoke(eventArgs,null);
         if(this is IBattleEventListener battleSimulatorEvent)
             battleSimulatorEvent.OnBattleEvent(eventArgs,null);
@@ -158,6 +159,8 @@ public class BattleSimulator
                 blessingAsEvent.OnBattleEvent(eventArgs,i);
             }
         }
+
+        $"event invoked: {eventArgs.GetType().Name} event time: {stop.Elapsed.TotalMilliseconds}".Print();
     }
 
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
