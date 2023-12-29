@@ -41,7 +41,7 @@ public abstract partial  class Character : BattleEntity
     public static Character[] FourStarCharacterExamples => _fourStarCharacterExamples.ToArray();
 
     public static Character[] FiveStarCharacterExamples => _fiveStarCharacterExamples.ToArray();
-    
+
 
  
     private static List<Character> _oneStarCharacterExamples = [];

@@ -121,7 +121,7 @@ public class CoachChad : Character, IBattleEventListener
             if (deathEventArgs.Killed == this)
             {
                 Revive();
-            
+             
             }
         }
         else if (eventArgs is TurnEndEventArgs turnEndEvent)

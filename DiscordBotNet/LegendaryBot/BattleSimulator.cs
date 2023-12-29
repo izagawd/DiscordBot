@@ -127,15 +127,15 @@ public class BattleSimulator
         }
 
         imageCtx.EntropyCrop();
-        $"battle simulator image time: {stop.Elapsed.TotalMilliseconds.Print()}".Print();
+        $"battle simulator image time: {stop.Elapsed.TotalMilliseconds}".Print();
         return image;
     }
 
-    public event BattleEventDelegate BattleEventDelegates;
+
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
         var stop = new Stopwatch(); stop.Start();
-        BattleEventDelegates?.Invoke(eventArgs,null);
+
         if(this is IBattleEventListener battleSimulatorEvent)
             battleSimulatorEvent.OnBattleEvent(eventArgs,null);
         foreach (var i in Characters)
@@ -160,7 +160,7 @@ public class BattleSimulator
             }
         }
 
-        $"event invoked: {eventArgs.GetType().Name} event time: {stop.Elapsed.TotalMilliseconds}".Print();
+        $"battle event invoked: {eventArgs.GetType().Name} event time: {stop.Elapsed.TotalMilliseconds}".Print();
     }
 
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
@@ -172,7 +172,6 @@ public class BattleSimulator
             {
                 statsModifierArgsList.AddRange(statsModifierCharacter.GetAllStatsModifierArgs(i));
             }
-
             foreach (var j in i.MoveList.OfType<IStatsModifier>())
             {
                 statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
@@ -191,7 +190,7 @@ public class BattleSimulator
         return statsModifierArgsList;
     }
 
-    public IEnumerable<CharacterTeam> CharacterTeams => new[] { Team1, Team2 };
+    public IEnumerable<CharacterTeam> CharacterTeams => [Team1, Team2];
 
 
     private string? _mainText;
@@ -260,7 +259,15 @@ public class BattleSimulator
         AdditionalTexts.Clear();
     }
 
-
+    private bool _stopped = false;
+    
+    /// <summary>
+    /// Stops the battle, leaving no winners
+    /// </summary>
+    public void Stop()
+    {
+        _stopped = true;
+    }
 
     private DiscordMessage _message;
     /// <summary>
@@ -308,6 +315,7 @@ public class BattleSimulator
     /// </summary>
     public async Task<BattleResult> StartAsync(InteractionContext context, DiscordMessage? message = null)
     {
+        _stopped = false;
         _message = message;
         Team1.CurrentBattle = this;
         Team2.CurrentBattle = this;
@@ -326,7 +334,6 @@ public class BattleSimulator
 
         
         Character? target = null;
-        Turn = 0;
         while (true)
         {
             Turn += 1;
@@ -406,7 +413,7 @@ public class BattleSimulator
             var components = new List<DiscordComponent>();
             if (!(!ActiveCharacter.Team.IsPlayerTeam || ActiveCharacter.IsOverriden) 
                 && !ActiveCharacter.IsDead 
-                && _winners is null)
+                && _winners is null && !_stopped)
             {
         
                 components.Add(basicAttackButton);
@@ -427,8 +434,9 @@ public class BattleSimulator
                 _message = await context.Channel.SendMessageAsync(messageBuilder);
             else _message = await _message.ModifyAsync(messageBuilder);
 
+     
             _mainText = $"{ActiveCharacter} is thinking of a course of action...";
-            if (_winners is not null) 
+            if (_winners is not null || _stopped) 
             {
                 await Task.Delay(5000); break;
             }
@@ -537,13 +545,12 @@ public class BattleSimulator
                     }
                 }
             }
-
             if (_forfeited is not null)
             {
                 _winners = CharacterTeams.First(i => i != _forfeited);
                 break;
             }
-            if (_winners is not null)
+            if (_winners is not null || _stopped)
             {
             
                 await Task.Delay(5000); break;
@@ -553,7 +560,7 @@ public class BattleSimulator
 
 
             var moveResult =  move?.Utilize(ActiveCharacter,target, UsageType.NormalUsage);
-                
+
             if (moveResult?.Text != null)
             {
                 _mainText = moveResult.Text;
@@ -599,6 +606,7 @@ public class BattleSimulator
 
         return new BattleResult
         {
+            Stopped = _stopped,
             ExpToGain = expToGain,
             BattleRewards = rewards,
             Turns = Turn,

@@ -6,6 +6,8 @@ namespace DiscordBotNet.LegendaryBot.Results;
 
 public class BattleResult
 {
+    
+    public bool Stopped { get; init; }
     public required ulong ExpToGain { get; init; }
     public required DiscordMessage Message { get; init; }
     public required IEnumerable<Reward> BattleRewards { get; init; } = [];
