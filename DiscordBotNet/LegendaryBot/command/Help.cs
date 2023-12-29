@@ -40,11 +40,10 @@ public class Help : BaseCommandClass
         }
         else
         {
-            IEnumerable<BaseCommandClass> tempCommandArray = Bot.CommandInstanceSamples!.Where(i =>
-                i.Name == cmd.ToLower()).ToArray();
-            if (tempCommandArray.Any())
+            var foundCommand = Bot.CommandInstanceSamples.FirstOrDefault(i =>
+                i.Name.ToLower() == cmd.ToLower());
+            if (foundCommand is not null)
             {
-                BaseCommandClass foundCommand = tempCommandArray.First();
                 if (!foundCommand.HasSubCommands)
                 {
                     embedToBuild.WithTitle($"**{foundCommand.Name}**");

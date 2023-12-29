@@ -29,12 +29,8 @@ public enum BattleDecision
 
 public class BattleSimulator
 {
-   
-    public struct CharacterWithImage
-    {
-        public Character Character;
-        public Image<Rgba32> Image;
-    }
+
+
     public static DiscordButtonComponent basicAttackButton = new(ButtonStyle.Secondary, nameof(BasicAttack), null,emoji: new DiscordComponentEmoji("⚔️"));
     public static DiscordButtonComponent skillButton = new(ButtonStyle.Secondary, nameof(Skill), null, emoji: new DiscordComponentEmoji("🪄"));
     public static DiscordButtonComponent surgeButton = new(ButtonStyle.Secondary, nameof(Surge), null, emoji: new DiscordComponentEmoji("⚡"));
@@ -135,28 +131,29 @@ public class BattleSimulator
         return image;
     }
 
+    public event BattleEventDelegate BattleEventDelegates;
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
-
-        if(this is IBattleEvent<T> battleSimulatorEvent)
+        BattleEventDelegates?.Invoke(eventArgs,null);
+        if(this is IBattleEventListener battleSimulatorEvent)
             battleSimulatorEvent.OnBattleEvent(eventArgs,null);
         foreach (var i in Characters)
         {
-            if (i is IBattleEvent<T> iAsEvent)
+            if (i is IBattleEventListener iAsEvent)
             {
                 iAsEvent.OnBattleEvent(eventArgs, i);
             }
-            foreach (var j in i.MoveList.OfType<IBattleEvent<T>>())
+            foreach (var j in i.MoveList.OfType<IBattleEventListener>())
             {
                 j.OnBattleEvent(eventArgs,i);
             }
 
-            foreach (var j in i.StatusEffects.OfType<IBattleEvent<T>>())
+            foreach (var j in i.StatusEffects.OfType<IBattleEventListener>())
             {
                 j.OnBattleEvent(eventArgs,i);
             }
 
-            if (i.Blessing is IBattleEvent<T> blessingAsEvent)
+            if (i.Blessing is IBattleEventListener blessingAsEvent)
             {
                 blessingAsEvent.OnBattleEvent(eventArgs,i);
             }

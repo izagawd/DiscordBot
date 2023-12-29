@@ -84,7 +84,7 @@ public class ThumbsUp : Skill
 
     public override int MaxCooldown => 1;
 }
-public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBattleEvent<TurnEndEventArgs>
+public class CoachChad : Character, IBattleEventListener
 {
 
 
@@ -114,18 +114,22 @@ public class CoachChad : Character, IBattleEvent<CharacterDeathEventArgs>, IBatt
 
     }
 
-    public void OnBattleEvent(CharacterDeathEventArgs eventArgs, Character owner)
+    public void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
-        if (eventArgs.Killed == this)
+        if (eventArgs is CharacterDeathEventArgs deathEventArgs)
         {
-            Revive();
+            if (deathEventArgs.Killed == this)
+            {
+                Revive();
             
+            }
+        }
+        else if (eventArgs is TurnEndEventArgs turnEndEvent)
+        {
+            if (turnEndEvent.Character != owner) return;
+            Health = MaxHealth;
         }
     }
 
-    public void OnBattleEvent(TurnEndEventArgs eventArgs, Character owner)
-    {
-        if (eventArgs.Character != owner) return;
-        Health = MaxHealth;
-    }
+
 }

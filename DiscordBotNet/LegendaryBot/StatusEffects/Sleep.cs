@@ -5,7 +5,7 @@ using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class Sleep: StatusEffect, IBattleEvent<CharacterDamageEventArgs>
+public class Sleep: StatusEffect, IBattleEventListener
 {
 
     public override int MaxStacks => 1;
@@ -17,10 +17,11 @@ public class Sleep: StatusEffect, IBattleEvent<CharacterDamageEventArgs>
     public override OverrideTurnType OverrideTurnType => OverrideTurnType.CannotMove;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
 
-    public void OnBattleEvent(CharacterDamageEventArgs eventArgs, Character owner)
+    public void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
-        if(eventArgs.DamageResult.DamageReceiver != owner) return;
-        if (eventArgs.DamageResult.StatusEffect is not null) return;
+        if(eventArgs is not CharacterDamageEventArgs damageEventArgs) return;
+        if(damageEventArgs.DamageResult.DamageReceiver != owner) return;
+        if (damageEventArgs.DamageResult.StatusEffect is not null) return;
         owner.StatusEffects.Remove(this);
         owner.CurrentBattle.AdditionalTexts.Add($"{this} has been dispelled from {owner} due to an attack!");
     }
