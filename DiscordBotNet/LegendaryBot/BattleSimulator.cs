@@ -16,6 +16,7 @@ using DSharpPlus.SlashCommands;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
+using UserExperienceReward = DiscordBotNet.LegendaryBot.Rewards.UserExperienceReward;
 
 namespace DiscordBotNet.LegendaryBot;
 
@@ -583,12 +584,12 @@ public class BattleSimulator
         }
 
         var losers = CharacterTeams.First(i => i != _winners);
-        var rewards = new List<Reward>();
+       
+       
+        var expToGain=(ulong) losers.Sum(i =>(long) BattleFunction.ExpGainFormula(i.Level) * i.ExpIncreaseScale);
+        var coinsToGain = losers.Sum(i => (i.Level + 60) * 100);
 
-        var coinsToGain = (ulong)(losers
-                .Average(i => i.Level) * 500 * losers.Count * 0.75f)
-            .Round();
-        rewards.Add(new CoinsReward(coinsToGain));
+        List<Reward> rewards = [new CoinsReward((ulong)coinsToGain), new UserExperienceReward(expToGain)];
         foreach (var i in losers)
         {
             if (i.IsDead) rewards.AddRange(i.DroppedRewards);
@@ -598,6 +599,7 @@ public class BattleSimulator
 
         return new BattleResult
         {
+            ExpToGain = expToGain,
             BattleRewards = rewards,
             Turns = Turn,
             Forfeited = _forfeited,

@@ -30,7 +30,10 @@ public abstract partial  class Character : BattleEntity
 {
         private static Type[] _characterTypes = Assembly.GetExecutingAssembly().GetTypes()
         .Where(i => i.IsSubclassOf(typeof(Character)) && !i.IsAbstract).ToArray();
-
+        
+        
+    [NotMapped]
+    public int ExpIncreaseScale { get; set; } = 1;
     public static Type[] CharacterTypes => _characterTypes.ToArray();
     public static Character[] ThreeStarCharacterExamples => _threeStarCharacterExamples.ToArray();
     public static Character[] OneStarCharacterExamples => _oneStarCharacterExamples.ToArray();

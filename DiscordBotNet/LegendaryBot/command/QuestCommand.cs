@@ -1,6 +1,7 @@
 ﻿using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Quests;
+using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
@@ -83,12 +84,23 @@ public class QuestCommand : BaseCommandClass
         await buttonResult.Result
             .Interaction
             .CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-        var succeeded = await quest.StartQuest(ctx, message);
+        var succeeded = await quest.StartQuest(DatabaseContext, ctx, message);
         
         if (succeeded)
         {
             quest.Completed = true;
-            var rewardString = userData.ReceiveRewards(ctx.User.Username, quest.QuestRewards);
+            var expToAdd = 40ul;
+            switch (userData.Tier)
+            {
+                case Tier.Bronze:
+                    expToAdd = 40;
+                    break;
+                case Tier.Silver:
+                    expToAdd = 800;
+                    break;
+            }
+            var rewards = quest.QuestRewards.Append(new UserExperienceReward(expToAdd));
+            var rewardString = userData.ReceiveRewards(ctx.User.Username, rewards);
             embed
                 .WithTitle("Nice!!")
                 .WithDescription("You completed the quest!\n" +rewardString);

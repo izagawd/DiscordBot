@@ -14,7 +14,8 @@ namespace DiscordBotNet.LegendaryBot.Quests;
 public class DirectionHelping : Quest
 {
     public override string Description => "You are tasked with giving people directions";
-    public override async  Task<bool> StartQuest(InteractionContext context, DiscordMessage? messageToEdit = null)
+    public override async Task<bool> StartQuest(PostgreSqlContext databaseContext, InteractionContext context,
+        DiscordMessage? messageToEdit = null)
     {
         var blast = new Blast();
         var profile = blast.DialogueProfile;
@@ -92,8 +93,8 @@ public class DirectionHelping : Quest
         blast.TotalMaxHealth = 40000;
         blast.Health = 40000;
         
-        var postgre = new PostgreSqlContext();
-        var userData = await postgre.UserData
+
+        var userData = await databaseContext.UserData
             .IncludeTeamWithAllEquipments()
             .FindOrCreateAsync(context.User.Id);
         var userTeam = userData.GetCharacterTeam(context.User);
@@ -121,8 +122,9 @@ public class DirectionHelping : Quest
                     }
                 ]
             };
-            dialogueResult = await dialogue.LoadAsync(context, battleResult.Message);
-            
+             await dialogue.LoadAsync(context, battleResult.Message);
+            QuestRewards = battleResult.BattleRewards.Append(
+                new TextReward(userTeam.IncreaseExp(battleResult.ExpToGain)));
             
             return true;
         }

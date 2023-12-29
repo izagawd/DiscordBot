@@ -11,11 +11,11 @@ public class KillSlimesQuest : Quest
 {
     public override string Description => "Simple quest. Defeat the slimes that are attacking a village";
 
-    public override async  Task<bool> StartQuest(InteractionContext context,DiscordMessage? message = null)
+    public override async Task<bool> StartQuest(PostgreSqlContext databaseContext, InteractionContext context,
+        DiscordMessage? message = null)
     {
         var slimeTeam = new CharacterTeam([new Slime(),new Slime()]);
-        var postgre = new PostgreSqlContext();
-        var userData = await postgre.UserData
+        var userData = await databaseContext.UserData
             .IncludeTeamWithAllEquipments()
             .FindOrCreateAsync(UserDataId);
         var embed = new DiscordEmbedBuilder()
@@ -36,7 +36,12 @@ public class KillSlimesQuest : Quest
 
         var battleSimulator = new BattleSimulator(playerTeam,await slimeTeam.LoadAsync());
         var result = await battleSimulator.StartAsync(context, message);
-        QuestRewards = result.BattleRewards;
+        
+       
+
+
+        var str = playerTeam.IncreaseExp(result.ExpToGain);
+        QuestRewards = result.BattleRewards.Append(new TextReward(str));
         return result.Winners == playerTeam;
         
     }

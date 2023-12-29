@@ -182,9 +182,35 @@ public class UserData : Model,  ICanBeLeveledUp
     }
     public ExperienceGainResult IncreaseExp(ulong exp)
     {
+        var maxLevel = 60;
+        if (Level >= maxLevel)
+            return new ExperienceGainResult() { ExcessExperience = exp, Text = $"you have already reached max level!" };
+        string expGainText = "";
+        
+        var levelBefore = Level;
+        Experience += exp;
 
 
-        throw new NotImplementedException();
+        var nextLevelEXP =GetRequiredExperienceToNextLevel(Level);
+        while (Experience >= nextLevelEXP && Level < maxLevel)
+        {
+            Experience -= nextLevelEXP;
+            Level += 1;
+            nextLevelEXP = GetRequiredExperienceToNextLevel(Level);
+        }
+
+        expGainText += $"you gained {exp} exp";
+        if (levelBefore != Level)
+        {
+            expGainText += $", and moved from level {levelBefore} to level {Level}";
+        }
+        ulong excessExp = 0;
+        if (Experience > nextLevelEXP)
+        {
+            excessExp = Experience - nextLevelEXP;
+        }
+        expGainText += "!";
+        return new ExperienceGainResult(){ExcessExperience = excessExp, Text = expGainText};
     }
 
     public ulong StandardPrayers { get; set; } = 0;

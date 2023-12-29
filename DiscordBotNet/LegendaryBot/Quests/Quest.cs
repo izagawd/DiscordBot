@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
+using DiscordBotNet.Database;
 using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -31,9 +32,13 @@ public abstract class Quest
     }
     [NotMapped]
     public Tier QuestTier { get; private set; } = Tier.Bronze;
-    ///<param name="messageToEdit"> if not null, should edit that message instead of adding a new message to the channel</param>
+
+    /// <param name="databaseContext"></param>
+    /// <param name="context"></param>
+    /// <param name="messageToEdit"> if not null, should edit that message instead of adding a new message to the channel</param>
     /// <returns>True if quest was successfully completed</returns>
-    public abstract Task<bool> StartQuest(InteractionContext context, DiscordMessage? messageToEdit = null);
+    public abstract Task<bool> StartQuest(PostgreSqlContext databaseContext, InteractionContext context,
+        DiscordMessage? messageToEdit = null);
 
     [NotMapped]
     public abstract IEnumerable<Reward> QuestRewards { get; protected set; }
