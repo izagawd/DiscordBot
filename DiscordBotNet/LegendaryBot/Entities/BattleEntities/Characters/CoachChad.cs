@@ -1,8 +1,12 @@
-﻿using DiscordBotNet.LegendaryBot.BattleEvents;
+﻿using System.Diagnostics;
+using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class GigaPunch : BasicAttack
@@ -44,7 +48,7 @@ public class MuscleFlex : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AdditionalTexts.Add($"owner... flexed his muscles?");
+        owner.CurrentBattle.AdditionalTexts.Add($"{owner}... flexed his muscles?");
         return new UsageResult(this)
         {
             Text = $"Hmph!",
@@ -105,30 +109,40 @@ public class CoachChad : Character, IBattleEventListener
 
     public override void NonPlayerCharacterAi(ref Character target, ref BattleDecision decision)
     {
-
-        decision = BattleDecision.BasicAttack;
-
-
+        List<BattleDecision> possibleDecisions = [BattleDecision.BasicAttack];
+        
+        
+        if(Skill.CanBeUsed(this))
+            possibleDecisions.Add(BattleDecision.Skill);
+        if(Surge.CanBeUsed(this))
+            possibleDecisions.Add(BattleDecision.Surge);
+        decision = BasicFunction.RandomChoice(possibleDecisions.AsEnumerable());
         target = BasicFunction.RandomChoice(BasicAttack.GetPossibleTargets(this));
 
 
     }
 
-    public void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    private void HandleRevive(BattleEventArgs eventArgs, Character owner)
     {
-        if (eventArgs is CharacterDeathEventArgs deathEventArgs)
-        {
-            if (deathEventArgs.Killed == this)
-            {
-                Revive();
-             
-            }
-        }
-        else if (eventArgs is TurnEndEventArgs turnEndEvent)
-        {
-            if (turnEndEvent.Character != owner) return;
-            Health = MaxHealth;
-        }
+        if (eventArgs is not CharacterDeathEventArgs deathEventArgs) return;
+        if (deathEventArgs.Killed != this) return;
+        Revive();
+
+    }
+
+    private void HandleTurnEnd(BattleEventArgs eventArgs, Character owner)
+    {
+        if (eventArgs is not TurnEndEventArgs turnEndEvent) return;
+    
+        if (turnEndEvent.Character != owner) return;
+        Health = MaxHealth;
+    
+    }
+    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    {
+        base.OnBattleEvent(eventArgs,owner);
+        HandleRevive(eventArgs,owner);
+        HandleTurnEnd(eventArgs,owner);
     }
 
 

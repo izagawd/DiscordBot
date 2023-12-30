@@ -1,4 +1,5 @@
 ﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -64,6 +65,8 @@ public class Hunt : BaseCommandClass
  
 
         var battleResult = await simulator.StartAsync(ctx, message);
+
+
 
         var expToGain = BattleFunction.ExpGainFormula(enemy.Level);
         if (battleResult.Winners != userTeam)

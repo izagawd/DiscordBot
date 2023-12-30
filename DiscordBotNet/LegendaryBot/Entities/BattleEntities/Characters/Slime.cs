@@ -48,7 +48,7 @@ public class Slime : Character
     }
 
     public override int BaseMaxHealth => 700 + (30 * Level);
-    public override int BaseAttack => (80 + (7 * Level));
+    public override int BaseAttack => 80 + (7 * Level);
     public override int BaseDefense => (70 + (3.5 * Level)).Round();
     public override int BaseSpeed => 70;
     public override BasicAttack BasicAttack { get; } = new GooeyStrike();

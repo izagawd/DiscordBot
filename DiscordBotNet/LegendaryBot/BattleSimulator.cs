@@ -183,8 +183,8 @@ public class BattleSimulator : IBattleEventListener
     public IEnumerable<CharacterTeam> CharacterTeams => [Team1, Team2];
 
 
-    private string? _mainText;
-    private string _additionalText = "";
+    private string? _mainText = "battle begins";
+    private string _additionalText = "have fun!";
     /// <summary>
     /// The character who is currently taking their tunr
     /// </summary>
@@ -317,9 +317,7 @@ public class BattleSimulator : IBattleEventListener
 
             }
         }
-        _mainText = "Battle Begins!";
-        _additionalText = "Have fun!";
-     
+   
         CharacterTeam? timedOut = null;
 
         

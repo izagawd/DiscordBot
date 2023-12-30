@@ -170,7 +170,7 @@ public abstract partial  class Character : BattleEntity
     public void Revive()
     {
         _health = 1;
-        StatusEffects.Clear();
+
         CurrentBattle.AdditionalTexts.Add($"{Name} has been revived");
     }
 
