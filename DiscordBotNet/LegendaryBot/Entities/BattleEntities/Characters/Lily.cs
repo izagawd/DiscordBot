@@ -8,7 +8,8 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 public class ChamomileSachetWhack : BasicAttack
 {
-    public override string GetDescription(Character character) => $"With the power of Chamomile, whacks an enemy with a sack filled with Chamomile, with a {SleepChance}% chance of making the enemy sleep";
+    public override string GetDescription(Character character) => 
+        $"With the power of Chamomile, whacks an enemy with a sack filled with Chamomile, with a {SleepChance}% chance of making the enemy sleep";
     
 
     public int SleepChance => 40;

@@ -170,10 +170,11 @@ public abstract partial  class Character : BattleEntity
     public void Revive()
     {
         _health = 1;
-
+        StatusEffects.Clear();
         CurrentBattle.AdditionalTexts.Add($"{Name} has been revived");
     }
 
+    
     private bool _shouldTakeExtraTurn;
     [NotMapped]
     public bool ShouldTakeExtraTurn
@@ -508,7 +509,7 @@ public abstract partial  class Character : BattleEntity
         } 
     }
 
-    [NotMapped] public virtual int BaseAttack => 100;
+    [NotMapped] public virtual int BaseAttack => 120 + (10 * Level);
 
     public int Attack { 
         get     

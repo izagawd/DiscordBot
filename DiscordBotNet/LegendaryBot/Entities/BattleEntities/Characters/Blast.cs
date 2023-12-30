@@ -8,7 +8,9 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 public class MethaneSlap : BasicAttack
 {
-    public override string GetDescription(Character character) => $"Slaps the enemy, producing methane around the enemy, with a {DetonateChance}% chance to detonate all the bombs the target has";
+    public override string GetDescription(Character character) => $"Slaps the enemy, " +
+                                                                  $"producing methane around the enemy, with a " +
+                                                                  $"{DetonateChance}% chance to detonate all the bombs the target has";
     public int DetonateChance => 75;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {

@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets\\battle_images\\characters\\Lily.png"
     },
     {
+      "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\Police.png",
+      "PackagePath": "staticwebassets\\battle_images\\characters\\Police.png"
+    },
+    {
       "Id": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\RoyalKnight.png",
       "PackagePath": "staticwebassets\\battle_images\\characters\\RoyalKnight.png"
     },

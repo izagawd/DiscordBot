@@ -47,6 +47,7 @@ public class Slime : Character
         }
     }
 
+    public override Rarity Rarity { get; protected set; } = Rarity.TwoStar;
     public override int BaseMaxHealth => 700 + (30 * Level);
     public override int BaseAttack => 80 + (7 * Level);
     public override int BaseDefense => (70 + (3.5 * Level)).Round();

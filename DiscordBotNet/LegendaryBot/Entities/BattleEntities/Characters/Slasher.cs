@@ -38,9 +38,9 @@ public class WindSlash : Skill
     public override int MaxCooldown => 2;
 }
 
-public class SimpleSlash : BasicAttack
+public class SimpleSlashOfPrecision : BasicAttack
 {
-    public override string GetDescription(Character character) =>"Does a simple slash";
+    public override string GetDescription(Character character) =>"Does a simple slash. Always lands a critical hit";
     
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
@@ -52,10 +52,11 @@ public class SimpleSlash : BasicAttack
                 target.Damage(new DamageArgs(this)
                 {
                     Caster = owner,
-                    Damage = owner.Attack * 1.7
-                    
+                    Damage = owner.Attack * 1.7,
+                    AlwaysCrits = true
                 })
             },
+            
             TargetType = TargetType.SingleTarget,
             Text = $"{owner} does a simple slash to {target}!",
             User = owner,
@@ -63,7 +64,7 @@ public class SimpleSlash : BasicAttack
         };
     }
 }
-public class SlashOfPrecision : Surge
+public class ConsecutiveSlashesOfPrecision : Surge
 {
 
     public override string GetDescription(Character character) =>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
@@ -107,7 +108,7 @@ public class Slasher : Character
     public override int BaseDefense => (100 + (5.2 * Level)).Round();
     public override int BaseSpeed => 105;
     public override int BaseCriticalChance => base.BaseCriticalChance;
-    public override Surge? Surge { get; } = new SlashOfPrecision();
+    public override Surge? Surge { get; } = new ConsecutiveSlashesOfPrecision();
     public override Skill? Skill { get; } = new WindSlash();
-    public override BasicAttack BasicAttack { get;  } = new SimpleSlash();
+    public override BasicAttack BasicAttack { get;  } = new SimpleSlashOfPrecision();
 }
