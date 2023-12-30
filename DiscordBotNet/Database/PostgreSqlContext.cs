@@ -89,7 +89,48 @@ public class PostgreSqlContext : DbContext
         Database.EnsureCreated();
       
     }
+    private Expression<Func<UserData, IEnumerable<Entity>>> teamNavigation =
+            
+            
+        (UserData i) => i.Inventory.Where(j => j.Id == j.UserData.Character1Id
+                                               || j.Id == j.UserData.Character2Id
+                                               || j.Id == j.UserData.Character3Id
+                                               || j.Id == j.UserData.Character4Id);
+    
+    
+    public async Task<UserData> LoadTeamWithAllEquipments(ulong userId)
+    {
+        var userData = await UserData
+            .Include(teamNavigation)
+                .ThenInclude<UserData,Entity,Blessing>(i => (i as Character).Blessing)
+            .Include(teamNavigation)
+                .ThenInclude<UserData,Entity,Armor>(i => (i as Character).Armor)
+            .ThenInclude(i => i.Stats)
+            .Include(teamNavigation)
+                .ThenInclude<UserData,Entity,Boots>(i => (i as Character).Boots)
+            .Include(teamNavigation)
+                .ThenInclude<UserData,Entity,Necklace>(i => (i as Character).Necklace)
+            .Include(teamNavigation)
+                .ThenInclude<UserData,Entity,Weapon>(i => (i as Character).Weapon)
+            .Include(teamNavigation)
+                .ThenInclude<UserData,Entity,Ring>(i => (i as Character).Ring)
+            .Include(teamNavigation)
+                .ThenInclude<UserData,Entity,Helmet>(i => (i as Character).Helmet)
+            
+            .FindOrCreateAsync(userId);
+        var ids = userData
+            .CharacterTeamArray
+            .Select(i => i.Id)
+            .ToArray();
 
+         var gearsList = userData.CharacterTeamArray.SelectMany(i => i.Gears);
+        var gearsIds = gearsList.Select(i => i.Id).ToArray();
+        await Set<GearStat>()
+            .Where(i => gearsIds.Contains(i.Gear.Id))
+            .LoadAsync();
+
+        return userData;
+    }
     public async Task ResetDatabaseAsync()
     {
         await Database.EnsureDeletedAsync();

@@ -41,16 +41,24 @@ public static class Bot
 
     public static async Task DoShit()
     {
-        
-        Expression<Func<UserData, IEnumerable<Entity>>> navigation =
+        foreach (var i in Enumerable.Range(0,100))
+        {
+            Expression<Func<UserData, IEnumerable<Entity>>> navigation =
             
             
-            (UserData i) => i.Inventory.Where(j => j.Id == j.UserData.Character1Id
-                              || j.Id == j.UserData.Character2Id
-                              || j.Id == j.UserData.Character3Id
-                              || j.Id == j.UserData.Character4Id);
+                (UserData i) => i.Inventory.Where(j => j.Id == j.UserData.Character1Id
+                                                       || j.Id == j.UserData.Character2Id
+                                                       || j.Id == j.UserData.Character3Id
+                                                       || j.Id == j.UserData.Character4Id);
+            var postgre = new PostgreSqlContext();
+            var stop = new Stopwatch(); stop.Start();
+            
+            var userData =await postgre.LoadTeamWithAllEquipments(Izasid);
+            stop.Elapsed.TotalMilliseconds.Print();
 
-
+            
+        }
+       
     }
 
 
