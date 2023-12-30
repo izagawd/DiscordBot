@@ -39,35 +39,6 @@ public abstract class GearStat
     {
         Value = GetMainStat(rarity, level);
     }
-    public class CustomTypeValueConverter<TCustomType, TOtherType> : ValueConverter<TCustomType, TOtherType>
-    {
-        public CustomTypeValueConverter(Func<TCustomType, TOtherType> convertToProvider, Func<TOtherType, TCustomType> convertFromProvider)
-            : base(
-                v => convertToProvider(v),
-                v => convertFromProvider(v))
-        {
-        }
-    }
-    public static ValueConverter<GearStat, string> ValueConverter { get;} = 
-    
-        new CustomTypeValueConverter<GearStat,string>(i =>
-                new JsonObject
-                {
-                    { "TimesIncreased", i.TimesIncreased }, { "Value", i.Value },
-                    { "Discriminator", i.GetType().Name }
-                }.ToJsonString(),
-            i =>
-            {
-                var doc = JsonNode.Parse(i).AsObject();
-
-                var type = NonAbstractGearStatTypes.First(j =>
-                    j.IsRelatedToType(typeof(GearStat)) && j.Name == doc["Discriminator"]!.GetValue<string>());
-                var stat = (GearStat)Activator.CreateInstance(type)!;
-                stat.TimesIncreased = doc["TimesIncreased"]!.GetValue<int>();
-                stat.Value = doc["Value"]!.GetValue<int>();
-                return stat;
-            });
-
 
 
     
