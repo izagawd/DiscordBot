@@ -3,6 +3,7 @@ using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
+using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
@@ -53,7 +54,6 @@ public class Challenge :BaseCommandClass
 
         var player2User = await DatabaseContext.UserData
             .IncludeTeamWithAllEquipments()
-            .Include(i => i.Inventory.Where(i => i is Character))
             .FindOrCreateAsync(player2.Id);
         if (player2User.IsOccupied)
         {
@@ -108,8 +108,10 @@ public class Challenge :BaseCommandClass
         }
 
         await MakeOccupiedAsync(player2User);
-        var simulator = new BattleSimulator(await player1User.GetCharacterTeam(player1).LoadAsync(player1), await player2User.GetCharacterTeam(player2).LoadAsync(player2));
-        BattleResult battleResult = await simulator.StartAsync(ctx,message);
+        var player1Team = await player1User.GetCharacterTeam(player1).LoadAsync(player1);
+        var player2Team = await player2User.GetCharacterTeam(player2).LoadAsync(player2);
+        var simulator = new BattleSimulator(player1Team,player2Team);
+        var battleResult = await simulator.StartAsync(ctx,message);
         DiscordUser winnerDiscord;
         UserData winnerUserData;
         if (battleResult.Winners.UserId == player1.Id)
@@ -123,21 +125,7 @@ public class Challenge :BaseCommandClass
             winnerUserData = player2User;
         }
 
-        var player2Team = player2User.GetCharacterTeam(player2);
-        var player1Team = player1User.GetCharacterTeam(player1);
-        var expToGainForUser1 = BattleFunction.ExpGainFormula((int)player2Team.Average(i => i.Level));
-        var expToGainForUser2 = BattleFunction.ExpGainFormula((int)player1Team.Average(i => i.Level));
-        if (winnerUserData != player1User)
-        {
-            expToGainForUser2 /= 2;
-        }
-        else
-        {
-            expToGainForUser1 /= 2;
-        }
 
-        var player1LevelUpString = string.Join("\n", player1Team.Select(i => i.IncreaseExp(expToGainForUser1).Text));
-        var player2LevelUpString = string.Join("\n", player2Team.Select(i => i.IncreaseExp(expToGainForUser2).Text));
         await DatabaseContext.SaveChangesAsync();
         await message.ModifyAsync(new DiscordMessageBuilder()
         {
@@ -145,8 +133,6 @@ public class Challenge :BaseCommandClass
                 .WithColor(winnerUserData.Color)
                 .WithTitle("Battle Ended")
                 .WithDescription($"{winnerDiscord.Username} won the battle! ")
-                .AddField($"{player1.Username}'s characters gained: ",player1LevelUpString)
-                .AddField($"{player2.Username}'s characters gained: ",player2LevelUpString)
         });
     }
 }
