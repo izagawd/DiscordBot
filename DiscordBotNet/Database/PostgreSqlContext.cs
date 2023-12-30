@@ -283,29 +283,10 @@ public class PostgreSqlContext : DbContext
             .HasMany(i => i.QuoteReactions)
             .WithOne(i => i.UserData)
             .HasForeignKey(i => i.UserDataId);
-        modelBuilder.Entity<Gear>(entity =>
-        {
-            entity
-                .Property(i => i.MainStat)
-                .HasConversion(GearStat.ValueConverter);
-            entity
-                .Property(i => i.SubStat1)
-                .HasConversion(GearStat.ValueConverter!);
-            entity
-                .Property(i => i.SubStat2)
-                .HasConversion(GearStat.ValueConverter!);
-            entity
-                .Property(i => i.SubStat3)
-                .HasConversion(GearStat.ValueConverter!);
-
-            entity
-                .Property(i => i.SubStat4)
-                .HasConversion(GearStat.ValueConverter!);
-            entity.Property(i => i.Rarity)
-                .HasColumnName("Rarity");
-
-        });
-
+        modelBuilder.Entity<Gear>()
+            .HasMany(i => i.Stats)
+            .WithOne()
+            .HasForeignKey(i => i.GearId);
         modelBuilder.Entity<UserData>()
             .HasKey(i => i.Id);
         modelBuilder.Entity<Character>()
