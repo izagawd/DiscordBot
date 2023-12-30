@@ -1,11 +1,16 @@
 ﻿using System.Collections.Immutable;
 using DSharpPlus.Entities;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Reflection;
 
 using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.command;
+using DiscordBotNet.LegendaryBot.Entities;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -36,6 +41,15 @@ public static class Bot
 
     public static async Task DoShit()
     {
+        
+        Expression<Func<UserData, IEnumerable<Entity>>> navigation =
+            
+            
+            (UserData i) => i.Inventory.Where(j => j.Id == j.UserData.Character1Id
+                              || j.Id == j.UserData.Character2Id
+                              || j.Id == j.UserData.Character3Id
+                              || j.Id == j.UserData.Character4Id);
+
 
     }
 
@@ -43,7 +57,8 @@ public static class Bot
     
     private static async Task Main(string[] args)
     {
-
+        await DoShit();
+        return;
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

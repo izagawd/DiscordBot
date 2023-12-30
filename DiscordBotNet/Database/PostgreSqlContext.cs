@@ -1,8 +1,10 @@
-﻿using System.Reflection;
+﻿using System.Linq.Expressions;
+using System.Reflection;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Quests;
@@ -17,8 +19,8 @@ namespace DiscordBotNet.Database;
 public class PostgreSqlContext : DbContext
 {
     
-    private static readonly Type[] EntityClasses;
-    private static readonly Type[] GearStatClasses;
+    private static readonly Type[] EntityTypes;
+
     public DbSet<UserData> UserData { get; set; }
     public DbSet<GuildData> GuildData { get; set; }
     public DbSet<Entity> Entity { get; set; }
@@ -65,11 +67,8 @@ public class PostgreSqlContext : DbContext
     static PostgreSqlContext()
     {
         _assemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
-        EntityClasses = _assemblyTypes
+        EntityTypes = _assemblyTypes
             .Where(type => type.IsRelatedToType(typeof(Entity))).ToArray();
-        GearStatClasses = _assemblyTypes
-                .Where(type => type.IsRelatedToType(typeof(GearStat)) && !type.IsAbstract)
-                .ToArray();
 
     }
 
@@ -90,6 +89,36 @@ public class PostgreSqlContext : DbContext
         Database.EnsureCreated();
       
     }
+
+    public async Task ResetDatabaseAsync()
+    {
+        await Database.EnsureDeletedAsync();
+        await Database.EnsureCreatedAsync();
+    }
+    public async Task RestartWithPower(ulong idOfUser)
+    {
+        await ResetDatabaseAsync();
+
+        var userData =await UserData.FindOrCreateAsync(idOfUser);
+
+
+        userData.Tier = Tier.Bronze;
+
+        List<Character> characters = [new Lily(), new Blast(), new Player(), new RoyalKnight()];
+        userData.Inventory.AddRange(characters);
+
+        await SaveChangesAsync();
+
+        foreach (var i in characters)
+        {
+            userData.AddToTeam(i);
+        }
+
+        await GivePowerToUserAsync(idOfUser);
+        await SaveChangesAsync();
+
+    }
+
 
     public async Task GivePowerToUserAsync(ulong idOfUser)
     {
@@ -163,14 +192,14 @@ public class PostgreSqlContext : DbContext
         {
             modelBuilder.Entity(i);
         }
-        foreach (var entityType in EntityClasses)
+        foreach (var entityType in EntityTypes)
         {
             modelBuilder.Entity(entityType);
         }
 
-        foreach (var i in GearStatClasses)
+        foreach (var i in GearStat.GearStatTypes)
         {
-            modelBuilder.Owned(i);
+            modelBuilder.Entity(i);
         }
         //makes sure the character id properties are not the same, even across tables
         modelBuilder.Entity<UserData>()
@@ -285,7 +314,7 @@ public class PostgreSqlContext : DbContext
             .HasForeignKey(i => i.UserDataId);
         modelBuilder.Entity<Gear>()
             .HasMany(i => i.Stats)
-            .WithOne()
+            .WithOne(i => i.Gear)
             .HasForeignKey(i => i.GearId);
         modelBuilder.Entity<UserData>()
             .HasKey(i => i.Id);

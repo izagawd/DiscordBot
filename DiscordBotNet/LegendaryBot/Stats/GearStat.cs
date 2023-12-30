@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.Json.Nodes;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DiscordBotNet.LegendaryBot.Stats;
@@ -27,8 +28,8 @@ public abstract class GearStat
     public Guid Id { get; protected set; } = Guid.NewGuid();
 
     
-
-    public Guid? GearId { get; protected set; }
+    public Gear Gear { get; protected set; }
+    public Guid GearId { get; protected set; }
     /// <summary>
     /// This is called when the gear that owns this stat is loaded. It sets the main stat's value according to
     /// the rarity and the level of the gear
@@ -39,7 +40,7 @@ public abstract class GearStat
     {
         Value = GetMainStat(rarity, level);
     }
-
+    
 
     
     public abstract int GetMainStat(Rarity rarity, int level);
