@@ -30,7 +30,7 @@ public class Quote
     public ulong UserDataId { get; set; }
     public string QuoteValue { get; set; } = "Nothing";
     public UserData UserData { get; set; }
-    public List<QuoteReaction> QuoteReactions { get; set; } = new();
+    public List<QuoteReaction> QuoteReactions { get; set; } = []; 
 
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     public override string ToString() => QuoteValue;

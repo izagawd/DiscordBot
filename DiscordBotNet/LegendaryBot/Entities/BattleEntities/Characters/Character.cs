@@ -63,8 +63,6 @@ public abstract partial  class Character : BattleEntity
             var instance = Activator.CreateInstance(i);
             if (instance is Character characterInstance)
             {
-            
-        
                 _characterExamples.Add(characterInstance);
             }
         }
@@ -399,7 +397,7 @@ public abstract partial  class Character : BattleEntity
 
 
 
-    [NotMapped] public virtual int BaseMaxHealth { get; protected set; } = 100;
+    [NotMapped] public virtual int BaseMaxHealth =>  1000 + (45 * Level);
 
     public int MaxHealth
     {
@@ -1004,9 +1002,9 @@ public abstract partial  class Character : BattleEntity
         return $"{Name} ({side}) ({Position})";
     }
 
-    [NotMapped] public abstract Skill? Skill { get; } 
+    [NotMapped] public virtual Skill? Skill { get; } 
     public int Position => Array.IndexOf(CurrentBattle.Characters.OrderByDescending(i => i.CombatReadiness).ToArray(),this) +1;
-    [NotMapped] public abstract Surge? Surge { get; }
+    [NotMapped] public virtual Surge? Surge { get; }
     /// <summary>
     /// Checks if something overrides the player turn eg stun status effect preventing the player from doing anything
     /// </summary>
