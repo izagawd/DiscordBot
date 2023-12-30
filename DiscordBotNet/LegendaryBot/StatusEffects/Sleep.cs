@@ -5,7 +5,7 @@ using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class Sleep: StatusEffect, IBattleEventListener
+public class Sleep: StatusEffect
 {
 
     public override int MaxStacks => 1;
@@ -17,7 +17,7 @@ public class Sleep: StatusEffect, IBattleEventListener
     public override OverrideTurnType OverrideTurnType => OverrideTurnType.CannotMove;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
 
-    public void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
         if(eventArgs is not CharacterDamageEventArgs damageEventArgs) return;
         if(damageEventArgs.DamageResult.DamageReceiver != owner) return;

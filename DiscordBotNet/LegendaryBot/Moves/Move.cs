@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+﻿using DiscordBotNet.LegendaryBot.BattleEvents;
+using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -6,7 +7,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Moves;
 
-public abstract class Move
+public abstract class Move : IBattleEventListener
 {
     /// <summary>
     /// The maximum amount this move can be enhanced to
@@ -84,5 +85,10 @@ public abstract class Move
     {
 
         return BasicFunction.Englishify(GetType().Name);
+    }
+
+    public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    {
+        
     }
 }

@@ -27,7 +27,7 @@ public enum BattleDecision
 }
 
 
-public class BattleSimulator
+public class BattleSimulator : IBattleEventListener
 {
 
 
@@ -135,31 +135,21 @@ public class BattleSimulator
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
         var stop = new Stopwatch(); stop.Start();
-
-        if(this is IBattleEventListener battleSimulatorEvent)
-            battleSimulatorEvent.OnBattleEvent(eventArgs,null);
+        OnBattleEvent(eventArgs,null);
         foreach (var i in Characters)
         {
-            if (i is IBattleEventListener iAsEvent)
-            {
-                iAsEvent.OnBattleEvent(eventArgs, i);
-            }
-            foreach (var j in i.MoveList.OfType<IBattleEventListener>())
+            i.OnBattleEvent(eventArgs,i);
+
+            foreach (var j in i.MoveList)
             {
                 j.OnBattleEvent(eventArgs,i);
             }
-
-            foreach (var j in i.StatusEffects.OfType<IBattleEventListener>())
+            foreach (var j in i.StatusEffects)
             {
                 j.OnBattleEvent(eventArgs,i);
             }
-
-            if (i.Blessing is IBattleEventListener blessingAsEvent)
-            {
-                blessingAsEvent.OnBattleEvent(eventArgs,i);
-            }
+            i.Blessing?.OnBattleEvent(eventArgs,i);
         }
-
         $"battle event invoked: {eventArgs.GetType().Name} event time: {stop.Elapsed.TotalMilliseconds}".Print();
     }
 
@@ -615,5 +605,10 @@ public class BattleSimulator
             TimedOut = timedOut,
             Message = _message
         };
+    }
+
+    public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    {
+        
     }
 }

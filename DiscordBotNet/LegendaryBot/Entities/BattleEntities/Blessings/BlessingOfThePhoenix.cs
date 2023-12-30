@@ -5,7 +5,7 @@ using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 
-public class BlessingOfThePhoenix : Blessing, IBattleEventListener
+public class BlessingOfThePhoenix : Blessing
 {
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
 
@@ -19,7 +19,7 @@ public class BlessingOfThePhoenix : Blessing, IBattleEventListener
         return 5;
     }
 
-    public void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
         if(eventArgs is not CharacterDamageEventArgs characterDamageEventArgs) return;
         if (characterDamageEventArgs.DamageResult.DamageReceiver != owner) return;

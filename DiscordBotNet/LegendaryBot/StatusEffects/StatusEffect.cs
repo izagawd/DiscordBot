@@ -1,4 +1,6 @@
-﻿using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+﻿using DiscordBotNet.LegendaryBot.BattleEvents;
+using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -6,7 +8,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public abstract class StatusEffect : ICloneable 
+public abstract class StatusEffect : ICloneable , IBattleEventListener
 {
    
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/status_effects/{GetType().Name}.png";
@@ -132,6 +134,11 @@ public abstract class StatusEffect : ICloneable
     public override string ToString()
     {
         return Name;
+    }
+
+    public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    {
+    
     }
 
     object ICloneable.Clone()
