@@ -12,27 +12,50 @@ public abstract class Gear : BattleEntity
     /// </summary>
     public void AddStats(Character character)
     {
-        foreach (var i in AllStats)
+        foreach (var i in Stats)
         {
             i.AddStats(character);
         }
     }
-    public GearStat MainStat { get; protected set; }
 
-    public GearStat? SubStat1 { get; protected set; }
-
-    public GearStat? SubStat2 { get; protected set; }
-
-    public GearStat? SubStat3 { get; protected set; }
-
-    public GearStat? SubStat4 { get; protected set; }
 
     
+    /// <summary>
+    /// The name of the type of main stat
+    /// </summary>
+    public string MainStatTypeName { get; protected set; } 
+    
+    
+    [NotMapped]
+    public GearStat MainStat {
+        get
+        {
+            return Stats.FirstOrDefault(i => i.GetType().Name == MainStatTypeName)!;
+        }
+        protected set
+        {
+            Stats.Remove(MainStat);
+            MainStatTypeName = value.GetType().Name;
+            if(!Stats.Contains(value))
+                Stats.Add(value);
+        }
+    } 
+
+    public List<GearStat> Stats { get; protected set; } = [];
+    [NotMapped]
+    public IEnumerable<GearStat> Substats
+    {
+        get
+        {
+            return Stats.Where(i => i.GetType().Name != MainStatTypeName);
+        }
+    }
+
 
     public GearStat? this[Type type]{
         get
         {
-            return AllStats.FirstOrDefault(i => i.GetType() ==  type);
+            return Stats.FirstOrDefault(i => i.GetType() ==  type);
         }
     }
     /// <summary>
@@ -43,40 +66,31 @@ public abstract class Gear : BattleEntity
     {
         if (IsNew) throw new Exception("Gear has not been initiated");
         if (substatsToPrioritize.Any() 
-            && !substatsToPrioritize.All(i => GearStat.AllGearStatTypes.Contains(i)))
+            && !substatsToPrioritize.All(i => GearStat.NonAbstractGearStatTypes.Contains(i)))
         {
-            throw new Exception("One of the substats to prioritize is not of a substat type or is abstract");
+            throw new Exception("One of the substats to prioritize is not of a gearstat type or is abstract");
         }
 
         IEnumerable<Type> availableStats = substatsToPrioritize
-            .Except(AllStatTypes).ToArray();
+            .Except(StatTypes)
+            .ToArray();
         if (!availableStats.Any())
         {
             availableStats = GearStat
-                .AllGearStatTypes
-                .Except(AllStatTypes);
+                .NonAbstractGearStatTypes
+                .Except(StatTypes);
         }
 
         var randomStatType = BasicFunction.RandomChoice(availableStats);
         GearStat randomStat;
-        if (SubStat1 is null)
+        
+        if (Substats.Count() < 4)
         {
-            randomStat = SubStat1 = randomStatType;
-        }
-        else if (SubStat2 is null)
-        {
-            randomStat = SubStat2 = randomStatType;
-        }
-
-        else if (SubStat3 is null)
-        {
-            randomStat = SubStat3 = randomStatType;
+            randomStat = GearStat.CreateGearStatInstance(randomStatType);
+    
+            Stats.Add(randomStat);
         }
 
-        else if (SubStat4 is null)
-        {
-            randomStat = SubStat4 = randomStatType;
-        }
         else
         {
             var statsToUpgrade = Substats
@@ -85,10 +99,16 @@ public abstract class Gear : BattleEntity
             if (!statsToUpgrade.Any())
                 statsToUpgrade = Substats.ToArray();
             randomStat = BasicFunction.RandomChoice(statsToUpgrade);
-                    
         }
         randomStat.Increase(Rarity);
         
+    }
+    /// <summary>
+    /// Checks if the list of stats is valid
+    /// </summary>
+    public bool VerifyStats()
+    {
+        return Stats.Count(i => i.GetType().Name == MainStatTypeName) == 1;
     }
     ///<param name="substatsToPrioritize">These stats will take top priority when assigning or increasing substats. if it cannot be assigned or increased, it will pay attention to other substat types</param>
 
@@ -96,7 +116,7 @@ public abstract class Gear : BattleEntity
     {
         if (IsNew) throw new Exception("Gear has not been initiated");
         if (substatsToPrioritize.Any() 
-            && !substatsToPrioritize.All(i => GearStat.AllGearStatTypes.Contains(i)))
+            && !substatsToPrioritize.All(i => GearStat.NonAbstractGearStatTypes.Contains(i)))
         {
             throw new Exception("One of the substats to prioritize is not of a substat type or is abstract");
         }
@@ -148,10 +168,10 @@ public abstract class Gear : BattleEntity
     public void Initiate(Rarity rarity, Type?  customMainStat = null, params Type[] priorityTypes)
     {
         if (!IsNew) throw new Exception("Gear has already been initiated");
-        if (customMainStat is not null && !GearStat.AllGearStatTypes.Contains(customMainStat))
+        if (customMainStat is not null && !GearStat.NonAbstractGearStatTypes.Contains(customMainStat))
             throw new Exception("CustomMainStatType Type is not a subclass of GearStat or is abstract");
-        if (priorityTypes.Any() && !priorityTypes.All(i => GearStat.AllGearStatTypes.Contains(i)))
-            throw new Exception("One of the priority types is not a subclass of GearStat or is abstract");
+        if (priorityTypes.Any() && !priorityTypes.All(i => GearStat.NonAbstractGearStatTypes.Contains(i)))
+            throw new Exception("At least one of the priority types is not a subclass of GearStat or is abstract");
 
         var typesToUse = priorityTypes.ToArray();
         Rarity = rarity;
@@ -169,31 +189,22 @@ public abstract class Gear : BattleEntity
         
         for (int i = 0; i < (int)Rarity; i++)
         {
-            typesToUse = typesToUse.Except(AllStatTypes).ToArray();
+            typesToUse = typesToUse.Except(StatTypes).ToArray();
             if (!typesToUse.Any())
-                typesToUse = GearStat.AllGearStatTypes.ToArray();
-            var randomStat = BasicFunction.RandomChoice(typesToUse);
-            if (SubStat1 is null)
+                typesToUse = GearStat.NonAbstractGearStatTypes.ToArray();
+            var randomStatType = BasicFunction.RandomChoice(typesToUse);
+
+            if (Substats.Count() < 4)
             {
-                SubStat1 = randomStat;
+                var substatToAdd = GearStat.CreateGearStatInstance(randomStatType);
+                Stats.Add(substatToAdd);
             }
-            else if (SubStat2 is null)
+            else
             {
-                SubStat2 = randomStat;
-            }
-            else if (SubStat3 is null)
-            {
-                SubStat3 = randomStat;
-            }
-            else if (SubStat4 is null)
-            {
-                SubStat4 = randomStat;
-            }else
-            {
-                throw new Exception("All SubStats are already assigned.");
+                throw new Exception("All Substats are already assigned.");
             }
 
-            this[randomStat]!.Increase(Rarity);
+            this[randomStatType]!.Increase(Rarity);
         }
         IsNew = false;
     }
@@ -205,31 +216,21 @@ public abstract class Gear : BattleEntity
     [NotMapped]
     
     public abstract IEnumerable<Type> PossibleMainStats { get; }
+    /// <summary>
+    /// Gets all the stat types of gears the character has
+    /// </summary>
     [NotMapped]
-    public IEnumerable<Type> AllStatTypes => AllStats.Select(i => i.GetType());
-    [NotMapped]
-    public IEnumerable<GearStat> AllStats
-    {
-        get
-        {
-            var list = Substats.ToList();
-            if (MainStat is not null)
-            {
-                list.Add(MainStat);
-            }
-            return list;
-        }
-    }
-    [NotMapped]
+    
+    public IEnumerable<Type> StatTypes => Stats.Select(i => i.GetType());
+
     /// <summary>
     /// gets all the substats of the gear
     /// </summary>
+    [NotMapped]
+
     public IEnumerable<Type> SubstatTypes =>
         Substats.Select(i => i.GetType());
-    [NotMapped]
-    public IEnumerable<GearStat> Substats => new [] { SubStat1, SubStat2, SubStat3, SubStat4 }
-        .Where(i => i is not null)
-        .OfType<GearStat>();
+
     public override Rarity Rarity { get; protected set; } = Rarity.OneStar;
 
 

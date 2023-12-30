@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using System.Text.Json.Nodes;
 using DiscordBotNet.Extensions;
@@ -23,7 +24,11 @@ public abstract class GearStat
     [NotMapped]  public static Type EffectivenessType { get; } = typeof(EffectivenessGearStat);
     [NotMapped] public static Type SpeedFlatType { get; } = typeof(SpeedFlatGearStat);
 
+    public Guid Id { get; protected set; } = Guid.NewGuid();
 
+    
+
+    public Guid? GearId { get; protected set; }
     /// <summary>
     /// This is called when the gear that owns this stat is loaded. It sets the main stat's value according to
     /// the rarity and the level of the gear
@@ -55,7 +60,7 @@ public abstract class GearStat
             {
                 var doc = JsonNode.Parse(i).AsObject();
 
-                var type = AllGearStatTypes.First(j =>
+                var type = NonAbstractGearStatTypes.First(j =>
                     j.IsRelatedToType(typeof(GearStat)) && j.Name == doc["Discriminator"]!.GetValue<string>());
                 var stat = (GearStat)Activator.CreateInstance(type)!;
                 stat.TimesIncreased = doc["TimesIncreased"]!.GetValue<int>();
@@ -79,28 +84,41 @@ public abstract class GearStat
     /// Adds this stat to a character
     /// </summary>
     public abstract void AddStats(Character character);
-
-    public static implicit operator GearStat(Type type)
+    /// <summary>
+    /// Creates a gear stat instance from a gear stat type
+    /// </summary>
+    /// <exception cref="Exception">Throws exception if provided an abstract or a non gear stat class</exception>
+    public static GearStat CreateGearStatInstance(Type gearStatType)
     {
-        if(!type.IsSubclassOf(typeof(GearStat)) || type.IsAbstract)
+        if(gearStatType.IsAbstract)
         {
-            return null;
+            throw new Exception($"Cannot create a gear stat instance from an abstract type");
         }
-
-        return (GearStat)Activator.CreateInstance(type)!;
+        if (!gearStatType.IsRelatedToType(typeof(GearStat)))
+        {
+            throw new Exception($"Cannot create gearstat instance from non gear stat type {gearStatType}");
+        }
+        return (GearStat)Activator.CreateInstance(gearStatType)!;
     }
+
     /// <summary>
     /// Holds all the gear stat types that are not abstract
     /// </summary>
     [NotMapped]
     
-    public static IEnumerable<Type> AllGearStatTypes { get; }
+    public static IEnumerable<Type> NonAbstractGearStatTypes { get; }
 
+    [NotMapped]
+    
+    public static IEnumerable<Type> GearStatTypes { get; }
     static GearStat()
     {
-        
-        AllGearStatTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(i => !i.IsAbstract && i.IsSubclassOf(typeof(GearStat)));
+
+        var allTypes = Assembly.GetExecutingAssembly().GetTypes();
+        GearStatTypes = allTypes.Where(i => i.IsRelatedToType(typeof(GearStat)));
+        NonAbstractGearStatTypes = allTypes
+            .Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(GearStat)))
+            .ToImmutableArray();
     }
     
     public override string ToString()
