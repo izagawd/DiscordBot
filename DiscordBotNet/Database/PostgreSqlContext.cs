@@ -1,10 +1,8 @@
-﻿using System.Linq.Expressions;
-using System.Reflection;
+﻿using System.Reflection;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
 using DiscordBotNet.LegendaryBot.Quests;
@@ -19,8 +17,8 @@ namespace DiscordBotNet.Database;
 public class PostgreSqlContext : DbContext
 {
     
-    private static readonly Type[] EntityTypes;
-
+    private static readonly Type[] EntityClasses;
+    private static readonly Type[] GearStatClasses;
     public DbSet<UserData> UserData { get; set; }
     public DbSet<GuildData> GuildData { get; set; }
     public DbSet<Entity> Entity { get; set; }
@@ -67,8 +65,11 @@ public class PostgreSqlContext : DbContext
     static PostgreSqlContext()
     {
         _assemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
-        EntityTypes = _assemblyTypes
+        EntityClasses = _assemblyTypes
             .Where(type => type.IsRelatedToType(typeof(Entity))).ToArray();
+        GearStatClasses = _assemblyTypes
+                .Where(type => type.IsRelatedToType(typeof(GearStat)) && !type.IsAbstract)
+                .ToArray();
 
     }
 
@@ -89,77 +90,6 @@ public class PostgreSqlContext : DbContext
         Database.EnsureCreated();
       
     }
-    private Expression<Func<UserData, IEnumerable<Entity>>> teamNavigation =
-            
-            
-        (UserData i) => i.Inventory.Where(j => j.Id == j.UserData.Character1Id
-                                               || j.Id == j.UserData.Character2Id
-                                               || j.Id == j.UserData.Character3Id
-                                               || j.Id == j.UserData.Character4Id);
-    
-    
-    public async Task<UserData> LoadTeamWithAllEquipments(ulong userId)
-    {
-        var userData = await UserData
-            .Include(teamNavigation)
-                .ThenInclude<UserData,Entity,Blessing>(i => (i as Character).Blessing)
-            .Include(teamNavigation)
-                .ThenInclude<UserData,Entity,Armor>(i => (i as Character).Armor)
-            .ThenInclude(i => i.Stats)
-            .Include(teamNavigation)
-                .ThenInclude<UserData,Entity,Boots>(i => (i as Character).Boots)
-            .Include(teamNavigation)
-                .ThenInclude<UserData,Entity,Necklace>(i => (i as Character).Necklace)
-            .Include(teamNavigation)
-                .ThenInclude<UserData,Entity,Weapon>(i => (i as Character).Weapon)
-            .Include(teamNavigation)
-                .ThenInclude<UserData,Entity,Ring>(i => (i as Character).Ring)
-            .Include(teamNavigation)
-                .ThenInclude<UserData,Entity,Helmet>(i => (i as Character).Helmet)
-            
-            .FindOrCreateAsync(userId);
-        var ids = userData
-            .CharacterTeamArray
-            .Select(i => i.Id)
-            .ToArray();
-
-         var gearsList = userData.CharacterTeamArray.SelectMany(i => i.Gears);
-        var gearsIds = gearsList.Select(i => i.Id).ToArray();
-        await Set<GearStat>()
-            .Where(i => gearsIds.Contains(i.Gear.Id))
-            .LoadAsync();
-
-        return userData;
-    }
-    public async Task ResetDatabaseAsync()
-    {
-        await Database.EnsureDeletedAsync();
-        await Database.EnsureCreatedAsync();
-    }
-    public async Task RestartWithPower(ulong idOfUser)
-    {
-        await ResetDatabaseAsync();
-
-        var userData =await UserData.FindOrCreateAsync(idOfUser);
-
-
-        userData.Tier = Tier.Bronze;
-
-        List<Character> characters = [new Lily(), new Blast(), new Player(), new RoyalKnight()];
-        userData.Inventory.AddRange(characters);
-
-        await SaveChangesAsync();
-
-        foreach (var i in characters)
-        {
-            userData.AddToTeam(i);
-        }
-
-        await GivePowerToUserAsync(idOfUser);
-        await SaveChangesAsync();
-
-    }
-
 
     public async Task GivePowerToUserAsync(ulong idOfUser)
     {
@@ -233,14 +163,14 @@ public class PostgreSqlContext : DbContext
         {
             modelBuilder.Entity(i);
         }
-        foreach (var entityType in EntityTypes)
+        foreach (var entityType in EntityClasses)
         {
             modelBuilder.Entity(entityType);
         }
 
-        foreach (var i in GearStat.GearStatTypes)
+        foreach (var i in GearStatClasses)
         {
-            modelBuilder.Entity(i);
+            modelBuilder.Owned(i);
         }
         //makes sure the character id properties are not the same, even across tables
         modelBuilder.Entity<UserData>()
@@ -353,10 +283,29 @@ public class PostgreSqlContext : DbContext
             .HasMany(i => i.QuoteReactions)
             .WithOne(i => i.UserData)
             .HasForeignKey(i => i.UserDataId);
-        modelBuilder.Entity<Gear>()
-            .HasMany(i => i.Stats)
-            .WithOne(i => i.Gear)
-            .HasForeignKey(i => i.GearId);
+        modelBuilder.Entity<Gear>(entity =>
+        {
+            entity
+                .Property(i => i.MainStat)
+                .HasConversion(GearStat.ValueConverter);
+            entity
+                .Property(i => i.SubStat1)
+                .HasConversion(GearStat.ValueConverter!);
+            entity
+                .Property(i => i.SubStat2)
+                .HasConversion(GearStat.ValueConverter!);
+            entity
+                .Property(i => i.SubStat3)
+                .HasConversion(GearStat.ValueConverter!);
+
+            entity
+                .Property(i => i.SubStat4)
+                .HasConversion(GearStat.ValueConverter!);
+            entity.Property(i => i.Rarity)
+                .HasColumnName("Rarity");
+
+        });
+
         modelBuilder.Entity<UserData>()
             .HasKey(i => i.Id);
         modelBuilder.Entity<Character>()

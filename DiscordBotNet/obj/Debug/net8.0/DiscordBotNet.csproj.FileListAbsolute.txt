@@ -1,7 +1,9 @@
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\ConfigFiles\App.config
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\appsettings.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\DiscordBotNet.staticwebassets.runtime.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\DiscordBotNet.exe
+C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\DiscordBotNet.dll.config
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\DiscordBotNet.deps.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\DiscordBotNet.runtimeconfig.json
 C:\Users\theiz\OneDrive\Documents\coding\CS-workspace\DiscordBotNet\bin\Debug\net8.0\DiscordBotNet.dll
@@ -62,5 +64,3 @@ C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\ne
 C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Certificate.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\Polly.dll
 C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\Polly.Core.dll
-C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\ConfigFiles\App.config
-C:\Users\theiz\OneDrive\Documents\coding\CS-Workspace\DiscordBotNet\bin\Debug\net8.0\DiscordBotNet.dll.config
