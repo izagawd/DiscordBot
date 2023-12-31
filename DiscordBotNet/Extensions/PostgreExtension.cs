@@ -45,88 +45,61 @@ public static class PostgreExtension
         return (T) GetDbContext(query);
     }
 
-    public static IIncludableQueryable<UserData,Character?> IncludeTeam
+    public static IQueryable<UserData> IncludeTeam
         (this IQueryable<UserData> queryable)
     {
-        return queryable.Include(i => i.Character1)
-            .Include(i => i.Character2)
-            .Include(i => i.Character3)
-            .Include(i => i.Character4);
-
+        return queryable
+            .Include(i => i.EquippedPlayerTeam);
     }
     
     public static IIncludableQueryable<UserData,Blessing?> IncludeTeamWithBlessing
         (this IQueryable<UserData> queryable)
     {
-        return queryable.Include(i => i.Character1)
-            .ThenInclude(i => i.Blessing)
-            .Include(i => i.Character2)
-            .ThenInclude(i => i.Blessing)
-            .Include(i => i.Character3)
-            .ThenInclude(i => i.Blessing)
-            .Include(i => i.Character4)
+        return queryable
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
             .ThenInclude(i => i.Blessing);
-
     }
-    public static IIncludableQueryable<UserData,Blessing?> IncludeTeamWithAllEquipments
+
+    public static IQueryable<UserData> IncludeTeamWithAllEquipments
         (this IQueryable<UserData> queryable)
     {
 
-       return   queryable
-            .IncludeWithAllEquipments(i => i.Character1)
-            .IncludeWithAllEquipments(i => i.Character2)
-            .IncludeWithAllEquipments(i => i.Character3)
-            .IncludeWithAllEquipments(i => i.Character4);
-
+        return queryable
+            .IncludeTeamWithBlessing()
+            .IncludeTeamWithGears();
     }
 
-    public static IIncludableQueryable<UserData, Necklace?> IncludeTeamWithGears
+    public static IQueryable<UserData> IncludeTeamWithGears
         (this IQueryable<UserData> queryable)
     {
         return queryable
-            .IncludeWithGears(i => i.Character1)
-            .IncludeWithGears(i => i.Character2)
-            .IncludeWithGears(i => i.Character3)
-            .IncludeWithGears(i => i.Character4);
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i.Armor)
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i.Boots)
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i.Helmet)
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i.Weapon)
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i.Ring)
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i.Necklace);
     }
-    public static IIncludableQueryable<TEntity, Blessing?> IncludeWithAllEquipments<TEntity,TCharacter>
-    (this IQueryable<TEntity> queryable,
-        Expression<Func<TEntity,TCharacter>>
-            navigationPropertyPath) where TEntity : class
-    where TCharacter: Character
-    {
-        return queryable
-            .IncludeWithGears(navigationPropertyPath)
-            .Include(navigationPropertyPath)
-            .ThenInclude(i => i.Blessing);
-    }
+
     /// <summary>
     /// this not only includes all the gears of the characters, but the stats as well
     /// </summary>
 
  
 
-    public static IIncludableQueryable<TEntity, Necklace?> IncludeWithGears<TEntity,TCharacter>(
-        this IQueryable<TEntity> queryable, Expression<Func<TEntity,TCharacter>>
-            navigationPropertyPath) 
-        where TEntity : class
-        where TCharacter : Character
-    {
-           
-        return queryable
-            .Include(navigationPropertyPath)
-            .ThenInclude(i => i.Armor)
-            .Include(navigationPropertyPath)
-            .ThenInclude(i => i.Boots)
-            .Include(navigationPropertyPath)
-            .ThenInclude(i => i.Helmet)
-            .Include(navigationPropertyPath)
-            .ThenInclude(i => i.Weapon)
-            .Include(navigationPropertyPath)
-            .ThenInclude(i => i.Ring)
-            .Include(navigationPropertyPath)
-            .ThenInclude(i => i.Necklace);
-    }
 
 
 

@@ -21,13 +21,13 @@ public class TeamController : Controller
             .IncludeTeam()
             .FindOrCreateAsync(User.GetDiscordUserId());
 
-        var userTeam = UserData.CharacterTeamArray;
-        if (userTeam.Length <= 1) return Ok();
+        var userTeam = UserData.EquippedPlayerTeam;
+        if (userTeam.Count <= 1) return Ok();
         var characterToRemove = userTeam.FirstOrDefault(i => i.Id == id);
         
         if (characterToRemove is not null)
         {
-            UserData.RemoveFromTeam(characterToRemove);
+            UserData.EquippedPlayerTeam?.Remove(characterToRemove);
         }
         
         await DatabaseContext.SaveChangesAsync();
@@ -45,7 +45,7 @@ public class TeamController : Controller
         
         if (character is not null)
         {
-            userData.AddToTeam(character);
+            userData.EquippedPlayerTeam.Add(character);
         }
         await DatabaseContext.SaveChangesAsync();
         return Ok();

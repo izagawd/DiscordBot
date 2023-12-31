@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 using DSharpPlus.Entities;
 
@@ -6,16 +7,18 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 public class CharacterTeam : ISet<Character>
 {
+
     /// <summary>
     /// If the owner of the team is a real person, this should be their discord id
     /// </summary>
-    public ulong? UserId { get;  }
+    public ulong? TryGetUserDataId => (this as PlayerTeam)?.UserDataId;
     /// <summary>
     /// The name of the owner of the team. Does not need to be a user.<br/>
     /// But if the owner of the team is a user, this must be set to their id. it probably would be unless I suck at coding 
     /// </summary>
     public string? UserName { get; } 
-    public bool IsPlayerTeam => UserId is not null;
+    public bool IsPlayerTeam => TryGetUserDataId is not null;
+
     /// <summary>
     /// increases exp of every character in the team and returns useful text
     /// </summary>
@@ -26,13 +29,16 @@ public class CharacterTeam : ISet<Character>
         var text = "";
         foreach (var i in this)
         {
-            text += i.IncreaseExp(exp) +"\n";
+            text += i.IncreaseExp(exp) + "\n";
         }
 
         return text;
     }
+
+    [NotMapped]
     public BattleSimulator CurrentBattle { get; set; }
-    private HashSet<Character> Characters { get; }
+
+    public HashSet<Character> Characters { get; set; } = [];
     public IEnumerator<Character> GetEnumerator()
     {
         return Characters.GetEnumerator();
@@ -41,7 +47,7 @@ public class CharacterTeam : ISet<Character>
     /// when a character is gotten from a database, the stats are not set in response to it's level sometimes. this does the trick for every character in the team
     /// </summary>
     /// <returns></returns>
-    public async Task<CharacterTeam> LoadAsync()
+    public virtual async Task<CharacterTeam> LoadAsync()
     {
         foreach (var i in Characters)
         {
@@ -94,9 +100,9 @@ public class CharacterTeam : ISet<Character>
 
         /// <returns></returns>
 
-    public bool Add(Character character)
+    public virtual bool Add(Character character)
     {
-      character.Team = this;
+        character.Team = this;
         return Characters.Add(character);
     }
 
@@ -177,19 +183,12 @@ public class CharacterTeam : ISet<Character>
     }
 
 
-    public CharacterTeam(ulong userId, string userName,params Character[] characters) : this(userName,characters)
-    {
-        UserId = userId;
-        
-    }
+
     public CharacterTeam(string userName,params Character[] characters) : this(characters)
     {
         UserName = userName;
     }
-    public CharacterTeam(DiscordUser user,params Character[] characters) : this(user.Id,user.Username,characters)
-    {
 
-    }
     public bool Contains(Character character)
     {
         return Characters.Contains(character);

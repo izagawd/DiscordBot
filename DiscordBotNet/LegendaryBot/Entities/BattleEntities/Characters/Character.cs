@@ -547,7 +547,8 @@ public abstract partial  class Character : BattleEntity
 
     public void AddGear(Gear gear)
     {
-        gear.UserDataId = UserDataId;
+        if(UserDataId != 0)
+            gear.UserDataId = UserDataId;
         if (gear is Armor armor)
         {
             Armor = armor;
@@ -1060,6 +1061,7 @@ public abstract partial  class Character : BattleEntity
         return damageResult;
     }
 
+    public List<PlayerTeam> PlayerTeams { get; protected set; } = [];
     /// <summary>
     /// Recovers the health of this character
     /// </summary>

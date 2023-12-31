@@ -127,26 +127,38 @@ public class PostgreSqlContext : DbContext
                     GearStat.SpeedFlatType
                 };
                 if (i is RoyalKnight)
-                    wantedTypes = new[]
-                    {
+                    wantedTypes =
+                    [
                         GearStat.HealthPercentageType, GearStat.DefensePercentageType, GearStat.SpeedFlatType,
                         GearStat.ResistanceType
-                    };
+                    ];
                 else if (i is Lily)
 
-                    wantedTypes = new[]
-                    {
+                    wantedTypes = 
+                    [
                         GearStat.HealthPercentageType, GearStat.SpeedFlatType,
                         GearStat.EffectivenessType
-                    };
+                    ];
                 gear.Initiate(Rarity.FiveStar, mainStat, wantedTypes);
                 gear.UserDataId = i.UserDataId;
                 gear.IncreaseExp(9000000000000, wantedTypes);
                 i.AddGear(gear);
-                CharacterTeam team = user.GetCharacterTeam("");
-                if(team.Count < 4 && i is not CoachChad)
-                    user.AddToTeam(i);
+
+                if (user.EquippedPlayerTeam is null)
+                {
+                    var newTeam = new PlayerTeam();
+                    user.EquippedPlayerTeam = newTeam;
+                      
+                    user.PlayerTeams.Add(newTeam);
+                }
                     
+              
+                CharacterTeam team = user.EquippedPlayerTeam;
+              
+                if (team.Count < 4 && i is not CoachChad)
+                    team.Add(i);
+     
+
             }
 
         }
@@ -173,15 +185,7 @@ public class PostgreSqlContext : DbContext
             modelBuilder.Owned(i);
         }
         //makes sure the character id properties are not the same, even across tables
-        modelBuilder.Entity<UserData>()
 
-            .ToTable(i => i.HasCheckConstraint("CK_character_id_properties_should_not_be_the_same",
-                $"\"{nameof(Models.UserData.Character1Id)}\" != \"{nameof(Models.UserData.Character2Id)}\"" +
-                $"AND \"{nameof(Models.UserData.Character1Id)}\" != \"{nameof(Models.UserData.Character3Id)}\"" +
-                $"AND \"{nameof(Models.UserData.Character1Id)}\" != \"{nameof(Models.UserData.Character4Id)}\"" +
-                $"AND \"{nameof(Models.UserData.Character2Id)}\" != \"{nameof(Models.UserData.Character3Id)}\"" +
-                $"AND \"{nameof(Models.UserData.Character2Id)}\" != \"{nameof(Models.UserData.Character4Id)}\"" +
-                $"AND \"{nameof(Models.UserData.Character3Id)}\" != \"{nameof(Models.UserData.Character4Id)}\""));
      
         modelBuilder.Entity<UserData>()
             .Property(i => i.Color)
@@ -199,29 +203,30 @@ public class PostgreSqlContext : DbContext
             .ValueGeneratedNever();
 
 
-            
-        modelBuilder.Entity<UserData>()
-            .HasOne(i => i.Character1)
-            .WithOne()
-            .HasForeignKey<UserData>(i => i.Character1Id)
-            .OnDelete(DeleteBehavior.SetNull);
-        modelBuilder.Entity<UserData>()
-            .HasOne(u => u.Character2)
-            .WithOne()
-            .HasForeignKey<UserData>(u => u.Character2Id)
-            .OnDelete(DeleteBehavior.SetNull);
 
+
+        modelBuilder.Entity<PlayerTeam>()
+            .HasKey(i => i.Id);
+
+        modelBuilder.Entity<PlayerTeam>()
+            .Property(i => i.Id)
+            .ValueGeneratedNever();
         modelBuilder.Entity<UserData>()
-            .HasOne(u => u.Character3)
-            .WithOne()
-            .HasForeignKey<UserData>(u => u.Character3Id)
-            .OnDelete(DeleteBehavior.SetNull);
-        
+            .HasMany(i => i.PlayerTeams)
+            .WithOne(i => i.UserData)
+            .HasForeignKey(i => i.UserDataId);
+
+        modelBuilder.Entity<PlayerTeam>()
+            .HasMany<Character>(i => i.Characters)
+            .WithMany(i => i.PlayerTeams)
+            .UsingEntity<CharacterPlayerTeam>(i
+                => i.HasOne<Character>().WithMany().HasForeignKey(j => j.CharacterId), i =>
+                i.HasOne<PlayerTeam>().WithMany().HasForeignKey(j => j.PlayerTeamId), i =>
+                i.HasKey(j => new { j.CharacterId, j.PlayerTeamId }));
         modelBuilder.Entity<UserData>()
-            .HasOne(u => u.Character4)
+            .HasOne(i => i.EquippedPlayerTeam)
             .WithOne()
-            .HasForeignKey<UserData>(u => u.Character4Id)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasForeignKey<UserData>(i => i.EquippedPlayerTeamId);
         modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Property);
 
         modelBuilder.Entity<UserData>()
@@ -242,6 +247,7 @@ public class PostgreSqlContext : DbContext
             .WithOne()
             .HasForeignKey<Character>(i => i.HelmetId)
             .OnDelete(DeleteBehavior.SetNull);
+
 
         modelBuilder.Entity<Character>()
             .HasOne(i => i.Weapon)
@@ -306,6 +312,12 @@ public class PostgreSqlContext : DbContext
 
         });
 
+
+
+        modelBuilder.Entity<PlayerTeam>()
+            .Navigation(i => i.Characters)
+            .AutoInclude();
+        
         modelBuilder.Entity<UserData>()
             .HasKey(i => i.Id);
         modelBuilder.Entity<Character>()

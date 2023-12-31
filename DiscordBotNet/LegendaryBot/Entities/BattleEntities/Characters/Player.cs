@@ -76,9 +76,6 @@ public class FireBall : Skill
 public class Ignite : Surge
 {
     public override int MaxCooldown => 1;
-
-
-
     public override string GetDescription(Character character) =>$"Ignites the enemy with 3 burns. {IgniteChance}% chance each";
     
 

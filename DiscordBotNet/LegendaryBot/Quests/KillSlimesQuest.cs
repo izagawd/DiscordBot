@@ -32,7 +32,7 @@ public class KillSlimesQuest : Quest
             message = await message.ModifyAsync(new DiscordMessageBuilder {Embed = embed});
         }
         await Task.Delay(2000);
-        var playerTeam = await userData.GetCharacterTeam(context.User).LoadAsync();
+        var playerTeam = await userData.EquippedPlayerTeam.LoadAsync(context.User);
 
         var battleSimulator = new BattleSimulator(playerTeam,await slimeTeam.LoadAsync());
         var result = await battleSimulator.StartAsync(context, message);

@@ -20,7 +20,11 @@
 <body>
 
 <div id="team_main_div" ondrop="AddToTeam( event)"  ondragover="event.preventDefault()">
-    @{ var team = Model.UserData.CharacterTeamArray;}
+    @{
+        var team = Model.UserData.EquippedPlayerTeam;
+        if (team is null)
+            team = new PlayerTeam();
+    }
 
     @foreach (var i in team)
     {

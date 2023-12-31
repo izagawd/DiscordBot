@@ -16,7 +16,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
-
+using Npgsql;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -38,27 +38,32 @@ public static class Bot
     public static async Task DoShit()
     {
         var postgre = new PostgreSqlContext();
-        postgre.ResetDatabase();
-        await postgre.SaveChangesAsync();
+
+        await postgre.GivePowerToUserAsync(Izasid);
+        try
+        {
+            await postgre.SaveChangesAsync();
+
+        }
+        catch (DbUpdateException e)
+        {
+            foreach (var entityEntry in e.Entries)
+            {
+                entityEntry.Entity.GetType().Print();
+            }
+            Console.WriteLine(e);
+            throw;
+        }
+
+
     }
 
 
     
     private static async Task Main(string[] args)
     {
-        var idk = new PostgreSqlContext();
-        await idk.UserData.Where(i => i.Id == Izasid).ForEachAsync(async i =>
-        {
-            i.AddToTeam(new Delinquent());
-            i.AddToTeam(new Lily());
-            i.AddToTeam(new Player());
-            i.AddToTeam(new Blast());
-         
-           
-        });
-        await idk.SaveChangesAsync();
-        await idk.GivePowerToUserAsync(Izasid);
-        await idk.SaveChangesAsync();
+
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

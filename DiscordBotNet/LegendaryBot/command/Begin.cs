@@ -13,7 +13,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Begin : BaseCommandClass
 {
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Adventure;
+    public override BotCommandType BotCommandType => BotCommandType.Adventure;
 
     [SlashCommand("begin", "Begin your journey by playing the tutorial!")]
     public async Task Execute(InteractionContext ctx)
@@ -24,6 +24,7 @@ public class Begin : BaseCommandClass
         UserData userData = await DatabaseContext.UserData
             .Include(j => j.Inventory)
             .ThenInclude(j => (j as Character).Blessing)
+            .Include(i => i.EquippedPlayerTeam)
             .Include(i => i.Inventory.Where(i => i is Character || i is Gear))
             .FindOrCreateAsync(author.Id);
         await DatabaseContext.SaveChangesAsync();
@@ -60,18 +61,23 @@ public class Begin : BaseCommandClass
         if (!userData.Inventory.Any(i => i is Player))
         {
             Player player = new Player();
-      
             player.SetElement(Element.Fire);
-
-
-
             userData.Inventory.Add(player);
             player.UserData = userData;
         }
 
-        if (!userData.CharacterTeamArray.Any())
+        if (userData.EquippedPlayerTeam is null)
         {
-            userData.AddToTeam(userData.Inventory.OfType<Player>().First());
+            var playerTeam = new PlayerTeam();
+            userData.EquippedPlayerTeam = playerTeam;
+            userData.PlayerTeams.Add(playerTeam);
+        }
+
+        
+        
+        if (!userData.EquippedPlayerTeam.Any())
+        {
+            userData.EquippedPlayerTeam.Add(userData.Inventory.OfType<Player>().First());
         }
         var coachChad = new CoachChad();
     
@@ -138,10 +144,10 @@ public class Begin : BaseCommandClass
         }
 
 
-        var userTeam = userData.GetCharacterTeam(ctx.User);
+        var userTeam = userData.EquippedPlayerTeam;
         userTeam.Add(lily);
 
-        BattleResult battleResult = await  new BattleSimulator(await  userTeam.LoadAsync(), await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx, result.Message);
+        BattleResult battleResult = await new BattleSimulator(await userTeam.LoadAsync(), await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx, result.Message);
 
         if (battleResult.TimedOut is not null)
         {
@@ -193,6 +199,7 @@ public class Begin : BaseCommandClass
             userData.Tier = Tier.Bronze;
             userData.LastTimeChecked = DateTime.UtcNow.AddDays(-1);
         };
+        userTeam.Remove(lily);
         await DatabaseContext.SaveChangesAsync();
         result =  await theDialogue.LoadAsync(ctx, result.Message);
         if (result.TimedOut)

@@ -19,77 +19,20 @@ public class UserData : Model,  ICanBeLeveledUp
 {
 
 
-    public UserData(ulong id)
+    public UserData(ulong id) : this()
     {
         Id = id;
     }
     public UserData(){}
-
     
-    [NotMapped] public IEnumerable<Guid> Ids => CharacterTeamArray.Select(i => i.Id);
+    public Guid? EquippedPlayerTeamId { get; set; }
+    public PlayerTeam? EquippedPlayerTeam { get; set; }
+
+    public List<PlayerTeam> PlayerTeams { get; set; } = [];
+
     public List<QuoteReaction> QuoteReactions { get; set; } = new();
 
-    public void RemoveFromTeam(Character character)
-    {
-        if (Character1 == character)
-        {
-            Character1 = null;
-        }
-        else if (Character2 == character)
-        {
-            Character2 = null;
-        }
-        else if (Character3 == character)
-        {
-            Character3 = null;
-        }
-        else if (Character4 == character)
-        {
-            Character4 = null;
-        }
-    }
-    [NotMapped]
-    public Character[] CharacterTeamArray =>
-        new [] { Character1, Character2, Character3, Character4 }
-            .Where(i => i is not null).OfType<Character>().ToArray();
-    public void AddToTeam(Character character)
-    {
-        if(CharacterTeamArray.Contains(character)) return;
-        if (Character1 is null)
-        {
-            Character1 = character;
-        }
-        else if (Character2 is null)
-        {
-            Character2 = character;
-        }
-        else if (Character3 is null)
-        {
-            Character3 = character;
-        }
-        else if (Character4 is null)
-        {
-            Character4 = character;
-        }
 
-        character.UserDataId = Id;
-        character.UserData = this;
-    }
-    
-    /// <param name="userName">The username of the owner of the team</param>
-    public CharacterTeam GetCharacterTeam(string userName)
-    {
-        CharacterTeam team = new CharacterTeam(Id,userName);
-        Character?[] characterArray = {Character1,Character2,Character3,Character4};
-        foreach (var i in characterArray)
-        {
-            if (i is not null)
-                team.Add(i);
-        }
-        return team;
-    }
-
-    public CharacterTeam GetCharacterTeam(DiscordUser user) => GetCharacterTeam(user.Username);
     public async Task<Image<Rgba32>> GetInfoAsync(DiscordUser? user = null)
     {
         if (user is null)
@@ -217,16 +160,8 @@ public class UserData : Model,  ICanBeLeveledUp
     
     public ulong SupremePrayers { get; set; } = 0;
     public ulong Coins { get; set; } = 5000;
-    public List<Guid?> CharacterIdList => [Character1Id, Character2Id, Character3Id, Character4Id];
-    public Guid? Character1Id { get; set; }
-    public Character? Character1 { get; set; }
-    public Guid? Character2Id { get; set; }
-    public Character? Character2 { get; set; }
-    public Guid? Character3Id { get; set; }
-    public Character? Character3 { get; set; }
-    
-    public Guid? Character4Id { get; set; }
-    public Character? Character4 { get; set; }
+
+
     public Tier Tier { get; set; } = Tier.Unranked;
     public int Level { get; set; } = 1;
     public DiscordColor Color { get; set; } = DiscordColor.Green;

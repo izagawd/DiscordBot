@@ -275,7 +275,7 @@ public class BattleSimulator : IBattleEventListener
             if (!didParse) return false;
             if (decision == BattleDecision.Forfeit)
             {
-                var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
+                var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.TryGetUserDataId == e.User.Id);
                 if (forfeitedTeam is not null)
                 {
                     _forfeited = forfeitedTeam;
@@ -458,7 +458,7 @@ public class BattleSimulator : IBattleEventListener
                     if (!didParse) return false;
                     if (decision == BattleDecision.Forfeit)
                     {
-                        var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.UserId == e.User.Id);
+                        var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.TryGetUserDataId == e.User.Id);
                         if (forfeitedTeam is not null)
                         {
                             _forfeited = forfeitedTeam;
@@ -466,7 +466,7 @@ public class BattleSimulator : IBattleEventListener
                             return true;
                         }
                     }
-                    if (e.User.Id == ActiveCharacter.Team.UserId)
+                    if (e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
                     {
 
                         e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
@@ -506,7 +506,7 @@ public class BattleSimulator : IBattleEventListener
                     using var buttonAwaiterToken = new CancellationTokenSource();
                     _message.WaitForSelectAsync(e =>
                     {
-                        if (e.User.Id == ActiveCharacter.Team.UserId)
+                        if (e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
                         {
                             target = Characters.First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
                             e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
@@ -516,7 +516,7 @@ public class BattleSimulator : IBattleEventListener
                 
                     var results1 = await  _message.WaitForButtonAsync(e =>
                     {
-                        if (e.User.Id == ActiveCharacter.Team.UserId && e.Interaction.Data.CustomId == "Proceed")
+                        if (e.User.Id == ActiveCharacter.Team.TryGetUserDataId && e.Interaction.Data.CustomId == "Proceed")
                         {
                             buttonAwaiterToken.Cancel();
                             e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);

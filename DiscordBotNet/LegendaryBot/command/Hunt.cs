@@ -58,7 +58,7 @@ public class Hunt : BaseCommandClass
             .WithDescription($"A wild {enemy} has appeared!");
         await ctx.CreateResponseAsync(embedToBuild.Build());
         var message = await ctx.GetOriginalResponseAsync();
-        var userTeam = await userData.GetCharacterTeam(author).LoadAsync(author);
+        var userTeam = await userData.EquippedPlayerTeam.LoadAsync(author);
         enemy.SetLevel(userTeam.Select(i => i.Level).Average().Round());
         var simulator = new BattleSimulator(userTeam, await new CharacterTeam(enemy).LoadAsync());
 

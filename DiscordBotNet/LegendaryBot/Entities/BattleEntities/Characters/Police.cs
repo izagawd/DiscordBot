@@ -100,8 +100,7 @@ public class Police : Character
     public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
         base.OnBattleEvent(eventArgs, owner);
-        if(eventArgs is not CharacterDeathEventArgs characterDeathEventArgs) return;
-        if(characterDeathEventArgs.Killed == this) Revive();
+
     }
 
     public override Surge? Surge { get; }
