@@ -48,8 +48,7 @@ public static class Bot
     {
 
         new PostgreSqlContext().ResetDatabase();
-        return;
-        
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

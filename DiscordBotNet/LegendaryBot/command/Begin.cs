@@ -147,7 +147,8 @@ public class Begin : BaseCommandClass
         var userTeam = userData.EquippedPlayerTeam;
         userTeam.Add(lily);
 
-        BattleResult battleResult = await new BattleSimulator(await userTeam.LoadAsync(), await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx, result.Message);
+        BattleResult battleResult = await new BattleSimulator(await userTeam.LoadAsync(), 
+            await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx, result.Message);
 
         if (battleResult.TimedOut is not null)
         {
