@@ -1,4 +1,4 @@
-﻿namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+﻿namespace DiscordBotNet.Database.ManyToManyInstances;
 
 public class CharacterPlayerTeam
 {

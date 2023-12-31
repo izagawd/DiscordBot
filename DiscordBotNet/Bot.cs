@@ -37,24 +37,8 @@ public static class Bot
 
     public static async Task DoShit()
     {
-        var postgre = new PostgreSqlContext();
 
-        await postgre.GivePowerToUserAsync(Izasid);
-        try
-        {
-            await postgre.SaveChangesAsync();
-
-        }
-        catch (DbUpdateException e)
-        {
-            foreach (var entityEntry in e.Entries)
-            {
-                entityEntry.Entity.GetType().Print();
-            }
-            Console.WriteLine(e);
-            throw;
-        }
-
+        
 
     }
 
@@ -63,7 +47,9 @@ public static class Bot
     private static async Task Main(string[] args)
     {
 
-
+        new PostgreSqlContext().ResetDatabase();
+        return;
+        
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

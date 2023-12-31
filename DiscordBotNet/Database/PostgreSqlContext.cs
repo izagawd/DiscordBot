@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using DiscordBotNet.Database.ManyToManyInstances;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
