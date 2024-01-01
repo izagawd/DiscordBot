@@ -64,12 +64,14 @@ public class Begin : BaseCommandClass
             player.SetElement(Element.Fire);
             userData.Inventory.Add(player);
             player.UserData = userData;
+            player.UserDataId = userData.Id;
         }
 
         if (userData.EquippedPlayerTeam is null)
         {
             var playerTeam = new PlayerTeam();
             userData.EquippedPlayerTeam = playerTeam;
+            playerTeam.UserDataId = userData.Id;
             userData.PlayerTeams.Add(playerTeam);
         }
 

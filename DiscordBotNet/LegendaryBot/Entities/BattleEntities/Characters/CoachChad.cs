@@ -88,7 +88,7 @@ public class ThumbsUp : Skill
 
     public override int MaxCooldown => 1;
 }
-public class CoachChad : Character, IBattleEventListener
+public class CoachChad : Character
 {
 
 
@@ -135,8 +135,8 @@ public class CoachChad : Character, IBattleEventListener
         if (eventArgs is not TurnEndEventArgs turnEndEvent) return;
     
         if (turnEndEvent.Character != owner) return;
-        Health = MaxHealth;
-    
+        RecoverHealth(MaxHealth * 0.05);
+
     }
     public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {

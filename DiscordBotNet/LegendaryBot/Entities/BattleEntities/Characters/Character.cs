@@ -1069,14 +1069,15 @@ public abstract partial  class Character : BattleEntity
     /// <param name="recoveryText">text to say when health recovered. use $ to represent health recovered</param>
     /// <returns>Amount recovered</returns>
     public virtual int RecoverHealth(double toRecover,
-        string? recoveryText = null)
+        string? recoveryText = null, bool announceHealing = true)
     {
         var healthToRecover = toRecover.Round();
         Health += healthToRecover;
         if (recoveryText is null)
             recoveryText = $"{this} recovered $ health!";
-
-        CurrentBattle.AdditionalTexts.Add(recoveryText.Replace("$",healthToRecover.ToString()));
+        
+        if(announceHealing)
+            CurrentBattle.AdditionalTexts.Add(recoveryText.Replace("$",healthToRecover.ToString()));
         
 
         return healthToRecover;
