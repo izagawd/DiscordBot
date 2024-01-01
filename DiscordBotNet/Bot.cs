@@ -36,12 +36,15 @@ public static class Bot
     private static readonly IEnumerable<Type> AllAssemblyTypes = Assembly.GetExecutingAssembly()
         .GetTypes().ToImmutableArray();
 
+    private static async Task DoShit()
+    {
+  
+    }
 
     private static async Task Main(string[] args)
     {
 
-        new PostgreSqlContext().ResetDatabase();
-        ;
+        
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

@@ -31,10 +31,10 @@ public class PostgreSqlContext : DbContext
     /// this should be called before any query if u want to ever use this method
     /// </summary>
     /// <param name="userId"> the user id u want  to refresh to a new day</param>
-    public static async Task CheckForNewDayAsync(long userId)
+    public  async Task CheckForNewDayAsync(long userId)
     {
-        await using var context = new PostgreSqlContext();
-        var user = await context.UserData
+
+        var user = await UserData
             .Include(i => i.Quests)
             .FindOrCreateAsync(userId);
         var rightNowUtc = DateTime.UtcNow;
@@ -58,7 +58,7 @@ public class PostgreSqlContext : DbContext
 
         
         user.LastTimeChecked = DateTime.UtcNow;
-        await context.SaveChangesAsync();
+
 
     }
 

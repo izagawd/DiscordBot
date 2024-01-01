@@ -10,23 +10,16 @@ public class Detail : BaseCommandClass
 {
     [SlashCommand("detail", "Changes the color of the embed messages I send to you")]
     public async Task Execute(InteractionContext ctx,
-        [Option("entity_id","the id of the thing you want to get details about")] string entityId)
+        [Option("entity_id","the id of the thing you want to get details about")] long entityId)
     {
         var embedBuilder = new DiscordEmbedBuilder()
             .WithUser(ctx.User)
             .WithTitle("Hmm")
             .WithDescription("Invalid id");
-        if (!long.TryParse(entityId, out long entityIdGuid))
-        {
-            var userColor = await DatabaseContext.UserData
-                .FindOrCreateSelectAsync((long)ctx.User.Id, i => i.Color);
-            embedBuilder.WithColor(userColor);
-            await ctx.CreateResponseAsync(embedBuilder.Build());
-            return;
-        }
+
   
         var userData = await DatabaseContext.UserData
-            .Include(i => i.Inventory.Where(j => j.Id == entityIdGuid))
+            .Include(i => i.Inventory.Where(j => j.Id == entityId))
             .FindOrCreateAsync((long)ctx.User.Id);
         embedBuilder.WithColor(userData.Color);
         if (!userData.Inventory.Any())
@@ -46,6 +39,10 @@ public class Detail : BaseCommandClass
         await (await entity.GetDetailsImageAsync()).SaveAsPngAsync(stream);
         stream.Position = 0;
         embedBuilder.WithImageUrl("attachment://description.png");
+
+        embedBuilder
+            .WithTitle("Here you go!")
+            .WithDescription($"Name: {entity.Name}");
         DiscordInteractionResponseBuilder builder = new DiscordInteractionResponseBuilder()
             .AddFile("description.png", stream)
             .WithTitle("Detail")

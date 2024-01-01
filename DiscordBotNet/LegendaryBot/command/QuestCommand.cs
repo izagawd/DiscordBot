@@ -19,7 +19,8 @@ public class QuestCommand : BaseCommandClass
     {
         var author = ctx.User;
 
-        await PostgreSqlContext.CheckForNewDayAsync((long)author.Id);
+        await DatabaseContext.CheckForNewDayAsync((long)author.Id);
+        await DatabaseContext.SaveChangesAsync();
         var userData = await DatabaseContext.UserData
             .Include(i => i.Quests)
             .FindOrCreateAsync((long)author.Id);
