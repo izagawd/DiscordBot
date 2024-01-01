@@ -29,7 +29,7 @@ public class Info : BaseCommandClass
             .AddField("Time Till Next Day", $"`{BasicFunction.TimeTillNextDay()}`", true)
             .WithImageUrl("attachment://info.png")
             .WithTimestamp(DateTime.Now);
-        var image = await userData.GetInfoAsync(author);
+        using var image = await userData.GetInfoAsync(author);
         await using var stream = new MemoryStream();
     
         await image.SaveAsPngAsync(stream);

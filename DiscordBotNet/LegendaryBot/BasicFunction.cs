@@ -45,16 +45,12 @@ public static class BasicFunction
             handler.ServerCertificateCustomValidationCallback = 
                 (httpRequestMessage, cert, cetChain, policyErrors) =>
                 {
-                    if (cert != null && !cert.Verify())
+                    if (cert is not null && !cert.Verify())
                     {
-                        if (httpRequestMessage.RequestUri is not null && httpRequestMessage.RequestUri.ToString().Contains(Website.DomainName))
-                        {
-                            return true;
-                        }
-                        return false;
+                        return httpRequestMessage.RequestUri is not null
+                               && httpRequestMessage.RequestUri.ToString().Contains(Website.DomainName);
                     }
-                    if (cert == null) return false;
-                    return true;
+                    return cert is not null;
                 };
             using var webClient = new HttpClient(handler);
   

@@ -40,7 +40,8 @@ public static class Bot
     private static async Task Main(string[] args)
     {
 
-
+        new PostgreSqlContext().ResetDatabase();
+        ;
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
