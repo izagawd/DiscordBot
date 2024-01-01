@@ -53,7 +53,7 @@ public abstract class GearStat
                 }.ToJsonString(),
             i =>
             {
-                var doc = JsonNode.Parse(i).AsObject();
+                var doc = JsonNode.Parse(i)!.AsObject();
 
                 var type = AllGearStatTypes.First(j =>
                     j.IsRelatedToType(typeof(GearStat)) && j.Name == doc["Discriminator"]!.GetValue<string>());
@@ -80,15 +80,16 @@ public abstract class GearStat
     /// </summary>
     public abstract void AddStats(Character character);
 
-    public static implicit operator GearStat(Type type)
+    public static GearStat CreateGearStatInstance(Type type)
     {
         if(!type.IsSubclassOf(typeof(GearStat)) || type.IsAbstract)
         {
-            return null;
+            throw new Exception("Provide type isn't a gear stat type or is abstract");
         }
-
+        
         return (GearStat)Activator.CreateInstance(type)!;
     }
+
     /// <summary>
     /// Holds all the gear stat types that are not abstract
     /// </summary>

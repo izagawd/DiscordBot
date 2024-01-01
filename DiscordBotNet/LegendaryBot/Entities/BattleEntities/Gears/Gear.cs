@@ -61,21 +61,21 @@ public abstract class Gear : BattleEntity
         GearStat randomStat;
         if (SubStat1 is null)
         {
-            randomStat = SubStat1 = randomStatType;
+            randomStat = SubStat1 = GearStat.CreateGearStatInstance(randomStatType);
         }
         else if (SubStat2 is null)
         {
-            randomStat = SubStat2 = randomStatType;
+            randomStat = SubStat2 =GearStat.CreateGearStatInstance(randomStatType);
         }
 
         else if (SubStat3 is null)
         {
-            randomStat = SubStat3 = randomStatType;
+            randomStat = SubStat3 = GearStat.CreateGearStatInstance(randomStatType);
         }
 
         else if (SubStat4 is null)
         {
-            randomStat = SubStat4 = randomStatType;
+            randomStat = SubStat4 = GearStat.CreateGearStatInstance(randomStatType);
         }
         else
         {
@@ -175,19 +175,19 @@ public abstract class Gear : BattleEntity
             var randomStat = BasicFunction.RandomChoice(typesToUse);
             if (SubStat1 is null)
             {
-                SubStat1 = randomStat;
+                SubStat1 =GearStat.CreateGearStatInstance(randomStat);
             }
             else if (SubStat2 is null)
             {
-                SubStat2 = randomStat;
+                SubStat2 = GearStat.CreateGearStatInstance(randomStat);
             }
             else if (SubStat3 is null)
             {
-                SubStat3 = randomStat;
+                SubStat3 = GearStat.CreateGearStatInstance(randomStat);
             }
             else if (SubStat4 is null)
             {
-                SubStat4 = randomStat;
+                SubStat4 = GearStat.CreateGearStatInstance(randomStat);
             }else
             {
                 throw new Exception("All SubStats are already assigned.");

@@ -96,6 +96,7 @@ public class PostgreSqlContext : DbContext
     {
         var user = await UserData
             .Include(i => i.Inventory.Where(j => j is Character))
+            .Include(i => i.PlayerTeams)
             .FirstOrDefaultAsync(i => i.Id == idOfUser);
         if (user is null) return;
         foreach (var i in user.Inventory.OfType<Character>())
