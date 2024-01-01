@@ -2,5 +2,5 @@
 
 public enum BotCommandType
 {
-    Adventure,Fun, Other
+    Battle,Fun, Other
 }

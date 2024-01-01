@@ -9,7 +9,7 @@ namespace DiscordBotNet.LegendaryBot.command;
  
 public class StandardPull : BaseCommandClass
 {
-
+    public override BotCommandType BotCommandType => BotCommandType.Battle;
     private static readonly Dictionary<PullChoice, double> pullChances = new ()
     {
         { PullChoice.FiveStarCharacter, 2.0 },

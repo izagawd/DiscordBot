@@ -36,23 +36,7 @@ public static class Bot
     private static readonly IEnumerable<Type> AllAssemblyTypes = Assembly.GetExecutingAssembly()
         .GetTypes().ToImmutableArray();
 
-    public static async Task DoShit()
-    {
 
-        foreach (var i in Enumerable.Range(1,100))
-        {
-            var postgre = new PostgreSqlContext();
-            var stop = new Stopwatch(); stop.Start();
-            
-            var user = await postgre.UserData
-                .IncludeTeamWithAllEquipments()
-                .FindOrCreateAsync(Izasid);
-            stop.Elapsed.TotalMilliseconds.Print();
-        }
-    }
-
-
-    
     private static async Task Main(string[] args)
     {
 

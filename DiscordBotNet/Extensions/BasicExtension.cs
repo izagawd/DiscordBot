@@ -15,7 +15,7 @@ public static class BasicExtension
     {
         return embedBuilder.WithAuthor(user.Username, iconUrl: user.AvatarUrl);
     }
-    public static string Represent<T>(this IEnumerable<T> it,bool print = true)
+    public static string Represent<T>(this IEnumerable<T> it,bool print = false)
     {
         var a =  "{ " + String.Join(", ", it.Select(i => i?.ToString())) + " }";
         if (print)

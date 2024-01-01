@@ -14,7 +14,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Begin : BaseCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Adventure;
+    public override BotCommandType BotCommandType => BotCommandType.Battle;
 
     [SlashCommand("begin", "Begin your journey by playing the tutorial!")]
     public async Task Execute(InteractionContext ctx)

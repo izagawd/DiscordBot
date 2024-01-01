@@ -12,9 +12,9 @@ using static System.Threading.Tasks.Task<bool>;
 
 namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("Quote", "Post a quote or send a quote")]
-public class Quote : BaseCommandClass
+public class QuoteCommand : BaseCommandClass
 {
-  
+    public override BotCommandType BotCommandType => BotCommandType.Fun;
     [SlashCommand("read", "gets a random quote")]
     public async Task Read(InteractionContext ctx)
     {

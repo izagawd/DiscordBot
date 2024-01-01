@@ -14,7 +14,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Challenge :BaseCommandClass
 {   
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Adventure;
+    public override BotCommandType BotCommandType { get; } = BotCommandType.Battle;
     private static readonly DiscordButtonComponent yes = new(ButtonStyle.Primary, "yes", "YES");
     private static readonly DiscordButtonComponent no = new(ButtonStyle.Primary, "no", "NO");
 
