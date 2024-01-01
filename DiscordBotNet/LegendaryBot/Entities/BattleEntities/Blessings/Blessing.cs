@@ -16,7 +16,7 @@ public abstract class Blessing : BattleEntity
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         var userImagePoint = new Point(20, 20);
-        var levelBarMaxLevelWidth = 300ul;
+        var levelBarMaxLevelWidth = 250l;
         var gottenExp = levelBarMaxLevelWidth * (Experience/(GetRequiredExperienceToNextLevel() * 1.0f));
         var levelBarY = userImage.Height - 30 + userImagePoint.Y;
         var font = SystemFonts.CreateFont(Bot.GlobalFontName, 25);

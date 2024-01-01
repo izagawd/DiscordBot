@@ -303,8 +303,8 @@ public abstract partial  class Character : BattleEntity
         using var characterImageInfo = await GetInfoAsync();
         if(loadBuild)
             LoadBuild();
-        var image = new Image<Rgba32>(850, 700);
-        characterImageInfo.Mutate(i => i.Resize(400,125));
+        var image = new Image<Rgba32>(850, 900);
+        characterImageInfo.Mutate(i => i.Resize(500,150));
         var characterImageSize = characterImageInfo.Size;
         IImageProcessingContext imageCtx = null!;
         image.Mutate(i => imageCtx = i);
@@ -312,7 +312,7 @@ public abstract partial  class Character : BattleEntity
         int yOffSet = characterImageSize.Height + 25;
 
          
-        RichTextOptions options = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 20)){WrappingLength = 500};
+        RichTextOptions options = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 25)){WrappingLength = 500};
         var color = SixLabors.ImageSharp.Color.Black;
 
        
@@ -341,8 +341,8 @@ public abstract partial  class Character : BattleEntity
         }
 
         yOffSet += 20;
-        options.Font = SystemFonts.CreateFont(Bot.GlobalFontName, 20);
-        options.Origin = new Vector2(200, yOffSet);
+        options.Font = SystemFonts.CreateFont(Bot.GlobalFontName, 25);
+        options.Origin = new Vector2(150, yOffSet);
         var statsStringBuilder = new StringBuilder();
         foreach (var i in Enum.GetValues<StatType>())
         {
@@ -351,7 +351,7 @@ public abstract partial  class Character : BattleEntity
 
         imageCtx.DrawText(options, statsStringBuilder.ToString() , color);
 
-        options.Origin = new Vector2(450, yOffSet);
+        options.Origin = new Vector2(500, yOffSet);
         var characterBuild = EquippedCharacterBuild;
         if (characterBuild is null)
             characterBuild = new CharacterBuild();
@@ -361,21 +361,33 @@ public abstract partial  class Character : BattleEntity
         imageCtx.DrawText(options,  buildString, color);
         
         imageCtx.BackgroundColor(Color.ToImageSharpColor());
-        var characterXOffset = 40;
+        var characterXOffset = 30;
         if (Blessing is null)
-            characterXOffset = 300;
+            characterXOffset = 250;
         imageCtx.DrawImage(characterImageInfo, new Point(characterXOffset, 20),new GraphicsOptions());
 
         if (Blessing is not null)
         {
             using var blessingImageInfo = await Blessing.GetInfoAsync();
-           blessingImageInfo.Mutate(i => i.Resize(400,125));
+           blessingImageInfo.Mutate(i => i.Resize(characterImageSize));
 
-           imageCtx.DrawImage(blessingImageInfo, new Point(characterXOffset + characterImageSize.Width , 20),
+           imageCtx.DrawImage(blessingImageInfo, new Point(characterXOffset + characterImageSize.Width - 90 , 20),
                new GraphicsOptions());
 
         }
 
+        var height = (yOffSet + TextMeasurer.MeasureSize(buildString, options).Height + 50).Round();
+        if (height > image.Height) height = image.Height;
+        var width = image.Width;
+        var x = 0;
+        var y = 0;
+        if (Blessing is null)
+        {
+            width = 720;
+            x = 90;
+        }
+        imageCtx.Crop(new Rectangle(x,y,width,height));
+    
         return image;
     }
     public sealed override   Task<Image<Rgba32>> GetDetailsImageAsync()
@@ -776,7 +788,7 @@ public abstract partial  class Character : BattleEntity
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         var userImagePoint = new Point(20, 20);
-        var levelBarMaxLevelWidth = 300ul;
+        var levelBarMaxLevelWidth = 250ul;
         var gottenExp = levelBarMaxLevelWidth * (Experience/(GetRequiredExperienceToNextLevel() * 1.0f));
         var levelBarY = userImage.Height - 30 + userImagePoint.Y;
         var font = SystemFonts.CreateFont(Bot.GlobalFontName, 25);
