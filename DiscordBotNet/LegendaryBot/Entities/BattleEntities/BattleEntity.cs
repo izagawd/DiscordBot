@@ -12,20 +12,20 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListen
     public virtual int Level { get; protected set; } = 1;
     [NotMapped]
     public virtual int MaxLevel { get; }
-    public virtual ExperienceGainResult  IncreaseExp(ulong experience)
+    public virtual ExperienceGainResult  IncreaseExp(long experience)
     {
         return new ExperienceGainResult();
     }
 
-    public virtual ulong GetRequiredExperienceToNextLevel(int level)
+    public virtual long GetRequiredExperienceToNextLevel(int level)
     {
         return BattleFunction.NextLevelFormula(level);
     }
-    public ulong GetRequiredExperienceToNextLevel()
+    public long GetRequiredExperienceToNextLevel()
     {
         return GetRequiredExperienceToNextLevel(Level);
     }
-    public ulong Experience
+    public long Experience
     {
         get;
         protected set;

@@ -19,7 +19,8 @@ public class Quote : BaseCommandClass
     public async Task Read(InteractionContext ctx)
     {
 
-        var color = await DatabaseContext.UserData.FindOrCreateSelectAsync(ctx.User.Id, i => i.Color);
+        var color = await DatabaseContext.UserData
+            .FindOrCreateSelectAsync((long) ctx.User.Id, i => i.Color);
         LegendaryBot.Quote randomQuote = (await DatabaseContext.Quote.Where(i => i.IsApproved)
             .Include(i => i.UserData).RandomAsync())!;
 
@@ -42,7 +43,7 @@ public class Quote : BaseCommandClass
 
         DiscordButtonComponent like = new(ButtonStyle.Primary,"like",null,false,new DiscordComponentEmoji("👍"));
         DiscordButtonComponent dislike = new(ButtonStyle.Primary, "dislike",null,false,new DiscordComponentEmoji("👎"));
-        var ownerOfQuote = await ctx.Client.GetUserAsync(randomQuote.UserDataId);
+        var ownerOfQuote = await ctx.Client.GetUserAsync((ulong) randomQuote.UserDataId);
         var quoteDate = randomQuote.DateCreated;
         
         var embedBuilder = new DiscordEmbedBuilder()
@@ -64,7 +65,7 @@ public class Quote : BaseCommandClass
                 if (!new[] { "like", "dislike" }.Contains(choice)) return;
                 var newDbContext = new PostgreSqlContext();
                 var anonymous = await newDbContext.Set<QuoteReaction>()
-                    .Where(j => j.QuoteId == randomQuote.Id && j.UserDataId == i.User.Id)
+                    .Where(j => j.QuoteId == randomQuote.Id && j.UserDataId ==(long) i.User.Id)
                     .Select(j => new
                     {
                         quote = j.Quote, quoteReaction = j,
@@ -84,12 +85,12 @@ public class Quote : BaseCommandClass
                     await newDbContext.Set<QuoteReaction>().AddAsync(quoteReaction);
                     //assigning it to id instead of instance cuz instance might not be of the same dbcontext as newDbContext
                     quoteReaction.QuoteId = randomQuote.Id;
-                    quoteReaction.UserDataId = i.User.Id;
+                    quoteReaction.UserDataId = (long)i.User.Id;
                     isNew = true;
                 }
 
-                if (!await newDbContext.UserData.AnyAsync(j => j.Id == i.User.Id))
-                    await newDbContext.UserData.AddAsync(new UserData(i.User.Id));
+                if (!await newDbContext.UserData.AnyAsync(j => j.Id ==(long) i.User.Id))
+                    await newDbContext.UserData.AddAsync(new UserData((long)i.User.Id));
                 if (!isNew &&
                     ((choice == "like" && quoteReaction.IsLike) || (choice == "dislike" && !quoteReaction.IsLike)))
                 {
@@ -132,7 +133,7 @@ public class Quote : BaseCommandClass
     [SlashCommand("write", "creates a quote")]
     public async Task Write(InteractionContext ctx, [Option("text", "the quote")] string text)
     {
-        var userData = await DatabaseContext.UserData.FindOrCreateAsync(ctx.User.Id);
+        var userData = await DatabaseContext.UserData.FindOrCreateAsync((long)ctx.User.Id);
         var embedBuilder = new DiscordEmbedBuilder()
             .WithUser(ctx.User)
             .WithColor(userData.Color);

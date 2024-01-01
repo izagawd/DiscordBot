@@ -19,7 +19,7 @@ public class Hunt : BaseCommandClass
   
         var userData = await DatabaseContext.UserData
             .IncludeTeamWithAllEquipments()
-            .FindOrCreateAsync(author.Id);
+            .FindOrCreateAsync((long)author.Id);
 
         var embedToBuild = new DiscordEmbedBuilder()
             .WithUser(author)

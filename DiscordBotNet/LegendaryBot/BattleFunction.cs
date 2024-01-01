@@ -5,7 +5,7 @@ public static  class BattleFunction
     /// <summary>
     /// use it to get the amount of exp to gain if a chosen level is defeated
     /// </summary>
-    public static ulong ExpGainFormula(int lvl)
+    public static long ExpGainFormula(int lvl)
     {
         double expGain = 0;
         if (lvl > 161) lvl = 161;
@@ -26,7 +26,7 @@ public static  class BattleFunction
             expGain = (Math.Pow(lvl, 3) * (160 - lvl)) / 100;
         }
 
-        return (ulong)Math.Floor(expGain / 10) + 1;
+        return (long)Math.Floor(expGain / 10) + 1;
     }
     /// <summary>
     /// use it to estimate the maximum tier a level can reach
@@ -44,9 +44,9 @@ public static  class BattleFunction
     /// <returns>
     /// The amount of exp required for a character to be able to level up depending on their level
     /// </returns>
-    public static ulong NextLevelFormula(int level)
+    public static long NextLevelFormula(int level)
     {
-        return (ulong)Math.Round(4 * Math.Pow(level, 3) / 5) + 1;
+        return (long)Math.Round(4 * Math.Pow(level, 3) / 5) + 1;
     }
     ///<param name="potentialDamage">The attacker's attack</param>
     /// <param name="potentialDamage">The attacked defense</param>
@@ -80,10 +80,10 @@ public static  class BattleFunction
     /// <returns>
     /// The total amount of EXP a character has used based on their level
     /// </returns>
-    public static ulong TotalExp(int level)
+    public static long TotalExp(int level)
     {
             
-        ulong totalExperience = 0;
+        long totalExperience = 0;
         while (level > 1)
         {
             totalExperience += NextLevelFormula(level);

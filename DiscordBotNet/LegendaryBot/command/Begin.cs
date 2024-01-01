@@ -7,6 +7,7 @@ using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 
 namespace DiscordBotNet.LegendaryBot.command;
@@ -26,7 +27,7 @@ public class Begin : BaseCommandClass
             .ThenInclude(j => (j as Character).Blessing)
             .Include(i => i.EquippedPlayerTeam)
             .Include(i => i.Inventory.Where(i => i is Character || i is Gear))
-            .FindOrCreateAsync(author.Id);
+            .FindOrCreateAsync((long)author.Id);
         await DatabaseContext.SaveChangesAsync();
         DiscordColor userColor = userData.Color;
         if (userData.IsOccupied)
@@ -195,7 +196,7 @@ public class Begin : BaseCommandClass
         };
 
 
-        userData.Tier = await DatabaseContext.UserData.FindOrCreateSelectAsync(author.Id, i => i.Tier);
+        userData.Tier = await DatabaseContext.UserData.FindOrCreateSelectAsync((long)author.Id, i => i.Tier);
 
         if (userData.Tier == Tier.Unranked)
         {
@@ -203,7 +204,25 @@ public class Begin : BaseCommandClass
             userData.LastTimeChecked = DateTime.UtcNow.AddDays(-1);
         };
         userTeam.Remove(lily);
-        await DatabaseContext.SaveChangesAsync();
+        try
+        {
+            await DatabaseContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            userTeam.OfType<Player>().First().Id.Print();
+            if (e.InnerException is NpgsqlException eInnerException)
+            {
+                eInnerException.Message.Print();
+            }
+            e.InnerException.GetType().Print();
+            foreach (var i in e.Entries)
+            {
+                i.Entity.GetType().Print();
+            }
+            throw e;
+        }
+      
         result =  await theDialogue.LoadAsync(ctx, result.Message);
         if (result.TimedOut)
         {

@@ -19,7 +19,7 @@ public class TeamController : Controller
     [HttpPost]
     public async Task<IActionResult> RemoveFromTeamAsync([FromBody]string idString)
     {
-        Guid id = Guid.Parse(idString);
+        long id = long.Parse(idString);
         var UserData = await DatabaseContext.UserData
             .IncludeTeam()
             .FindOrCreateAsync(User.GetDiscordUserId());
@@ -40,7 +40,7 @@ public class TeamController : Controller
     [HttpPost]
     public async Task<IActionResult> AddToTeamAsync([FromBody]string idString)
     {
-        Guid id = Guid.Parse(idString);
+        long id = long.Parse(idString);
         var userData = await DatabaseContext.UserData
             .Include(j => j.Inventory.Where(k => k.Id == id)).IncludeTeam()
             .FindOrCreateAsync(User.GetDiscordUserId());

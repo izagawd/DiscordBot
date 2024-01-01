@@ -92,7 +92,7 @@ public abstract class Gear : BattleEntity
     }
     ///<param name="substatsToPrioritize">These stats will take top priority when assigning or increasing substats. if it cannot be assigned or increased, it will pay attention to other substat types</param>
 
-    public ExperienceGainResult IncreaseExp(ulong experience, params Type[] substatsToPrioritize)
+    public ExperienceGainResult IncreaseExp(long experience, params Type[] substatsToPrioritize)
     {
         if (IsNew) throw new Exception("Gear has not been initiated");
         if (substatsToPrioritize.Any() 
@@ -121,7 +121,7 @@ public abstract class Gear : BattleEntity
         }
 
         expGainText += "!";
-        ulong excessExp = 0;
+        long excessExp = 0;
         if (Experience > nextLevelEXP)
         {
             excessExp = Experience - nextLevelEXP;

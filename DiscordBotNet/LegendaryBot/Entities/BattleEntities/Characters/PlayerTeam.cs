@@ -22,12 +22,12 @@ public class PlayerTeam : CharacterTeam
     }
 
 
-    public PlayerTeam(ulong tryGetUserDataId, string userName,params Character[] characters) : base(userName,characters)
+    public PlayerTeam(long tryGetUserDataId, string userName,params Character[] characters) : base(userName,characters)
     {
         UserDataId = tryGetUserDataId;
         
     }
-    public PlayerTeam(DiscordUser user,params Character[] characters) : this(user.Id,user.Username,characters)
+    public PlayerTeam(DiscordUser user,params Character[] characters) : this((long)user.Id,user.Username,characters)
     {
         _cachedDiscordUser = user;
     }
@@ -40,7 +40,7 @@ public class PlayerTeam : CharacterTeam
     {
         
     }
-    public Guid Id { get; set; } =  Guid.NewGuid();
-    public ulong UserDataId { get; set; }
+    public long Id { get; set; } 
+    public long UserDataId { get; set; }
     
 }

@@ -16,9 +16,10 @@ public class Detail : BaseCommandClass
             .WithUser(ctx.User)
             .WithTitle("Hmm")
             .WithDescription("Invalid id");
-        if (!Guid.TryParse(entityId, out Guid entityIdGuid))
+        if (!long.TryParse(entityId, out long entityIdGuid))
         {
-            var userColor = await DatabaseContext.UserData.FindOrCreateSelectAsync(ctx.User.Id, i => i.Color);
+            var userColor = await DatabaseContext.UserData
+                .FindOrCreateSelectAsync((long)ctx.User.Id, i => i.Color);
             embedBuilder.WithColor(userColor);
             await ctx.CreateResponseAsync(embedBuilder.Build());
             return;
@@ -26,7 +27,7 @@ public class Detail : BaseCommandClass
   
         var userData = await DatabaseContext.UserData
             .Include(i => i.Inventory.Where(j => j.Id == entityIdGuid))
-            .FindOrCreateAsync(ctx.User.Id);
+            .FindOrCreateAsync((long)ctx.User.Id);
         embedBuilder.WithColor(userData.Color);
         if (!userData.Inventory.Any())
         {

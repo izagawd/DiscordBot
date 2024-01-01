@@ -92,7 +92,7 @@ public abstract class Blessing : BattleEntity
 
     public virtual bool IsLimited => false;
     public Character? Character { get; set; }
-    public override ExperienceGainResult IncreaseExp(ulong experience)
+    public override ExperienceGainResult IncreaseExp(long experience)
     {
         string expGainText = "";
 
@@ -105,7 +105,7 @@ public abstract class Blessing : BattleEntity
             Level += 1;
             nextLevelEXP = BattleFunction.NextLevelFormula(Level);
         }
-        ulong excessExp = 0;
+        long excessExp = 0;
         if (Experience > nextLevelEXP)
         {
             excessExp = Experience - nextLevelEXP;

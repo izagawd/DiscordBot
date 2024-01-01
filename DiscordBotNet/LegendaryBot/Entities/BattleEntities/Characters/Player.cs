@@ -177,7 +177,7 @@ public class Player : Character
             User = discordUser;
         } else if (User is null)
         {
-            User = await Bot.Client.GetUserAsync(UserDataId);
+            User = await Bot.Client.GetUserAsync((ulong)UserDataId);
         }
 
         Name = User.Username;

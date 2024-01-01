@@ -2,18 +2,18 @@
 
 namespace DiscordBotNet.LegendaryBot;
 
-public class QuoteReaction
+public class QuoteReaction : IDatabaseModel
 {
-    public Guid Id { get; protected set; } = Guid.NewGuid();
+    public long Id { get; set; } 
     /// <summary>
     /// The ID of the user who reacted to the quote
     /// </summary>
-    public ulong UserDataId { get; set; } 
+    public long UserDataId { get; set; } 
     
     /// <summary>
     /// the quote id that was reacted to
     /// </summary>
-    public Guid QuoteId { get; set; }
+    public long QuoteId { get; set; }
     /// <summary>
     /// The quote that was reacted to
     /// </summary>
@@ -23,11 +23,11 @@ public class QuoteReaction
 
     public UserData UserData { get; set; }
 }
-public class Quote
+public class Quote : IDatabaseModel
 {
-    public Guid Id { get; protected set; } = Guid.NewGuid();
+    public long Id { get; set; } 
     public bool IsApproved { get; set; } 
-    public ulong UserDataId { get; set; }
+    public long UserDataId { get; set; }
     public string QuoteValue { get; set; } = "Nothing";
     public UserData UserData { get; set; }
     public List<QuoteReaction> QuoteReactions { get; set; } = []; 

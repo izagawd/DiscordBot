@@ -104,8 +104,8 @@ public static class PostgreExtension
 
 
     public async static Task<List<T>> FindOrCreateManyAsync<T>(this IQueryable<T> queryable,
-        IEnumerable<ulong> ids) 
-        where T : Model, new()
+        IEnumerable<long> ids) 
+        where T : class, IDatabaseModel, new()
     {
         List<T> data;
         var idsAsArray = ids.ToArray();
@@ -138,8 +138,8 @@ public static class PostgreExtension
 
 
     public async static Task<List<TExpression>> FindOrCreateManySelectAsync<T, TExpression>(this IQueryable<T> queryable,
-        IEnumerable<ulong> ids,
-         Expression<Func<T, TExpression>> selectExpression) where T : Model, new()
+        IEnumerable<long> ids,
+         Expression<Func<T, TExpression>> selectExpression) where T :class, IDatabaseModel, new()
     {
         List<TExpression> data;
         var idsAsArray = ids.ToArray();
@@ -171,8 +171,8 @@ public static class PostgreExtension
         return data;
     }
 
-    public async static Task<TExpression> FindOrCreateSelectAsync<T, TExpression>(this IQueryable<T> queryable, ulong id,
-         Expression<Func<T,TExpression>> selectExpression) where T : Model,new()
+    public async static Task<TExpression> FindOrCreateSelectAsync<T, TExpression>(this IQueryable<T> queryable, long id,
+         Expression<Func<T,TExpression>> selectExpression) where T : IDatabaseModel,new()
     {
         TExpression? data = await queryable
                 .Where(i => i.Id == id)
@@ -197,7 +197,7 @@ public static class PostgreExtension
     /// <param name="includableQueryableFunc">If you want to include some shit use this</param>
     /// <typeparam name="T">The instance/row type</typeparam>
     /// <returns></returns>
-    public async static Task<T> FindOrCreateAsync<T>(this IQueryable<T> set, ulong id) where T : Model, new()
+    public async static Task<T> FindOrCreateAsync<T>(this IQueryable<T> set, long id) where T : class, IDatabaseModel, new()
     {
         T? data = await set
                 .FirstOrDefaultAsync(i => i.Id == id);

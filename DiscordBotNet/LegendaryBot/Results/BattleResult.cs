@@ -8,7 +8,7 @@ public class BattleResult
 {
     
     public bool Stopped { get; init; }
-    public required ulong ExpToGain { get; init; }
+    public required long ExpToGain { get; init; }
     public required DiscordMessage Message { get; init; }
     public required IEnumerable<Reward> BattleRewards { get; init; } = [];
 

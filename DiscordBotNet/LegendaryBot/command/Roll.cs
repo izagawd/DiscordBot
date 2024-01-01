@@ -11,7 +11,8 @@ public class Roll :  BaseCommandClass
     public async Task Execute(InteractionContext ctx)
     {
         
-        DiscordColor color = await DatabaseContext.UserData.FindOrCreateSelectAsync(ctx.User.Id, i => i.Color);
+        DiscordColor color = await DatabaseContext.UserData
+            .FindOrCreateSelectAsync((long)ctx.User.Id, i => i.Color);
         var random = new Random();
         DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
             .WithTitle("**Roll**")

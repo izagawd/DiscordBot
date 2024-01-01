@@ -22,7 +22,7 @@ public class StandardPull : BaseCommandClass
     [SlashCommand("standard_pull", "Pull for a character and add it to your collection!")]
     public async Task Execute(InteractionContext ctx)
     {
-        var userData = await DatabaseContext.UserData.FindOrCreateAsync(ctx.User.Id);
+        var userData = await DatabaseContext.UserData.FindOrCreateAsync((long)ctx.User.Id);
         var embed = new DiscordEmbedBuilder()
             .WithUser(ctx.User)
             .WithColor(userData.Color);

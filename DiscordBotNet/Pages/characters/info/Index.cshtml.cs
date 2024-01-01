@@ -23,7 +23,7 @@ public class Index : PageModel
     }
     public async Task<IActionResult> OnGetAsync(string characterId)
     {
-        var didParse = Guid.TryParse(characterId, out Guid id);
+        var didParse = long.TryParse(characterId, out long id);
         if (!didParse) return Redirect("/characters");
         UserData = await DatabaseContext.UserData
             .Include(j => j.Inventory.Where(k => k is Blessing || k.Id == id))

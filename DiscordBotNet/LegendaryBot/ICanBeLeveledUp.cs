@@ -5,10 +5,10 @@ namespace DiscordBotNet.LegendaryBot;
 public interface ICanBeLeveledUp
 {
     public int Level { get; }
-    public ulong Experience { get; }
+    public long Experience { get; }
 
-    public ulong GetRequiredExperienceToNextLevel(int level);
-    public ulong GetRequiredExperienceToNextLevel();
+    public long GetRequiredExperienceToNextLevel(int level);
+    public long GetRequiredExperienceToNextLevel();
 
-    public ExperienceGainResult IncreaseExp(ulong exp);
+    public ExperienceGainResult IncreaseExp(long exp);
 }

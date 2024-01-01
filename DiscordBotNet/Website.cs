@@ -35,11 +35,11 @@ public static class Website
             claim?.Value!;
     }
 
-    public static ulong GetDiscordUserId(this ClaimsPrincipal user)
+    public static long GetDiscordUserId(this ClaimsPrincipal user)
     {
         var claim = user.FindFirst(i =>
             i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
-        return ulong.Parse(claim!.Value);
+        return long.Parse(claim!.Value);
     }
     public static string GetDiscordUserAvatarUrl(this ClaimsPrincipal user)
     {

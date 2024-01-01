@@ -17,10 +17,10 @@ public class QuestCommand : BaseCommandClass
     {
         var author = ctx.User;
 
-        await PostgreSqlContext.CheckForNewDayAsync(author.Id);
+        await PostgreSqlContext.CheckForNewDayAsync((long)author.Id);
         var userData = await DatabaseContext.UserData
             .Include(i => i.Quests)
-            .FindOrCreateAsync(author.Id);
+            .FindOrCreateAsync((long)author.Id);
         var questString = "";
         var embed = new DiscordEmbedBuilder()
             .WithUser(author)
@@ -71,7 +71,7 @@ public class QuestCommand : BaseCommandClass
         Quest quest = null;
         var buttonResult = await message.WaitForButtonAsync(i =>
         {
-            if (i.User.Id != userData.Id) return false;
+            if (i.User.Id != (ulong)userData.Id) return false;
             if (!possibleCustomIds.Contains(i.Id)) return false;
             quest = userData.Quests[int.Parse(i.Id) -1];
             return true;
@@ -99,7 +99,7 @@ public class QuestCommand : BaseCommandClass
                     expToAdd = 800;
                     break;
             }
-            var rewards = quest.QuestRewards.Append(new UserExperienceReward(expToAdd));
+            var rewards = quest.QuestRewards.Append(new UserExperienceReward((long)expToAdd));
             var rewardString = userData.ReceiveRewards(ctx.User.Username, rewards);
             embed
                 .WithTitle("Nice!!")

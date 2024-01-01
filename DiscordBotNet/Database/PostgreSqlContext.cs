@@ -31,7 +31,7 @@ public class PostgreSqlContext : DbContext
     /// this should be called before any query if u want to ever use this method
     /// </summary>
     /// <param name="userId"> the user id u want  to refresh to a new day</param>
-    public static async Task CheckForNewDayAsync(ulong userId)
+    public static async Task CheckForNewDayAsync(long userId)
     {
         await using var context = new PostgreSqlContext();
         var user = await context.UserData
@@ -92,7 +92,7 @@ public class PostgreSqlContext : DbContext
       
     }
 
-    public async Task GivePowerToUserAsync(ulong idOfUser)
+    public async Task GivePowerToUserAsync(long idOfUser)
     {
         var user = await UserData
             .Include(i => i.Inventory.Where(j => j is Character))
@@ -197,14 +197,13 @@ public class PostgreSqlContext : DbContext
             .HasKey(i => i.Id);
         modelBuilder.Entity<Quote>()
             .HasKey(i => i.Id);
-        modelBuilder.Entity<Entity>()
-            .Property(i => i.Id)
-            .ValueGeneratedNever();
         modelBuilder.Entity<Quote>()
             .Property(i => i.Id)
-            .ValueGeneratedNever();
+            .ValueGeneratedOnAdd();
 
-
+        modelBuilder.Entity<Entity>()
+            .Property(i => i.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<PlayerTeam>()
             .HasIndex(i => new { i.UserDataId, i.Label })
             .IsUnique();
@@ -214,7 +213,7 @@ public class PostgreSqlContext : DbContext
 
         modelBuilder.Entity<PlayerTeam>()
             .Property(i => i.Id)
-            .ValueGeneratedNever();
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<UserData>()
             .HasMany(i => i.PlayerTeams)
             .WithOne(i => i.UserData)

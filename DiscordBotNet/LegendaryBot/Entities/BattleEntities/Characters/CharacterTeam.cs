@@ -11,7 +11,7 @@ public class CharacterTeam : ISet<Character>
     /// <summary>
     /// If the owner of the team is a real person, this should be their discord id
     /// </summary>
-    public ulong? TryGetUserDataId => (this as PlayerTeam)?.UserDataId;
+    public long? TryGetUserDataId => (this as PlayerTeam)?.UserDataId;
     /// <summary>
     /// The name of the owner of the team. Does not need to be a user.<br/>
     /// But if the owner of the team is a user, this must be set to their id. it probably would be unless I suck at coding 
@@ -24,7 +24,7 @@ public class CharacterTeam : ISet<Character>
     /// </summary>
     /// <param name="exp"></param>
     /// <returns></returns>
-    public string IncreaseExp(ulong exp)
+    public string IncreaseExp(long exp)
     {
         var text = "";
         foreach (var i in this)

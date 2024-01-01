@@ -18,7 +18,7 @@ public class InfoController : Controller
     [HttpPost]
     public async Task<IActionResult> RemoveBlessingAsync([FromBody] string characterId)
     {
-        var didParse = Guid.TryParse(characterId, out Guid characterGuid);
+        var didParse = long.TryParse(characterId, out long characterGuid);
         if (!didParse) return Ok();
         var character = await DatabaseContext.Entity
             .OfType<Character>()
@@ -35,8 +35,8 @@ public class InfoController : Controller
     {
         var characterId = element.GetProperty("characterId").ToString();
         var blessingId = element.GetProperty("blessingId").ToString();
-        var didParse = Guid.TryParse(characterId, out Guid characterGuid);
-       var anotherParse =  Guid.TryParse(blessingId, out Guid blessingGuid);
+        var didParse = long.TryParse(characterId, out long characterGuid);
+       var anotherParse =  long.TryParse(blessingId, out long blessingGuid);
       
         if (!(didParse && anotherParse)) return Ok();
         var entityArray = await DatabaseContext.Entity

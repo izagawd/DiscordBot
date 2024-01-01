@@ -96,7 +96,7 @@ public abstract partial  class Character : BattleEntity
 
 
     public virtual Blessing? Blessing { get; set; }
-    public Guid? BlessingId { get; set; }
+    public long? BlessingId { get; set; }
 
     public Barrier? Shield => StatusEffects.OfType<Barrier>().FirstOrDefault();
 
@@ -263,21 +263,21 @@ public abstract partial  class Character : BattleEntity
         return image;
     }
     public Helmet? Helmet { get; set; }
-    public Guid? HelmetId { get; set; }
+    public long? HelmetId { get; set; }
 
     public Weapon? Weapon { get; set; }
-    public Guid? WeaponId { get; set; }
+    public long? WeaponId { get; set; }
 
     public Armor? Armor { get; set; }
-    public Guid? ArmorId { get; set; }
+    public long? ArmorId { get; set; }
 
     public Necklace? Necklace { get; set; }
-    public Guid? NecklaceId { get; set; }
+    public long? NecklaceId { get; set; }
 
     public Ring? Ring { get; set; }
-    public Guid? RingId { get; set; }
+    public long? RingId { get; set; }
     public Boots? Boots { get; set; }
-    public Guid? BootsId { get; set; }
+    public long? BootsId { get; set; }
     [NotMapped]
     public IEnumerable<Gear> Gears => new Gear?[] { Armor, Helmet, Weapon, Necklace, Ring, Boots }
         .Where(i => i is not null).OfType<Gear>();
@@ -1089,7 +1089,7 @@ public abstract partial  class Character : BattleEntity
 
 
  
-    public override ulong GetRequiredExperienceToNextLevel(int level)
+    public override long GetRequiredExperienceToNextLevel(int level)
     {
        return BattleFunction.NextLevelFormula(Level);
     }
@@ -1098,7 +1098,7 @@ public abstract partial  class Character : BattleEntity
 /// Increases the Exp of a character and returns useful text
 /// </summary>
 /// <returns></returns>
-    public override ExperienceGainResult IncreaseExp(ulong exp)
+    public override ExperienceGainResult IncreaseExp(long exp)
     {
         if (Level >= MaxLevel)
             return new ExperienceGainResult() { ExcessExperience = exp, Text = $"{this} has already reached their max level!" };
@@ -1121,7 +1121,7 @@ public abstract partial  class Character : BattleEntity
         {
             expGainText += $", and moved from level {levelBefore} to level {Level}";
         }
-        ulong excessExp = 0;
+        long excessExp = 0;
         if (Experience > nextLevelEXP)
         {
             excessExp = Experience - nextLevelEXP;
@@ -1130,7 +1130,7 @@ public abstract partial  class Character : BattleEntity
         return new ExperienceGainResult(){ExcessExperience = excessExp, Text = expGainText};
     }
 
-    public void SetExperience(ulong experience)
+    public void SetExperience(long experience)
     {
         Experience = experience;
     }

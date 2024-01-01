@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 
 using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -38,8 +39,16 @@ public static class Bot
     public static async Task DoShit()
     {
 
-        
-
+        foreach (var i in Enumerable.Range(1,100))
+        {
+            var postgre = new PostgreSqlContext();
+            var stop = new Stopwatch(); stop.Start();
+            
+            var user = await postgre.UserData
+                .IncludeTeamWithAllEquipments()
+                .FindOrCreateAsync(Izasid);
+            stop.Elapsed.TotalMilliseconds.Print();
+        }
     }
 
 
@@ -99,13 +108,13 @@ public static class Bot
     /// <summary>
     /// This is my discord user Id because it's too long to memorize
     /// </summary>
-    public static ulong Izasid => 216230858783326209;
+    public static long Izasid => 216230858783326209;
     /// <summary>
     /// this is the discord user Id of another account of mine that i use to test stuff
     /// </summary>
-    public static ulong Testersid => 266157684380663809;
+    public static long Testersid => 266157684380663809;
 
-    public static ulong Surjidid => 1025325026955767849;
+    public static long Surjidid => 1025325026955767849;
     public static DiscordClient Client { get; private set; }
 
 
@@ -123,9 +132,9 @@ public static class Bot
         var involvedIds = involvedUsers.Select(i => i.Id).ToArray();
         await using var databaseContext = new PostgreSqlContext();
         await databaseContext.UserData
-            .Where(i => involvedIds.Contains(i.Id))
+            .Where(i => involvedIds.Contains((ulong)i.Id))
             .ForEachAsync(i => i.IsOccupied = false);
-        var color = await databaseContext.UserData.FindOrCreateSelectAsync(ev.Context.User.Id, i => i.Color);
+        var color = await databaseContext.UserData.FindOrCreateSelectAsync((long)ev.Context.User.Id, i => i.Color);
         await databaseContext.SaveChangesAsync();
         var embed = new DiscordEmbedBuilder()
             .WithColor(color)

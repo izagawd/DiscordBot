@@ -17,7 +17,7 @@ public abstract class Quest
     public virtual string Title => BasicFunction.Englishify(GetType().Name);
     
     public bool Completed { get; set; } = false;
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public long Id { get; set; } 
     public static IEnumerable<Quest> QuestSampleInstances => _exampleQuests.ToArray();
     private static List<Quest> _exampleQuests;
     static Quest()
@@ -43,6 +43,6 @@ public abstract class Quest
     [NotMapped]
     public abstract IEnumerable<Reward> QuestRewards { get; protected set; }
     
-    public ulong UserDataId { get; set; }
+    public long UserDataId { get; set; }
  
 }

@@ -15,17 +15,18 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace DiscordBotNet.Database.Models;
 
 
-public class UserData : Model,  ICanBeLeveledUp
+public class UserData : IDatabaseModel,  ICanBeLeveledUp
 {
+    public long Id { get; set; }
 
 
-    public UserData(ulong id) : this()
+    public UserData(long id) : this()
     {
         Id = id;
     }
     public UserData(){}
     
-    public Guid? EquippedPlayerTeamId { get; set; }
+    public long? EquippedPlayerTeamId { get; set; }
     public PlayerTeam? EquippedPlayerTeam { get; set; }
 
     public List<PlayerTeam> PlayerTeams { get; set; } = [];
@@ -37,9 +38,9 @@ public class UserData : Model,  ICanBeLeveledUp
     {
         if (user is null)
         {
-            user = await Bot.Client.GetUserAsync(Id);
+            user = await Bot.Client.GetUserAsync((ulong) Id);
         } 
-        else if (user.Id != Id)
+        else if ((long)user.Id != Id)
         {
             throw new Exception("discord user's ID does not match user data's id");
         }
@@ -84,12 +85,12 @@ public class UserData : Model,  ICanBeLeveledUp
     public DateTime LastTimeChecked { get; set; } = DateTime.UtcNow.AddDays(-1);
     public List<Quote> Quotes { get; protected set; } = new();
     public bool IsOccupied { get; set; } = false;
-    public ulong Experience { get; protected set; }
-    public ulong GetRequiredExperienceToNextLevel(int level)
+    public long Experience { get; protected set; }
+    public long GetRequiredExperienceToNextLevel(int level)
     {
         return BattleFunction.NextLevelFormula(level) * 10;
     }
-    public ulong GetRequiredExperienceToNextLevel()
+    public long GetRequiredExperienceToNextLevel()
     {
         return GetRequiredExperienceToNextLevel(Level);
     }
@@ -123,7 +124,7 @@ public class UserData : Model,  ICanBeLeveledUp
     {
         return ReceiveRewards(name,rewards.ToArray());
     }
-    public ExperienceGainResult IncreaseExp(ulong exp)
+    public ExperienceGainResult IncreaseExp(long exp)
     {
         var maxLevel = 60;
         if (Level >= maxLevel)
@@ -147,7 +148,7 @@ public class UserData : Model,  ICanBeLeveledUp
         {
             expGainText += $", and moved from level {levelBefore} to level {Level}";
         }
-        ulong excessExp = 0;
+        long excessExp = 0;
         if (Experience > nextLevelEXP)
         {
             excessExp = Experience - nextLevelEXP;
@@ -156,10 +157,10 @@ public class UserData : Model,  ICanBeLeveledUp
         return new ExperienceGainResult(){ExcessExperience = excessExp, Text = expGainText};
     }
 
-    public ulong StandardPrayers { get; set; } = 0;
+    public long StandardPrayers { get; set; } = 0;
     
-    public ulong SupremePrayers { get; set; } = 0;
-    public ulong Coins { get; set; } = 5000;
+    public long SupremePrayers { get; set; } = 0;
+    public long Coins { get; set; } = 5000;
 
 
     public Tier Tier { get; set; } = Tier.Unranked;
