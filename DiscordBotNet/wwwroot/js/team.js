@@ -3,6 +3,8 @@ function dragStart(event){
 
     draggedElement = event.target;
 }
+
+
 function RemoveFromTeam(event){
  
     if(draggedElement.className.includes("character_in_list_div")) return;

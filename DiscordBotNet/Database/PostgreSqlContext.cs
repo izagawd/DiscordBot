@@ -24,7 +24,7 @@ public class PostgreSqlContext : DbContext
     public DbSet<GuildData> GuildData { get; set; }
     public DbSet<Entity> Entity { get; set; }
     public DbSet<Quest> Quests { get; set; }
-   
+
     public DbSet<Quote> Quote { get; set; }
 
     /// <summary>
@@ -204,7 +204,9 @@ public class PostgreSqlContext : DbContext
             .ValueGeneratedNever();
 
 
-
+        modelBuilder.Entity<PlayerTeam>()
+            .HasIndex(i => new { i.UserDataId, i.Label })
+            .IsUnique();
 
         modelBuilder.Entity<PlayerTeam>()
             .HasKey(i => i.Id);

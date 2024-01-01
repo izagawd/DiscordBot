@@ -13,6 +13,9 @@ public class TeamController : Controller
     {
         DatabaseContext = databaseContext;
     }
+
+
+    
     [HttpPost]
     public async Task<IActionResult> RemoveFromTeamAsync([FromBody]string idString)
     {

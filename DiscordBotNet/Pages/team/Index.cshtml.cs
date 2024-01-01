@@ -15,19 +15,39 @@ public class Index : PageModel
     
     
     public UserData UserData { get; private set; }
+
+    public string[] TeamNames { get; protected set; } = [];
     private PostgreSqlContext DatabaseContext { get;set; }
 
     public Index(PostgreSqlContext context)
     {
         DatabaseContext = context;
     }
+
+    public async Task OnPostAsync(string teamLabel)
+    {
+        await OnGetAsync();
+        var gottenTeam = await DatabaseContext.Set<PlayerTeam>()
+            .Where(i => i.Label == teamLabel && i.UserDataId == UserData.Id)
+            .FirstOrDefaultAsync();
+
+        if (gottenTeam is not null)
+        {
+            UserData.EquippedPlayerTeam = gottenTeam;
+            await DatabaseContext.SaveChangesAsync();
+        }
+    }
     public async Task OnGetAsync()
     {
-        UserData = await DatabaseContext.UserData
+        var anonymous = await DatabaseContext.UserData
             .Include(i => i.EquippedPlayerTeam)
             .Include(j => j.Inventory.Where(k => k is Character))
-            .FindOrCreateAsync(User.GetDiscordUserId());
-        
+            
+            .FindOrCreateSelectAsync(User.GetDiscordUserId(),
+                i => new{UserData = i,TeamNames= i.PlayerTeams.Select(j => j.Label)});
+        UserData = anonymous.UserData;
+        TeamNames = anonymous.TeamNames.ToArray();
+
 
         foreach (var i in UserData.Inventory.OfType<Player>())
         {

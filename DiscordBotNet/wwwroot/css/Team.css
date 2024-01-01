@@ -2,6 +2,7 @@
     position: relative;
     display: flex;
     top: 100px;
+    height: 115px;
     width: 80%;
     overflow-x: scroll;
 }
@@ -13,7 +14,10 @@
     margin-right: 20px;
     display: flex;
 }
-
+#team_select_div{
+    position: relative;
+    top: 140px;
+}
 .super_character_div{
     border: 3px solid black;
 }

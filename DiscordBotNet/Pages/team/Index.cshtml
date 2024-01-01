@@ -23,9 +23,8 @@
     @{
         var team = Model.UserData.EquippedPlayerTeam;
         if (team is null)
-            team = new PlayerTeam();
+            team = [];
     }
-
     @foreach (var i in team)
     {
         <a href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="the_href super_character_div character_in_team_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">
@@ -39,6 +38,28 @@
         </a>
     }
 
+</div>
+<div id="team_select_div">
+    <form method="post">
+        <label>Switch your teams!</label>
+        <select name="teamLabel">
+            @foreach (var i in Model.TeamNames)
+            {
+
+                if (Model.UserData.EquippedPlayerTeam.Label == i)
+                {
+                    <option value="@i" selected>@i</option>
+                }
+                else
+                {
+                    <option value="@i">@i</option>
+                }
+          
+   
+            }
+        </select>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="js/team.js"></script>
