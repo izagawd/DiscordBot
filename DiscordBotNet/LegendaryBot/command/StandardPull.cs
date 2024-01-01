@@ -73,7 +73,7 @@ public class StandardPull : BaseCommandClass
             await DatabaseContext.SaveChangesAsync();
             embed.WithTitle("Nice!!")
                 .WithDescription($"You pulled a {BasicFunction.Englishify(choice.ToString())} called {acquiredType.Name}!");
-            using var stream = new MemoryStream();
+            await using var stream = new MemoryStream();
             using var detailsImage =await acquiredEntity.GetDetailsImageAsync();
             await detailsImage.SaveAsPngAsync(stream);
             stream.Position = 0;
