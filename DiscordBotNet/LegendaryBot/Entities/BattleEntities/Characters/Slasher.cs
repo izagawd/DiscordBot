@@ -103,11 +103,7 @@ public class Slasher : Character
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
 
     public override Element Element { get; protected set; } = Element.Earth;
-    public override int BaseMaxHealth => 1100 + (60 * Level);
-    public override int BaseAttack => (120 + (13 * Level));
-    public override int BaseDefense => (100 + (5.2 * Level)).Round();
-    public override int BaseSpeed => 105;
-    public override int BaseCriticalChance => base.BaseCriticalChance;
+
     public override Surge? Surge { get; } = new ConsecutiveSlashesOfPrecision();
     public override Skill? Skill { get; } = new WindSlash();
     public override BasicAttack BasicAttack { get;  } = new SimpleSlashOfPrecision();

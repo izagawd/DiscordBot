@@ -18,28 +18,25 @@ public class QuoteCommand : BaseCommandClass
     [SlashCommand("read", "gets a random quote")]
     public async Task Read(InteractionContext ctx)
     {
-
-        var color = await DatabaseContext.UserData
-            .FindOrCreateSelectAsync((long) ctx.User.Id, i => i.Color);
-        LegendaryBot.Quote randomQuote = (await DatabaseContext.Quote.Where(i => i.IsApproved)
-            .Include(i => i.UserData).RandomAsync())!;
-
-        if (randomQuote is null)
+        var anon = await DatabaseContext.Quote
+            .Where(i => i.IsApproved)
+            .Include(i => i.UserData)
+            .Select(j =>
+                new
+                {
+                    quote = j,
+                    likes = j.QuoteReactions.Count(k => k.IsLike),
+                    dislikes = j.QuoteReactions.Count(k => !k.IsLike)
+                })
+            .RandomAsync();
+        if (anon is null)
         {
             await ctx.CreateResponseAsync("damn");
             return;
         }
 
-
-        var counts = await DatabaseContext.Quote
-            .Where(i => i.Id == randomQuote.Id)
-            .Select(j =>
-                new
-                {
-                    likes = j.QuoteReactions.Count(k => k.IsLike),
-                    dislikes = j.QuoteReactions.Count(k => !k.IsLike)
-                })
-            .FirstAsync();
+        var counts = new { anon.likes, anon.dislikes };
+        var randomQuote = anon.quote;
 
         DiscordButtonComponent like = new(ButtonStyle.Primary,"like",null,false,new DiscordComponentEmoji("👍"));
         DiscordButtonComponent dislike = new(ButtonStyle.Primary, "dislike",null,false,new DiscordComponentEmoji("👎"));

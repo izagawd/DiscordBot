@@ -47,12 +47,12 @@ public class CharacterTeam : ISet<Character>
     /// when a character is gotten from a database, the stats are not set in response to it's level sometimes. this does the trick for every character in the team
     /// </summary>
     /// <returns></returns>
-    public virtual async Task<CharacterTeam> LoadAsync()
+    public virtual async Task<CharacterTeam> LoadAsync(bool build = true)
     {
         foreach (var i in Characters)
         {
             i.Team = this;
-            await i.LoadAsync();
+            await i.LoadAsync(build);
         }
         
         return this;

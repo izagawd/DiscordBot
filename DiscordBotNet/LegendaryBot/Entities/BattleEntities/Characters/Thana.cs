@@ -107,10 +107,7 @@ public class Thana : Character
 {
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
-    public override int BaseMaxHealth => 1500 + (60 * Level);
-    public override int BaseAttack => (100 + (10 * Level));
-    public override int BaseDefense => (100 + (6.2 * Level)).Round();
-    public override int BaseSpeed => 120;
+
     public override Element Element { get; protected set; } = Element.Earth;
     public override BasicAttack BasicAttack { get; } = new SoulAttack();
 

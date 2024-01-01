@@ -5,9 +5,9 @@ using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
+
 using DiscordBotNet.LegendaryBot.Quests;
-using DiscordBotNet.LegendaryBot.Stats;
+
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
@@ -19,7 +19,7 @@ public class PostgreSqlContext : DbContext
 {
     
     private static readonly Type[] EntityClasses;
-    private static readonly Type[] GearStatClasses;
+
     public DbSet<UserData> UserData { get; set; }
     public DbSet<GuildData> GuildData { get; set; }
     public DbSet<Entity> Entity { get; set; }
@@ -68,9 +68,6 @@ public class PostgreSqlContext : DbContext
         _assemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
         EntityClasses = _assemblyTypes
             .Where(type => type.IsRelatedToType(typeof(Entity))).ToArray();
-        GearStatClasses = _assemblyTypes
-                .Where(type => type.IsRelatedToType(typeof(GearStat)) && !type.IsAbstract)
-                .ToArray();
 
     }
 
@@ -92,79 +89,6 @@ public class PostgreSqlContext : DbContext
       
     }
 
-    public async Task GivePowerToUserAsync(long idOfUser)
-    {
-        var user = await UserData
-            .Include(i => i.Inventory.Where(j => j is Character))
-            .Include(i => i.PlayerTeams)
-            .FirstOrDefaultAsync(i => i.Id == idOfUser);
-        if (user is null) return;
-        foreach (var i in user.Inventory.OfType<Character>())
-        {
-            i.SetLevel(60);
-            foreach (var j in _assemblyTypes.Where(i => !i.IsAbstract && i.IsRelatedToType(typeof(Gear))))
-            {
-                var gear = (Gear)Activator.CreateInstance(j)!;
-                Type mainStat = null;
-
-                if (gear is Boots)
-                    mainStat = GearStat.SpeedFlatType;
-                else if (gear is Ring)
-                {
-                    mainStat = GearStat.AttackPercentageType;
-                    if (i is RoyalKnight || i is Lily)
-                        mainStat = GearStat.HealthPercentageType;
-                }
-
-                else if (gear is Necklace)
-                {
-                    mainStat = GearStat.CriticalDamageType;
-                    if (i is RoyalKnight || i is Lily)
-                        mainStat = GearStat.DefensePercentageType;
-                }
-
-                Type[] wantedTypes =
-                {
-                    GearStat.AttackPercentageType, GearStat.CriticalDamageType, GearStat.CriticalChanceType,
-                    GearStat.SpeedFlatType
-                };
-                if (i is RoyalKnight)
-                    wantedTypes =
-                    [
-                        GearStat.HealthPercentageType, GearStat.DefensePercentageType, GearStat.SpeedFlatType,
-                        GearStat.ResistanceType
-                    ];
-                else if (i is Lily)
-
-                    wantedTypes = 
-                    [
-                        GearStat.HealthPercentageType, GearStat.SpeedFlatType,
-                        GearStat.EffectivenessType
-                    ];
-                gear.Initiate(Rarity.FiveStar, mainStat, wantedTypes);
-                gear.UserDataId = i.UserDataId;
-                gear.IncreaseExp(9000000000000, wantedTypes);
-                i.AddGear(gear);
-
-                if (user.EquippedPlayerTeam is null)
-                {
-                    var newTeam = new PlayerTeam();
-                    user.EquippedPlayerTeam = newTeam;
-                      
-                    user.PlayerTeams.Add(newTeam);
-                }
-                    
-              
-                CharacterTeam team = user.EquippedPlayerTeam;
-              
-                if (team.Count < 4 && i is not CoachChad)
-                    team.Add(i);
-     
-
-            }
-
-        }
-    }
 
     private static readonly IEnumerable<Type> QuestTypes =
         Assembly.GetExecutingAssembly()
@@ -182,10 +106,7 @@ public class PostgreSqlContext : DbContext
             modelBuilder.Entity(entityType);
         }
 
-        foreach (var i in GearStatClasses)
-        {
-            modelBuilder.Owned(i);
-        }
+
         //makes sure the character id properties are not the same, even across tables
 
      
@@ -232,6 +153,21 @@ public class PostgreSqlContext : DbContext
             .HasForeignKey<UserData>(i => i.EquippedPlayerTeamId);
         modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Property);
 
+        modelBuilder.Entity<CharacterBuild>()
+            .HasKey(i => i.Id);
+
+        modelBuilder.Entity<Character>()
+            .HasOne(i => i.EquippedCharacterBuild)
+            .WithOne()
+            .HasForeignKey<Character>(i => i.EquippedCharacterBuildId);
+        modelBuilder.Entity<CharacterBuild>()
+            .Property(i => i.Id)
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Character>()
+            .HasMany(i => i.CharacterBuilds)
+            .WithOne(i => i.Character)
+            .HasForeignKey(i => i.CharacterId);
         modelBuilder.Entity<UserData>()
             .HasMany(i => i.Inventory)
             .WithOne(i => i.UserData)
@@ -245,41 +181,10 @@ public class PostgreSqlContext : DbContext
             .WithOne()
             .HasForeignKey(i => i.UserDataId);
 
-        modelBuilder.Entity<Character>()
-            .HasOne(i => i.Helmet)
-            .WithOne()
-            .HasForeignKey<Character>(i => i.HelmetId)
-            .OnDelete(DeleteBehavior.SetNull);
 
 
-        modelBuilder.Entity<Character>()
-            .HasOne(i => i.Weapon)
-            .WithOne()
-            .HasForeignKey<Character>(i => i.WeaponId)
-            .OnDelete(DeleteBehavior.SetNull);
 
-        modelBuilder.Entity<Character>()
-            .HasOne(i => i.Armor)
-            .WithOne()
-            .HasForeignKey<Character>(i => i.ArmorId)
-            .OnDelete(DeleteBehavior.SetNull);
 
-        modelBuilder.Entity<Character>()
-            .HasOne(i => i.Necklace)
-            .WithOne()
-            .HasForeignKey<Character>(i => i.NecklaceId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<Character>()
-            .HasOne(i => i.Ring)
-            .WithOne()
-            .HasForeignKey<Character>(i => i.RingId)
-            .OnDelete(DeleteBehavior.SetNull);
-        modelBuilder.Entity<Character>()
-            .HasOne(i => i.Boots)
-            .WithOne()
-            .HasForeignKey<Character>(i => i.BootsId)
-            .OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<UserData>()
             .HasMany(i => i.Quotes)
             .WithOne(i => i.UserData)
@@ -292,28 +197,6 @@ public class PostgreSqlContext : DbContext
             .HasMany(i => i.QuoteReactions)
             .WithOne(i => i.UserData)
             .HasForeignKey(i => i.UserDataId);
-        modelBuilder.Entity<Gear>(entity =>
-        {
-            entity
-                .Property(i => i.MainStat)
-                .HasConversion(GearStat.ValueConverter);
-            entity
-                .Property(i => i.SubStat1)
-                .HasConversion(GearStat.ValueConverter!);
-            entity
-                .Property(i => i.SubStat2)
-                .HasConversion(GearStat.ValueConverter!);
-            entity
-                .Property(i => i.SubStat3)
-                .HasConversion(GearStat.ValueConverter!);
-
-            entity
-                .Property(i => i.SubStat4)
-                .HasConversion(GearStat.ValueConverter!);
-            entity.Property(i => i.Rarity)
-                .HasColumnName("Rarity");
-
-        });
 
 
 

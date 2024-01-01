@@ -110,10 +110,7 @@ public class Lily : Character
 {
 
 
-    public override int BaseMaxHealth => 1500 + (60 * Level);
-    public override int BaseAttack => (100 + (8 * Level));
-    public override int BaseDefense => (100 + (7.2 * Level)).Round();
-    public override int BaseSpeed => 115;
+
     
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
     public override DiscordColor Color { get; protected set; } = DiscordColor.HotPink;

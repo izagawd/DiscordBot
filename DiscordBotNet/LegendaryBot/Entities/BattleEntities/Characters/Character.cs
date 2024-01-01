@@ -2,11 +2,13 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
+using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
+
 using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
@@ -30,6 +32,8 @@ public abstract partial  class Character : BattleEntity
 {
         private static Type[] _characterTypes = Assembly.GetExecutingAssembly().GetTypes()
         .Where(i => i.IsSubclassOf(typeof(Character)) && !i.IsAbstract).ToArray();
+        
+        
         
         
     [NotMapped]
@@ -91,9 +95,11 @@ public abstract partial  class Character : BattleEntity
             }
         }
     }
+
+
     public virtual bool IsInStandardBanner => true;
     [NotMapped]
-
+    
 
     public virtual Blessing? Blessing { get; set; }
     public long? BlessingId { get; set; }
@@ -187,6 +193,64 @@ public abstract partial  class Character : BattleEntity
         }
         
     }
+    public CharacterBuild? EquippedCharacterBuild { get;  set; }
+    
+    public long? EquippedCharacterBuildId { get; set; }
+    public List<CharacterBuild> CharacterBuilds { get; protected set; } = [];
+    public virtual int GetMaxHealthValue(int points)
+    {
+        return 300 + (points * 1000);
+    }
+    public virtual int GetAttackValue(int points)
+    {
+        return 90 + (points * 155);
+    }
+
+    public virtual int GetSpeedValue(int points)
+    {
+        return 100 + points * 10;
+    }
+
+    public virtual int GetEffectivenessValue(int points)
+    {
+
+        return points * 15;
+    }
+    public virtual int GetResistanceValue(int points)
+    {
+        return points * 15;
+    }
+    public virtual int GetCriticalChanceValue(int points)
+    {
+        return (points * 4) + 20;
+    }
+    public virtual int GetCriticalDamageValue(int points)
+    {
+        return 150 +  points * 10;
+    }
+    public virtual int GetDefenseValue(int points)
+    {
+        return (300 + (points * 1000))/10;
+    }
+
+
+    /// <summary>
+    /// Should be called when a new character is created, after being added to a user's inventory and is intended to be in a database
+    /// WARNING: save changes will be called
+    /// </summary>
+    /// <param name="context">the database context it is intended to be associated with</param>
+    public async Task InitializeNewCharacterAsync(PostgreSqlContext context)
+    {
+        using var transaction = context.Database.BeginTransaction();
+
+        await context.SaveChangesAsync();
+        EquippedCharacterBuild = new CharacterBuild();
+        CharacterBuilds.Add(EquippedCharacterBuild);
+
+        await context.SaveChangesAsync();
+        await transaction.CommitAsync();
+
+    }
     /// <summary>
     /// Grants a character an extra trun
     /// </summary>
@@ -207,80 +271,118 @@ public abstract partial  class Character : BattleEntity
             return (float)(shield.GetShieldValue(this) * 1.0 / MaxHealth * 100.0);
         }
     }
+
+    public int GetStatFromType(StatType statType)
+    {
+        switch (statType)
+        {
+            case StatType.Attack:
+                return Attack;
+            case StatType.Defense:
+                return Defense;
+            case StatType.Effectiveness:
+                return Effectiveness;
+            case StatType.Resistance:
+                return Resistance;
+            case StatType.Speed:
+                return Speed;
+            case StatType.CriticalChance:
+                return CriticalChance;
+            case StatType.CriticalDamage:
+                return CriticalDamage;
+            case StatType.MaxHealth:
+                return MaxHealth;
+            default:
+                return Attack;
+        }
+    }
     public float HealthPercentage => (float)(Health * 1.0 / MaxHealth * 100.0);
 
-    public sealed override async  Task<Image<Rgba32>> GetDetailsImageAsync()
+    public virtual async Task<Image<Rgba32>> GetDetailsImageAsync(bool loadBuild)
     {
-        using var characterImage = await GetInfoAsync();
-        await LoadAsync();
-        var image = new Image<Rgba32>(1800, 1000);
-
-        var characterImageSize = characterImage.Size;
+        using var characterImageInfo = await GetInfoAsync();
+        if(loadBuild)
+            LoadBuild();
+        var image = new Image<Rgba32>(850, 700);
+        characterImageInfo.Mutate(i => i.Resize(400,125));
+        var characterImageSize = characterImageInfo.Size;
         IImageProcessingContext imageCtx = null!;
         image.Mutate(i => imageCtx = i);
        
-        int yOffSet = characterImageSize.Height + 50;
+        int yOffSet = characterImageSize.Height + 25;
 
          
-        RichTextOptions options = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 40)){WrappingLength = 1000};
+        RichTextOptions options = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 20)){WrappingLength = 500};
         var color = SixLabors.ImageSharp.Color.Black;
 
-        
+       
         foreach (var i in MoveList)
         {
             using var moveImage = await i.GetImageForCombatAsync();
             moveImage.Mutate(j => j
-                .Resize(100,100)
+                .Resize(50,50)
             );
-            int xOffset = 20;
+            int xOffset = 150;
 
             var description = i.GetDescription(this);
             
             imageCtx.DrawImage(moveImage, new Point(xOffset, yOffSet), new GraphicsOptions());
     
            
-            options.Origin = new Vector2(120 + xOffset,   yOffSet);
+            options.Origin = new Vector2(60 + xOffset,   yOffSet);
 
             var fontRectangle = TextMeasurer.MeasureSize(description, options);
 
             imageCtx.DrawText(options, description,color );
  
             var max = float.Max(moveImage.Height, fontRectangle.Height);
-            yOffSet += (20 + max + 10).Round();
+            yOffSet += (15 + max).Round();
             
         }
-        yOffSet = characterImageSize.Height + 50;
-        var xBarrier = 1300;
-        options.Origin = new Vector2(xBarrier, yOffSet);
-        string stats = $"Health: {TotalMaxHealth}\nAttack: {TotalAttack}\nDefense: {TotalDefense}\nSpeed: {TotalSpeed}\n" +
-                       $"Resistance: {TotalResistance}%\nEffectiveness: {TotalEffectiveness}%\nCritical Chance: {TotalCriticalChance}%\n" +
-                       $"Critical Damage: {TotalCriticalDamage}%";
-        imageCtx.DrawText(options, stats, color);
 
+        yOffSet += 20;
+        options.Font = SystemFonts.CreateFont(Bot.GlobalFontName, 20);
+        options.Origin = new Vector2(200, yOffSet);
+        var statsStringBuilder = new StringBuilder();
+        foreach (var i in Enum.GetValues<StatType>())
+        {
+            statsStringBuilder.Append($"{BasicFunction.Englishify(i.ToString())}: {GetStatFromType(i)}\n");
+        }
+
+        imageCtx.DrawText(options, statsStringBuilder.ToString() , color);
+
+        options.Origin = new Vector2(450, yOffSet);
+        var characterBuild = EquippedCharacterBuild;
+        if (characterBuild is null)
+            characterBuild = new CharacterBuild();
+        var buildString = characterBuild.ToString();
+        
+        
+        imageCtx.DrawText(options,  buildString, color);
+        
         imageCtx.BackgroundColor(Color.ToImageSharpColor());
-        imageCtx.DrawImage(characterImage, new Point(((image.Width / 2.0f)- (characterImage.Width /2.0f)).Round(), 20),new GraphicsOptions());
-        imageCtx.Resize((image.Width / 2.0).Round(), (image.Height / 2.0).Round());
+        var characterXOffset = 40;
+        if (Blessing is null)
+            characterXOffset = 300;
+        imageCtx.DrawImage(characterImageInfo, new Point(characterXOffset, 20),new GraphicsOptions());
+
+        if (Blessing is not null)
+        {
+            using var blessingImageInfo = await Blessing.GetInfoAsync();
+           blessingImageInfo.Mutate(i => i.Resize(400,125));
+
+           imageCtx.DrawImage(blessingImageInfo, new Point(characterXOffset + characterImageSize.Width , 20),
+               new GraphicsOptions());
+
+        }
+
         return image;
     }
-    public Helmet? Helmet { get; set; }
-    public long? HelmetId { get; set; }
+    public sealed override   Task<Image<Rgba32>> GetDetailsImageAsync()
+    {
+        return GetDetailsImageAsync(true);
+    }
 
-    public Weapon? Weapon { get; set; }
-    public long? WeaponId { get; set; }
-
-    public Armor? Armor { get; set; }
-    public long? ArmorId { get; set; }
-
-    public Necklace? Necklace { get; set; }
-    public long? NecklaceId { get; set; }
-
-    public Ring? Ring { get; set; }
-    public long? RingId { get; set; }
-    public Boots? Boots { get; set; }
-    public long? BootsId { get; set; }
-    [NotMapped]
-    public IEnumerable<Gear> Gears => new Gear?[] { Armor, Helmet, Weapon, Necklace, Ring, Boots }
-        .Where(i => i is not null).OfType<Gear>();
 
     
  public async Task<Image<Rgba32>> GetCombatImageAsync()
@@ -397,7 +499,14 @@ public abstract partial  class Character : BattleEntity
 
 
 
-    [NotMapped] public virtual int BaseMaxHealth =>  1000 + (45 * Level);
+    [NotMapped] public int BaseMaxHealth    { get
+        {
+            var points = EquippedCharacterBuild?.MaxHealthPoints;
+
+            return GetMaxHealthValue(points.GetValueOrDefault(0));
+
+        }
+    }
 
     public int MaxHealth
     {
@@ -435,10 +544,24 @@ public abstract partial  class Character : BattleEntity
         }
     }
 
-    [NotMapped] public virtual int BaseDefense { get; } = 200;
+    [NotMapped] public  int BaseDefense    { get
+        {
+            var points = EquippedCharacterBuild?.DefensePoints;
+
+            return GetDefenseValue(points.GetValueOrDefault(0));
+
+        }
+    }
     [NotMapped] public virtual Element Element { get; protected set; } = Element.Fire;
 
-    [NotMapped] public virtual int BaseSpeed { get; } = 80;
+    [NotMapped] public int BaseSpeed    { get
+        {
+            var points = EquippedCharacterBuild?.SpeedPoints;
+
+            return GetSpeedValue(points.GetValueOrDefault(0));
+
+        }
+    }
     public int Speed
     {
         get
@@ -507,7 +630,19 @@ public abstract partial  class Character : BattleEntity
         } 
     }
 
-    [NotMapped] public virtual int BaseAttack => 120 + (10 * Level);
+    [NotMapped]
+    public int BaseAttack
+    {
+        get
+        {
+            var points = EquippedCharacterBuild?.AttackPoints;
+            
+            return GetAttackValue(points.GetValueOrDefault(0));
+
+        }
+    }
+
+
 
     public int Attack { 
         get     
@@ -543,32 +678,17 @@ public abstract partial  class Character : BattleEntity
         } 
     }
 
-    [NotMapped] public virtual int BaseCriticalDamage => 150;
+    [NotMapped]
+    public  int BaseCriticalDamage  
+    { get
+        {
+            var points = EquippedCharacterBuild?.CriticalDamagePoints;
 
-    public void AddGear(Gear gear)
-    {
-        if(UserDataId != 0)
-            gear.UserDataId = UserDataId;
-        if (gear is Armor armor)
-        {
-            Armor = armor;
-        } else if (gear is Boots boots)
-        {
-            Boots = boots;
-        } else if (gear is Necklace necklace)
-        {
-            Necklace = necklace;
-        } else if (gear is Helmet helmet)
-        {
-            Helmet = helmet;
-        } else if (gear is Ring ring)
-        {
-            Ring = ring;
-        } else if (gear is Weapon weapon)
-        {
-            Weapon = weapon;
+            return GetCriticalDamageValue(points.GetValueOrDefault(0));
+
         }
     }
+
     public int CriticalDamage {
         get
         {
@@ -594,7 +714,14 @@ public abstract partial  class Character : BattleEntity
     }
 
     [NotMapped]
-    public virtual int BaseEffectiveness { get;  }
+    public  int BaseEffectiveness    { get
+        {
+            var points = EquippedCharacterBuild?.EffectivenessPoints;
+
+            return GetEffectivenessValue(points.GetValueOrDefault(0));
+
+        }
+    }
     [NotMapped]
     public int Resistance {
         get
@@ -755,11 +882,13 @@ public abstract partial  class Character : BattleEntity
         }
     }
 
-    [NotMapped]
-    public virtual int BaseResistance
-    {
-        get;
-   
+    [NotMapped] public  int BaseResistance    { get
+        {
+            var points = EquippedCharacterBuild?.ResistancePoints;
+
+            return GetResistanceValue(points.GetValueOrDefault(0));
+
+        }
     }
 
 
@@ -792,7 +921,15 @@ public abstract partial  class Character : BattleEntity
     }
 
 
-    [NotMapped] public virtual int BaseCriticalChance => 20;
+    [NotMapped]
+    public  int BaseCriticalChance    { get
+        {
+            var points = EquippedCharacterBuild?.CriticalChancePoints;
+
+            return GetCriticalChanceValue(points.GetValueOrDefault(0));
+
+        }
+    }
 
     [NotMapped] public BattleSimulator CurrentBattle => Team?.CurrentBattle!;
 
@@ -803,7 +940,7 @@ public abstract partial  class Character : BattleEntity
     }
 
     public virtual bool IsLimited { get; protected set; } = false;
-    public override int MaxLevel => 60;
+    public override int MaxLevel => 80;
 
     public void SetLevel(int level)
     {
@@ -826,10 +963,17 @@ public abstract partial  class Character : BattleEntity
     public double TotalEffectiveness { get; set; }
     [NotMapped]
     public double TotalResistance { get; set; }
-    
-    public override async Task LoadAsync()
+
+    /// <summary>
+    /// Use this to load the build (stats) of the character. if u want to manually set the stats of this character, just
+    /// change the Total properties, and avoid calling this method. its called in load async unless u set thee
+    /// bool param to false
+    /// </summary>
+    public virtual void LoadBuild()
     {
-        await base.LoadAsync();
+        
+   
+            
         TotalAttack = BaseAttack;
         TotalDefense = BaseDefense;
         TotalSpeed = BaseSpeed;
@@ -838,24 +982,38 @@ public abstract partial  class Character : BattleEntity
         TotalResistance = BaseResistance;
         TotalEffectiveness = BaseEffectiveness;
         TotalMaxHealth = BaseMaxHealth;
-        
-        foreach (Gear gear in Gears)
-        {
-            await gear.LoadAsync();
+    
 
-            gear.AddStats(this);
-        }
         if (Blessing is not null)
         {
             TotalAttack += Blessing.Attack;
             TotalMaxHealth += Blessing.Health;
         }
 
-        Health = TotalMaxHealth.Round();
-   
+    
+        
+       
+
+    }
+    public sealed override async Task LoadAsync()
+    {
+  
+        await LoadAsync(true);
+
+
+
     }
     
-  
+    public virtual async Task LoadAsync(bool loadBuild)
+    {
+        await base.LoadAsync();
+        
+        if(loadBuild)
+            LoadBuild();
+        Health = TotalMaxHealth.Round();
+
+
+    }
 
     public void TakeDamageWhileConsideringShield(int damage)
     {

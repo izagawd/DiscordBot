@@ -4,7 +4,7 @@ using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -42,7 +42,7 @@ public class Index : PageModel
     public async Task OnPostStrengthenAsync()
     {
 
-        await DatabaseContext.GivePowerToUserAsync(User.GetDiscordUserId());
+
         await DatabaseContext.SaveChangesAsync();
     }
     /// <summary>
@@ -52,7 +52,7 @@ public class Index : PageModel
     /// <returns>The type it is categorized as</returns>
     public Type Categorize(Type entityType)
     {
-        if (entityType.IsRelatedToType(typeof(Gear))) return typeof(Gear);
+
         if (entityType.IsRelatedToType(typeof(Character))) return typeof(Character);
         if (entityType.IsRelatedToType(typeof(Blessing))) return typeof(Blessing);
         return typeof(Entity);

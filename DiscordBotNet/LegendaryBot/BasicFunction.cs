@@ -144,6 +144,10 @@ public static class BasicFunction
         return string.Join(" ", arr);
     }
 
+    public static string Robotify(string stringToRobotify)
+    {
+        return FirstLetterCapital(stringToRobotify).Replace(" ", "");
+    }
         
     /// <summary>Spaces out a sentence and makes each word start with a capital letter</summary>
     ///<returns>The computed string</returns>

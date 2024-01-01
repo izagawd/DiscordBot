@@ -38,13 +38,21 @@ public static class Bot
 
     private static async Task DoShit()
     {
-  
+        foreach (var i in Enumerable.Range(0,100))
+        {
+            var postgre = new PostgreSqlContext();
+
+            var stop = new Stopwatch(); stop.Start();
+
+            await postgre.UserData.IncludeTeamWithAllEquipments().LoadAsync();
+            stop.Elapsed.TotalMilliseconds.Print();
+        }
     }
 
     private static async Task Main(string[] args)
     {
 
-        
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

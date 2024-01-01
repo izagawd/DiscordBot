@@ -2,7 +2,7 @@
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
+
 using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -25,8 +25,10 @@ public class Begin : BaseCommandClass
         UserData userData = await DatabaseContext.UserData
             .Include(j => j.Inventory)
             .ThenInclude(j => (j as Character).Blessing)
+            .Include(i => i.Inventory)
+            .ThenInclude(i => (i as Character).EquippedCharacterBuild)
             .Include(i => i.EquippedPlayerTeam)
-            .Include(i => i.Inventory.Where(i => i is Character || i is Gear))
+            .Include(i => i.Inventory.Where(j => j is Character))
             .FindOrCreateAsync((long)author.Id);
         await DatabaseContext.SaveChangesAsync();
         DiscordColor userColor = userData.Color;
@@ -66,6 +68,8 @@ public class Begin : BaseCommandClass
             userData.Inventory.Add(player);
             player.UserData = userData;
             player.UserDataId = userData.Id;
+
+            await player.InitializeNewCharacterAsync(DatabaseContext);
         }
 
         if (userData.EquippedPlayerTeam is null)
@@ -149,9 +153,12 @@ public class Begin : BaseCommandClass
 
         var userTeam = userData.EquippedPlayerTeam;
         userTeam.Add(lily);
-
+        coachChad.TotalMaxHealth = 9000;
+        coachChad.TotalDefense = 100;
+        coachChad.TotalAttack = 1;
+        coachChad.TotalSpeed = 100;
         BattleResult battleResult = await new BattleSimulator(await userTeam.LoadAsync(), 
-            await new CharacterTeam(characters: coachChad).LoadAsync()).StartAsync(ctx, result.Message);
+            await new CharacterTeam(characters: coachChad).LoadAsync(false)).StartAsync(ctx, result.Message);
 
         if (battleResult.TimedOut is not null)
         {

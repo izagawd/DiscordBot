@@ -105,10 +105,7 @@ public class RoyalKnight : Character
 {
     public override DiscordColor Color => DiscordColor.Blue;
     public override Element Element { get; protected set; } = Element.Ice;
-    public override int BaseMaxHealth => 1200 + (70 * Level);
-    public override int BaseAttack => (110 + (10 * Level));
-    public override int BaseDefense => (110 + (7.2 * Level)).Round();
-    public override int BaseSpeed => 99;
+
     public override BasicAttack BasicAttack { get; } = new ShieldBash();
     public override Rarity Rarity => Rarity.ThreeStar;
     public override Surge? Surge { get; } = new IWillProtectUs();

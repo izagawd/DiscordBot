@@ -98,10 +98,7 @@ public class Blast : Character
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
 
     public override Element Element { get; protected set; } = Element.Fire;
-    public override int BaseMaxHealth => 1100 + (60 * Level);
-    public override int BaseAttack => (120 + (13 * Level));
-    public override int BaseDefense => (100 + (5.2 * Level)).Round();
-    public override int BaseSpeed => 105;
+
     public override Surge? Surge { get;  } = new VolcanicEruption();
     public override Skill? Skill { get; } = new BlowAway();
     public override BasicAttack BasicAttack { get; } = new MethaneSlap();

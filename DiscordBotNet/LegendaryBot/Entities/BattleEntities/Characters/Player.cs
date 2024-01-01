@@ -5,6 +5,7 @@ using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus.Entities;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class FourthWallBreaker: BasicAttack
@@ -158,10 +159,24 @@ public class Player : Character
     }
 
     public override string IconUrl { get; protected set; }
-
-    public async Task LoadAsync(ClaimsPrincipal claimsUser)
+    public override Task<Image<Rgba32>> GetDetailsImageAsync(bool loadBuild)
     {
-        await base.LoadAsync();
+    
+        return GetDetailsImageAsync(discordUser: null,loadBuild);
+    }
+    public async Task<Image<Rgba32>> GetDetailsImageAsync(DiscordUser? discordUser,bool loadBuild)
+    {
+        await LoadAsync(discordUser, loadBuild);
+        return await base.GetDetailsImageAsync(loadBuild);
+    }
+    public async Task<Image<Rgba32>> GetDetailsImageAsync(ClaimsPrincipal claimsUser,bool loadBuild)
+    {
+        await LoadAsync(claimsUser, loadBuild);
+        return await base.GetDetailsImageAsync(loadBuild);
+    }
+    public async Task LoadAsync(ClaimsPrincipal claimsUser, bool build = true)
+    {
+        await base.LoadAsync(build);
         Name = claimsUser.GetDiscordUserName();
         IconUrl = claimsUser.GetDiscordUserAvatarUrl();
         if (UserData is not null)
@@ -169,9 +184,9 @@ public class Player : Character
             Color = UserData.Color;
         }
     }
-    public async Task LoadAsync(DiscordUser? discordUser)
+    public async Task LoadAsync(DiscordUser? discordUser, bool build = true)
     {
-        await base.LoadAsync();
+        await base.LoadAsync(build);
         if (discordUser is not null)
         {
             User = discordUser;
@@ -187,16 +202,12 @@ public class Player : Character
             Color = UserData.Color;
         } 
     }
-    public override Task LoadAsync()
+    public override Task LoadAsync(bool build)
     {
-        return LoadAsync(discordUser: null);
+        return LoadAsync(discordUser: null,build);
     }
     public override string Name { get; protected set; }
 
-    public override int BaseMaxHealth => 1100 + (60 * Level);
-    public override int BaseAttack => 120 + (13 * Level);
-    public override int BaseDefense => (100 + (5.2 * Level)).Round();
-    public override int BaseSpeed => 105;
 
 
 }

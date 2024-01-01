@@ -3,8 +3,7 @@ using System.Reflection;
 using DiscordBotNet.Database.Models;
 
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Gears;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Query;
@@ -61,38 +60,26 @@ public static class PostgreExtension
             .ThenInclude(i => i.Blessing);
     }
 
+    public static IQueryable<UserData> IncludeTeamWithBuild
+        (this IQueryable<UserData> queryable)
+    {
+        return queryable
+            .Include(i => i.EquippedPlayerTeam)
+            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i.EquippedCharacterBuild);
+    }
+
     public static IQueryable<UserData> IncludeTeamWithAllEquipments
         (this IQueryable<UserData> queryable)
     {
 
         return queryable
             .IncludeTeamWithBlessing()
-            .IncludeTeamWithGears();
+            .IncludeTeamWithBuild();
+
     }
 
-    public static IQueryable<UserData> IncludeTeamWithGears
-        (this IQueryable<UserData> queryable)
-    {
-        return queryable
-            .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
-            .ThenInclude(i => i.Armor)
-            .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
-            .ThenInclude(i => i.Boots)
-            .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
-            .ThenInclude(i => i.Helmet)
-            .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
-            .ThenInclude(i => i.Weapon)
-            .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
-            .ThenInclude(i => i.Ring)
-            .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
-            .ThenInclude(i => i.Necklace);
-    }
+
 
     /// <summary>
     /// this not only includes all the gears of the characters, but the stats as well
