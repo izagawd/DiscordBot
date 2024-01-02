@@ -8,7 +8,7 @@ public class PlayerTeam : CharacterTeam
 {
     [NotMapped]
     public bool IsFull => Count >= 4;
-    public string TeamName { get; protected set; } = "default";
+    public string TeamName { get;  set; } = "default";
     [NotMapped]
     private DiscordUser _cachedDiscordUser { get; }
     public UserData UserData { get; protected set; }

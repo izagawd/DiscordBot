@@ -240,7 +240,7 @@ public abstract partial  class Character : BattleEntity
     /// <param name="context">the database context it is intended to be associated with</param>
     public async Task InitializeNewCharacterAsync(PostgreSqlContext context)
     {
-        using var transaction = context.Database.BeginTransaction();
+        await using var transaction = await context.Database.BeginTransactionAsync();
 
         await context.SaveChangesAsync();
         EquippedCharacterBuild = new CharacterBuild();

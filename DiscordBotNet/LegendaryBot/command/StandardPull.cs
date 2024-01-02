@@ -70,6 +70,10 @@ public class StandardPull : BaseCommandClass
             userData.StandardPrayers--;
             BattleEntity acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType);
             userData.Inventory.Add(acquiredEntity);
+            if (acquiredEntity is Character character)
+            {
+                await character.InitializeNewCharacterAsync(DatabaseContext);
+            };
             await DatabaseContext.SaveChangesAsync();
             embed.WithTitle("Nice!!")
                 .WithDescription($"You pulled a {BasicFunction.Englishify(choice.ToString())} called {acquiredType.Name}!");

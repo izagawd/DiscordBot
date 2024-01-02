@@ -71,14 +71,14 @@ public abstract class BaseCommandClass : ApplicationCommandModule
         OccupiedUserDatasIds.AddRange(userDataIds);
         await tempCtx.SaveChangesAsync();
     }
-    protected async Task MakeOccupiedAsync(params UserData[] userDatas)
+    protected Task MakeOccupiedAsync(params UserData[] userDatas)
     {
         foreach (var i in userDatas)
         {
             i.IsOccupied = true;
         }
 
-        await MakeOccupiedAsync(userDatas.Select(i => i.Id).ToArray());
+        return MakeOccupiedAsync(userDatas.Select(i => i.Id).ToArray());
     }
     /// <summary>
     /// This exists cuz it's disposed at the end of a slash command and cuz I tend to forget to dispose disposable stuff
