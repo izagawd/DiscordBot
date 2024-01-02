@@ -243,9 +243,11 @@ public abstract partial  class Character : BattleEntity
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         await context.SaveChangesAsync();
-        EquippedCharacterBuild = new CharacterBuild();
+        EquippedCharacterBuild = new CharacterBuild(){BuildName = "build 1"};
         CharacterBuilds.Add(EquippedCharacterBuild);
-
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "build 2"});
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "build 3"});
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "build 4"});
         await context.SaveChangesAsync();
         await transaction.CommitAsync();
 
