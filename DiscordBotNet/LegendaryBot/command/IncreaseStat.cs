@@ -9,12 +9,12 @@ using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
-[SlashCommandGroup("stat_up","Raise the stats of a character")]
-public class StatUp : BaseCommandClass
+
+public class IncreaseStat : BaseCommandClass
 {
     private UserData _userData;
 
-    static StatUp()
+    static IncreaseStat()
     {
         List<DiscordButtonComponent> rowOne = [];
         List<DiscordButtonComponent> rowTwo = [];
@@ -38,39 +38,40 @@ public class StatUp : BaseCommandClass
     private static readonly DiscordActionRowComponent _statsButtonsRowOne;
     
     private static readonly DiscordActionRowComponent _statsButtonsRowTwo;
-    [SlashCommand("by_name","get a character to raise their stats by their name")]
-    public async Task ExecuteEditByName(InteractionContext ctx,[Option("name","the name of the character")] string name)
-    {
-        var robotified = BasicFunction.Robotify(name).Print();
-        var userData = await DatabaseContext.UserData
-            .Include(i => i.Inventory.Where(j => j is Character 
-            && EF.Property<string>(j,"Discriminator") == robotified))
-            .ThenInclude<UserData,Entity, CharacterBuild>(i =>
-                (i as Character).EquippedCharacterBuild)
-            .FindOrCreateAsync((long)ctx.User.Id);
-        await HandleCharacter(ctx, userData.Inventory.OfType<Character>().FirstOrDefault(), userData.Color);
 
-    }
     private static TextInputComponent modalText = new TextInputComponent("New Increase Amount", "change_increase_amount_value", "1");
     private static DiscordButtonComponent increaseAmountButton = new DiscordButtonComponent(ButtonStyle.Success, "change_increase_amount_button",
         "Change Increase Amount");
 
     private static DiscordButtonComponent reset = new DiscordButtonComponent(ButtonStyle.Danger, "reset", "Reset");
-    public async Task HandleCharacter(InteractionContext ctx, Character? character, DiscordColor color)
+   
+    [SlashCommand("increase_stat", "Raise a character's stats")]
+    public async Task Execute(InteractionContext ctx,[Option("name","the name of the character")] string name)
     {
+        var robotifiedName = BasicFunction.Robotify(name);
+        var userData = await DatabaseContext.UserData
+            .Include(i => i.Inventory.Where(j => j is Character 
+                                                 && EF.Property<string>(j,"Discriminator") == robotifiedName))
+            .ThenInclude<UserData,Entity, CharacterBuild>(i =>
+                (i as Character).EquippedCharacterBuild)
+            .FindOrCreateAsync((long)ctx.User.Id);
+
+        var color = userData.Color;
         
         var embed = new DiscordEmbedBuilder()
             .WithUser(ctx.User)
             .WithColor(color)
             .WithTitle("Hmm")
             .WithDescription("Either that character does not exist or you do not have the  character, or both");
+
+        var character = userData.Inventory.OfType<Character>().FirstOrDefault();
         if (character is null)
         {
             await ctx.CreateResponseAsync(embed);
             return;
         }
 
-        if (character.UserData.IsOccupied)
+        if (userData.IsOccupied)
         {
             embed.WithDescription("You are occupied");
             await ctx.CreateResponseAsync(embed);
@@ -222,18 +223,6 @@ public class StatUp : BaseCommandClass
           }
 
         }
-        
-    }
-    [SlashCommand("by_id", "get a character to raise their stats by id")]
-    public async Task ExecuteEditById(InteractionContext ctx,[Option("id","the id of the charae")] long id)
-    {
 
-        var userData = await DatabaseContext.UserData
-            .Include(i => i.Inventory.Where(j => j is Character 
-                                                 && j.Id == id))
-            .ThenInclude<UserData,Entity, CharacterBuild>(i =>
-                (i as Character).EquippedCharacterBuild)
-            .FindOrCreateAsync((long)ctx.User.Id);
-        await HandleCharacter(ctx, userData.Inventory.OfType<Character>().FirstOrDefault() , userData.Color);
     }
 }
