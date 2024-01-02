@@ -110,7 +110,7 @@ public class CharacterBuild : IDatabaseModel
             if (Character is null)
                 throw new Exception("character cannot be null when using this property. load it from the db");
 
-            return Character.Level * 2;
+            return (Character.Level - 1) * 2;
         }
     }
 

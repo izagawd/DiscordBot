@@ -126,7 +126,7 @@ public class PostgreSqlContext : DbContext
             .Property(i => i.Id)
             .ValueGeneratedOnAdd();
         modelBuilder.Entity<PlayerTeam>()
-            .HasIndex(i => new { i.UserDataId, i.Label })
+            .HasIndex(i => new { i.UserDataId, i.TeamName })
             .IsUnique();
 
         modelBuilder.Entity<PlayerTeam>()

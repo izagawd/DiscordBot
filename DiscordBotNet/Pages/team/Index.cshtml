@@ -42,11 +42,11 @@
 <div id="team_select_div">
     <form method="post">
         <label>Switch your teams!</label>
-        <select name="teamLabel">
+        <select name="teamName">
             @foreach (var i in Model.TeamNames)
             {
 
-                if (Model.UserData.EquippedPlayerTeam.Label == i)
+                if (Model.UserData.EquippedPlayerTeam.TeamName == i)
                 {
                     <option value="@i" selected>@i</option>
                 }

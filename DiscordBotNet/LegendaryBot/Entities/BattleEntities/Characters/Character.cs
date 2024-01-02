@@ -232,7 +232,7 @@ public abstract partial  class Character : BattleEntity
     {
         return CalculateStat(300, 2000, points);
     }
-
+    
     /// <summary>
     /// Should be called when a new character is created, after being added to a user's inventory and is intended to be in a database
     /// WARNING: save changes will be called
@@ -324,7 +324,8 @@ public abstract partial  class Character : BattleEntity
             int xOffset = 150;
 
             var description = i.GetDescription(this);
-            
+            if (i is Special special)
+                description += $" (Cooldown: {special.MaxCooldown} turns)";
             imageCtx.DrawImage(moveImage, new Point(xOffset, yOffSet), new GraphicsOptions());
     
            
@@ -864,10 +865,9 @@ public abstract partial  class Character : BattleEntity
     }
 
     [NotMapped]
-    public StatusEffectSet StatusEffects { get; set; } 
+    public StatusEffectSet StatusEffects { get; set; }
 
-    [NotMapped]
-    public virtual DiscordColor Color { get; protected set; }
+    [NotMapped] public virtual DiscordColor Color { get; protected set; } = DiscordColor.Green;
 
     [NotMapped]
     public int Effectiveness
@@ -1039,7 +1039,8 @@ public abstract partial  class Character : BattleEntity
         
         if(loadBuild)
             LoadBuild();
-        Health = TotalMaxHealth.Round();
+        if(TotalMaxHealth != 0)
+            Health = TotalMaxHealth.Round();
 
 
     }

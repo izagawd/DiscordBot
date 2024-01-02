@@ -44,6 +44,7 @@ public class IncreaseStat : BaseCommandClass
         "Change Increase Amount");
 
     private static DiscordButtonComponent reset = new DiscordButtonComponent(ButtonStyle.Danger, "reset", "Reset");
+    private static DiscordButtonComponent stop = new DiscordButtonComponent(ButtonStyle.Danger, "stop", "Stop");
    
     [SlashCommand("increase_stat", "Raise a character's stats")]
     public async Task Execute(InteractionContext ctx,[Option("name","the name of the character")] string name)
@@ -97,7 +98,7 @@ public class IncreaseStat : BaseCommandClass
             .AddEmbed(embed)
             .AddComponents(_statsButtonsRowOne.Components)
             .AddComponents(_statsButtonsRowTwo.Components)
-            .AddComponents(reset,increaseAmountButton,increaseAmountLabel)
+            .AddComponents(stop,reset,increaseAmountButton,increaseAmountLabel)
             .AddFile("details.png", stream);
 
         await ctx.CreateResponseAsync(responseBuilder);
@@ -117,6 +118,14 @@ public class IncreaseStat : BaseCommandClass
           StatType statType; 
           var didParse = Enum.TryParse(result.Result.Id, out statType);
           var characterBuild = character.EquippedCharacterBuild;
+          if (result.Result.Id == stop.CustomId)
+          {
+              responseBuilder = new DiscordInteractionResponseBuilder()
+                  .AddEmbed(embed);
+              await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+                  responseBuilder);
+              break;
+          }
           if (result.Result.Id == reset.CustomId)
           {
               characterBuild.ResetPoints();
@@ -157,7 +166,7 @@ public class IncreaseStat : BaseCommandClass
                           .AddEmbed(embed)
                           .AddComponents(_statsButtonsRowOne.Components)
                           .AddComponents(_statsButtonsRowTwo.Components)
-                          .AddComponents(reset,increaseAmountButton, increaseAmountLabel);
+                          .AddComponents(stop,reset,increaseAmountButton, increaseAmountLabel);
                       message =await message.ModifyAsync(messageBuilder);
                   }
               });
@@ -214,7 +223,7 @@ public class IncreaseStat : BaseCommandClass
                   .AddEmbed(embed)
                   .AddComponents(_statsButtonsRowOne.Components)
                   .AddComponents(_statsButtonsRowTwo.Components)
-                  .AddComponents(reset,increaseAmountButton, increaseAmountLabel)
+                  .AddComponents(stop,reset,increaseAmountButton, increaseAmountLabel)
                   .AddFile("details.png", stream);
               await DatabaseContext.SaveChangesAsync();
               await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, responseBuilder);

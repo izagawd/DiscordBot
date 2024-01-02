@@ -23,11 +23,11 @@ public class Index : PageModel
     {
         DatabaseContext = context;
     }
-    public async Task OnPostAsync(string teamLabel)
+    public async Task OnPostAsync(string teamName)
     {
         await OnGetAsync();
         var gottenTeam = await DatabaseContext.Set<PlayerTeam>()
-            .Where(i => i.Label == teamLabel && i.UserDataId == UserData.Id)
+            .Where(i => i.TeamName == teamName && i.UserDataId == UserData.Id)
             .FirstOrDefaultAsync();
 
         if (gottenTeam is not null)
@@ -43,7 +43,7 @@ public class Index : PageModel
             .Include(j => j.Inventory.Where(k => k is Character))
             
             .FindOrCreateSelectAsync(User.GetDiscordUserId(),
-                i => new{UserData = i,TeamNames= i.PlayerTeams.Select(j => j.Label)});
+                i => new{UserData = i,TeamNames= i.PlayerTeams.Select(j => j.TeamName)});
         UserData = anonymous.UserData;
         TeamNames = anonymous.TeamNames.ToArray();
 

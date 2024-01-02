@@ -6,7 +6,9 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 public class PlayerTeam : CharacterTeam
 {
-    public string Label { get; protected set; } = "default";
+    [NotMapped]
+    public bool IsFull => Count >= 4;
+    public string TeamName { get; protected set; } = "default";
     [NotMapped]
     private DiscordUser _cachedDiscordUser { get; }
     public UserData UserData { get; protected set; }
