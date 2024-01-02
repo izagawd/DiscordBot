@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.Text;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;

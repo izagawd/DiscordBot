@@ -1,14 +1,10 @@
 ﻿
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-using DiscordBotNet.LegendaryBot.Results;
-using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
-using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 

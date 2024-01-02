@@ -1,12 +1,9 @@
-﻿using System.Collections.Immutable;
-using DiscordBotNet.Database.Models;
+﻿using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
@@ -126,45 +123,43 @@ public class StatUp : BaseCommandClass
           }
           else if (result.Result.Id == increaseAmountButton.CustomId)
           {
-              await using var localResponse = new DiscordInteractionResponseBuilder()
-                  .WithTitle("Change the increase amount")
-                  .WithCustomId("change_increase_amount")
-                  .AddComponents(modalText);
-              
-              
-              await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.Modal,
-                  localResponse);
-              
-              var modalResult =  await ctx.Client.GetInteractivity()
-                  .WaitForModalAsync("change_increase_amount", ctx.User);
-              "bruh".Print();
-              if(modalResult.TimedOut) break;
-              
-              var stringedNewAmount = modalResult.Result.Values.Select(i => i.Value).First();
-              var parsed =int.TryParse(stringedNewAmount, out int newAmount);
-              if (!parsed)
+              Task.Run(async () =>
               {
-                  await modalResult.Result.Interaction.CreateResponseAsync(
-                      InteractionResponseType.ChannelMessageWithSource,
-                      new DiscordInteractionResponseBuilder()
-                          .WithContent("Input a whole number thats at least 1!"));
-              }
-              else
-              {
-                  if (newAmount <= 0) newAmount = 1;
-                  increaseAmount = newAmount;
+                  await using var localResponse = new DiscordInteractionResponseBuilder()
+                      .WithTitle("Change the increase amount")
+                      .WithCustomId("change_increase_amount")
+                      .AddComponents(modalText);
+                  await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.Modal,
+                      localResponse);
+                  var modalResult =  await ctx.Client.GetInteractivity()
+                      .WaitForModalAsync("change_increase_amount", ctx.User);
+                  if(modalResult.TimedOut) return;
+                  var stringedNewAmount = modalResult.Result.Values.Select(i => i.Value).First();
+                  var parsed =int.TryParse(stringedNewAmount, out int newAmount);
+                  if (!parsed)
+                  {
+                      await modalResult.Result.Interaction.CreateResponseAsync(
+                          InteractionResponseType.ChannelMessageWithSource,
+                          new DiscordInteractionResponseBuilder()
+                              .WithContent("Input a whole number thats at least 1!"));
+                  }
+                  else
+                  {
+                      if (newAmount <= 0) newAmount = 1;
+                      increaseAmount = newAmount;
 
-                  increaseAmountLabel = new DiscordButtonComponent(increaseAmountLabel.Style,
-                      increaseAmountLabel.CustomId, $"Increase Amount: {increaseAmount}", true);
+                      increaseAmountLabel = new DiscordButtonComponent(increaseAmountLabel.Style,
+                          increaseAmountLabel.CustomId, $"Increase Amount: {increaseAmount}", true);
 
-                  await modalResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-                  var messageBuilder = new DiscordMessageBuilder()
-                      .AddEmbed(embed)
-                      .AddComponents(_statsButtonsRowOne.Components)
-                      .AddComponents(_statsButtonsRowTwo.Components)
-                      .AddComponents(reset,increaseAmountButton, increaseAmountLabel);
-                  message =await message.ModifyAsync(messageBuilder);
-              }
+                      await modalResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                      var messageBuilder = new DiscordMessageBuilder()
+                          .AddEmbed(embed)
+                          .AddComponents(_statsButtonsRowOne.Components)
+                          .AddComponents(_statsButtonsRowTwo.Components)
+                          .AddComponents(reset,increaseAmountButton, increaseAmountLabel);
+                      message =await message.ModifyAsync(messageBuilder);
+                  }
+              });
               continue;
           }
           else if (characterBuild.TotalPoints < characterBuild.MaxPoints 
@@ -239,6 +234,6 @@ public class StatUp : BaseCommandClass
             .ThenInclude<UserData,Entity, CharacterBuild>(i =>
                 (i as Character).EquippedCharacterBuild)
             .FindOrCreateAsync((long)ctx.User.Id);
-        await HandleCharacter(ctx, userData.Inventory.OfType<Character>().FirstOrDefault() as Character, userData.Color);
+        await HandleCharacter(ctx, userData.Inventory.OfType<Character>().FirstOrDefault() , userData.Color);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DiscordBotNet.Database.Models;
-using DiscordBotNet.Extensions;
 using DSharpPlus.Entities;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;

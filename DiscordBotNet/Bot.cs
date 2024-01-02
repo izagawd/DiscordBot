@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Reflection;
 
 using DiscordBotNet.Database;
-using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -17,7 +16,6 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 

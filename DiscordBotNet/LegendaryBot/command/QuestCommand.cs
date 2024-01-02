@@ -1,5 +1,4 @@
-﻿using DiscordBotNet.Database;
-using DiscordBotNet.Extensions;
+﻿using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Quests;
 using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus;

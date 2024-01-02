@@ -7,7 +7,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
-using static System.Threading.Tasks.Task<bool>;
 
 
 namespace DiscordBotNet.LegendaryBot.command;
@@ -52,80 +51,78 @@ public class QuoteCommand : BaseCommandClass
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embedBuilder).AddComponents(like,dislike));
         var message = await ctx.GetOriginalResponseAsync();
 
-        await message.WaitForButtonAsync(i =>
+        while (true)
         {
+            var result = await message.WaitForButtonAsync(i => i.User.Id == ctx.User.Id);
+            if(result.TimedOut) break;
+            var interactivityResult = result.Result;
             
-             Task.Run(async () =>
+            var choice = interactivityResult.Interaction.Data.CustomId;
+            if (!new[] { "like", "dislike" }.Contains(choice)) return;
+            var newDbContext = new PostgreSqlContext();
+            var anonymous = await newDbContext.Set<QuoteReaction>()
+                .Where(j => j.QuoteId == randomQuote.Id && j.UserDataId ==(long) interactivityResult.User.Id)
+                .Select(j => new
+                {
+                    quote = j.Quote, quoteReaction = j,
+                })
+                .FirstOrDefaultAsync();
+
+            var quoteReaction = anonymous?.quoteReaction;
+            if (anonymous?.quote is not null)
             {
-                
-                var choice = i.Interaction.Data.CustomId;
-                if (!new[] { "like", "dislike" }.Contains(choice)) return;
-                var newDbContext = new PostgreSqlContext();
-                var anonymous = await newDbContext.Set<QuoteReaction>()
-                    .Where(j => j.QuoteId == randomQuote.Id && j.UserDataId ==(long) i.User.Id)
-                    .Select(j => new
-                    {
-                        quote = j.Quote, quoteReaction = j,
-                    })
-                    .FirstOrDefaultAsync();
+                randomQuote = anonymous.quote;
+            }
 
-                var quoteReaction = anonymous?.quoteReaction;
-                if (anonymous?.quote is not null)
+            var isNew = false;
+            if (quoteReaction is null)
+            {
+                quoteReaction = new QuoteReaction();
+                await newDbContext.Set<QuoteReaction>().AddAsync(quoteReaction);
+                //assigning it to id instead of instance cuz instance might not be of the same dbcontext as newDbContext
+                quoteReaction.QuoteId = randomQuote.Id;
+                quoteReaction.UserDataId = (long)interactivityResult.User.Id;
+                isNew = true;
+            }
+
+            if (!await newDbContext.UserData.AnyAsync(j => j.Id ==(long) interactivityResult.User.Id))
+                await newDbContext.UserData.AddAsync(new UserData((long)interactivityResult.User.Id));
+            if (!isNew &&
+                ((choice == "like" && quoteReaction.IsLike) || (choice == "dislike" && !quoteReaction.IsLike)))
+            {
+                newDbContext.Set<QuoteReaction>().Remove(quoteReaction);
+
+            }
+            else if (choice == "like")
+            {
+                quoteReaction.IsLike = true;
+            }
+            else
+            {
+                quoteReaction.IsLike = false;
+            }
+
+            await newDbContext.SaveChangesAsync();
+            var localCounts = await newDbContext.Quote.Where(i => i.Id == randomQuote.Id)
+                .Select(i => new
                 {
-                    randomQuote = anonymous.quote;
-                }
+                    likes = i.QuoteReactions.Count(j => j.IsLike),
+                    dislikes = i.QuoteReactions.Count(j => !j.IsLike)
+                }).FirstAsync();
+            newDbContext.DisposeAsync();
+            embedBuilder
+                .WithFooter(
+                    $"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {localCounts.likes} Dislikes: {localCounts.dislikes}");
 
-                var isNew = false;
-                if (quoteReaction is null)
-                {
-                    quoteReaction = new QuoteReaction();
-                    await newDbContext.Set<QuoteReaction>().AddAsync(quoteReaction);
-                    //assigning it to id instead of instance cuz instance might not be of the same dbcontext as newDbContext
-                    quoteReaction.QuoteId = randomQuote.Id;
-                    quoteReaction.UserDataId = (long)i.User.Id;
-                    isNew = true;
-                }
+            await interactivityResult.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+                new DiscordInteractionResponseBuilder()
 
-                if (!await newDbContext.UserData.AnyAsync(j => j.Id ==(long) i.User.Id))
-                    await newDbContext.UserData.AddAsync(new UserData((long)i.User.Id));
-                if (!isNew &&
-                    ((choice == "like" && quoteReaction.IsLike) || (choice == "dislike" && !quoteReaction.IsLike)))
-                {
-                    newDbContext.Set<QuoteReaction>().Remove(quoteReaction);
-
-                }
-                else if (choice == "like")
-                {
-                    quoteReaction.IsLike = true;
-                }
-                else
-                {
-                    quoteReaction.IsLike = false;
-                }
-
-                await newDbContext.SaveChangesAsync();
-                var localCounts = await newDbContext.Quote.Where(i => i.Id == randomQuote.Id)
-                    .Select(i => new
-                    {
-                        likes = i.QuoteReactions.Count(j => j.IsLike),
-                        dislikes = i.QuoteReactions.Count(j => !j.IsLike)
-                    }).FirstAsync();
-                newDbContext.DisposeAsync();
-                embedBuilder
-                    .WithFooter(
-                        $"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {localCounts.likes} Dislikes: {localCounts.dislikes}");
-
-                await i.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                    new DiscordInteractionResponseBuilder()
-
-                        .AddEmbed(embedBuilder)
-                        .AddComponents(like, dislike));
+                    .AddEmbed(embedBuilder)
+                    .AddComponents(like, dislike));
 
 
-            });
-            return false;
-        },  new TimeSpan(0,10,0));
-        
+        }
+
     }
     [SlashCommand("write", "creates a quote")]
     public async Task Write(InteractionContext ctx, [Option("text", "the quote")] string text)

@@ -1,12 +1,7 @@
-﻿using System.Diagnostics;
-using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.BattleEvents;
-using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
-using DiscordBotNet.LegendaryBot.DialogueNamespace;
+﻿using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 public class GigaPunch : BasicAttack

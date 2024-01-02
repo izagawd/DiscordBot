@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;

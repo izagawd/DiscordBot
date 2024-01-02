@@ -1,5 +1,4 @@
 ﻿using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
