@@ -354,7 +354,7 @@ public class BattleSimulator : IBattleEventListener
 
             }
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
-
+            
             ActiveCharacter.CombatReadiness = 0;
             foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
             {

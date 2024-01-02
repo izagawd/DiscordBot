@@ -37,21 +37,20 @@ public abstract class BaseCommandClass : ApplicationCommandModule
     public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
     {
         DatabaseContext = new PostgreSqlContext();
+        
+        
         return Task.FromResult(true);
     }
 
     public override async Task AfterSlashExecutionAsync(InteractionContext ctx)
     {
-        foreach (var i in OccupiedUserDatas)
+
+        if(OccupiedUserDatasIds.Count > 0)
         {
-            i.IsOccupied = false;
-        }
-        if(OccupiedUserDatas.Count != 0)
-        {
-            var ids = OccupiedUserDatas.Select(i => i.Id).ToArray();
+         
             await using var tempCtx = new PostgreSqlContext();
             await tempCtx.UserData
-                .Where(i => ids.Contains(i.Id))
+                .Where(i => OccupiedUserDatasIds.Contains(i.Id))
                 .ForEachAsync(i => i.IsOccupied = false);
             await tempCtx.SaveChangesAsync();
  
@@ -59,21 +58,27 @@ public abstract class BaseCommandClass : ApplicationCommandModule
         await DatabaseContext.DisposeAsync();
     }
 
-    private List<UserData> OccupiedUserDatas { get; } = new();
+    private List<long> OccupiedUserDatasIds { get; } = new();
 
+    protected async Task MakeOccupiedAsync(params long[] userDataIds)
+    {
+
+        await using var tempCtx = new PostgreSqlContext();
+        await tempCtx.UserData
+            .Where(i => userDataIds.Contains(i.Id))
+            .ForEachAsync(i => i.IsOccupied = true);
+        
+        OccupiedUserDatasIds.AddRange(userDataIds);
+        await tempCtx.SaveChangesAsync();
+    }
     protected async Task MakeOccupiedAsync(params UserData[] userDatas)
     {
         foreach (var i in userDatas)
         {
             i.IsOccupied = true;
         }
-        OccupiedUserDatas.AddRange(userDatas);
-        var ids = userDatas.Select(i => i.Id).ToArray();
-        await using var tempCtx = new PostgreSqlContext();
-        await tempCtx.UserData
-            .Where(i => ids.Contains(i.Id))
-            .ForEachAsync(i => i.IsOccupied = true);
-        await tempCtx.SaveChangesAsync();
+
+        await MakeOccupiedAsync(userDatas.Select(i => i.Id).ToArray());
     }
     /// <summary>
     /// This exists cuz it's disposed at the end of a slash command and cuz I tend to forget to dispose disposable stuff

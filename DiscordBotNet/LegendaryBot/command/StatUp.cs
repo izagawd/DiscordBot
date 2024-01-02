@@ -52,10 +52,16 @@ public class StatUp : BaseCommandClass
                 (i as Character).EquippedCharacterBuild)
             .FindOrCreateAsync((long)ctx.User.Id);
         await HandleCharacter(ctx, userData.Inventory.OfType<Character>().FirstOrDefault(), userData.Color);
-    }
 
+    }
+    private static TextInputComponent modalText = new TextInputComponent("New Increase Amount", "change_increase_amount_value", "1");
+    private static DiscordButtonComponent increaseAmountButton = new DiscordButtonComponent(ButtonStyle.Success, "change_increase_amount_button",
+        "Change Increase Amount");
+
+    private static DiscordButtonComponent reset = new DiscordButtonComponent(ButtonStyle.Danger, "reset", "Reset");
     public async Task HandleCharacter(InteractionContext ctx, Character? character, DiscordColor color)
     {
+        
         var embed = new DiscordEmbedBuilder()
             .WithUser(ctx.User)
             .WithColor(color)
@@ -66,15 +72,21 @@ public class StatUp : BaseCommandClass
             await ctx.CreateResponseAsync(embed);
             return;
         }
-        
+
+        if (character.UserData.IsOccupied)
+        {
+            embed.WithDescription("You are occupied");
+            await ctx.CreateResponseAsync(embed);
+            return;
+        }
         character.LoadBuild();
         if (character is Player player) await player.LoadAsync(false);
 
-
+   
         var image = await character.GetDetailsImageAsync();
 
         var stream = new MemoryStream();
-
+        var increaseAmountLabel = new DiscordButtonComponent(ButtonStyle.Secondary, "amount_increase_label", "Increase Amount: 1", true);
         await image.SaveAsPngAsync(stream);
         stream.Position = 0;
         embed
@@ -82,18 +94,20 @@ public class StatUp : BaseCommandClass
             .WithDescription($"Remember: a stat can have a maximum of {CharacterBuild.MaxPointsPerStat} points")
             .WithImageUrl("attachment://details.png");
 
-
+ 
         var responseBuilder = new DiscordInteractionResponseBuilder()
             .AddEmbed(embed)
             .AddComponents(_statsButtonsRowOne.Components)
             .AddComponents(_statsButtonsRowTwo.Components)
+            .AddComponents(reset,increaseAmountButton,increaseAmountLabel)
             .AddFile("details.png", stream);
 
         await ctx.CreateResponseAsync(responseBuilder);
         image.Dispose();
         await stream.DisposeAsync();
         var message = await ctx.GetOriginalResponseAsync();
-
+        await MakeOccupiedAsync((long)ctx.User.Id);
+        int increaseAmount = 1;
         while (true)
         {
           var result =   await message.WaitForButtonAsync(ctx.User);
@@ -102,18 +116,76 @@ public class StatUp : BaseCommandClass
           if (character.EquippedCharacterBuild is null)
               throw new Exception("Character does not have a build equipped, which it shouldn't be");
           bool updated = false;
-          var statType = Enum.Parse<StatType>(result.Result.Id);
-          if (character.EquippedCharacterBuild.TotalPoints < character.EquippedCharacterBuild.MaxPoints 
-              && character.EquippedCharacterBuild[statType] < CharacterBuild.MaxPointsPerStat)
+          StatType statType; 
+          var didParse = Enum.TryParse(result.Result.Id, out statType);
+          var characterBuild = character.EquippedCharacterBuild;
+          if (result.Result.Id == reset.CustomId)
+          {
+              characterBuild.ResetPoints();
+              updated = true;
+          }
+          else if (result.Result.Id == increaseAmountButton.CustomId)
+          {
+              await using var localResponse = new DiscordInteractionResponseBuilder()
+                  .WithTitle("Change the increase amount")
+                  .WithCustomId("change_increase_amount")
+                  .AddComponents(modalText);
+              
+              
+              await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.Modal,
+                  localResponse);
+              
+              var modalResult =  await ctx.Client.GetInteractivity()
+                  .WaitForModalAsync("change_increase_amount", ctx.User);
+              "bruh".Print();
+              if(modalResult.TimedOut) break;
+              
+              var stringedNewAmount = modalResult.Result.Values.Select(i => i.Value).First();
+              var parsed =int.TryParse(stringedNewAmount, out int newAmount);
+              if (!parsed)
+              {
+                  await modalResult.Result.Interaction.CreateResponseAsync(
+                      InteractionResponseType.ChannelMessageWithSource,
+                      new DiscordInteractionResponseBuilder()
+                          .WithContent("Input a whole number thats at least 1!"));
+              }
+              else
+              {
+                  if (newAmount <= 0) newAmount = 1;
+                  increaseAmount = newAmount;
+
+                  increaseAmountLabel = new DiscordButtonComponent(increaseAmountLabel.Style,
+                      increaseAmountLabel.CustomId, $"Increase Amount: {increaseAmount}", true);
+
+                  await modalResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                  var messageBuilder = new DiscordMessageBuilder()
+                      .AddEmbed(embed)
+                      .AddComponents(_statsButtonsRowOne.Components)
+                      .AddComponents(_statsButtonsRowTwo.Components)
+                      .AddComponents(reset,increaseAmountButton, increaseAmountLabel);
+                  message =await message.ModifyAsync(messageBuilder);
+              }
+              continue;
+          }
+          else if (characterBuild.TotalPoints < characterBuild.MaxPoints 
+              && characterBuild[statType] < CharacterBuild.MaxPointsPerStat)
           {
               updated = true;
-              character.EquippedCharacterBuild.IncreasePoint(statType);
-           
+              foreach (var i in Enumerable.Range(0,increaseAmount))
+              {
+                  if( characterBuild.TotalPoints >= characterBuild.MaxPoints)
+                     break;
+                  if(characterBuild[statType] + 1 > CharacterBuild.MaxPointsPerStat)
+                      break;
+                  characterBuild.IncreasePoint(statType);
+
+              }
+    
+             
           }
           else
           {
-
-              if (character.EquippedCharacterBuild.TotalPoints > character.EquippedCharacterBuild.MaxPoints)
+              if (characterBuild.TotalPoints >= characterBuild.MaxPoints)
               {
                  
                   responseBuilder = new DiscordInteractionResponseBuilder()
@@ -122,7 +194,7 @@ public class StatUp : BaseCommandClass
                       responseBuilder);
                   break;
               } 
-              if (character.EquippedCharacterBuild[statType] >= CharacterBuild.MaxPointsPerStat)
+              if (characterBuild[statType] >= CharacterBuild.MaxPointsPerStat)
               {
    
                   await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
@@ -132,7 +204,7 @@ public class StatUp : BaseCommandClass
               }
 
           }
-
+            
           if (updated)
           {
               character.LoadBuild();
@@ -146,6 +218,7 @@ public class StatUp : BaseCommandClass
                   .AddEmbed(embed)
                   .AddComponents(_statsButtonsRowOne.Components)
                   .AddComponents(_statsButtonsRowTwo.Components)
+                  .AddComponents(reset,increaseAmountButton, increaseAmountLabel)
                   .AddFile("details.png", stream);
               await DatabaseContext.SaveChangesAsync();
               await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, responseBuilder);
