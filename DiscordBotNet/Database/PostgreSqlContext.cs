@@ -108,7 +108,9 @@ public class PostgreSqlContext : DbContext
 
 
         //makes sure the character id properties are not the same, even across tables
-
+        modelBuilder.Entity<CharacterBuild>()
+            .HasIndex(i => new { i.BuildName, i.CharacterId })
+            .IsUnique();
      
         modelBuilder.Entity<UserData>()
             .Property(i => i.Color)

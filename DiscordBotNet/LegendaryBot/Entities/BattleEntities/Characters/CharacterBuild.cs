@@ -87,6 +87,7 @@ public class CharacterBuild : IDatabaseModel
         }
     }
 
+    public string BuildName { get; set; } = "build 1";
     public void ResetPoints()
     {
         foreach (var i in Enum.GetValues<StatType>())
