@@ -66,6 +66,8 @@ public class TeamCommand : BaseCommandClass
 
         var userData = anon.userData;
         var embed = new DiscordEmbedBuilder()
+            .WithUser(context.User)
+            .WithColor(userData.Color)
             .WithTitle("Hmm")
             .WithDescription("Team does not seem to exist");
         if (anon.team is null)

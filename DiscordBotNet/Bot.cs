@@ -16,6 +16,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
+using Color = SixLabors.ImageSharp.Color;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -36,6 +37,7 @@ public static class Bot
 
     private static async Task DoShit()
     {
+        
         Character.CalculateStat(800, 5000, 20).Print();
     }
 
