@@ -199,40 +199,39 @@ public abstract partial  class Character : BattleEntity
     public List<CharacterBuild> CharacterBuilds { get; protected set; } = [];
     public virtual int GetMaxHealthValue(int points)
     {
-        return 300 + (points * 1000);
+        return CalculateStat(3000, 20000, points);
     }
     public virtual int GetAttackValue(int points)
     {
-        return 90 + (points * 155);
+        return CalculateStat(700, 5000, points);
     }
 
     public virtual int GetSpeedValue(int points)
     {
-        return 100 + points * 10;
+        return CalculateStat(100, 300, points);
     }
 
     public virtual int GetEffectivenessValue(int points)
     {
 
-        return points * 15;
+        return CalculateStat(0, 300, points);
     }
     public virtual int GetResistanceValue(int points)
     {
-        return points * 15;
+        return CalculateStat(0, 300, points);
     }
     public virtual int GetCriticalChanceValue(int points)
     {
-        return (points * 4) + 20;
+        return CalculateStat(20, 100, points);
     }
     public virtual int GetCriticalDamageValue(int points)
     {
-        return 150 +  points * 10;
+        return CalculateStat(150, 350, points);
     }
     public virtual int GetDefenseValue(int points)
     {
-        return (300 + (points * 1000))/10;
+        return CalculateStat(300, 2000, points);
     }
-
 
     /// <summary>
     /// Should be called when a new character is created, after being added to a user's inventory and is intended to be in a database
@@ -952,8 +951,26 @@ public abstract partial  class Character : BattleEntity
     }
 
     public virtual bool IsLimited { get; protected set; } = false;
-    public override int MaxLevel => 80;
+    public override int MaxLevel => 120;
+    
+    
+    public static int CalculateStat(int initialValue,  int maxValue, int points)
+    {
+        var maxPoints = CharacterBuild.MaxPointsPerStat;
+        // Ensure points are within the valid range (0 to maxPoints)
+        points = Math.Clamp(points, 0, maxPoints);
 
+        // Calculate the increase per point
+        float increasePerPoint = (float)(maxValue - initialValue) / maxPoints;
+
+        // Calculate the final stat value
+        int finalStatValue = initialValue + (points * increasePerPoint).Round();
+
+        // Ensure the final value doesn't exceed the maxValue
+        finalStatValue = Math.Min(finalStatValue, maxValue);
+
+        return finalStatValue;
+    }
     public void SetLevel(int level)
     {
         if (level > MaxLevel) level = MaxLevel;

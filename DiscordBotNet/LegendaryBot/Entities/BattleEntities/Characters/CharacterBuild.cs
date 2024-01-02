@@ -88,6 +88,13 @@ public class CharacterBuild : IDatabaseModel
         }
     }
 
+    public void ResetPoints()
+    {
+        foreach (var i in Enum.GetValues<StatType>())
+        {
+            this[i] = 0;
+        }
+    }
     public int TotalPoints
     {
         get
@@ -96,6 +103,7 @@ public class CharacterBuild : IDatabaseModel
         }
     }
 
+    public static int MaxPointsPerStat => 67;
     public int MaxPoints
     {
         get
@@ -103,7 +111,7 @@ public class CharacterBuild : IDatabaseModel
             if (Character is null)
                 throw new Exception("character cannot be null when using this property. load it from the db");
 
-            return (int)(Character.Level / 2.0);
+            return Character.Level * 2;
         }
     }
 
@@ -116,6 +124,8 @@ public class CharacterBuild : IDatabaseModel
         var maxPoints = MaxPoints;
         if (totalPoints >= maxPoints)
             throw new Exception($"Cannot go beyond {maxPoints}. Either level up or try a different build");
+        if (this[statType] >= MaxPointsPerStat)
+            throw new Exception($"Reached max amount of points for substat {statType}");
         this[statType]++;
     }
    

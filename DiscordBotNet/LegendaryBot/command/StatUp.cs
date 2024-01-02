@@ -79,7 +79,7 @@ public class StatUp : BaseCommandClass
         stream.Position = 0;
         embed
             .WithTitle($"{character.Name}'s stats")
-            .WithDescription("Edit away!")
+            .WithDescription($"Remember: a stat can have a maximum of {CharacterBuild.MaxPointsPerStat} points")
             .WithImageUrl("attachment://details.png");
 
 
@@ -101,36 +101,58 @@ public class StatUp : BaseCommandClass
 
           if (character.EquippedCharacterBuild is null)
               throw new Exception("Character does not have a build equipped, which it shouldn't be");
-
+          bool updated = false;
           var statType = Enum.Parse<StatType>(result.Result.Id);
-          if (character.EquippedCharacterBuild.TotalPoints < character.EquippedCharacterBuild.MaxPoints)
+          if (character.EquippedCharacterBuild.TotalPoints < character.EquippedCharacterBuild.MaxPoints 
+              && character.EquippedCharacterBuild[statType] < CharacterBuild.MaxPointsPerStat)
           {
+              updated = true;
               character.EquippedCharacterBuild.IncreasePoint(statType);
+           
           }
           else
           {
-              responseBuilder = new DiscordInteractionResponseBuilder()
-                  .AddEmbed(embed);
-              await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                  responseBuilder);
-              break;
+
+              if (character.EquippedCharacterBuild.TotalPoints > character.EquippedCharacterBuild.MaxPoints)
+              {
+                 
+                  responseBuilder = new DiscordInteractionResponseBuilder()
+                      .AddEmbed(embed);
+                  await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+                      responseBuilder);
+                  break;
+              } 
+              if (character.EquippedCharacterBuild[statType] >= CharacterBuild.MaxPointsPerStat)
+              {
+   
+                  await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                      new DiscordInteractionResponseBuilder()
+                          .AsEphemeral()
+                          .WithContent($"stat type {BasicFunction.Englishify(statType.ToString())} has already reached it's maximum amount of points"));
+              }
+
           }
-          character.LoadBuild();
-          image = await character.GetDetailsImageAsync();
 
-          stream = new MemoryStream();
-          await image.SaveAsPngAsync(stream);
+          if (updated)
+          {
+              character.LoadBuild();
+              image = await character.GetDetailsImageAsync();
 
-          stream.Position = 0;
-           responseBuilder = new DiscordInteractionResponseBuilder()
-               .AddEmbed(embed)
-               .AddComponents(_statsButtonsRowOne.Components)
-               .AddComponents(_statsButtonsRowTwo.Components)
-               .AddFile("details.png", stream);
-           await DatabaseContext.SaveChangesAsync();
-           await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, responseBuilder);
-           await stream.DisposeAsync();
-           image.Dispose();
+              stream = new MemoryStream();
+              await image.SaveAsPngAsync(stream);
+
+              stream.Position = 0;
+              responseBuilder = new DiscordInteractionResponseBuilder()
+                  .AddEmbed(embed)
+                  .AddComponents(_statsButtonsRowOne.Components)
+                  .AddComponents(_statsButtonsRowTwo.Components)
+                  .AddFile("details.png", stream);
+              await DatabaseContext.SaveChangesAsync();
+              await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, responseBuilder);
+              await stream.DisposeAsync();
+              image.Dispose();
+          }
+
         }
         
     }

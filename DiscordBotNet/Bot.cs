@@ -38,15 +38,7 @@ public static class Bot
 
     private static async Task DoShit()
     {
-        foreach (var i in Enumerable.Range(0,100))
-        {
-            var postgre = new PostgreSqlContext();
-
-            var stop = new Stopwatch(); stop.Start();
-
-            await postgre.UserData.IncludeTeamWithAllEquipments().LoadAsync();
-            stop.Elapsed.TotalMilliseconds.Print();
-        }
+        Character.CalculateStat(800, 5000, 20).Print();
     }
 
     private static async Task Main(string[] args)
