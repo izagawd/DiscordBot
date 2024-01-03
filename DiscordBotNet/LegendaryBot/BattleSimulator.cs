@@ -412,9 +412,8 @@ public class BattleSimulator : IBattleEventListener
             await combatImage.SaveAsPngAsync(stream);
        
             stream.Position = 0;
-            
-            
-            await using var messageBuilder =new DiscordMessageBuilder()
+
+            var messageBuilder =new DiscordMessageBuilder()
                 .AddEmbed(embedToEdit.Build())
                 .AddFile("battle.png", stream);
                 
@@ -426,7 +425,6 @@ public class BattleSimulator : IBattleEventListener
                 && !ActiveCharacter.IsDead 
                 && _winners is null && !_stopped)
             {
-        
                 components.Add(basicAttackButton);
                 if (ActiveCharacter.Skill is not null &&  ActiveCharacter.Skill.CanBeUsed(ActiveCharacter))
                 {
@@ -551,7 +549,7 @@ public class BattleSimulator : IBattleEventListener
                 {
                     target = possibleTargets.First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == enemiesToSelect.First().Value);
                     DiscordSelectComponent selectTarget = new("targeter",target.GetNameWithPosition(target.Team != ActiveCharacter.Team), enemiesToSelect);
-                    await using var responseBuilder = new DiscordInteractionResponseBuilder()
+                    var responseBuilder = new DiscordInteractionResponseBuilder()
                         .AddComponents(selectTarget)
                         .AddEmbed(embedToEdit.Build());
                     await results.Result.Interaction.CreateResponseAsync(

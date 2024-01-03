@@ -135,7 +135,7 @@ public class IncreaseStat : BaseCommandClass
           {
               Task.Run(async () =>
               {
-                  await using var localResponse = new DiscordInteractionResponseBuilder()
+                  var localResponse = new DiscordInteractionResponseBuilder()
                       .WithTitle("Change the increase amount")
                       .WithCustomId("change_increase_amount")
                       .AddComponents(modalText);

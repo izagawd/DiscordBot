@@ -75,7 +75,7 @@ public class Challenge :BaseCommandClass
             
             .WithDescription($"`do you accept {player1.Username}'s challenge?`");
         await MakeOccupiedAsync(player1User);
-        await using var response = new DiscordInteractionResponseBuilder()
+        var response = new DiscordInteractionResponseBuilder()
             .AddEmbed(embedToBuild.Build())
             .AddComponents(yes, no);
         await ctx.CreateResponseAsync(response);
@@ -99,7 +99,7 @@ public class Challenge :BaseCommandClass
 
         if (decision == "no")
         {
-            await using var responseBuilder = new DiscordInteractionResponseBuilder()
+            var responseBuilder = new DiscordInteractionResponseBuilder()
                 .AddEmbed(embedToBuild.WithTitle($"Hmm")
 
                     .WithDescription("Battle request declined")

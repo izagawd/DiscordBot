@@ -74,7 +74,7 @@ public class Display : BaseCommandClass
             
             if (message is null)
             {
-                await using var response = new DiscordInteractionResponseBuilder(messageBuilder);
+                var response = new DiscordInteractionResponseBuilder(messageBuilder);
                 await context.CreateResponseAsync(response);
                 message = await context.GetOriginalResponseAsync();
             }
