@@ -119,9 +119,9 @@ public class TeamCommand : BaseCommandClass
             await context.CreateResponseAsync(embed);
             return;
         }
-        var character = userData.Inventory.OfType<Character>()
-            .Where(i => i.GetType().Name.ToLower() == simplifiedCharacterName)
-            .FirstOrDefault();
+        var character = userData.Inventory
+            .OfType<Character>()
+            .FirstOrDefault(i => i.GetType().Name.ToLower() == simplifiedCharacterName);
         if (character is null)
         {
             embed.WithDescription($"Character with name {characterName} could not be found");
@@ -219,9 +219,9 @@ public class TeamCommand : BaseCommandClass
             await context.CreateResponseAsync(embed);
             return;
         }
-        var character = userData.Inventory.OfType<Character>()
-            .Where(i => i.GetType().Name.ToLower() == simplifiedCharacterName)
-            .FirstOrDefault();
+        var character = userData.Inventory
+            .OfType<Character>()
+            .FirstOrDefault(i => i.GetType().Name.ToLower() == simplifiedCharacterName);
         if (character is null)
         {
             embed.WithDescription($"Character with name {characterName} could not be found");
