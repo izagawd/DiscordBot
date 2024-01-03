@@ -11,6 +11,8 @@ using DiscordBotNet.LegendaryBot.Rewards;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using SixLabors.ImageSharp.Drawing;
@@ -266,10 +268,9 @@ public class BattleSimulator : IBattleEventListener
     private CharacterTeam? _forfeited;
     private async Task CheckForForfeitAsync()
     {
-        using var buttonAwaitercancellationToken = new CancellationTokenSource();
-        using var delayCancellationToken = new CancellationTokenSource();
 
-        _message.WaitForButtonAsync(e =>
+
+        var interactivityResult = await _message.WaitForButtonAsync(e =>
         {
             var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out BattleDecision decision);
             if (!didParse) return false;
@@ -279,34 +280,52 @@ public class BattleSimulator : IBattleEventListener
                 if (forfeitedTeam is not null)
                 {
                     _forfeited = forfeitedTeam;
-                    e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-                    delayCancellationToken.Cancel();
                     return true;
                 }
             }
 
             return false;
-        }, buttonAwaitercancellationToken.Token);
-        try
-        {
-            await Task.Delay(5000,delayCancellationToken.Token);
-        }
-        catch
-        { 
-            // ignored
-        }
+        }, TimeSpan.FromSeconds(5));
+        if(interactivityResult.TimedOut) return;
+        await interactivityResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
 
-        buttonAwaitercancellationToken.Cancel();
     }
     public int Turn { get; set; } = 0;
     public List<string> AdditionalTexts { get; } = new();
+
     /// <summary>
-    /// Initiates a new battle between two teams
+    /// Initiates a new battle between two teams, by editing the provided message
     /// </summary>
-    public async Task<BattleResult> StartAsync(InteractionContext context, DiscordMessage? message = null)
+    public  Task<BattleResult> StartAsync(DiscordMessage message)
+    {
+        return StartAsync(messageInput : message, interaction: null);
+    }
+    
+   /// <summary>
+   /// Initiates a new battle between two teams, by editing the provided message with responding to the interaction
+   /// </summary>
+   /// <param name="isInteractionEdit">is true, edits the interaction message. if not, sends a follow up message</param>
+   /// <returns></returns>
+    public  Task<BattleResult> StartAsync( DiscordInteraction interaction, bool isInteractionEdit = true)
+    {
+        return StartAsync(messageInput: null,
+            interaction: interaction, editInteraction: isInteractionEdit);
+    }
+        
+    /// <summary>
+    /// Initiates a new battle between two teams, by sending a message to a channel
+    /// </summary>
+    public  Task<BattleResult> StartAsync(DiscordChannel channel)
+    {
+        return StartAsync(messageInput: null,interaction: null, channel: channel);
+    }
+
+    protected async Task<BattleResult> StartAsync(
+        DiscordMessage? messageInput = null, DiscordInteraction? interaction = null,
+        DiscordChannel? channel = null, bool editInteraction = true)
     {
         _stopped = false;
-        _message = message;
+        _message = null;
         Team1.CurrentBattle = this;
         Team2.CurrentBattle = this;
         foreach (var i in CharacterTeams)
@@ -321,7 +340,9 @@ public class BattleSimulator : IBattleEventListener
         CharacterTeam? timedOut = null;
 
         
-        Character? target = null;
+        Character? target = null; 
+        // If you want the bot to update a message using an interactivity result instead of without, use this
+
         while (true)
         {
             Turn += 1;
@@ -391,7 +412,9 @@ public class BattleSimulator : IBattleEventListener
             await combatImage.SaveAsPngAsync(stream);
        
             stream.Position = 0;
-            DiscordMessageBuilder messageBuilder =new DiscordMessageBuilder()
+            
+            
+            await using var messageBuilder =new DiscordMessageBuilder()
                 .AddEmbed(embedToEdit.Build())
                 .AddFile("battle.png", stream);
                 
@@ -418,10 +441,41 @@ public class BattleSimulator : IBattleEventListener
             components.Add(forfeitButton);
             messageBuilder
                 .AddComponents(components);
-            if (_message is null)
-                _message = await context.Channel.SendMessageAsync(messageBuilder);
-            else _message = await _message.ModifyAsync(messageBuilder);
-
+            
+            if(interaction is not null)
+            {
+                
+                if (editInteraction)
+                {
+                    await interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+                        new DiscordInteractionResponseBuilder(messageBuilder));
+                    _message = await interaction.GetOriginalResponseAsync();
+                }
+                else
+                {
+                    _message = await interaction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder(messageBuilder));
+                }
+            }
+            else if(_message is not null)
+            {
+                _message = await _message.ModifyAsync(messageBuilder);
+            }
+            else if (messageInput is not null)
+            {
+                _message = await messageInput.ModifyAsync(messageBuilder);
+            }
+            else if(channel is not null)
+            {
+                _message = await channel.SendMessageAsync(messageBuilder);
+            }
+            else
+            {
+                throw new Exception("No way to display battle");
+            }
+            messageInput = null;
+            interaction = null;
+            channel = null;
+            editInteraction = true;
      
             _mainText = $"{ActiveCharacter} is thinking of a course of action...";
             if (_winners is not null || _stopped) 
@@ -462,14 +516,12 @@ public class BattleSimulator : IBattleEventListener
                         if (forfeitedTeam is not null)
                         {
                             _forfeited = forfeitedTeam;
-                            e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                        
                             return true;
                         }
                     }
                     if ((long)e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
                     {
-
-                        e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
                         return true;
                     }
                     return false;
@@ -481,9 +533,10 @@ public class BattleSimulator : IBattleEventListener
                     _winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
                     break;
                 }
-                List<DiscordSelectComponentOption> enemiesToSelect = new();
+
+                interaction = results.Result.Interaction;
+                List<DiscordSelectComponentOption> enemiesToSelect = [];
                 List<Character> possibleTargets = [];
-                
                 if ( ActiveCharacter[decision] is Move theMove)
                 {
                     possibleTargets.AddRange(theMove.GetPossibleTargets(ActiveCharacter));
@@ -498,39 +551,33 @@ public class BattleSimulator : IBattleEventListener
                 {
                     target = possibleTargets.First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == enemiesToSelect.First().Value);
                     DiscordSelectComponent selectTarget = new("targeter",target.GetNameWithPosition(target.Team != ActiveCharacter.Team), enemiesToSelect);
-                    messageBuilder = new DiscordMessageBuilder()
-                        .AddComponents(proceed)
+                    await using var responseBuilder = new DiscordInteractionResponseBuilder()
                         .AddComponents(selectTarget)
                         .AddEmbed(embedToEdit.Build());
-                    _message = await _message.ModifyAsync(messageBuilder);
-                    using var buttonAwaiterToken = new CancellationTokenSource();
-                    _message.WaitForSelectAsync(e =>
+                    await results.Result.Interaction.CreateResponseAsync(
+                        InteractionResponseType.UpdateMessage,
+                        responseBuilder);
+                    _message = await results.Result.Interaction.GetOriginalResponseAsync();
+                   var interactivityResult = await  _message.WaitForSelectAsync(e =>
                     {
-                        if ((long)e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
+                        if ((long) e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
                         {
-                            target = Characters.First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
-                            e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-                        }
-                        return false;
-                    },buttonAwaiterToken.Token);
-                
-                    var results1 = await  _message.WaitForButtonAsync(e =>
-                    {
-                        if ((long)e.User.Id == ActiveCharacter.Team.TryGetUserDataId && e.Interaction.Data.CustomId == "Proceed")
-                        {
-                            buttonAwaiterToken.Cancel();
-                            e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                            target = Characters
+                                .First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
                             return true;
                         }
                         return false;
                     });
-             
-                    if (results1.TimedOut)
+
+                    if (interactivityResult.TimedOut)
                     {
                         timedOut = ActiveCharacter.Team;
                         _winners = CharacterTeams.First(i => i != ActiveCharacter.Team);
                         break;
                     }
+
+                    interaction = interactivityResult.Result.Interaction;
+
                 }
             }
             if (_forfeited is not null)

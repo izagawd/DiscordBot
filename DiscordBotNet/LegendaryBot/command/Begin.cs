@@ -158,7 +158,7 @@ public class Begin : BaseCommandClass
         coachChad.TotalAttack = 1;
         coachChad.TotalSpeed = 100;
         BattleResult battleResult = await new BattleSimulator(await userTeam.LoadAsync(), 
-            await new CharacterTeam(characters: coachChad).LoadAsync(false)).StartAsync(ctx, result.Message);
+            await new CharacterTeam(characters: coachChad).LoadAsync(false)).StartAsync(result.Message);
 
         if (battleResult.TimedOut is not null)
         {

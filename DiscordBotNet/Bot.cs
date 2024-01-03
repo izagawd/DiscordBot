@@ -124,10 +124,12 @@ public static class Bot
             .ForEachAsync(i => i.IsOccupied = false);
         var color = await databaseContext.UserData.FindOrCreateSelectAsync((long)ev.Context.User.Id, i => i.Color);
         await databaseContext.SaveChangesAsync();
+        
+        
         var embed = new DiscordEmbedBuilder()
             .WithColor(color)
             .WithTitle("hmm")
-            .WithDescription("Something went wrong");
+            .WithDescription("Something went wrong").Build();
 
         await ev.Context.Channel.SendMessageAsync(embed);
     }

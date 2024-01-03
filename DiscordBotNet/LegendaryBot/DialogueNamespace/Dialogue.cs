@@ -118,7 +118,7 @@ public class Dialogue
     {
         if (defer)
         {
-            args.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+            await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
         }
 
         var answer = args.Result.Id;

@@ -63,7 +63,7 @@ public class Hunt : BaseCommandClass
 
  
 
-        var battleResult = await simulator.StartAsync(ctx, message);
+        var battleResult = await simulator.StartAsync(message);
 
 
 

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public abstract class BaseCommandClass : ApplicationCommandModule
 {
+
     protected static Dictionary<Type, IEnumerable<SlashCommandAttribute>> _commandResults = new();
     protected static Dictionary<Type, SlashCommandGroupAttribute?> _slashCommandGroupAttributes = new();
 

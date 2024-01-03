@@ -53,13 +53,12 @@ public class QuoteCommand : BaseCommandClass
 
         while (true)
         {
-            var result = await message.WaitForButtonAsync(i => i.User.Id == ctx.User.Id);
+            var result = await message.WaitForButtonAsync(ctx.User);
             if(result.TimedOut) break;
             var interactivityResult = result.Result;
-            
             var choice = interactivityResult.Interaction.Data.CustomId;
             if (!new[] { "like", "dislike" }.Contains(choice)) return;
-            var newDbContext = new PostgreSqlContext();
+            await using var newDbContext = new PostgreSqlContext();
             var anonymous = await newDbContext.Set<QuoteReaction>()
                 .Where(j => j.QuoteId == randomQuote.Id && j.UserDataId ==(long) interactivityResult.User.Id)
                 .Select(j => new
@@ -67,13 +66,11 @@ public class QuoteCommand : BaseCommandClass
                     quote = j.Quote, quoteReaction = j,
                 })
                 .FirstOrDefaultAsync();
-
             var quoteReaction = anonymous?.quoteReaction;
             if (anonymous?.quote is not null)
             {
                 randomQuote = anonymous.quote;
             }
-
             var isNew = false;
             if (quoteReaction is null)
             {
@@ -109,7 +106,7 @@ public class QuoteCommand : BaseCommandClass
                     likes = i.QuoteReactions.Count(j => j.IsLike),
                     dislikes = i.QuoteReactions.Count(j => !j.IsLike)
                 }).FirstAsync();
-            newDbContext.DisposeAsync();
+
             embedBuilder
                 .WithFooter(
                     $"Date and Time Created: {quoteDate:MM/dd/yyyy HH:mm:ss}\nLikes: {localCounts.likes} Dislikes: {localCounts.dislikes}");
@@ -119,6 +116,7 @@ public class QuoteCommand : BaseCommandClass
 
                     .AddEmbed(embedBuilder)
                     .AddComponents(like, dislike));
+          
 
 
         }

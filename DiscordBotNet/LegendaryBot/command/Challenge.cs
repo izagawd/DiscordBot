@@ -75,39 +75,48 @@ public class Challenge :BaseCommandClass
             
             .WithDescription($"`do you accept {player1.Username}'s challenge?`");
         await MakeOccupiedAsync(player1User);
-        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+        await using var response = new DiscordInteractionResponseBuilder()
             .AddEmbed(embedToBuild.Build())
-            .AddComponents(yes,no));
+            .AddComponents(yes, no);
+        await ctx.CreateResponseAsync(response);
         var message = await ctx.GetOriginalResponseAsync();
         string? decision = null;
-        await message.WaitForButtonAsync(i =>
+        var interactivityResult = await message.WaitForButtonAsync(player2);
+        if (!interactivityResult.TimedOut)
         {
-            if (i.User.Id == player2.Id)
-            {
-                decision = i.Interaction.Data.CustomId;
-                i.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-                return true;
-            }
-
-            return false;
-        });
-        if (decision == "no")
+            decision = interactivityResult.Result.Id;
+        }
+        else
         {
-            await message.ModifyAsync(new DiscordMessageBuilder().WithEmbed(embedToBuild.WithTitle($"Hmm")
-
-                .WithDescription("Battle request declined")
-                
-                .Build())
-                );
+            await message.ModifyAsync(new DiscordMessageBuilder()
+                .WithEmbed(new DiscordEmbedBuilder()
+                    .WithTitle("Hmm")
+                    .WithUser(player1)
+                    .WithDescription("Time out")
+                    .WithColor(player1User.Color)));
             return;
-            
         }
 
+        if (decision == "no")
+        {
+            await using var responseBuilder = new DiscordInteractionResponseBuilder()
+                .AddEmbed(embedToBuild.WithTitle($"Hmm")
+
+                    .WithDescription("Battle request declined")
+                    .WithColor(player1User.Color)
+                    .WithUser(player1)
+                    .Build());
+            await interactivityResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+                responseBuilder);
+            return;
+        }
+
+        await interactivityResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
         await MakeOccupiedAsync(player2User);
         var player1Team = await player1User.EquippedPlayerTeam!.LoadAsync(player1);
         var player2Team = await player2User.EquippedPlayerTeam!.LoadAsync(player2);
         var simulator = new BattleSimulator(player1Team,player2Team);
-        var battleResult = await simulator.StartAsync(ctx,message);
+        var battleResult = await simulator.StartAsync(message);
         DiscordUser winnerDiscord;
         UserData winnerUserData;
         if (battleResult.Winners.TryGetUserDataId.GetValueOrDefault(0) == (long)player1.Id)

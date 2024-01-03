@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
@@ -85,9 +86,10 @@ public class ThumbsUp : Skill
 }
 public class CoachChad : Character
 {
-
-
-
+    public override int GetSpeedValue(int points)
+    {
+        return (base.GetSpeedValue(points) * 1.02f).Round();
+    }
 
     public override BasicAttack BasicAttack { get; } = new GigaPunch();
 

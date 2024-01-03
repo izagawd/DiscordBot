@@ -35,7 +35,7 @@ public class KillSlimesQuest : Quest
         var playerTeam = await userData.EquippedPlayerTeam.LoadAsync(context.User);
 
         var battleSimulator = new BattleSimulator(playerTeam,await slimeTeam.LoadAsync());
-        var result = await battleSimulator.StartAsync(context, message);
+        var result = await battleSimulator.StartAsync(message);
         
        
 

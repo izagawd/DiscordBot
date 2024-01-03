@@ -15,44 +15,6 @@ public class TeamCommand : BaseCommandClass
     
     
     
-    [SlashCommand("display","displays all your teams")]
-    public async Task ExecuteDisplayTeams(InteractionContext context)
-    {
-        var userData = await DatabaseContext.UserData
-            .Include(i => i.PlayerTeams)
-            .FindOrCreateAsync((long)context.User.Id);
-
-        var teamStringBuilder = new StringBuilder();
-        var count = 0;
-
-        foreach (var i in userData.PlayerTeams.SelectMany(i => i).OfType<Player>())
-        {
-            await i.LoadAsync(context.User,false);
-        }
-  
-        foreach (var i in userData.PlayerTeams)
-        {
-            count++;
-            var equipped = "";
-            if (userData.EquippedPlayerTeam == i)
-                equipped = " (equipped)";
-            teamStringBuilder.Append($"1.{equipped} {i.TeamName}. Members: ");
-            foreach (var j in i)
-            {
-                teamStringBuilder.Append($"{j}, ");
-            }
-
-            teamStringBuilder.Append("\n");
-        }
-
-        var embed = new DiscordEmbedBuilder()
-            .WithUser(context.User)
-            .WithTitle("Here's a list of all your teams")
-            .WithColor(userData.Color)
-            .WithDescription(teamStringBuilder.ToString());
-
-        await context.CreateResponseAsync(embed);
-    }
 
 
 

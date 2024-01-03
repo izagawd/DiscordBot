@@ -99,7 +99,7 @@ public class DirectionHelping : Quest
         await userTeam.LoadAsync(context.User);
         var battle = new BattleSimulator(userTeam,blastTeam);
 
-        var battleResult = await battle.StartAsync(context, dialogueResult.Message);
+        var battleResult = await battle.StartAsync(dialogueResult.Message);
 
         if (battleResult.Winners == userTeam)
         {
