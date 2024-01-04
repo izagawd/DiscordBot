@@ -1192,6 +1192,11 @@ public abstract partial  class Character : BattleEntity
         }
         return $"{Name} ({side}) ({Position})";
     }
+    public string GetNameWithPosition()
+    {
+
+        return $"{Name} ({Position})";
+    }
 
     [NotMapped] public virtual Skill? Skill { get; } 
     public int Position => Array.IndexOf(CurrentBattle.Characters.OrderByDescending(i => i.CombatReadiness).ToArray(),this) +1;

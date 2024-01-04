@@ -84,8 +84,9 @@ public abstract class Move : IBattleEventListener
     public override string ToString()
     {
 
-        return BasicFunction.Englishify(GetType().Name);
+        return Name;
     }
+    public virtual string Name => BasicFunction.Englishify(GetType().Name);
 
     public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {

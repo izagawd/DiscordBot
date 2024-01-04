@@ -10,7 +10,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public abstract class StatusEffect : ICloneable , IBattleEventListener
 {
-   
+    public virtual string Description => "Does the bla bla bla of the bla bla bla";
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/status_effects/{GetType().Name}.png";
     // is renewable means that if a new status effect of the same type should be added to the character,
     // if it has a higher level it will override the old ones level. if it has a higher duration it will override

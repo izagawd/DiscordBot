@@ -84,14 +84,14 @@ public static class Bot
         {
             Timeout = TimeSpan.FromMinutes(2),
         };
-        Client.UseInteractivity(interactivityConfiguration);
+        Interactivity = Client.UseInteractivity(interactivityConfiguration);
         Client.SocketOpened += OnReady;
   
         await Client.ConnectAsync();
 
         await Website.Start(args);
     }
-
+    public static  InteractivityExtension Interactivity { get; private set; }
 
     /// <summary>
     /// This is my discord user Id because it's too long to memorize

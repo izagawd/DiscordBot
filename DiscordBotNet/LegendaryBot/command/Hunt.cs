@@ -86,8 +86,14 @@ public class Hunt : BaseCommandClass
         }
         else
         {
+            string additionalString = "";
+            if (battleResult.TimedOut is not null)
+                additionalString += "timed out\n";
+            if (battleResult.Forfeited is not null)
+                additionalString += "forfeited";
+            
             embedToBuild
-                .WithTitle($"Ah, too bad")
+                .WithTitle($"Ah, too bad\n"+additionalString)
                 .WithDescription($"You lost boii\n"+expGainText);
             await message.ModifyAsync(new DiscordMessageBuilder(){Embed = embedToBuild.Build()});
             

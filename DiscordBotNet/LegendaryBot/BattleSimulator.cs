@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Text;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
@@ -15,6 +17,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
+using Microsoft.Extensions.Primitives;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -25,7 +28,7 @@ namespace DiscordBotNet.LegendaryBot;
 public enum BattleDecision
 {
     
-    Forfeit, Surge, BasicAttack, Skill, Other,
+    Forfeit, Surge, BasicAttack, Skill, Info,Other
 }
 
 
@@ -79,7 +82,7 @@ public class BattleSimulator : IBattleEventListener
                 characterImagesInTeam = characterImagesInTeam2;
             foreach (var j in i)
             {
-                var gottenImage = characterImagesInTeam[j];
+                using var gottenImage = characterImagesInTeam[j];
                 if (gottenImage.Width > widest)
                 {
                     widest = gottenImage.Width;
@@ -90,7 +93,6 @@ public class BattleSimulator : IBattleEventListener
                 {
                     length = yOffset;
                 }
-                gottenImage.Dispose();
             }
             yOffset = 0;
             xOffSet += widest + 75;
@@ -136,7 +138,7 @@ public class BattleSimulator : IBattleEventListener
 
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
-        var stop = new Stopwatch(); stop.Start();
+
         OnBattleEvent(eventArgs,null);
         foreach (var i in Characters)
         {
@@ -152,7 +154,6 @@ public class BattleSimulator : IBattleEventListener
             }
             i.Blessing?.OnBattleEvent(eventArgs,i);
         }
-        $"battle event invoked: {eventArgs.GetType().Name} event time: {stop.Elapsed.TotalMilliseconds}".Print();
     }
 
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
@@ -260,39 +261,191 @@ public class BattleSimulator : IBattleEventListener
     {
         _stopped = true;
     }
+  
 
     private DiscordMessage _message;
     /// <summary>
     /// The team that has forfeited
     /// </summary>
     private CharacterTeam? _forfeited;
-    private async Task CheckForForfeitAsync()
+    IEnumerable<DiscordSelectComponentOption> GetSelectComponentOptions()
     {
-
-
-        var interactivityResult = await _message.WaitForButtonAsync(e =>
+        List<DiscordSelectComponentOption> toSelect = [];
+        foreach (var i in Characters)
         {
-            var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out BattleDecision decision);
-            if (!didParse) return false;
-            if (decision == BattleDecision.Forfeit)
+            toSelect.Add(new DiscordSelectComponentOption(i.GetNameWithPosition(), 
+                i.GetNameWithPosition()));
+        }
+
+        return toSelect.ToArray();
+    }
+
+    private async Task HandleDisplayBattleInfoAsync( ComponentInteractionCreateEventArgs interactionCreateEventArgs)
+    {
+        try
+        {
+            var interaction = interactionCreateEventArgs.Interaction;
+            var gottenValue = interactionCreateEventArgs.Values.First();
+            var characterToDisplayBattleInfo = Characters.First(i => i.GetNameWithPosition() == gottenValue);
+
+
+            var descriptionStringBuilder = new StringBuilder();
+
+
+
+            foreach (var i in characterToDisplayBattleInfo.MoveList)
             {
-                var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.TryGetUserDataId == (long) e.User.Id);
-                if (forfeitedTeam is not null)
+                var moveTypeName = "Basic Attack :crossed_swords:";
+
+                if (i is Skill)
+                    moveTypeName = "Skill :magic_wand:";
+                else if (i is Surge)
                 {
-                    _forfeited = forfeitedTeam;
-                    return true;
+                    moveTypeName = "Surge :zap:";
+                }
+
+                descriptionStringBuilder.Append(
+                    $"{moveTypeName}: {i}.\nDescription: {i.GetDescription(characterToDisplayBattleInfo)}");
+                if (i is Special special)
+                {
+                    descriptionStringBuilder.Append(
+                        $"\nMax Cooldown: {special.MaxCooldown}. Current Cooldown: {special.Cooldown}");
+                }
+
+                descriptionStringBuilder.Append("\n\n");
+
+            }
+
+            if (characterToDisplayBattleInfo.StatusEffects.Any())
+            {
+                descriptionStringBuilder.Append("Status Effects\n\n");
+
+                Dictionary<StatusEffect, int> statusCounts = [];
+                foreach (var i in characterToDisplayBattleInfo.StatusEffects)
+                {
+                    var instance = statusCounts.Keys
+                        .FirstOrDefault(j => j.GetType() == i.GetType());
+                    if (instance is null)
+                    {
+                        instance = i;
+                        statusCounts[i] = 1;
+                    }
+                    else
+                    {
+                        statusCounts[instance]++;
+                    }
+                }
+
+                foreach (var i in statusCounts)
+                {
+                    var effect = i.Key;
+                    descriptionStringBuilder.Append(
+                        $"Name: {effect}. Type: {effect.EffectType} Count: {i.Value}\nDescription: {effect.Description}\n\n");
                 }
             }
 
-            return false;
-        }, TimeSpan.FromSeconds(5));
-        if(interactivityResult.TimedOut) return;
-        await interactivityResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
 
+            var embed = new DiscordEmbedBuilder()
+                .WithAuthor(characterToDisplayBattleInfo.Name, iconUrl: characterToDisplayBattleInfo.IconUrl)
+                .WithTitle($"{characterToDisplayBattleInfo.Name}'s description")
+                .WithColor(characterToDisplayBattleInfo.Color)
+                .WithDescription(descriptionStringBuilder.ToString());
+
+
+
+            await interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder()
+                    .AddEmbed(embed)
+                    .AsEphemeral());
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+    }
+
+
+    protected static DiscordButtonComponent yes = new DiscordButtonComponent(ButtonStyle.Success, "yes", "YES");
+    
+    protected static DiscordButtonComponent no = new DiscordButtonComponent(ButtonStyle.Success, "no", "NO");
+    private async Task HandleForfeitAsync(DiscordInteraction interaction)
+    {
+        
+        try
+        {
+            var team = CharacterTeams
+                .OfType<PlayerTeam>().First(i => i.UserDataId == (long)interaction.User.Id);
+            var embed = new DiscordEmbedBuilder()
+                .WithTitle("For real?")
+                .WithColor(DiscordColor.Blue)
+                .WithDescription("Are you sure you want to forfeit?");
+
+            await interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder()
+                    .AddEmbed(embed)
+                    .AsEphemeral()
+                    .AddComponents(yes, no));
+
+            var message = await interaction.GetOriginalResponseAsync();
+
+            var result = await message.WaitForButtonAsync(i => i.User.Id == interaction.User.Id);
+            if (result.TimedOut) return;
+            if (result.Result.Id == "yes")
+            {
+                _forfeited = team;
+                await CancellationTokenSource.CancelAsync();
+
+            }
+
+            await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
+    }
+
+    private void HandleInfo(ComponentInteractionCreateEventArgs args)
+    {
+        
+    }
+    private async Task CheckForForfeitOrInfoAsync()
+    {
+        using (CancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
+        {
+            var interactivityResult = await _message.WaitForAnyComponentInteractionAsync(e =>
+            {
+                if (!CharacterTeams.Any(i => i.TryGetUserDataId == (long)e.User.Id)) return false;
+                BattleDecision localDecision;
+                var didParse = Enum.TryParse(e.Id, out localDecision);
+                if (!didParse) return false;
+                if (localDecision == BattleDecision.Forfeit)
+                {
+
+                    Task.Run(() => HandleForfeitAsync(e.Interaction));
+
+                    return false;
+                } 
+                if (localDecision == BattleDecision.Info)
+                {
+                    
+                    Task.Run(() => HandleDisplayBattleInfoAsync(e));
+                    return false;
+                }
+                
+
+                return false;
+            }, CancellationTokenSource);
+            if(interactivityResult.TimedOut) return;
+            await interactivityResult.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+        }
     }
     public int Turn { get; set; } = 0;
     public List<string> AdditionalTexts { get; } = new();
-
+    public TimeSpan TimeOutSpan { get; protected set; } = TimeSpan.FromMinutes(1.5);
     /// <summary>
     /// Initiates a new battle between two teams, by editing the provided message
     /// </summary>
@@ -320,10 +473,13 @@ public class BattleSimulator : IBattleEventListener
         return StartAsync(messageInput: null,interaction: null, channel: channel);
     }
 
+    private CancellationTokenSource CancellationTokenSource;
+    private static DiscordButtonComponent InfoButton = new DiscordButtonComponent(ButtonStyle.Primary, "Info", "Info");
     protected async Task<BattleResult> StartAsync(
         DiscordMessage? messageInput = null, DiscordInteraction? interaction = null,
         DiscordChannel? channel = null, bool editInteraction = true)
     {
+
         _stopped = false;
         _message = null;
         Team1.CurrentBattle = this;
@@ -345,6 +501,8 @@ public class BattleSimulator : IBattleEventListener
 
         while (true)
         {
+            var stop = new Stopwatch();
+            stop.Start();
             Turn += 1;
             bool extraTurnGranted = false;
             var extraTurners =
@@ -406,6 +564,7 @@ public class BattleSimulator : IBattleEventListener
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, _additionalText)
                 .WithImageUrl("attachment://battle.png");
+        
             using var combatImage = await GetCombatImageAsync();
     
             await using var stream = new MemoryStream();
@@ -426,6 +585,7 @@ public class BattleSimulator : IBattleEventListener
                 && _winners is null && !_stopped)
             {
                 components.Add(basicAttackButton);
+
                 if (ActiveCharacter.Skill is not null &&  ActiveCharacter.Skill.CanBeUsed(ActiveCharacter))
                 {
                     components.Add(skillButton);
@@ -435,11 +595,14 @@ public class BattleSimulator : IBattleEventListener
                     components.Add(surgeButton);
                 }
             }
-          
             components.Add(forfeitButton);
+            var infoSelect = new DiscordSelectComponent("Info", "View info of character",
+                GetSelectComponentOptions());
             messageBuilder
-                .AddComponents(components);
-            
+                .AddComponents(components)
+                .AddComponents(infoSelect);
+
+            stop.Stop();
             if(interaction is not null)
             {
                 
@@ -470,6 +633,7 @@ public class BattleSimulator : IBattleEventListener
             {
                 throw new Exception("No way to display battle");
             }
+            stop.Start();
             messageInput = null;
             interaction = null;
             channel = null;
@@ -481,50 +645,62 @@ public class BattleSimulator : IBattleEventListener
                 await Task.Delay(5000); break;
             }
 
-            var decision =BattleDecision.Other;
+            var battleDecision =BattleDecision.Other;
  
             StatusEffect? mostPowerfulStatusEffect = null;
             if (ActiveCharacter.StatusEffects.Any())
                 mostPowerfulStatusEffect = ActiveCharacter.StatusEffects.OrderByDescending(i => i.OverrideTurnType).First();
+        
             if (ActiveCharacter.IsDead) await Task.Delay(5000);
  
             else if ( mostPowerfulStatusEffect is not null &&  mostPowerfulStatusEffect.OverrideTurnType > 0 )
             {
 
-                UsageResult overridenUsage  = mostPowerfulStatusEffect.OverridenUsage(ActiveCharacter,ref target!, ref decision, UsageType.NormalUsage);
+                UsageResult overridenUsage  = mostPowerfulStatusEffect.OverridenUsage(ActiveCharacter,ref target!, ref battleDecision, UsageType.NormalUsage);
                 if (overridenUsage.Text is not null) _mainText = overridenUsage.Text;
-                await CheckForForfeitAsync();
+                await CheckForForfeitOrInfoAsync();
             }
             
             else if (!ActiveCharacter.Team.IsPlayerTeam)
             {
-               ActiveCharacter.NonPlayerCharacterAi(ref target!, ref decision);
-               await CheckForForfeitAsync();
+               ActiveCharacter.NonPlayerCharacterAi(ref target!, ref battleDecision);
+               await CheckForForfeitOrInfoAsync();
             }
             else
             {
-  
-                var results = await _message.WaitForButtonAsync(e =>
+                InteractivityResult<ComponentInteractionCreateEventArgs> results;
+                using (CancellationTokenSource = new CancellationTokenSource(TimeOutSpan))
                 {
-                    var didParse = Enum.TryParse(e.Interaction.Data.CustomId, out decision);
-                    if (!didParse) return false;
-                    if (decision == BattleDecision.Forfeit)
+                    results = await _message.WaitForAnyComponentInteractionAsync(e =>
                     {
-                        var forfeitedTeam = CharacterTeams.FirstOrDefault(i => i.TryGetUserDataId ==(long) e.User.Id);
-                        if (forfeitedTeam is not null)
+                        if (!CharacterTeams.Any(i => i.TryGetUserDataId == (long)e.User.Id)) return false;
+                        BattleDecision localDecision;
+                        var didParse = Enum.TryParse(e.Id, out localDecision);
+                        if (!didParse) return false;
+                        if (localDecision == BattleDecision.Forfeit)
                         {
-                            _forfeited = forfeitedTeam;
+                            Task.Run(() => HandleForfeitAsync(e.Interaction));
+                            return false;
                         
+                        }
+                        if (localDecision == BattleDecision.Info)
+                        {
+                            Task.Run(() => HandleDisplayBattleInfoAsync(e));
+                            return false;
+                        }
+                        if ((long)e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
+                        {
+                            battleDecision = localDecision;
                             return true;
                         }
-                    }
-                    if ((long)e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
-                    {
-                        return true;
-                    }
-                    return false;
-                });
-             
+                        return false;
+                    }, CancellationTokenSource);
+                }
+                if (_forfeited is not null)
+                {
+                    _winners = CharacterTeams.First(i => i != _forfeited);
+                    break;
+                }
                 if (results.TimedOut)
                 {
                     timedOut = ActiveCharacter.Team;
@@ -533,9 +709,11 @@ public class BattleSimulator : IBattleEventListener
                 }
 
                 interaction = results.Result.Interaction;
+
+
                 List<DiscordSelectComponentOption> enemiesToSelect = [];
                 List<Character> possibleTargets = [];
-                if ( ActiveCharacter[decision] is Move theMove)
+                if ( ActiveCharacter[battleDecision] is Move theMove)
                 {
                     possibleTargets.AddRange(theMove.GetPossibleTargets(ActiveCharacter));
                     foreach (var i in possibleTargets)
@@ -547,26 +725,56 @@ public class BattleSimulator : IBattleEventListener
                 }
                 if (enemiesToSelect.Any())
                 {
-                    target = possibleTargets.First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == enemiesToSelect.First().Value);
-                    DiscordSelectComponent selectTarget = new("targeter",target.GetNameWithPosition(target.Team != ActiveCharacter.Team), enemiesToSelect);
+
+                    DiscordSelectComponent selectMoveTarget = new("targeter",$"Select your target for {battleDecision}", enemiesToSelect);
                     var responseBuilder = new DiscordInteractionResponseBuilder()
-                        .AddComponents(selectTarget)
+                        .AddComponents(selectMoveTarget)
+                        .AddComponents(infoSelect)
+                        .AddComponents(forfeitButton)
                         .AddEmbed(embedToEdit.Build());
                     await results.Result.Interaction.CreateResponseAsync(
                         InteractionResponseType.UpdateMessage,
                         responseBuilder);
                     _message = await results.Result.Interaction.GetOriginalResponseAsync();
-                   var interactivityResult = await  _message.WaitForSelectAsync(e =>
-                    {
-                        if ((long) e.User.Id == ActiveCharacter.Team.TryGetUserDataId)
-                        {
-                            target = Characters
-                                .First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
-                            return true;
-                        }
-                        return false;
-                    });
 
+                    InteractivityResult<ComponentInteractionCreateEventArgs> interactivityResult;
+                    using (CancellationTokenSource = new CancellationTokenSource(TimeOutSpan))
+                    {
+                        interactivityResult = await  _message.WaitForAnyComponentInteractionAsync(e =>
+                        {
+                            if ((long) e.User.Id == ActiveCharacter.Team.TryGetUserDataId 
+                                && e.Id == selectMoveTarget.CustomId)
+                            {
+                                target = Characters
+                                    .First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
+                                return true;
+                            }
+                            if (!CharacterTeams.Any(i => i.TryGetUserDataId == (long)e.User.Id)) return false;
+                            var localDecision = BattleDecision.Other;
+                            var didParse = Enum.TryParse(e.Id, out localDecision);
+                            if (!didParse) return false;
+
+                            if (localDecision == BattleDecision.Forfeit)
+                            {
+                                Task.Run(() => HandleForfeitAsync(e.Interaction));
+                                return false;
+                            }
+
+                            if (localDecision == BattleDecision.Info)
+                            {
+                                Task.Run(() => HandleDisplayBattleInfoAsync(e));
+                                return false;
+                            }
+                            
+                            return false;
+                        }, CancellationTokenSource);
+                    }
+
+                    if (_forfeited is not null)
+                    {
+                        _winners = CharacterTeams.First(i => i != _forfeited);
+                        break;
+                    }
                     if (interactivityResult.TimedOut)
                     {
                         timedOut = ActiveCharacter.Team;
@@ -589,7 +797,7 @@ public class BattleSimulator : IBattleEventListener
                 await Task.Delay(5000); break;
                 
             }
-            var move = ActiveCharacter[decision];
+            var move = ActiveCharacter[battleDecision];
 
 
             var moveResult =  move?.Utilize(ActiveCharacter,target, UsageType.NormalUsage);
