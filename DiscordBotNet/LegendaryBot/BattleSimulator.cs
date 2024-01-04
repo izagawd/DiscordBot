@@ -292,7 +292,7 @@ public class BattleSimulator : IBattleEventListener
             var descriptionStringBuilder = new StringBuilder();
 
 
-
+            descriptionStringBuilder.Append($"Combat Readiness: {characterToDisplayBattleInfo.CombatReadiness}%\n\n");
             foreach (var i in characterToDisplayBattleInfo.MoveList)
             {
                 var moveTypeName = "Basic Attack :crossed_swords:";
@@ -520,7 +520,6 @@ public class BattleSimulator : IBattleEventListener
                 
                 foreach (var j in Characters)
                 {
-                   
                     if(!j.IsDead) j.CombatReadiness +=  (0.0025 * j.Speed);
                 }
      
@@ -533,7 +532,7 @@ public class BattleSimulator : IBattleEventListener
 
             }
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
-            
+
             ActiveCharacter.CombatReadiness = 0;
             foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
             {
@@ -560,7 +559,7 @@ public class BattleSimulator : IBattleEventListener
             }
             DiscordEmbedBuilder embedToEdit = new DiscordEmbedBuilder()
                 .WithTitle("**BATTLE!!!**")
-                .WithAuthor($"{ActiveCharacter.Name}{name}", iconUrl: ActiveCharacter.IconUrl)
+                .WithAuthor($"{ActiveCharacter} [{ActiveCharacter.Position}]{name}", iconUrl: ActiveCharacter.IconUrl)
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, _additionalText)
                 .WithImageUrl("attachment://battle.png");
