@@ -46,7 +46,7 @@ public class IncreaseStat : BaseCommandClass
     private static DiscordButtonComponent reset = new DiscordButtonComponent(ButtonStyle.Danger, "reset", "Reset");
     private static DiscordButtonComponent stop = new DiscordButtonComponent(ButtonStyle.Danger, "stop", "Stop");
    
-    [SlashCommand("increase_stat", "Raise a character's stats")]
+    [SlashCommand("increase_stat", "Raise a character's stats on their currently equipped build")]
     public async Task Execute(InteractionContext ctx,[Option("name","the name of the character")] string name)
     {
         var robotifiedName = BasicFunction.Robotify(name);
