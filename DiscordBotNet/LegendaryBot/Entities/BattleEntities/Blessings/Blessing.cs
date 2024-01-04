@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
 using System.Reflection;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
 using SixLabors.Fonts;
@@ -10,6 +12,7 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 
 public abstract class Blessing : BattleEntity
 {
+    
     public virtual async Task<Image<Rgba32>> GetInfoAsync()
     {
         using var userImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
@@ -112,9 +115,18 @@ public abstract class Blessing : BattleEntity
     public override async Task<Image<Rgba32>> GetDetailsImageAsync()
     {
         var blessingImageSize = 500;
-        var blessingImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
-        blessingImage.Mutate(i => i.Resize(blessingImageSize,blessingImageSize));
-        return blessingImage;
+        var image = new Image<Rgba32>(500, 350);
+        using var blessingImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+        blessingImage.Mutate(i => i.Resize(200,200));
+        var drawing = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 20));
+        drawing.Origin = new Vector2(10, 200);
+        drawing.WrappingLength = 490;
+        image.Mutate(i => i
+            .DrawImage(blessingImage,new Point((image.Width/2.0 - blessingImage.Size.Width/2.0).Round(),0),new GraphicsOptions())
+            .DrawText(drawing,Description,Color.Black)
+            .BackgroundColor(Color.Aqua));
+       
+        return image;
 
 
     }
