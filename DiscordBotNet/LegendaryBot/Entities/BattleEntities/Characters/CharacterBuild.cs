@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using DiscordBotNet.Database.Models;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -87,7 +88,7 @@ public class CharacterBuild : IDatabaseModel
         }
     }
 
-    public string BuildName { get; set; } = "build 1";
+    public string BuildName { get; set; } = "Build 1";
     public void ResetPoints()
     {
         foreach (var i in Enum.GetValues<StatType>())
@@ -104,6 +105,7 @@ public class CharacterBuild : IDatabaseModel
     }
 
     public static int MaxPointsPerStat => 67;
+    [NotMapped]
     public int MaxPoints
     {
         get

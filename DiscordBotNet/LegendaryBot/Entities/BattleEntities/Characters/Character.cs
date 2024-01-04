@@ -243,11 +243,11 @@ public abstract partial  class Character : BattleEntity
         await using var transaction = await context.Database.BeginTransactionAsync();
 
         await context.SaveChangesAsync();
-        EquippedCharacterBuild = new CharacterBuild(){BuildName = "build 1"};
+        EquippedCharacterBuild = new CharacterBuild(){BuildName = "Build 1"};
         CharacterBuilds.Add(EquippedCharacterBuild);
-        CharacterBuilds.Add(new CharacterBuild(){BuildName = "build 2"});
-        CharacterBuilds.Add(new CharacterBuild(){BuildName = "build 3"});
-        CharacterBuilds.Add(new CharacterBuild(){BuildName = "build 4"});
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 2"});
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 3"});
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 4"});
         await context.SaveChangesAsync();
         await transaction.CommitAsync();
 
@@ -298,20 +298,40 @@ public abstract partial  class Character : BattleEntity
         }
     }
     public float HealthPercentage => (float)(Health * 1.0 / MaxHealth * 100.0);
-
+    
+    /// <summary>
+    /// Load build if this character isnt already loaded, or dont load the build if u set stats manually <br/>
+    /// eg TotalAttack = 5000;
+    /// </summary>
+    /// <param name="loadBuild"></param>
+    /// <returns></returns>
     public virtual async Task<Image<Rgba32>> GetDetailsImageAsync(bool loadBuild)
     {
         using var characterImageInfo = await GetInfoAsync();
         if(loadBuild)
             LoadBuild();
+        
         var image = new Image<Rgba32>(850, 900);
+        
         characterImageInfo.Mutate(i => i.Resize(500,150));
         var characterImageSize = characterImageInfo.Size;
         IImageProcessingContext imageCtx = null!;
         image.Mutate(i => imageCtx = i);
-       
-        int yOffSet = characterImageSize.Height + 25;
+        var characterBuild = EquippedCharacterBuild;
+        if (characterBuild is null)
+        {
+            characterBuild = new CharacterBuild();
+            characterBuild.Character = this;
+        }
 
+        var nameRichText = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 30));
+        var textSize = TextMeasurer.MeasureSize(characterBuild.BuildName, nameRichText);
+        nameRichText.Origin = new Vector2((image.Width / 2.0 - textSize.Width / 2.0).Round(), 20 + characterImageSize.Height);
+        imageCtx.DrawText(nameRichText,characterBuild.BuildName,
+            SixLabors.ImageSharp.Color.Black);
+        
+        int yOffSet = characterImageSize.Height + 25;
+        yOffSet +=(int) textSize.Height;
          
         RichTextOptions options = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 25)){WrappingLength = 500};
         var color = SixLabors.ImageSharp.Color.Black;
@@ -354,20 +374,16 @@ public abstract partial  class Character : BattleEntity
         imageCtx.DrawText(options, statsStringBuilder.ToString() , color);
 
         options.Origin = new Vector2(500, yOffSet);
-        var characterBuild = EquippedCharacterBuild;
-        if (characterBuild is null)
-            characterBuild = new CharacterBuild();
+
+        
         var buildString = characterBuild.ToString();
-        
-        
         imageCtx.DrawText(options,  buildString, color);
-        
         imageCtx.BackgroundColor(Color.ToImageSharpColor());
         var characterXOffset = 30;
         if (Blessing is null)
             characterXOffset = 250;
         imageCtx.DrawImage(characterImageInfo, new Point(characterXOffset, 20),new GraphicsOptions());
-
+        
         if (Blessing is not null)
         {
             using var blessingImageInfo = await Blessing.GetInfoAsync();
@@ -1002,9 +1018,6 @@ public abstract partial  class Character : BattleEntity
     /// </summary>
     public virtual void LoadBuild()
     {
-        
-   
-            
         TotalAttack = BaseAttack;
         TotalDefense = BaseDefense;
         TotalSpeed = BaseSpeed;
@@ -1013,18 +1026,11 @@ public abstract partial  class Character : BattleEntity
         TotalResistance = BaseResistance;
         TotalEffectiveness = BaseEffectiveness;
         TotalMaxHealth = BaseMaxHealth;
-    
-
         if (Blessing is not null)
         {
             TotalAttack += Blessing.Attack;
             TotalMaxHealth += Blessing.Health;
         }
-
-    
-        
-       
-
     }
     public sealed override async Task LoadAsync()
     {

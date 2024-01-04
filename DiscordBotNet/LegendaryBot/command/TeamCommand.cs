@@ -58,8 +58,8 @@ public class TeamCommand : BaseCommandClass
         var userData = await DatabaseContext.UserData
             .Include(i => i.PlayerTeams.Where(j => j.TeamName.ToLower() == teamName.ToLower()))
             .Include(i => i.EquippedPlayerTeam)
-            .Include(i => i.Inventory.Where(i => i is Character
-                                                 && EF.Property<string>(i, "Discriminator").ToLower() == simplifiedCharacterName))
+            .Include(i => i.Inventory.Where(j => j is Character
+                                                 && EF.Property<string>(j, "Discriminator").ToLower() == simplifiedCharacterName))
             .FindOrCreateAsync((long)context.User.Id);
         PlayerTeam? gottenTeam =  userData.PlayerTeams.FirstOrDefault(i => i.TeamName.ToLower() == teamName.ToLower());
         
