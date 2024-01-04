@@ -87,7 +87,6 @@ public class CharacterBuild : IDatabaseModel
             }
         }
     }
-
     public string BuildName { get; set; } = "Build 1";
     public void ResetPoints()
     {
@@ -96,13 +95,7 @@ public class CharacterBuild : IDatabaseModel
             this[i] = 0;
         }
     }
-    public int TotalPoints
-    {
-        get
-        {
-           return Enum.GetValues<StatType>().Sum(i => this[i]);
-        }
-    }
+    public int TotalPoints =>  Enum.GetValues<StatType>().Sum(i => this[i]);
 
     public static int MaxPointsPerStat => 67;
     [NotMapped]
