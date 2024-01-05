@@ -37,13 +37,11 @@ public static class Bot
 
     private static async Task DoShit()
     {
-        
-        Character.CalculateStat(800, 5000, 20).Print();
+
     }
 
     private static async Task Main(string[] args)
     {
-
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 

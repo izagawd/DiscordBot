@@ -424,9 +424,7 @@ public class BattleSimulator : IBattleEventListener
                 if (!didParse) return false;
                 if (localDecision == BattleDecision.Forfeit)
                 {
-
                     Task.Run(() => HandleForfeitAsync(e.Interaction));
-
                     return false;
                 } 
                 if (localDecision == BattleDecision.Info)
