@@ -5,7 +5,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class Poison : StatusEffect
 {
-
+    public override string Description { get; } = "Deals damage equivalent to 5% of the affected's max health";
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
     public override bool HasLevels => false;
     public override bool ExecuteStatusEffectAfterTurn => false;

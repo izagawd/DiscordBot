@@ -5,8 +5,10 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class Bleed : StatusEffect
 {
+    public override string Description => "Does damage at the start of the caster's turn";
     public override bool ExecuteStatusEffectAfterTurn { get; } = false;
     private int _casterAttack;
+    
     public override void PassTurn(Character affected)
     {
         base.PassTurn(affected);

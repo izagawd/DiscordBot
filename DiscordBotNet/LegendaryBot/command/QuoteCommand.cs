@@ -27,7 +27,7 @@ public class QuoteCommand : BaseCommandClass
                     likes = j.QuoteReactions.Count(k => k.IsLike),
                     dislikes = j.QuoteReactions.Count(k => !k.IsLike)
                 })
-            .RandomAsync();
+            .RandomOrDefaultAsync();
         if (anon is null)
         {
             await ctx.CreateResponseAsync("damn");

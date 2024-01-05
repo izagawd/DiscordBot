@@ -7,7 +7,7 @@ public class AttackBuff : StatusEffect, IStatsModifier
 {
     public override bool IsRenewable => true;
 
-
+    public override string Description { get; } = "Increases the caster's attack by 50%";
 
     public override bool HasLevels => true;
     public override int MaxStacks => 1;

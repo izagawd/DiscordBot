@@ -5,6 +5,8 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class Bomb : StatusEffect
 {
+    
+    public override string Description => "Detonates on the affected when the duration of this status effect finishes";
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
     public int Attack { get; }
     public Bomb(Character caster) : base(caster)

@@ -5,6 +5,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class Burn : StatusEffect
 {
+    public override string Description => "Does damage at the start of the caster's turn";
     private int _characterAttack;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
     public override bool HasLevels => false;
