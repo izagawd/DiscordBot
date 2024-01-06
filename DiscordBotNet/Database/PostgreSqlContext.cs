@@ -18,6 +18,50 @@ namespace DiscordBotNet.Database;
 public class PostgreSqlContext : DbContext
 {
     
+    
+    /// <summary>
+    /// Use this method when using save changes after adding an entity that uses the <see cref="ISetup"/> interface to the database, or even  if you suspect
+    /// that it happened
+    /// <see cref="ISetup.SetupAsync"/> isn't called. WARNING: it uses transactions
+    /// </summary>
+    /// <param name="acceptAllChangesOnSuccess"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async  Task<int> SaveChangesWithSetupAsync(bool acceptAllChangesOnSuccess = true, CancellationToken cancellationToken = new())
+    {
+        var tracksToSetup = ChangeTracker
+            .Entries<ISetup>()
+            .Where(j => j.State == EntityState.Added)
+            .ToArray();
+        if (!tracksToSetup.Any()) return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        var count = 0;
+        await using (var transaction = await Database.BeginTransactionAsync(cancellationToken))
+        {
+            try
+            {
+                foreach (var i in tracksToSetup.Select(j => j.Entity))
+                {
+                    
+                    count += await i.SetupAsync(this,acceptAllChangesOnSuccess,cancellationToken);
+
+                }
+                
+                count += await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+            
+        }
+
+        return count;
+    }
+    
+
+
     private static readonly Type[] EntityClasses;
 
     public DbSet<UserData> UserData { get; set; }
@@ -106,7 +150,7 @@ public class PostgreSqlContext : DbContext
             modelBuilder.Entity(entityType);
         }
 
-
+    
         //makes sure the character id properties are not the same, even across tables
         modelBuilder.Entity<CharacterBuild>()
             .HasIndex(i => new { i.BuildName, i.CharacterId })

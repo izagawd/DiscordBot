@@ -32,14 +32,12 @@ public class Index : PageModel
     public async Task OnPostAddAsync(string? type)
     {
 
-        Type theType =AddableTypes.First(i => i.Name == type);
-        Entity entity =(Entity) Activator.CreateInstance(theType)!;
+        Type theType = AddableTypes.First(i => i.Name == type);
+        Entity entity = (Entity)Activator.CreateInstance(theType)!;
 
         entity.UserDataId = User.GetDiscordUserId().Print();
         await DatabaseContext.Entity.AddAsync(entity);
-        if (entity is ISetup setup)
-            await setup.SetupAsync(DatabaseContext);
-        await DatabaseContext.SaveChangesAsync();
+        await DatabaseContext.SaveChangesWithSetupAsync();
     }
 
     public async Task OnPostStrengthenAsync()

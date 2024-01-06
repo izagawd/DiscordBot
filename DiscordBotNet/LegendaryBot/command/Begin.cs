@@ -69,7 +69,7 @@ public class Begin : BaseCommandClass
             player.UserData = userData;
             player.UserDataId = userData.Id;
 
-            await player.SetupAsync(DatabaseContext);
+            await (player as ISetup).SetupWithTransactionAsync(DatabaseContext);
         }
 
         if (userData.EquippedPlayerTeam is null)

@@ -71,11 +71,10 @@ public class StandardPull : BaseCommandClass
             userData.StandardPrayers--;
             BattleEntity acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType);
             userData.Inventory.Add(acquiredEntity);
-            if (acquiredEntity is ISetup setup)
-            {
-                await setup.SetupAsync(DatabaseContext);
-            };
-            await DatabaseContext.SaveChangesAsync();
+
+            await DatabaseContext.SaveChangesWithSetupAsync();
+
+
             embed.WithTitle("Nice!!")
                 .WithDescription($"You pulled a {BasicFunction.Englishify(choice.ToString())} called {acquiredType.Name}!");
             await using var stream = new MemoryStream();

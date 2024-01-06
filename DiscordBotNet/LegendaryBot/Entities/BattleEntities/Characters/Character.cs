@@ -235,39 +235,24 @@ public abstract partial  class Character : BattleEntity, ISetup
     }
 
 
-    /// <summary>
-    /// Should be called when a new character is created, after being added to a user's inventory and is intended to be in a database
-    /// WARNING: save changes will be called
-    /// </summary>
-    /// <param name="context">the database context it is intended to be associated with</param>
-    public async Task<int> SetupAsync(PostgreSqlContext context)
+
+    public async Task<int> SetupAsync(PostgreSqlContext context,bool acceptAllChangesOnSuccess =  true , CancellationToken token = new())
     {
         var count = 0;
-        await using (var transaction = await context.Database.BeginTransactionAsync())
-        {
-            try
-            {
-                count += await context.SaveChangesAsync();
-                EquippedCharacterBuild = new CharacterBuild(){BuildName = "Build 1"};
-                CharacterBuilds.Add(EquippedCharacterBuild);
-                CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 2"});
-                CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 3"});
-                CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 4"});
-                count += await context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
+
+        count += await context.SaveChangesAsync(acceptAllChangesOnSuccess,token);
+        EquippedCharacterBuild = new CharacterBuild(){BuildName = "Build 1"};
+        CharacterBuilds.Add(EquippedCharacterBuild);
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 2"});
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 3"});
+        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 4"});
+        count += await context.SaveChangesAsync(acceptAllChangesOnSuccess,token);
+
         return count;
-
-
+        
     }
     /// <summary>
-    /// Grants a character an extra trun
+    /// Grants a character an extra turn
     /// </summary>
     public void GrantExtraTurn()
     {
@@ -334,8 +319,10 @@ public abstract partial  class Character : BattleEntity, ISetup
         var characterBuild = EquippedCharacterBuild;
         if (characterBuild is null)
         {
-            characterBuild = new CharacterBuild();
-            characterBuild.Character = this;
+            characterBuild = new CharacterBuild
+            {
+                Character = this
+            };
         }
 
         var nameRichText = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 30));
