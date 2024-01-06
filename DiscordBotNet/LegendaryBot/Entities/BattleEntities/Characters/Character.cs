@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.DialogueNamespace;
@@ -28,7 +29,7 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 /// Characters can also be loaded at once if they are in a CharacterTeam and LoadAsync is called
 /// from the CharacterTeam
 /// </summary>
-public abstract partial  class Character : BattleEntity
+public abstract partial  class Character : BattleEntity, ISetup
 {
         private static Type[] _characterTypes = Assembly.GetExecutingAssembly().GetTypes()
         .Where(i => i.IsSubclassOf(typeof(Character)) && !i.IsAbstract).ToArray();
@@ -232,24 +233,38 @@ public abstract partial  class Character : BattleEntity
     {
         return CalculateStat(300, 2000, points);
     }
-    
+
+
     /// <summary>
     /// Should be called when a new character is created, after being added to a user's inventory and is intended to be in a database
     /// WARNING: save changes will be called
     /// </summary>
     /// <param name="context">the database context it is intended to be associated with</param>
-    public async Task InitializeNewCharacterAsync(PostgreSqlContext context)
+    public async Task<int> SetupAsync(PostgreSqlContext context)
     {
-        await using var transaction = await context.Database.BeginTransactionAsync();
+        var count = 0;
+        await using (var transaction = await context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                count += await context.SaveChangesAsync();
+                EquippedCharacterBuild = new CharacterBuild(){BuildName = "Build 1"};
+                CharacterBuilds.Add(EquippedCharacterBuild);
+                CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 2"});
+                CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 3"});
+                CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 4"});
+                count += await context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
 
-        await context.SaveChangesAsync();
-        EquippedCharacterBuild = new CharacterBuild(){BuildName = "Build 1"};
-        CharacterBuilds.Add(EquippedCharacterBuild);
-        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 2"});
-        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 3"});
-        CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 4"});
-        await context.SaveChangesAsync();
-        await transaction.CommitAsync();
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        return count;
+
 
     }
     /// <summary>

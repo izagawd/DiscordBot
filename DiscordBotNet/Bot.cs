@@ -32,7 +32,8 @@ public static class Bot
 
 
 
-    private static readonly IEnumerable<Type> AllAssemblyTypes = Assembly.GetExecutingAssembly()
+    private static readonly IEnumerable<Type> AllAssemblyTypes = Assembly
+        .GetExecutingAssembly()
         .GetTypes().ToImmutableArray();
 
     private static async Task DoShit()
@@ -42,6 +43,7 @@ public static class Bot
 
     private static async Task Main(string[] args)
     {
+
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
@@ -73,7 +75,6 @@ public static class Bot
         Client = new DiscordClient(config);
         
         var slashCommandsExtension = Client.UseSlashCommands();
-        
         slashCommandsExtension.RegisterCommands(Assembly.GetExecutingAssembly());
         
         slashCommandsExtension.SlashCommandErrored += OnSlashCommandError;

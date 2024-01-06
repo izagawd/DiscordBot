@@ -69,7 +69,7 @@ public class Begin : BaseCommandClass
             player.UserData = userData;
             player.UserDataId = userData.Id;
 
-            await player.InitializeNewCharacterAsync(DatabaseContext);
+            await player.SetupAsync(DatabaseContext);
         }
 
         if (userData.EquippedPlayerTeam is null)

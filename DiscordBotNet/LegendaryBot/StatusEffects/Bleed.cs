@@ -18,7 +18,6 @@ public class Bleed : StatusEffect
             Damage = _casterAttack,
             DamageText = $"{affected} took $ bleed damage!",
             Caster = Caster,
-
         });
     }
 

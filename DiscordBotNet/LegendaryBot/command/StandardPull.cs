@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.Extensions;
+﻿using DiscordBotNet.Database.Models;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -70,9 +71,9 @@ public class StandardPull : BaseCommandClass
             userData.StandardPrayers--;
             BattleEntity acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType);
             userData.Inventory.Add(acquiredEntity);
-            if (acquiredEntity is Character character)
+            if (acquiredEntity is ISetup setup)
             {
-                await character.InitializeNewCharacterAsync(DatabaseContext);
+                await setup.SetupAsync(DatabaseContext);
             };
             await DatabaseContext.SaveChangesAsync();
             embed.WithTitle("Nice!!")
