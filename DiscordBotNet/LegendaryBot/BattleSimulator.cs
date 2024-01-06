@@ -257,8 +257,9 @@ public class BattleSimulator : IBattleEventListener
     /// <summary>
     /// Stops the battle, leaving no winners
     /// </summary>
-    public void Stop()
+    public void Stop(Character stopper)
     {
+        _winners = CharacterTeams.First(i => i != stopper.Team);
         _stopped = true;
     }
   
@@ -836,7 +837,7 @@ public class BattleSimulator : IBattleEventListener
        
        
         var expToGain=(long) losers.Sum(i =>(long) BattleFunction.ExpGainFormula(i.Level) * i.ExpIncreaseScale);
-        var coinsToGain = losers.Sum(i => (i.Level + 60) * 100);
+        var coinsToGain = (losers.Sum(i => (i.Level + 60) * 100))/_winners.Count;
 
         List<Reward> rewards = [new CoinsReward((long)coinsToGain), new UserExperienceReward(expToGain)];
         foreach (var i in losers)

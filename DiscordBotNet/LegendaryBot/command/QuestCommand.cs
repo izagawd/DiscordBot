@@ -106,7 +106,7 @@ public class QuestCommand : BaseCommandClass
             embed
                 .WithTitle("Nice!!")
                 .WithDescription("You completed the quest!\n" +rewardString);
-            await DatabaseContext.SaveChangesAsync();
+            await DatabaseContext.SaveChangesWithSetupAsync();
             await message.ModifyAsync(new DiscordMessageBuilder() { Embed = embed });
             return;
         }
