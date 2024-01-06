@@ -529,6 +529,9 @@ public class BattleSimulator : IBattleEventListener
                 ActiveCharacter = BasicFunction.RandomChoice(Characters.Where(i => i.CombatReadiness >= 100 && !i.IsDead));
 
             }
+
+            if (_mainText is null)
+                _mainText = $"{ActiveCharacter}'s turn";
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
 
             ActiveCharacter.CombatReadiness = 0;
@@ -635,8 +638,9 @@ public class BattleSimulator : IBattleEventListener
             interaction = null;
             channel = null;
             editInteraction = true;
-     
-            _mainText = $"{ActiveCharacter} is thinking of a course of action...";
+
+
+            _mainText = null;
             if (_winners is not null || _stopped) 
             {
                 await Task.Delay(5000); break;

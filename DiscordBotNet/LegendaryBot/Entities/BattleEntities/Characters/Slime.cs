@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Moves;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.Rewards;
 using DiscordBotNet.LegendaryBot.StatusEffects;
@@ -35,6 +36,11 @@ public class GooeyStrike : BasicAttack
 }
 public class Slime : Character
 {
+    public override int GetSpeedValue(int points)
+    {
+        return (base.GetSpeedValue(points) * 0.8).Round();
+    }
+
     public override IEnumerable<Reward> DroppedRewards
     {
         get

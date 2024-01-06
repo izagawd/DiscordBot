@@ -257,7 +257,6 @@ public abstract partial  class Character : BattleEntity, ISetup
                 await transaction.CommitAsync();
             }
             catch
-
             {
                 await transaction.RollbackAsync();
                 throw;
@@ -861,16 +860,15 @@ public abstract partial  class Character : BattleEntity, ISetup
         if(Surge is not null && Surge.CanBeUsed(this))
             possibleDecisions.Add(BattleDecision.Surge);
 
-        Character[] possibleTargets = [];
+   
         Move move;
         BattleDecision moveDecision = BattleDecision.BasicAttack;
-        while (!possibleTargets.Any())
-        {
-            moveDecision =BasicFunction.RandomChoice<BattleDecision>(possibleDecisions);
-            move = this[moveDecision]!;
-            possibleTargets = move.GetPossibleTargets(this).ToArray();
-            possibleDecisions.Remove(moveDecision);
-        }
+
+        moveDecision =BasicFunction.RandomChoice<BattleDecision>(possibleDecisions);
+        move = this[moveDecision]!;
+        Character[] possibleTargets = move.GetPossibleTargets(this).ToArray();
+        possibleDecisions.Remove(moveDecision);
+    
 
         
         target = BasicFunction.RandomChoice(possibleTargets);
