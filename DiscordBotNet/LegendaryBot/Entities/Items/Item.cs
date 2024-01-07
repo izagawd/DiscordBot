@@ -53,14 +53,7 @@ public class Item : Entity
     }
 
 
-    /// <summary>
-    /// Creates and returns an item instance based by their name, spaced out
-    /// </summary>
-    public static T CreateItemInstanceOf<T>() where T : Item
-    {
-        return Activator.CreateInstance(typeof(T)) as T;
-;
-    }
+ 
 
 
 }

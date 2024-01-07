@@ -157,7 +157,8 @@ public class PostgreSqlContext : DbContext
         modelBuilder.Entity<UserData>()
             .HasOne(i => i.EquippedPlayerTeam)
             .WithOne()
-            .HasForeignKey<PlayerTeam>(i => i.EquippedUserDataId);
+            .HasForeignKey<PlayerTeam>(i => i.EquippedUserDataId)
+            .OnDelete(DeleteBehavior.SetNull);
         
         
         
@@ -179,8 +180,7 @@ public class PostgreSqlContext : DbContext
         modelBuilder.Entity<Character>()
             .HasMany(i => i.CharacterBuilds)
             .WithOne(i => i.Character)
-            .HasForeignKey(i => i.CharacterId)
-            .IsRequired();
+            .HasForeignKey(i => i.CharacterId);
         
         modelBuilder.Entity<UserData>()
             .HasMany(i => i.Inventory)

@@ -8,8 +8,8 @@ public abstract class StatsModifierArgs
     /// The value to either increase or decrease with
     /// </summary>
     public float ValueToChangeWith { get; init; }
-    
-    public Character CharacterToAffect { get; init; }
+
+    public Character CharacterToAffect { get; init; } = null!;
  
     public bool WorksAfterGearCalculation { get; init; } = true;
 

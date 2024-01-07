@@ -107,7 +107,6 @@ public class Ignite : Surge
 }
 public class Player : Character
 {
-    public override bool IsLimited => true;
     public override bool IsInStandardBanner => false;
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
 

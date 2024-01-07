@@ -9,8 +9,7 @@ public class PlayerTeam : CharacterTeam
     [NotMapped]
     public bool IsFull => Count >= 4;
     public string TeamName { get;  set; } = "default";
-    [NotMapped]
-    private DiscordUser _cachedDiscordUser { get; }
+
     public UserData UserData { get; protected set; }
     
     
@@ -33,7 +32,7 @@ public class PlayerTeam : CharacterTeam
     }
     public PlayerTeam(DiscordUser user,params Character[] characters) : this((long)user.Id,user.Username,characters)
     {
-        _cachedDiscordUser = user;
+
     }
     public PlayerTeam(params Character[] characters) : base(characters)
     {

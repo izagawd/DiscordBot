@@ -23,13 +23,17 @@ public class UserData : IDatabaseModel,  ICanBeLeveledUp
     {
         Id = id;
     }
-    public UserData(){}
+
+    public UserData()
+    {
+    
+    }
 
     public PlayerTeam? EquippedPlayerTeam { get; set; }
 
     public List<PlayerTeam> PlayerTeams { get; set; } = [];
 
-    public List<QuoteReaction> QuoteReactions { get; set; } = new();
+    public List<QuoteReaction> QuoteReactions { get; set; } = [];
 
 
     public async Task<Image<Rgba32>> GetInfoAsync(DiscordUser? user = null)
@@ -165,6 +169,6 @@ public class UserData : IDatabaseModel,  ICanBeLeveledUp
     public int Level { get; set; } = 1;
     public DiscordColor Color { get; set; } = DiscordColor.Green;
     public string Language { get; set; } = "english";
-    public List<Entity> Inventory { get; protected set; } = new();
-    
+    public List<Entity> Inventory { get; protected set; } = [];
+
 }

@@ -42,38 +42,39 @@ public class StandardPull : BaseCommandClass
         {
             case PullChoice.ThreeStarBlessing:
                 acquiredType = BasicFunction.RandomChoice(Blessing.ThreeStarBlessingExamples
-                    .Where(i => !i.IsLimited)).GetType();
+                    .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.FourStarBlessing:
                 acquiredType = BasicFunction.RandomChoice(Blessing.FourStarBlessingExamples
-                    .Where(i => !i.IsLimited)).GetType();
+                    .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.FiveStarBlessing:
                 acquiredType = BasicFunction.RandomChoice(Blessing.FiveStarBlessingExamples
-                    .Where(i => !i.IsLimited)).GetType();
+                    .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.ThreeStarCharacter:
                 acquiredType = BasicFunction.RandomChoice(Character.ThreeStarCharacterExamples
-                    .Where(i => !i.IsLimited)).GetType();
+                    .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.FourStarCharacter:
                 acquiredType = BasicFunction.RandomChoice(Character.FourStarCharacterExamples
-                    .Where(i => !i.IsLimited)).GetType();
+                    .Where(i => i.IsInStandardBanner)).GetType();
                 break;
 
             case PullChoice.FiveStarCharacter:
-                acquiredType = BasicFunction.RandomChoice(Character.FiveStarCharacterExamples).GetType();
+                acquiredType = BasicFunction.RandomChoice(Character.FiveStarCharacterExamples
+                        .Where(i => i.IsInStandardBanner))
+                    .GetType();
                 break;
         }
 
         if (acquiredType is not null)
         {
             userData.StandardPrayers--;
-            BattleEntity acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType)!;
+            var acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType)!;
             userData.Inventory.Add(acquiredEntity);
             if(acquiredEntity is ISetup setup) setup.Setup();
             await DatabaseContext.SaveChangesAsync();
-
 
             embed.WithTitle("Nice!!")
                 .WithDescription($"You pulled a {BasicFunction.Englishify(choice.ToString())} called {acquiredType.Name}!");

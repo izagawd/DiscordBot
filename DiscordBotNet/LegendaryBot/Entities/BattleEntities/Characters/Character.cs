@@ -97,12 +97,11 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
     }
 
-
-    public virtual bool IsInStandardBanner => true;
     [NotMapped]
+    public virtual bool IsInStandardBanner => true;
     
 
-    public virtual Blessing? Blessing { get; set; }
+    public  Blessing? Blessing { get; set; }
 
 
     public Barrier? Shield => StatusEffects.OfType<Barrier>().FirstOrDefault();
@@ -962,7 +961,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
     }
 
-    public virtual bool IsLimited { get; protected set; } = false;
+
     public override int MaxLevel => 120;
     
     

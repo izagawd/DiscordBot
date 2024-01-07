@@ -139,7 +139,7 @@ public class BattleSimulator : IBattleEventListener
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
 
-        OnBattleEvent(eventArgs,null);
+        OnBattleEvent(eventArgs,null!);
         foreach (var i in Characters)
         {
             i.OnBattleEvent(eventArgs,i);
@@ -218,6 +218,7 @@ public class BattleSimulator : IBattleEventListener
 
 
     }
+
     private CharacterTeam? _winners;
 
 

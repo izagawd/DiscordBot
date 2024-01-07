@@ -65,7 +65,7 @@ public static class BasicFunction
                 UserImages.Set(url,characterImage,EntryOptions);
             return characterImage.Clone();
         }
-        catch(Exception e)
+        catch
         {
 
             var alternateImage =  await GetImageFromUrlAsync($"{Website.DomainName}/battle_images/moves/guilotine.png");

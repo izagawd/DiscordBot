@@ -79,7 +79,7 @@ public static class Website
                         "https://cdn.discordapp.com/avatars/{0}/{1}.{2}",
                         user.GetString("id"),
                         user.GetString("avatar"),
-                        user.GetString("avatar").StartsWith("a_") ? "gif" : "png"));
+                        user.GetString("avatar")!.StartsWith("a_") ? "gif" : "png"));
             })
             .AddCookie(options =>
             {

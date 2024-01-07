@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 
 using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -38,8 +39,6 @@ public static class Bot
 
     private static async Task DoShit()
     {
-        var db = new PostgreSqlContext();
-        db.ResetDatabase();
 
     }
 
@@ -93,7 +92,8 @@ public static class Bot
 
         await Website.Start(args);
     }
-    public static  InteractivityExtension Interactivity { get; private set; }
+
+    public static InteractivityExtension Interactivity { get; private set; } = null!;
 
     /// <summary>
     /// This is my discord user Id because it's too long to memorize

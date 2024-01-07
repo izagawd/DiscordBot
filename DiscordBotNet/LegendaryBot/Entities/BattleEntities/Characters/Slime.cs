@@ -41,12 +41,17 @@ public class Slime : Character
         return (base.GetSpeedValue(points) * 0.8).Round();
     }
 
+    public override int GetAttackValue(int points)
+    {
+        return (base.GetAttackValue(points) * 0.7).Round();
+    }
+    
     public override IEnumerable<Reward> DroppedRewards
     {
         get
         {
             List<Reward> droppedRewards = [];
-            if(BasicFunction.RandomChance(10))
+            if(BasicFunction.RandomChance(100))
                 droppedRewards.Add(new EntityReward([new Slime()]));
             return droppedRewards;
         }

@@ -19,7 +19,7 @@ public abstract class Blessing : BattleEntity
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         var userImagePoint = new Point(20, 20);
-        var levelBarMaxLevelWidth = 250l;
+        var levelBarMaxLevelWidth = 250L;
         var gottenExp = levelBarMaxLevelWidth * (Experience/(GetRequiredExperienceToNextLevel() * 1.0f));
         var levelBarY = userImage.Height - 30 + userImagePoint.Y;
         var font = SystemFonts.CreateFont(Bot.GlobalFontName, 25);
@@ -114,7 +114,6 @@ public abstract class Blessing : BattleEntity
 
     public override async Task<Image<Rgba32>> GetDetailsImageAsync()
     {
-        var blessingImageSize = 500;
         var image = new Image<Rgba32>(500, 350);
         using var blessingImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
         blessingImage.Mutate(i => i.Resize(200,200));
@@ -130,8 +129,8 @@ public abstract class Blessing : BattleEntity
 
 
     }
-
-    public virtual bool IsLimited => false;
+    [NotMapped]
+    public bool IsInStandardBanner => true;
     public Character? Character { get; set; }
     public override ExperienceGainResult IncreaseExp(long experience)
     {

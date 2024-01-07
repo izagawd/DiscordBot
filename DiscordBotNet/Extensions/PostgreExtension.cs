@@ -65,7 +65,7 @@ public static class PostgreExtension
     {
         return queryable
             .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i!.Characters)
             .ThenInclude(i => i.Blessing);
     }
 
@@ -74,7 +74,7 @@ public static class PostgreExtension
     {
         return queryable
             .Include(i => i.EquippedPlayerTeam)
-            .ThenInclude(i => i.Characters)
+            .ThenInclude(i => i!.Characters)
             .ThenInclude(i => i.EquippedCharacterBuild);
     }
 

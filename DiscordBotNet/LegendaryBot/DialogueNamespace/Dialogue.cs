@@ -106,15 +106,24 @@ public class Dialogue
         else if (_message is null)
         {
             _message = await interaction.Channel.SendMessageAsync(messageBuilder); 
-        } else
+        } else if(_lastInteraction is not null)
         {
-            _message = await _message.ModifyAsync(messageBuilder);
+            await _lastInteraction
+                .CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder(messageBuilder));
+            _message =await _lastInteraction.GetOriginalResponseAsync();
         }
+        else
+        {
+            _message= await _message.ModifyAsync(messageBuilder);
+        }
+
+        _lastInteraction = null;
     }
 
+    private DiscordInteraction? _lastInteraction = null;
 
     private async Task HandleInteractionResultAsync(InteractivityResult<ComponentInteractionCreateEventArgs> args,
-        bool defer = true)
+        bool defer = false)
     {
         if (defer)
         {
@@ -179,6 +188,7 @@ public class Dialogue
                 if(isLast && RemoveButtonsAtEnd && DecisionArgument is null) break;
                 var result = await _message
                     .WaitForButtonAsync(e => e.User == _interactionContext.User);
+                _lastInteraction = result.Result.Interaction;
                 await HandleInteractionResultAsync(result);
 
                 if(_finished) break;
@@ -198,6 +208,7 @@ public class Dialogue
                 DecisionArgument.ActionRows.ToArray());
             var result = await _message.WaitForButtonAsync(e
                 => e.User == _interactionContext.User);
+            _lastInteraction = result.Result.Interaction;
             decision = result.Result.Id;
             var defer = true;
 
@@ -205,9 +216,9 @@ public class Dialogue
             {
                 var messageBuilder = new DiscordMessageBuilder(_message);
                 messageBuilder.ClearComponents();
-                await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
+                await _lastInteraction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
                     new DiscordInteractionResponseBuilder(messageBuilder));
-                _message = await _message.ModifyAsync(messageBuilder);
+
                 defer = false;
             }
             await HandleInteractionResultAsync(result, defer);
