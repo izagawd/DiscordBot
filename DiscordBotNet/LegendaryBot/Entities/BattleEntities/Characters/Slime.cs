@@ -51,7 +51,7 @@ public class Slime : Character
         get
         {
             List<Reward> droppedRewards = [];
-            if(BasicFunction.RandomChance(100))
+            if(BasicFunction.RandomChance(10))
                 droppedRewards.Add(new EntityReward([new Slime()]));
             return droppedRewards;
         }
