@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using DiscordBotNet.Database;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using Microsoft.AspNetCore.Mvc;
@@ -33,23 +34,26 @@ public class InfoController : Controller
     [HttpPost]
     public async Task<IActionResult> SetBlessingAsync([FromBody] JsonElement element)
     {
-        var characterId = element.GetProperty("characterId").ToString();
-        var blessingId = element.GetProperty("blessingId").ToString();
-        var didParse = long.TryParse(characterId, out long characterGuid);
-       var anotherParse =  long.TryParse(blessingId, out long blessingGuid);
-      
-        if (!(didParse && anotherParse)) return Ok();
-        var entityArray = await DatabaseContext.Entity
-            .Where(i => ((i is Blessing || i is Character) && (i.Id == characterGuid || i.Id == blessingGuid)) || (i is Character && (i as Character).BlessingId == blessingGuid) && i.UserDataId == User.GetDiscordUserId())
-            .ToArrayAsync();
+        var characterId = element.GetProperty("characterId").GetInt64();
+        var blessingId = element.GetProperty("blessingId").GetInt64();
 
-        var character = entityArray.OfType<Character>().FirstOrDefault();
+        var entityAnonymous = await DatabaseContext.UserData
+            .FindOrCreateSelectAsync(User.GetDiscordUserId(),
+                i =>
+                    new
+                    {
+                        blessing = i.Inventory.OfType<Blessing>().FirstOrDefault(j =>j.Id == blessingId),
+                        character = i.Inventory.OfType<Character>().FirstOrDefault(j => j.Id == characterId)
+                    });
+
+
+        var character = entityAnonymous.character;
         if (character is null) return Ok();
-        var blessing = entityArray.OfType<Blessing>().FirstOrDefault();
+        var blessing = entityAnonymous.blessing;
         character.Blessing = blessing;
         if (blessing is not null && blessing.Character is not null)
         {
-            blessing.Character.BlessingId = null;
+            blessing.CharacterId = null;
             blessing.Character.Blessing = null;
             blessing.Character = character;
         }

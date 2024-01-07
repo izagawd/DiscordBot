@@ -69,10 +69,10 @@ public class StandardPull : BaseCommandClass
         if (acquiredType is not null)
         {
             userData.StandardPrayers--;
-            BattleEntity acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType);
+            BattleEntity acquiredEntity = (BattleEntity) Activator.CreateInstance(acquiredType)!;
             userData.Inventory.Add(acquiredEntity);
-
-            await DatabaseContext.SaveChangesWithSetupAsync();
+            if(acquiredEntity is ISetup setup) setup.Setup();
+            await DatabaseContext.SaveChangesAsync();
 
 
             embed.WithTitle("Nice!!")

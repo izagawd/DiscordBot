@@ -103,7 +103,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     
 
     public virtual Blessing? Blessing { get; set; }
-    public long? BlessingId { get; set; }
+
 
     public Barrier? Shield => StatusEffects.OfType<Barrier>().FirstOrDefault();
 
@@ -194,9 +194,9 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
         
     }
-    public CharacterBuild? EquippedCharacterBuild { get;  set; }
+    public CharacterBuild EquippedCharacterBuild { get;  set; }
     
-    public long? EquippedCharacterBuildId { get; set; }
+
     public List<CharacterBuild> CharacterBuilds { get; protected set; } = [];
     public virtual int GetMaxHealthValue(int points)
     {
@@ -236,20 +236,14 @@ public abstract partial  class Character : BattleEntity, ISetup
 
 
 
-    public async Task<int> SetupAsync(PostgreSqlContext context,bool acceptAllChangesOnSuccess =  true , CancellationToken token = new())
+    public void Setup()
     {
-        var count = 0;
-
-        count += await context.SaveChangesAsync(acceptAllChangesOnSuccess,token);
         EquippedCharacterBuild = new CharacterBuild(){BuildName = "Build 1"};
         CharacterBuilds.Add(EquippedCharacterBuild);
         CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 2"});
         CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 3"});
         CharacterBuilds.Add(new CharacterBuild(){BuildName = "Build 4"});
-        count += await context.SaveChangesAsync(acceptAllChangesOnSuccess,token);
 
-        return count;
-        
     }
     /// <summary>
     /// Grants a character an extra turn

@@ -30,7 +30,7 @@ public class Begin : BaseCommandClass
             .Include(i => i.EquippedPlayerTeam)
             .Include(i => i.Inventory.Where(j => j is Character))
             .FindOrCreateAsync((long)author.Id);
-        await DatabaseContext.SaveChangesAsync();
+
         DiscordColor userColor = userData.Color;
         if (userData.IsOccupied)
         {
@@ -64,17 +64,17 @@ public class Begin : BaseCommandClass
         if (!userData.Inventory.Any(i => i is Player))
         {
             Player player = new Player();
+            player.Setup();
             player.SetElement(Element.Fire);
             userData.Inventory.Add(player);
             player.UserData = userData;
             player.UserDataId = userData.Id;
-
-            await (player as ISetup).SetupWithTransactionAsync(DatabaseContext);
         }
 
         if (userData.EquippedPlayerTeam is null)
         {
             var playerTeam = new PlayerTeam();
+            
             userData.EquippedPlayerTeam = playerTeam;
             playerTeam.UserDataId = userData.Id;
             userData.PlayerTeams.Add(playerTeam);
@@ -211,24 +211,10 @@ public class Begin : BaseCommandClass
             userData.LastTimeChecked = DateTime.UtcNow.AddDays(-1);
         };
         userTeam.Remove(lily);
-        try
-        {
-            await DatabaseContext.SaveChangesAsync();
-        }
-        catch (DbUpdateException e)
-        {
-            userTeam.OfType<Player>().First().Id.Print();
-            if (e.InnerException is NpgsqlException eInnerException)
-            {
-                eInnerException.Message.Print();
-            }
-            e.InnerException.GetType().Print();
-            foreach (var i in e.Entries)
-            {
-                i.Entity.GetType().Print();
-            }
-            throw e;
-        }
+
+        await DatabaseContext.SaveChangesAsync();
+      
+
       
         result =  await theDialogue.LoadAsync(ctx, result.Message);
         if (result.TimedOut)

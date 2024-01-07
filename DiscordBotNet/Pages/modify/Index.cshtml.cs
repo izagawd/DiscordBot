@@ -2,6 +2,7 @@
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -36,8 +37,12 @@ public class Index : PageModel
         Entity entity = (Entity)Activator.CreateInstance(theType)!;
 
         entity.UserDataId = User.GetDiscordUserId().Print();
+        if(entity is ISetup setup) setup.Setup();
         await DatabaseContext.Entity.AddAsync(entity);
-        await DatabaseContext.SaveChangesWithSetupAsync();
+
+
+    
+        await DatabaseContext.SaveChangesAsync();
     }
 
     public async Task OnPostStrengthenAsync()

@@ -4,6 +4,7 @@ using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 using DiscordBotNet.LegendaryBot.Quests;
@@ -19,46 +20,7 @@ public class PostgreSqlContext : DbContext
 {
     
     
-    /// <summary>
-    /// Use this method when using save changes after adding an entity that uses the <see cref="ISetup"/> interface to the database, or even  if you suspect
-    /// that it happened
-    /// <see cref="ISetup.SetupAsync"/> isn't called. WARNING: it uses transactions
-    /// </summary>
-    /// <param name="acceptAllChangesOnSuccess"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public async  Task<int> SaveChangesWithSetupAsync(bool acceptAllChangesOnSuccess = true, CancellationToken cancellationToken = new())
-    {
-        var tracksToSetup = ChangeTracker
-            .Entries<ISetup>()
-            .Where(j => j.State == EntityState.Added)
-            .ToArray();
-        if (!tracksToSetup.Any()) return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        var count = 0;
-        await using (var transaction = await Database.BeginTransactionAsync(cancellationToken))
-        {
-            try
-            {
-                foreach (var i in tracksToSetup.Select(j => j.Entity))
-                {
-                    
-                    count += await i.SetupAsync(this,acceptAllChangesOnSuccess,cancellationToken);
 
-                }
-                
-                count += await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
-            }
-            catch
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                throw;
-            }
-            
-        }
-
-        return count;
-    }
     
 
 
@@ -120,7 +82,6 @@ public class PostgreSqlContext : DbContext
         
         // Configure the database provider and connection string
         optionsBuilder
-            
             .UseNpgsql(ConfigurationManager.AppSettings["PostgreSqlConnectionString"])
 
             .EnableSensitiveDataLogging();
@@ -196,7 +157,10 @@ public class PostgreSqlContext : DbContext
         modelBuilder.Entity<UserData>()
             .HasOne(i => i.EquippedPlayerTeam)
             .WithOne()
-            .HasForeignKey<UserData>(i => i.EquippedPlayerTeamId);
+            .HasForeignKey<PlayerTeam>(i => i.EquippedUserDataId);
+        
+        
+        
         modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Property);
 
         modelBuilder.Entity<CharacterBuild>()
@@ -205,7 +169,9 @@ public class PostgreSqlContext : DbContext
         modelBuilder.Entity<Character>()
             .HasOne(i => i.EquippedCharacterBuild)
             .WithOne()
-            .HasForeignKey<Character>(i => i.EquippedCharacterBuildId);
+            .HasForeignKey<CharacterBuild>(i => i.EquippedCharacterId);
+
+
         modelBuilder.Entity<CharacterBuild>()
             .Property(i => i.Id)
             .ValueGeneratedOnAdd();
@@ -213,7 +179,9 @@ public class PostgreSqlContext : DbContext
         modelBuilder.Entity<Character>()
             .HasMany(i => i.CharacterBuilds)
             .WithOne(i => i.Character)
-            .HasForeignKey(i => i.CharacterId);
+            .HasForeignKey(i => i.CharacterId)
+            .IsRequired();
+        
         modelBuilder.Entity<UserData>()
             .HasMany(i => i.Inventory)
             .WithOne(i => i.UserData)
@@ -255,7 +223,7 @@ public class PostgreSqlContext : DbContext
         modelBuilder.Entity<Character>()
             .HasOne(i => i.Blessing)
             .WithOne(i => i.Character)
-            .HasForeignKey<Character>(i => i.BlessingId)
+            .HasForeignKey<Blessing>(i => i.CharacterId)
             .OnDelete(DeleteBehavior.SetNull);
         
     }

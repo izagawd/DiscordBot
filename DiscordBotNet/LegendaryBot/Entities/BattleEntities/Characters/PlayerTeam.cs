@@ -12,6 +12,9 @@ public class PlayerTeam : CharacterTeam
     [NotMapped]
     private DiscordUser _cachedDiscordUser { get; }
     public UserData UserData { get; protected set; }
+    
+    
+    public long? EquippedUserDataId { get; protected set; }
     public override bool Add(Character character)
     {
         if (Count >= 4) return false;
@@ -37,7 +40,7 @@ public class PlayerTeam : CharacterTeam
 
     }
 
-    protected PlayerTeam()
+    public PlayerTeam()
     {
         
     }

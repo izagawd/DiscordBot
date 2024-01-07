@@ -18,7 +18,11 @@ public abstract class Entity : ICloneable, IDatabaseModel
     }
 
     public virtual Task LoadAsync() => Task.CompletedTask;
-    public object Clone()
+    object ICloneable.Clone()
+    {
+        return Clone();
+    }
+    public Entity Clone()
     {
         var clone =(Entity) MemberwiseClone();
         clone.Id = 0;
@@ -42,7 +46,7 @@ public abstract class Entity : ICloneable, IDatabaseModel
         List<Entity> clonedEntities = [];
         foreach (var i in Enumerable.Range(0, number))
         {
-            clonedEntities.Add((Entity) a.Clone());
+            clonedEntities.Add(a.Clone());
         }
 
         return clonedEntities;

@@ -24,8 +24,7 @@ public class UserData : IDatabaseModel,  ICanBeLeveledUp
         Id = id;
     }
     public UserData(){}
-    
-    public long? EquippedPlayerTeamId { get; set; }
+
     public PlayerTeam? EquippedPlayerTeam { get; set; }
 
     public List<PlayerTeam> PlayerTeams { get; set; } = [];

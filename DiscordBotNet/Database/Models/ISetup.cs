@@ -1,6 +1,6 @@
 ﻿namespace DiscordBotNet.Database.Models;
 
-public interface ISetup
+public interface ISetup : IDatabaseModel
 {
 
     /// <summary>
@@ -12,28 +12,7 @@ public interface ISetup
     /// </summary>
     /// <param name="context">The context where the entity came from</param>
     /// <returns>The number of state entries written to the database</returns>
-    public Task<int> SetupAsync(PostgreSqlContext context, bool acceptAllChangesOnSuccess =  true , CancellationToken token = new());
+    public void Setup();
 
-    /// <summary>
-    /// Sets up the entity with a transaction. Useful when u want to use some of tbe entities features.
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public async Task<int> SetupWithTransactionAsync(PostgreSqlContext context)
-    {
-        await using (var transaction = await context.Database.BeginTransactionAsync())
-        {
-            try
-            {
-                var count = await SetupAsync(context);
-                await transaction.CommitAsync();
-                return count;
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
-    }
+
 }

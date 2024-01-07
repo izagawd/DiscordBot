@@ -27,6 +27,11 @@ public class CharacterBuild : IDatabaseModel
 
     public long Id { get; set; }
     public long CharacterId { get; set; }
+    
+    /// <summary>
+    /// The character that has this build equipped
+    /// </summary>
+    public long? EquippedCharacterId { get; set; }
     public Character Character { get; set; }
     public int this[StatType statType]
     {
