@@ -122,14 +122,9 @@ public class Dialogue
 
     private DiscordInteraction? _lastInteraction = null;
 
-    private async Task HandleInteractionResultAsync(InteractivityResult<ComponentInteractionCreateEventArgs> args,
-        bool defer = false)
+    private void HandleInteractionResult(InteractivityResult<ComponentInteractionCreateEventArgs> args)
     {
-        if (defer)
-        {
-            await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
-        }
-
+        
         var answer = args.Result.Id;
         if (answer == "skip")
         {
@@ -189,13 +184,18 @@ public class Dialogue
                 var result = await _message
                     .WaitForButtonAsync(e => e.User == _interactionContext.User);
                 _lastInteraction = result.Result.Interaction;
-                await HandleInteractionResultAsync(result);
-
+                HandleInteractionResult(result);
+                if (isLast && DecisionArgument is null) _finished = true;
                 if(_finished) break;
+
                 
             }
-            
-            if (_finished) break;
+            if (_finished && _lastInteraction is not null)
+            {
+                await _lastInteraction.CreateResponseAsync(InteractionResponseType.UpdateMessage);
+                break;
+            }
+    
         }
 
         string? decision = null;
@@ -221,7 +221,10 @@ public class Dialogue
 
                 defer = false;
             }
-            await HandleInteractionResultAsync(result, defer);
+
+            if (defer)
+                await _lastInteraction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+            HandleInteractionResult(result);
         }
         return new DialogueResult
         {
