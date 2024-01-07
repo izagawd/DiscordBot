@@ -39,7 +39,7 @@ public static class Bot
 
     private static async Task DoShit()
     {
-
+        
     }
 
     private static async Task Main(string[] args)

@@ -23,6 +23,7 @@ public class TeamCommand : BaseCommandClass
         [Option("team_name", "the name of the team")] string teamName)
     {
         var anon = await DatabaseContext.UserData
+            .Include(i => i.EquippedPlayerTeam)
             .FindOrCreateSelectAsync((long)context.User.Id,
                 i => new { team = i.PlayerTeams.FirstOrDefault(j => j.TeamName.ToLower() == teamName.ToLower()), userData = i });
 
@@ -37,6 +38,7 @@ public class TeamCommand : BaseCommandClass
             await context.CreateResponseAsync(embed);
             return;
         }
+
 
         userData.EquippedPlayerTeam = anon.team;
         await DatabaseContext.SaveChangesAsync();

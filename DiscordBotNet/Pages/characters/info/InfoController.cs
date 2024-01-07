@@ -34,8 +34,10 @@ public class InfoController : Controller
     [HttpPost]
     public async Task<IActionResult> SetBlessingAsync([FromBody] JsonElement element)
     {
-        var characterId = element.GetProperty("characterId").GetInt64();
-        var blessingId = element.GetProperty("blessingId").GetInt64();
+        var blessingIdString = element.GetProperty("blessingId").GetString();
+        var characterIdString = element.GetProperty("characterId").GetString();
+        var characterId = long.Parse(characterIdString!);
+        var blessingId = long.Parse(blessingIdString!);
 
         var entityAnonymous = await DatabaseContext.UserData
             .FindOrCreateSelectAsync(User.GetDiscordUserId(),
@@ -43,20 +45,17 @@ public class InfoController : Controller
                     new
                     {
                         blessing = i.Inventory.OfType<Blessing>().FirstOrDefault(j =>j.Id == blessingId),
-                        character = i.Inventory.OfType<Character>().FirstOrDefault(j => j.Id == characterId)
+                        character = i.Inventory.OfType<Character>().FirstOrDefault(j => j.Id == characterId),
+                        charactersCurrentBlessing = i.Inventory.OfType<Blessing>().FirstOrDefault(j => j.CharacterId == characterId)
                     });
 
 
         var character = entityAnonymous.character;
         if (character is null) return Ok();
         var blessing = entityAnonymous.blessing;
+        
         character.Blessing = blessing;
-        if (blessing is not null && blessing.Character is not null)
-        {
-            blessing.CharacterId = null;
-            blessing.Character.Blessing = null;
-            blessing.Character = character;
-        }
+
         await DatabaseContext.SaveChangesAsync();
         return Ok();
     }

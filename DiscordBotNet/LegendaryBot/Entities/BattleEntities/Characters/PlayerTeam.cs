@@ -13,7 +13,7 @@ public class PlayerTeam : CharacterTeam
     public UserData UserData { get; protected set; }
     
     
-    public long? EquippedUserDataId { get; protected set; }
+    public long? EquippedUserDataId { get;  set; }
     public override bool Add(Character character)
     {
         if (Count >= 4) return false;

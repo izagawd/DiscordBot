@@ -241,12 +241,15 @@ public class CharacterCommand : BaseCommandClass
         [Option("blessing_id", "The ID of the blessing")] long blessingId)
     {
         var simplifiedCharacterName = characterName.Replace(" ", "").ToLower();
+        Expression<Func<UserData,IEnumerable<Entity>>> navigation = i => i.Inventory.Where(j => (j is Character
+                                                      && EF.Property<string>(j, "Discriminator").ToLower() ==
+                                                      simplifiedCharacterName) || (j is Blessing &&
+            j.Id == blessingId));
         var userData = await DatabaseContext.UserData
-            .Include(i => i.Inventory.Where(j => (j is Character
-                                                  && EF.Property<string>(j, "Discriminator").ToLower() ==
-                                                  simplifiedCharacterName) || (j is Blessing &&
-                                                                               j.Id == blessingId)))
+            .Include(navigation)
             .ThenInclude((Entity entity) => (entity as Blessing).Character)
+            .Include(navigation)
+            .ThenInclude((Entity entity) => (entity as Character).Blessing)
             .FindOrCreateAsync((long)context.User.Id);
 
 
@@ -270,9 +273,9 @@ public class CharacterCommand : BaseCommandClass
             await context.CreateResponseAsync(embed);
             return;
         }
-
+        
         character.Blessing = blessing;
-        blessing.Character = character;
+
         
         await DatabaseContext.SaveChangesAsync();
         if (character is Player player) await player.LoadAsync(context.User, false);
