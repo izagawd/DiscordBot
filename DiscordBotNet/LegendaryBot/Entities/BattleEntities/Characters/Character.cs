@@ -180,6 +180,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// <param name="onRevive">Optional delegate to call after the character has been revived</param>
     public void Revive()
     {
+        if(RevivePending) return;
         RevivePending = true;
         CurrentBattle.AddAdditionalText($"{Name} has been revived");
     }
@@ -268,7 +269,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// </summary>
     public void GrantExtraTurn()
     {
-        if(IsDead) return;
+        if(IsDead && !RevivePending) return;
         _shouldTakeExtraTurn = true;
         CurrentBattle.AddAdditionalText($"{this} has been granted an extra turn");
     }
@@ -308,6 +309,9 @@ public abstract partial  class Character : BattleEntity, ISetup
                 return Attack;
         }
     }
+
+    [NotMapped]
+    public Alphabet AlphabetIdentifier => CurrentBattle.GetAlphabetIdentifier(this);
     public float HealthPercentage => (float)(Health * 1.0 / MaxHealth * 100.0);
     
     /// <summary>
@@ -452,7 +456,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
         new RectangleF(52.5f, 20, 70, 11.5f));
     
-        ctx.DrawText(Name + $" [{Position}]", SystemFonts.CreateFont(Bot.GlobalFontName, 11),
+        ctx.DrawText(Name + $" [{AlphabetIdentifier}] [{Position}]", SystemFonts.CreateFont(Bot.GlobalFontName, 11),
         SixLabors.ImageSharp.Color.Black, new PointF(55, 36.2f));
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
         new RectangleF(52.5f, 35, 115, 12.5f));
@@ -1210,22 +1214,21 @@ public abstract partial  class Character : BattleEntity, ISetup
     [NotMapped]
     public abstract BasicAttack BasicAttack { get; }
     
-    public string GetNameWithPosition(bool isEnemy)
+    public string GetNameWithAlphabetIdentifier(bool isEnemy)
     {
         string side = "enemy";
         if (!isEnemy)
         {
             side = "team mate";
         }
-        return $"{Name} ({side}) ({Position})";
-    }
-    public string GetNameWithPosition()
-    {
-
-        return $"{Name} ({Position})";
+        return $"{Name} ({side}) [{AlphabetIdentifier}]";
     }
 
+    public string NameWithAlphabetIdentifier => $"{Name} ({AlphabetIdentifier})";
     [NotMapped] public virtual Skill? Skill { get; } 
+    /// <summary>
+    /// The position of the player based on combat readiness
+    /// </summary>
     public int Position => Array.IndexOf(CurrentBattle.Characters.OrderByDescending(i => i.CombatReadiness).ToArray(),this) +1;
     [NotMapped] public virtual Surge? Surge { get; }
     /// <summary>

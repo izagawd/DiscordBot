@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
+using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.StatusEffects;
@@ -106,6 +107,11 @@ public class Ignite : Surge
 }
 public class Player : Character
 {
+    public override int GetSpeedValue(int points)
+    {
+        return (base.GetSpeedValue(points) * 1.02).Round();
+    }
+
     public override bool IsInStandardBanner => false;
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
 

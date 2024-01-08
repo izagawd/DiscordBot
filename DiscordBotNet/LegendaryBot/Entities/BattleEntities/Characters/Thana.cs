@@ -49,19 +49,11 @@ public class YourLifeEnergyIsMine : Skill
             DamageText = $"{owner} sucks the life essence out of {target} and deals $ damage!"
 
         });
-        owner.RecoverHealth(damageResult.Damage * 0.2);
+        if(damageResult is not null)
+            owner.RecoverHealth(damageResult.Damage * 0.2);
 
 
 
-
-
-        foreach (var i in owner.Team.Where(j => j != owner))
-        {
-            i.Health = 0;
-            
-        }
-        
-        owner.GrantExtraTurn();
         
         
         
@@ -104,7 +96,6 @@ public class Arise : Surge
             if(i.IsDead)
                 i.Revive();
 
-            i.RecoverHealth(500);
             var duration = 1;
             if (i == owner)
             {

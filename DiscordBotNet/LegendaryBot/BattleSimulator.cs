@@ -155,7 +155,9 @@ public class BattleSimulator : IBattleEventListener
         }
     }
 
-    /// <returns>The characters that were revived</returns>
+    /// <summary>
+    /// Handles characters that their reviving is pending
+    /// </summary>
     private void HandleCharactersPendingRevive()
     {
         List<Character> revivedCharacters = [];
@@ -171,7 +173,6 @@ public class BattleSimulator : IBattleEventListener
         {
             InvokeBattleEvent(new CharacterReviveEventArgs(i));
         }
-        revivedCharacters.Clear();
     }
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
@@ -278,8 +279,8 @@ public class BattleSimulator : IBattleEventListener
         List<DiscordSelectComponentOption> toSelect = [];
         foreach (var i in Characters)
         {
-            toSelect.Add(new DiscordSelectComponentOption(i.GetNameWithPosition(), 
-                i.GetNameWithPosition()));
+            toSelect.Add(new DiscordSelectComponentOption(i.NameWithAlphabetIdentifier, 
+                i.NameWithAlphabetIdentifier));
         }
 
         return toSelect.ToArray();
@@ -291,7 +292,7 @@ public class BattleSimulator : IBattleEventListener
         {
             var interaction = interactionCreateEventArgs.Interaction;
             var gottenValue = interactionCreateEventArgs.Values.First();
-            var characterToDisplayBattleInfo = Characters.First(i => i.GetNameWithPosition() == gottenValue);
+            var characterToDisplayBattleInfo = Characters.First(i => i.NameWithAlphabetIdentifier == gottenValue);
 
 
             var descriptionStringBuilder = new StringBuilder();
@@ -351,8 +352,8 @@ public class BattleSimulator : IBattleEventListener
 
 
             var embed = new DiscordEmbedBuilder()
-                .WithAuthor(characterToDisplayBattleInfo.Name, iconUrl: characterToDisplayBattleInfo.IconUrl)
-                .WithTitle($"{characterToDisplayBattleInfo.Name}'s description")
+                .WithAuthor(characterToDisplayBattleInfo.NameWithAlphabetIdentifier, iconUrl: characterToDisplayBattleInfo.IconUrl)
+                .WithTitle($"{characterToDisplayBattleInfo} [{characterToDisplayBattleInfo.AlphabetIdentifier}'s description")
                 .WithColor(characterToDisplayBattleInfo.Color)
                 .WithDescription(descriptionStringBuilder.ToString());
 
@@ -479,7 +480,10 @@ public class BattleSimulator : IBattleEventListener
     {
         return StartAsync(messageInput: null,interaction: null, channel: channel);
     }
-    
+    public Alphabet GetAlphabetIdentifier(Character character)
+    {
+         return (Alphabet)Characters.ToList().IndexOf(character);
+    }
 
     private CancellationTokenSource CancellationTokenSource;
     private static DiscordButtonComponent InfoButton = new DiscordButtonComponent(ButtonStyle.Primary, "Info", "Info");
@@ -550,7 +554,7 @@ public class BattleSimulator : IBattleEventListener
             ActiveCharacter.CombatReadiness = 0;
             foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
             {
-                if(ActiveCharacter.IsDead) break;
+
                 //this code executes for status effects that occur just before the beginning of the turn
                 if (i.ExecuteStatusEffectBeforeTurn)
                 {
@@ -576,7 +580,7 @@ public class BattleSimulator : IBattleEventListener
             }
             DiscordEmbedBuilder embedToEdit = new DiscordEmbedBuilder()
                 .WithTitle("**BATTLE!!!**")
-                .WithAuthor($"{ActiveCharacter} [{ActiveCharacter.Position}]{name}", iconUrl: ActiveCharacter.IconUrl)
+                .WithAuthor($"{ActiveCharacter} [{ActiveCharacter.AlphabetIdentifier}]{name}", iconUrl: ActiveCharacter.IconUrl)
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, additionalText)
                 .WithImageUrl("attachment://battle.png");
@@ -736,7 +740,7 @@ public class BattleSimulator : IBattleEventListener
                     foreach (var i in possibleTargets)
                     {
                         bool isEnemy = i.Team != ActiveCharacter.Team;
-                        enemiesToSelect.Add(new DiscordSelectComponentOption(i.GetNameWithPosition(isEnemy), i.GetNameWithPosition(isEnemy)));
+                        enemiesToSelect.Add(new DiscordSelectComponentOption(i.GetNameWithAlphabetIdentifier(isEnemy), i.GetNameWithAlphabetIdentifier(isEnemy)));
                     }
                         
                 }
@@ -763,7 +767,7 @@ public class BattleSimulator : IBattleEventListener
                                 && e.Id == selectMoveTarget.CustomId)
                             {
                                 target = Characters
-                                    .First(i => i.GetNameWithPosition(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
+                                    .First(i => i.GetNameWithAlphabetIdentifier(i.Team != ActiveCharacter.Team) == e.Values.First().ToString());
                                 return true;
                             }
                             if (!CharacterTeams.Any(i => i.TryGetUserDataId == (long)e.User.Id)) return false;
@@ -837,7 +841,7 @@ public class BattleSimulator : IBattleEventListener
 
             foreach (var i in ActiveCharacter.StatusEffects.ToArray())
             {
-                if(ActiveCharacter.IsDead) break;
+
                 if (i.ExecuteStatusEffectAfterTurn)
                 {
                     i.PassTurn(ActiveCharacter);
