@@ -16,8 +16,8 @@ public class ShieldBash : BasicAttack
     {
         var usageResult =  new UsageResult(this)
         {
-            DamageResults = new []
-            {
+            DamageResults = 
+            [
                 target.Damage(new DamageArgs(this)
                 {
                     Caster = owner,
@@ -26,7 +26,7 @@ public class ShieldBash : BasicAttack
                     Damage = owner.Attack * 1.7
 
                 }),
-            },
+            ],
             User = owner,
             TargetType = TargetType.SingleTarget,
             Text = "Hrraagh!!",

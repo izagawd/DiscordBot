@@ -29,7 +29,7 @@ public class ChamomileSachetWhack : BasicAttack
             TargetType = TargetType.SingleTarget,
             User = owner,
             Text = "Chamomile Whack!",
-            DamageResults = new []{damageResult}
+            DamageResults = [damageResult],
         };
     
 

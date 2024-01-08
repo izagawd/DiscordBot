@@ -164,20 +164,35 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 _health = 0;
                 CurrentBattle.AdditionalTexts.Add($"{Name} has died");
-                CurrentBattle.InvokeBattleEvent(
-                    new CharacterDeathEventArgs(this));
+                StatusEffects.Clear();
+                CurrentBattle.InvokeBattleEvent(new CharacterDeathEventArgs(this));
+                
             }
             if(_health > tempMaxHealth) _health = tempMaxHealth;
         }
     }
 
+
+    public bool RevivePending { get; protected set; }
+    /// <summary>
+    /// Revives a character from the dead. Note: this doesnt revive the character immediately
+    /// </summary>
+    /// <param name="onRevive">Optional delegate to call after the character has been revived</param>
     public void Revive()
     {
-        _health = 1;
-        StatusEffects.Clear();
+        RevivePending = true;
         CurrentBattle.AdditionalTexts.Add($"{Name} has been revived");
     }
 
+    public void HandlePendingRevive()
+    {
+        if(!RevivePending) return;
+        _health = 1;
+
+        RevivePending = false;
+        Health += _pendingHealthToRecover;
+        _pendingHealthToRecover = 0;
+    }
     
     private bool _shouldTakeExtraTurn;
     [NotMapped]
@@ -1074,7 +1089,12 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
         shield.SetShieldValue(this,shieldValue);
     }
+    public static double DamageFormula(double potentialDamage, double defense)
+    {
 
+        
+        return (potentialDamage * 375) / (300.0 + defense);
+    }
     /// <summary>
     /// Used to damage this character
     /// </summary>
@@ -1084,16 +1104,20 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// <param name="canCrit">Whether the damage can cause a critical hit or not</param>
     /// <param name="damageElement">The element of the damage</param>
     /// <returns>The results of the damage</returns>
-    public virtual DamageResult Damage(DamageArgs damageArgs)
+    public  DamageResult? Damage(DamageArgs damageArgs)
     {
+        if (IsDead) return null;
         var damageText = damageArgs.DamageText;
         var damage = damageArgs.Damage;
         var caster = damageArgs.Caster;
         var canBeCountered = damageArgs.CanBeCountered;
         var canCrit = damageArgs.CanCrit;
-        bool didCrit = false;
-        int damageModifyPercentage = 0;
-        damage = BattleFunction.DamageFormula(damage, Defense);
+        var didCrit = false;
+        var defenseToIgnore = Math.Clamp(damageArgs.DefenseToIgnore,0,100);
+        var defenseToUse = ((100 - defenseToIgnore) *0.01) * Defense;
+        var damageModifyPercentage = 0;
+        
+        damage = DamageFormula(damage, defenseToUse);
 
 
         var advantageLevel = BattleFunction.GetAdvantageLevel(caster.Element, Element);
@@ -1213,8 +1237,9 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// <param name="damageText">if there is a text for the damage, then use this. Use $ in the string and it will be replaced with the damage dealt</param>
   /// <param name="caster">The character causing the damage</param>
 /// <param name="damage">The potential damage</param>
-    public DamageResult FixedDamage(DamageArgs damageArgs)
+    public DamageResult? FixedDamage(DamageArgs damageArgs)
     {
+        if (IsDead) return null;
         var damageText = damageArgs.DamageText;
         var damage = damageArgs.Damage;
         var caster = damageArgs.Caster;
@@ -1265,8 +1290,14 @@ public abstract partial  class Character : BattleEntity, ISetup
     public virtual int RecoverHealth(double toRecover,
         string? recoveryText = null, bool announceHealing = true)
     {
+        if (IsDead && !RevivePending) return 0;
         var healthToRecover = toRecover.Round();
-        Health += healthToRecover;
+        if (!IsDead)
+            Health += healthToRecover;
+        else
+        {
+            _pendingHealthToRecover += healthToRecover;
+        }
         if (recoveryText is null)
             recoveryText = $"{this} recovered $ health!";
         
@@ -1276,6 +1307,8 @@ public abstract partial  class Character : BattleEntity, ISetup
 
         return healthToRecover;
     }
+
+    private int _pendingHealthToRecover = 0;
     /// <summary>
     /// checks if it is currently the character's turn
     /// </summary>

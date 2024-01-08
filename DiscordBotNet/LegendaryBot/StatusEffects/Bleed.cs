@@ -5,17 +5,31 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class Bleed : StatusEffect
 {
-    public override string Description => "Does damage at the start of the caster's turn";
+    public override string Description => "Does damage proportional to the caster's attack to the affected at the start of the affected's turn." +
+                                          " Ignores 70% of the affecteed's defense";
     public override bool ExecuteStatusEffectAfterTurn { get; } = false;
-    private int _casterAttack;
-    
+    public int Attack { get;  }
+    public DamageResult Detonate(Character affected)
+    {
+        affected.StatusEffects.Remove(this);
+        return affected.Damage(        new DamageArgs(this)
+        {
+            DefenseToIgnore = 70,
+            AffectedByCasterElement = false,
+            Damage = Attack * 3,
+            Caster = Caster,
+            CanCrit = false,
+            DamageText = $"{affected}'s bleeding splashed and dealt $ damage!"
+        });
+   
+    }
     public override void PassTurn(Character affected)
     {
         base.PassTurn(affected);
         affected.Damage(new DamageArgs(this)
         {
             AffectedByCasterElement = false,
-            Damage = _casterAttack,
+            Damage = Attack,
             DamageText = $"{affected} took $ bleed damage!",
             Caster = Caster,
         });
@@ -23,6 +37,6 @@ public class Bleed : StatusEffect
 
     public Bleed(Character caster) : base(caster)
     {
-        _casterAttack = caster.Attack;
+        Attack = caster.Attack;
     }
 }

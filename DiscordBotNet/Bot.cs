@@ -6,6 +6,7 @@ using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus;
@@ -39,7 +40,9 @@ public static class Bot
 
     private static async Task DoShit()
     {
-        new PostgreSqlContext().ResetDatabase();
+        BattleEventArgs idk2 = null;
+        List<BattleEventArgs> idk = [idk2];
+        idk.Count.Print();
     }
 
     private static async Task Main(string[] args)

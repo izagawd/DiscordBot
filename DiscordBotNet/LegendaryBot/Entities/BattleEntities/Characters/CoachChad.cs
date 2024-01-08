@@ -13,16 +13,16 @@ public class GigaPunch : BasicAttack
     {
         return new UsageResult(this)
         {
-            DamageResults = new[]
-            {
-                target.Damage(new DamageArgs(this)
+            DamageResults =
+            [
+            target.Damage(new DamageArgs(this)
                 {
                     Caster = owner,
                     Damage = owner.Attack * 1.7,
                     DamageText = $"{owner} smiles chadly, and punches {target} in a cool way and dealt $ damage!"
 
                 })
-            },
+            ],
             TargetType = TargetType.SingleTarget,
             User = owner,
             UsageType = usageType,
@@ -127,7 +127,7 @@ public class CoachChad : Character
         if (eventArgs is not TurnEndEventArgs turnEndEvent) return;
     
         if (turnEndEvent.Character != owner) return;
-        RecoverHealth(MaxHealth * 0.05);
+        RecoverHealth(MaxHealth * 0.2);
 
     }
     public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)

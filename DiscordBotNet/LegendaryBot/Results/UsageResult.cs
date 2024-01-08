@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+﻿using System.Collections.Immutable;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 
@@ -24,16 +25,16 @@ public class UsageResult
     public bool IsNonAttackUsage => !IsAttackUsage;
     public required TargetType TargetType { get; init; }
 
- 
+
 
     /// <summary>
     /// if the skill deals any sort of damage, the damage results should be in this list
     /// </summary>
-    private readonly DamageResult[] _damageResults = Array.Empty<DamageResult>();
+    private readonly ImmutableArray<DamageResult> _damageResults = [];
     public IEnumerable<DamageResult> DamageResults
     {
         get => _damageResults;
-        init => _damageResults = value.ToArray();
+        init => _damageResults = value.Where(i => i is not null).ToImmutableArray();
     } 
     /// <summary>
     /// The character who used it, or if it is a status effect, the character in which the status effect affected

@@ -43,8 +43,7 @@ public class BattleSimulator : IBattleEventListener
 
     public static DiscordButtonComponent proceed = new(ButtonStyle.Success, "Proceed", "Proceed");
 
-
-
+    
     
     /// <summary>
     /// 
@@ -156,6 +155,13 @@ public class BattleSimulator : IBattleEventListener
         }
     }
 
+    private void HandleCharactersPendingRevive()
+    {
+        foreach (var i in Characters.Where(j => j.RevivePending))
+        {
+            i.HandlePendingRevive();
+        }
+    }
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
         List<StatsModifierArgs> statsModifierArgsList = [];
@@ -228,6 +234,7 @@ public class BattleSimulator : IBattleEventListener
     /// </summary>
     public void CheckForWinnerIfTeamIsDead()
     {
+        if(_winners is not null) return;
         foreach (var i in CharacterTeams)
         {
             if (!i.All(j => j.IsDead)) continue;
@@ -464,7 +471,7 @@ public class BattleSimulator : IBattleEventListener
         return StartAsync(messageInput: null,
             interaction: interaction, editInteraction: isInteractionEdit);
     }
-        
+
     /// <summary>
     /// Initiates a new battle between two teams, by sending a message to a channel
     /// </summary>
@@ -472,7 +479,7 @@ public class BattleSimulator : IBattleEventListener
     {
         return StartAsync(messageInput: null,interaction: null, channel: channel);
     }
-
+    
     private CancellationTokenSource CancellationTokenSource;
     private static DiscordButtonComponent InfoButton = new DiscordButtonComponent(ButtonStyle.Primary, "Info", "Info");
     protected async Task<BattleResult> StartAsync(
@@ -534,11 +541,12 @@ public class BattleSimulator : IBattleEventListener
 
             if (_mainText is null)
                 _mainText = $"{ActiveCharacter}'s turn";
-            InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
 
+            
             ActiveCharacter.CombatReadiness = 0;
             foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
             {
+                if(ActiveCharacter.IsDead) break;
                 //this code executes for status effects that occur just before the beginning of the turn
                 if (i.ExecuteStatusEffectBeforeTurn)
                 {
@@ -546,10 +554,11 @@ public class BattleSimulator : IBattleEventListener
                      if (i.Duration <= 0) ActiveCharacter.StatusEffects.Remove(i);
                 }
             }
-
- 
+            InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
+            HandleCharactersPendingRevive();
             if (ActiveCharacter.IsDead)
                 AdditionalTexts.Add($"{ActiveCharacter} cannot take their turn because they are dead!");
+
             CheckAdditionalTexts();
 
 
@@ -577,8 +586,7 @@ public class BattleSimulator : IBattleEventListener
             var messageBuilder =new DiscordMessageBuilder()
                 .AddEmbed(embedToEdit.Build())
                 .AddFile("battle.png", stream);
-                
-       
+            
             CheckForWinnerIfTeamIsDead();
 
             var components = new List<DiscordComponent>();
@@ -643,7 +651,7 @@ public class BattleSimulator : IBattleEventListener
 
 
             _mainText = null;
-            if (_winners is not null || _stopped) 
+            if (_winners is not null) 
             {
                 await Task.Delay(5000); break;
             }
@@ -734,7 +742,7 @@ public class BattleSimulator : IBattleEventListener
                         .AddComponents(selectMoveTarget)
                         .AddComponents(infoSelect)
                         .AddComponents(forfeitButton)
-                        .AddEmbed(embedToEdit.Build());
+                        .AddEmbed(embedToEdit);
                     await results.Result.Interaction.CreateResponseAsync(
                         InteractionResponseType.UpdateMessage,
                         responseBuilder);
@@ -794,7 +802,7 @@ public class BattleSimulator : IBattleEventListener
                 _winners = CharacterTeams.First(i => i != _forfeited);
                 break;
             }
-            if (_winners is not null || _stopped)
+            if (_winners is not null)
             {
             
                 await Task.Delay(5000); break;
@@ -821,15 +829,18 @@ public class BattleSimulator : IBattleEventListener
                     special.Cooldown -= 1;
                 }
             }
-            InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
+
             foreach (var i in ActiveCharacter.StatusEffects.ToArray())
             {
+                if(ActiveCharacter.IsDead) break;
                 if (i.ExecuteStatusEffectAfterTurn)
                 {
                     i.PassTurn(ActiveCharacter);
                     if (i.Duration <= 0) ActiveCharacter.StatusEffects.Remove(i);
                 }
             }
+            InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
+            HandleCharactersPendingRevive();
             CheckAdditionalTexts();
 
         }

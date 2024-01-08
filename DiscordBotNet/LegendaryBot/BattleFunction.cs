@@ -48,18 +48,8 @@ public static  class BattleFunction
     {
         return (long)Math.Round(4 * Math.Pow(level, 3) / 5) + 1;
     }
-    ///<param name="potentialDamage">The attacker's attack</param>
-    /// <param name="potentialDamage">The attacked defense</param>
-    /// <returns>
-    /// Potential damage dealt based on stats
-    /// </returns>
-    /// 
-    public static double DamageFormula(double potentialDamage, double defense)
-    {
 
 
-        return (potentialDamage * 375) / (300.0 + defense);
-    }
     /// <returns>
     /// The user's level based on their stats
     /// </returns>

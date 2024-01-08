@@ -27,7 +27,7 @@ public class VolcanicEruptionCharging : StatusEffect
             foreach (var i in affected.CurrentBattle.Characters.Where(j => j.Team != affected.Team))
             {
 
-                DamageResult damageResult =  i.Damage(                new DamageArgs(this)
+                var damageResult =  i.Damage(                new DamageArgs(this)
                 {
             
                     Damage = affected.Attack * 1.7 * 2,
@@ -35,7 +35,8 @@ public class VolcanicEruptionCharging : StatusEffect
                     CanCrit = true,
                     DamageText =$"{affected} shot out a very powerful blast that dealt $ damage to {i}!"
                 });
-                damageResults.Add(damageResult);
+                if(damageResult is not null)
+                    damageResults.Add(damageResult);
 
             }
             return new UsageResult(this)

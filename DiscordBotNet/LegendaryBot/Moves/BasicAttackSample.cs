@@ -12,7 +12,7 @@ public class BasicAttackSample : BasicAttack
     protected  override UsageResult HiddenUtilize(Character owner,Character target, UsageType usageType)
     {
  
-        DamageResult damageResult = target.Damage(       new DamageArgs(this)
+        DamageResult? damageResult = target.Damage(       new DamageArgs(this)
         {
             Damage = owner.Attack * 1.7,
             Caster = owner,
@@ -25,7 +25,7 @@ public class BasicAttackSample : BasicAttack
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             User = owner,
-            DamageResults = new[] { damageResult }
+            DamageResults = [damageResult]
         };
     }
 }

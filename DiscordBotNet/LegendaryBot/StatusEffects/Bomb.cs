@@ -3,10 +3,11 @@ using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class Bomb : StatusEffect
+public class Bomb : StatusEffect, IDetonatable
 {
     
-    public override string Description => "Detonates on the affected when the duration of this status effect finishes";
+    public override string Description => "Detonates on the affected when the duration of this status effect finishes." +
+                                          " Detonation damage is proportional to the caster's attack. After detonation, the affected gets stunned";
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
     public int Attack { get; }
     public Bomb(Character caster) : base(caster)
@@ -19,15 +20,16 @@ public class Bomb : StatusEffect
         base.PassTurn(affected);
         if (Duration == 0)
         {
-            Detonate(affected);
+            Detonate(affected, Caster);
         }
 
         
     }
 
-    public DamageResult Detonate(Character affected)
+    public DamageResult Detonate(Character affected, Character detonator)
     {
         affected.StatusEffects.Remove(this);
+        affected.StatusEffects.Add(new Stun(detonator));
         return affected.Damage(        new DamageArgs(this)
         {
             AffectedByCasterElement = false,

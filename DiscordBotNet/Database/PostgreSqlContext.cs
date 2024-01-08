@@ -132,6 +132,7 @@ public class PostgreSqlContext : DbContext
         modelBuilder.Entity<Entity>()
             .Property(i => i.Id)
             .ValueGeneratedOnAdd();
+        
         modelBuilder.Entity<PlayerTeam>()
             .HasIndex(i => new { i.UserDataId, i.TeamName })
             .IsUnique();
@@ -154,6 +155,8 @@ public class PostgreSqlContext : DbContext
                 => i.HasOne<Character>().WithMany().HasForeignKey(j => j.CharacterId), i =>
                 i.HasOne<PlayerTeam>().WithMany().HasForeignKey(j => j.PlayerTeamId), i =>
                 i.HasKey(j => new { j.CharacterId, j.PlayerTeamId }));
+        
+        
         modelBuilder.Entity<UserData>()
             .HasOne(i => i.EquippedPlayerTeam)
             .WithOne()
@@ -162,7 +165,8 @@ public class PostgreSqlContext : DbContext
         
         
         
-        modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Property);
+        modelBuilder
+            .UsePropertyAccessMode(PropertyAccessMode.Property);
 
         modelBuilder.Entity<CharacterBuild>()
             .HasKey(i => i.Id);

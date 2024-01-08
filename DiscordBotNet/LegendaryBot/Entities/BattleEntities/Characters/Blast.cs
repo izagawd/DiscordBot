@@ -31,7 +31,7 @@ public class MethaneSlap : BasicAttack
         if (BasicFunction.RandomChance(DetonateChance))
         {
             foreach (var i in target.StatusEffects.OfType<Bomb>())
-                i.Detonate(target);
+                i.Detonate(target,owner);
         }
         return result;
 
@@ -86,8 +86,9 @@ public class VolcanicEruption : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 3});
-        owner.CurrentBattle.AdditionalTexts.Add($"{owner} is charging up a very powerful attack!");
+        var isCharging = owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 3});
+        if(isCharging)
+            owner.CurrentBattle.AdditionalTexts.Add($"{owner} is charging up a very powerful attack!");
         return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner, Text = "What's this?"};
     }
 }

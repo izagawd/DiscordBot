@@ -7,6 +7,10 @@ public class StatusEffectSet : ISet<StatusEffect>
     private readonly HashSet<StatusEffect> statusEffects = new HashSet<StatusEffect>();
 
     public int Count => statusEffects.Count;
+    
+    /// <summary>
+    /// The character who has the status effects
+    /// </summary>
     public Character Affected { get;  }
     public bool IsReadOnly => false;
     public StatusEffectSet(Character affected)
@@ -31,13 +35,12 @@ public class StatusEffectSet : ISet<StatusEffect>
             Add(i);
         }
     }
-
     /// <param name="effectiveness">the effectiveness of the caster</param>
 /// <returns>true if the status effect was successfully added</returns>
     public bool Add(StatusEffect statusEffect,int? effectiveness)
     {
         
-        if (Affected.IsDead) return false;
+        if (Affected.IsDead && !Affected.RevivePending) return false;
         var arrayOfType =
             this.Where(i => i.GetType() == statusEffect.GetType())
                 .ToArray();
@@ -151,7 +154,26 @@ public class StatusEffectSet : ISet<StatusEffect>
     {
         return statusEffects.Overlaps(other);
     }
-
+    /// <summary>
+    /// Dispells (removes) a debuff from the character
+    /// </summary>
+    /// <param name="statusEffect">The status effect to remove</param>
+    /// <param name="effectiveness">If not null, will do some rng based on effectiveness to see whether or not to dispell debuff</param>
+    /// <returns>true if status effect was successfully dispelled</returns>
+    public bool Dispell(StatusEffect statusEffect, int? effectiveness = null)
+    {
+        if (effectiveness is null || statusEffect.EffectType == StatusEffectType.Debuff)
+            return statusEffects.Add(statusEffect);
+        var percentToResistance = Affected.Resistance - effectiveness;
+                
+        if (percentToResistance < 0) percentToResistance = 0;
+        if (!BasicFunction.RandomChance((int)percentToResistance))
+        {
+            return statusEffects.Add(statusEffect);
+        }
+        return false;
+        
+    }
     public bool Remove(StatusEffect item)
     {
         return statusEffects.Remove(item);

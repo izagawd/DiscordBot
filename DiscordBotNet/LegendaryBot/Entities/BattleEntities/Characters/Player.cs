@@ -16,8 +16,7 @@ public class FourthWallBreaker: BasicAttack
     {
         return new UsageResult(this)
         {
-            DamageResults = new[]
-            {
+            DamageResults = [
                 target.Damage(new DamageArgs(this)
                 {
 
@@ -27,7 +26,7 @@ public class FourthWallBreaker: BasicAttack
                     Damage = owner.Attack * 1.7
 
                 })
-            },
+            ],
             User = owner,
             TargetType = TargetType.SingleTarget,
             Text = "It's the power of being a real human",

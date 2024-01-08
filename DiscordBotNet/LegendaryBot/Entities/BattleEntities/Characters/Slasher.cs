@@ -1,5 +1,6 @@
 ﻿using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
+using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus.Entities;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -20,7 +21,10 @@ public class WindSlash : Skill
         List<DamageResult> damageResults = [];
         foreach (var i in GetPossibleTargets(owner))
         {
-            damageResults.Add(i.Damage(new DamageArgs(this){Caster = owner,Damage = owner.Attack * 1.7, DamageText = $"The slash dealt $ damage to {i}!"}));
+            var damageResult = i.Damage(new DamageArgs(this)
+                { Caster = owner, Damage = owner.Attack * 1.7, DamageText = $"The slash dealt $ damage to {i}!" });
+            if(damageResult is not null)
+                damageResults.Add(damageResult);
         }
 
         return new UsageResult(this)
@@ -39,23 +43,25 @@ public class WindSlash : Skill
 
 public class SimpleSlashOfPrecision : BasicAttack
 {
-    public override string GetDescription(Character character) =>"Does a simple slash. Always lands a critical hit";
+    private int BleedChance => 50;
+    public override string GetDescription(Character character) =>$"Does a simple slash. Always lands a critical hit, with a {BleedChance}% chance to cause bleed for 2 turns";
     
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
+        var damageResult = target.Damage(new DamageArgs(this)
+        {
+            Caster = owner,
+            Damage = owner.Attack * 1.7,
+            AlwaysCrits = true
+        });
+        if (BasicFunction.RandomChance(BleedChance))
+        {
+            target.StatusEffects.Add(new Bleed(owner));
+        }
         return new UsageResult(this)
         {
-            DamageResults = new DamageResult[]
-            {
-                target.Damage(new DamageArgs(this)
-                {
-                    Caster = owner,
-                    Damage = owner.Attack * 1.7,
-                    AlwaysCrits = true
-                })
-            },
-            
+            DamageResults = [damageResult],
             TargetType = TargetType.SingleTarget,
             Text = $"{owner} does a simple slash to {target}!",
             User = owner,
@@ -66,7 +72,8 @@ public class SimpleSlashOfPrecision : BasicAttack
 public class ConsecutiveSlashesOfPrecision : Surge
 {
 
-    public override string GetDescription(Character character) =>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
+    public override string GetDescription(Character character)
+        =>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {

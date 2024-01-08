@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Moves;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus.Entities;
@@ -24,7 +25,7 @@ public class SoulAttack : BasicAttack
             TargetType = TargetType.SingleTarget,
             User = owner,
             UsageType = usageType,
-            DamageResults = new []{damageResult}
+            DamageResults = [damageResult]
         };
     }
 }
@@ -49,12 +50,29 @@ public class YourLifeEnergyIsMine : Skill
 
         });
         owner.RecoverHealth(damageResult.Damage * 0.2);
+
+
+
+
+
+        foreach (var i in owner.Team.Where(j => j != owner))
+        {
+            i.Health = 0;
+            
+        }
+        owner.GrantExtraTurn();
+        
+        
+        
+        
+        
         return new UsageResult(this)
         {
-            DamageResults = new[]
-            {
+            DamageResults =
+            [
+            
                 damageResult
-            },
+            ],
             Text = "Your lifespan is mine!",
             User = owner,
             TargetType = TargetType.SingleTarget,
@@ -104,6 +122,11 @@ public class Arise : Surge
 }
 public class Thana : Character
 {
+    public override int GetSpeedValue(int points)
+    {
+        return (base.GetSpeedValue(points) * 1.1).Round();
+    }
+
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
     public override DiscordColor Color { get; protected set; } = DiscordColor.Brown;
 

@@ -6,7 +6,10 @@ namespace DiscordBotNet.LegendaryBot.Results;
 
 public class DamageArgs
 {
-
+    /// <summary>
+    /// The percentage of defense to ignore if possible
+    /// </summary>
+    public int DefenseToIgnore { get; init; } = 0;
     public bool AffectedByCasterElement { get; init; } = true;
     public Move? Move { get; private set; }
     public StatusEffect? StatusEffect { get; private set; }
