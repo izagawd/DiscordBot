@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
+﻿using System.Linq.Expressions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
-using Microsoft.Extensions.Primitives;
 
 namespace DiscordBotNet.Extensions;
 
@@ -30,11 +27,10 @@ public static class BasicExtension
     }
     public static async Task<InteractivityResult<ComponentInteractionCreateEventArgs>> WaitForAnyComponentInteractionAsync(this DiscordMessage message, Func<ComponentInteractionCreateEventArgs,bool> predicate, CancellationTokenSource token)
     {
-        
         IEnumerable<Task<InteractivityResult<ComponentInteractionCreateEventArgs>>> tasks=
         [
-            message.WaitForButtonAsync(i => predicate(i), token.Token),
-            message.WaitForSelectAsync(i => predicate(i), token.Token)
+            message.WaitForButtonAsync(predicate, token.Token),
+            message.WaitForSelectAsync(predicate, token.Token)
         ];
         var result = await await Task.WhenAny(tasks);
         await token.CancelAsync();

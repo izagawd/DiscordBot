@@ -26,6 +26,8 @@ public class InfoController : Controller
             .Where(i => i.Id == characterGuid)
             .Include(i => i.Blessing)
             .FirstOrDefaultAsync();
+        
+        
         if (character is null) return Ok();
         character.Blessing = null;
         await DatabaseContext.SaveChangesAsync();
@@ -38,7 +40,6 @@ public class InfoController : Controller
         var characterIdString = element.GetProperty("characterId").GetString();
         var characterId = long.Parse(characterIdString!);
         var blessingId = long.Parse(blessingIdString!);
-
         var entityAnonymous = await DatabaseContext.UserData
             .FindOrCreateSelectAsync(User.GetDiscordUserId(),
                 i =>

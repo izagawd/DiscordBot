@@ -127,6 +127,7 @@ public class CharacterCommand : BaseCommandClass
                   responseBuilder);
               break;
           }
+
           if (result.Result.Id == reset.CustomId)
           {
               characterBuild.ResetPoints();
@@ -146,7 +147,7 @@ public class CharacterCommand : BaseCommandClass
                       .WaitForModalAsync("change_increase_amount", ctx.User);
                   if(modalResult.TimedOut) return;
                   var stringedNewAmount = modalResult.Result.Values.Select(i => i.Value).First();
-                  var parsed =int.TryParse(stringedNewAmount, out int newAmount);
+                  var parsed =int.TryParse(stringedNewAmount, out var newAmount);
                   if (!parsed)
                   {
                       await modalResult.Result.Interaction.CreateResponseAsync(
@@ -194,11 +195,9 @@ public class CharacterCommand : BaseCommandClass
               if (characterBuild.TotalPoints >= characterBuild.MaxPoints)
               {
                  
-                  responseBuilder = new DiscordInteractionResponseBuilder()
-                      .AddEmbed(embed);
-                  await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage,
-                      responseBuilder);
-                  break;
+       
+                  await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+                  continue;
               } 
               if (characterBuild[statType] >= CharacterBuild.MaxPointsPerStat)
               {

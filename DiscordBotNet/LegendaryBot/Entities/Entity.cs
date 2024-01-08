@@ -22,6 +22,9 @@ public abstract class Entity : ICloneable, IDatabaseModel
     {
         return Clone();
     }
+    [NotMapped]
+    public virtual string Description { get; protected set; } = "";
+    [NotMapped] public virtual Rarity Rarity { get; protected set; } = Rarity.OneStar;
     public Entity Clone()
     {
         var clone =(Entity) MemberwiseClone();

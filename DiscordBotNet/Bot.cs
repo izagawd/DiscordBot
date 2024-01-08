@@ -39,12 +39,12 @@ public static class Bot
 
     private static async Task DoShit()
     {
-        
+        new PostgreSqlContext().ResetDatabase();
     }
 
     private static async Task Main(string[] args)
     {
-
+        
         await DoShit();
         
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();

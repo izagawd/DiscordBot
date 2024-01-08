@@ -31,7 +31,6 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListen
         protected set;
     }
 
-    [NotMapped] public virtual Rarity Rarity { get; protected set; } = Rarity.OneStar;
     public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
        
