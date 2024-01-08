@@ -163,7 +163,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             if (_health <= 0)
             {
                 _health = 0;
-                CurrentBattle.AdditionalTexts.Add($"{Name} has died");
+                CurrentBattle.AddAdditionalText($"{Name} has died");
                 StatusEffects.Clear();
                 CurrentBattle.InvokeBattleEvent(new CharacterDeathEventArgs(this));
                 
@@ -181,17 +181,21 @@ public abstract partial  class Character : BattleEntity, ISetup
     public void Revive()
     {
         RevivePending = true;
-        CurrentBattle.AdditionalTexts.Add($"{Name} has been revived");
+        CurrentBattle.AddAdditionalText($"{Name} has been revived");
     }
-
-    public void HandlePendingRevive()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>Whether or not the character was revived.</returns>
+    public  bool HandlePendingRevive()
     {
-        if(!RevivePending) return;
+        if (!RevivePending) return false;
         _health = 1;
 
         RevivePending = false;
         Health += _pendingHealthToRecover;
         _pendingHealthToRecover = 0;
+        return true;
     }
     
     private bool _shouldTakeExtraTurn;
@@ -266,7 +270,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         if(IsDead) return;
         _shouldTakeExtraTurn = true;
-        CurrentBattle.AdditionalTexts.Add($"{this} has been granted an extra turn");
+        CurrentBattle.AddAdditionalText($"{this} has been granted an extra turn");
     }
     public override string IconUrl =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
     public float ShieldPercentage
@@ -1172,7 +1176,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             damageText = "A critical hit! " + damageText;
 
     
-        CurrentBattle.AdditionalTexts.Add(damageText);
+        CurrentBattle.AddAdditionalText(damageText);
         
         TakeDamageWhileConsideringShield(actualDamage);
         DamageResult damageResult;
@@ -1248,7 +1252,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             damageText = $"{this} took $ fixed damage!";
         }
-        CurrentBattle.AdditionalTexts.Add(damageText.Replace("$", damage.Round().ToString()));
+        CurrentBattle.AddAdditionalText(damageText.Replace("$", damage.Round().ToString()));
         TakeDamageWhileConsideringShield(damage.Round());
         DamageResult damageResult;
         if (damageArgs.Move is not null)
@@ -1302,7 +1306,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             recoveryText = $"{this} recovered $ health!";
         
         if(announceHealing)
-            CurrentBattle.AdditionalTexts.Add(recoveryText.Replace("$",healthToRecover.ToString()));
+            CurrentBattle.AddAdditionalText(recoveryText.Replace("$",healthToRecover.ToString()));
         
 
         return healthToRecover;

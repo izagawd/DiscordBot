@@ -3,9 +3,9 @@ using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class Burn : StatusEffect
+public class Burn : StatusEffect, IDetonatable
 {
-    public override string Description => "Does damage at the start of the caster's turn";
+    public override string Description => "Does damage at the start of the affected's turn. Damage ignores 70% of defense";
     private int _characterAttack;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
     public override bool HasLevels => false;
@@ -19,14 +19,28 @@ public class Burn : StatusEffect
     public override void PassTurn(Character affected)
     {
         base.PassTurn(affected);
-        affected.Damage(        new DamageArgs(this)
+
+        DoDamage(affected);
+    }
+
+    private DamageResult? DoDamage(Character affected)
+    {
+        return affected.Damage(        new DamageArgs(this)
         {
+            DefenseToIgnore = 70,
             AffectedByCasterElement = false,
-            Damage = _characterAttack * 1.7,
+            Damage = _characterAttack * 2,
             Caster = Caster,
             CanCrit = false,
             DamageText =$"{affected} took $ damage from burn!"
         });
+        
+    }
 
+    public DamageResult? Detonate(Character affected, Character detonator)
+    {
+        var removed = affected.StatusEffects.Remove(this);
+        if (removed) return DoDamage(affected);
+        return null;
     }
 }

@@ -2,7 +2,7 @@
 using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
-
+using System.Text;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
@@ -18,6 +18,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Color = SixLabors.ImageSharp.Color;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
@@ -40,9 +41,7 @@ public static class Bot
 
     private static async Task DoShit()
     {
-        BattleEventArgs idk2 = null;
-        List<BattleEventArgs> idk = [idk2];
-        idk.Count.Print();
+
     }
 
     private static async Task Main(string[] args)

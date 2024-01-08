@@ -68,11 +68,11 @@ public class StatusEffectSet : ISet<StatusEffect>
 
             if (added)
             {
-                Affected.CurrentBattle.AdditionalTexts.Add($"{statusEffect.Name} has been inflicted on {Affected}!");
+                Affected.CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been inflicted on {Affected}!");
             }
             else
             {
-                Affected.CurrentBattle.AdditionalTexts.Add($"{Affected} resisted {statusEffect.Name}!");
+                Affected.CurrentBattle.AddAdditionalText($"{Affected} resisted {statusEffect.Name}!");
             }
 
             return added;
@@ -89,12 +89,12 @@ public class StatusEffectSet : ISet<StatusEffect>
                 onlyStatus.Duration = statusEffect.Duration;
             }
             onlyStatus.RenewWith(statusEffect);
-            Affected.CurrentBattle.AdditionalTexts.Add($"{statusEffect.Name} has been optimized on {Affected}!");
+            Affected.CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been optimized on {Affected}!");
 
 
             return true;
         }
-        Affected.CurrentBattle.AdditionalTexts.Add($"{Affected} cannot take any more {statusEffect.Name}!");
+        Affected.CurrentBattle.AddAdditionalText($"{Affected} cannot take any more {statusEffect.Name}!");
         return false;
     }
 

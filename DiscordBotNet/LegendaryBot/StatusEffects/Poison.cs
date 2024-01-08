@@ -3,7 +3,7 @@ using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class Poison : StatusEffect
+public class Poison : StatusEffect, IDetonatable
 {
     public override string Description { get; } = "Deals damage equivalent to 5% of the affected's max health";
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
@@ -19,7 +19,13 @@ public class Poison : StatusEffect
     {
         base.PassTurn(affected);
 
-    affected.FixedDamage(        new DamageArgs(this)
+        DoDamage(affected);
+
+    }
+
+    private DamageResult? DoDamage(Character affected)
+    {
+        return affected.FixedDamage(        new DamageArgs(this)
         {
 
             Damage = affected.MaxHealth * 0.05,
@@ -27,6 +33,11 @@ public class Poison : StatusEffect
             CanCrit = false,
             DamageText =$"{affected} took $ damage from being poisoned!"
         });
-
+    }
+    public DamageResult? Detonate(Character affected, Character detonator)
+    {
+        var removed = affected.StatusEffects.Remove(this);
+        if (removed) return DoDamage(affected);
+        return null;
     }
 }

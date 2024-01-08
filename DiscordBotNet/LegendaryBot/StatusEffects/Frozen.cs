@@ -22,7 +22,7 @@ public class Frozen : StatusEffect
     public override UsageResult OverridenUsage(Character affected,ref Character target, ref BattleDecision decision, UsageType usageType)
     {
         decision = BattleDecision.Other;
-        affected.CurrentBattle.AdditionalTexts.Add($"{affected} cannot move because they are frozen!");
+        affected.CurrentBattle.AddAdditionalText($"{affected} cannot move because they are frozen!");
         return new UsageResult(this)
         {
             Text = "c-cold...",

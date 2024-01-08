@@ -86,7 +86,7 @@ public class Ignite : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AdditionalTexts.Add($"{owner} attempts to make a human torch out of {target}!");
+        owner.CurrentBattle.AddAdditionalText($"{owner} attempts to make a human torch out of {target}!");
         for (int i = 0; i < 3; i++)
         {
             if (BasicFunction.RandomChance(IgniteChance))

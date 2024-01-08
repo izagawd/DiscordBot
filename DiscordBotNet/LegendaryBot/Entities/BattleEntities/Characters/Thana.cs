@@ -60,6 +60,7 @@ public class YourLifeEnergyIsMine : Skill
             i.Health = 0;
             
         }
+        
         owner.GrantExtraTurn();
         
         
@@ -96,12 +97,14 @@ public class Arise : Surge
     
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AdditionalTexts.Add($"With her necromancy powers, {owner} attempts to bring back all her dead allies!");
+        owner.CurrentBattle.AddAdditionalText($"With her necromancy powers, {owner} attempts to bring back all her dead allies!");
 
         foreach (var i in GetPossibleTargets(owner))
         {
             if(i.IsDead)
                 i.Revive();
+
+            i.RecoverHealth(500);
             var duration = 1;
             if (i == owner)
             {

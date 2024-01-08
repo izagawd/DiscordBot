@@ -44,7 +44,7 @@ public class MuscleFlex : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AdditionalTexts.Add($"{owner}... flexed his muscles?");
+        owner.CurrentBattle.AddAdditionalText($"{owner}... flexed his muscles?");
         return new UsageResult(this)
         {
             Text = $"Hmph!",
@@ -71,7 +71,7 @@ public class ThumbsUp : Skill
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AdditionalTexts.Add($"{owner} is cheering {target} on!");
+        owner.CurrentBattle.AddAdditionalText($"{owner} is cheering {target} on!");
         return new UsageResult(this)
         {
             UsageType = usageType,
@@ -127,7 +127,7 @@ public class CoachChad : Character
         if (eventArgs is not TurnEndEventArgs turnEndEvent) return;
     
         if (turnEndEvent.Character != owner) return;
-        RecoverHealth(MaxHealth * 0.2);
+        RecoverHealth(MaxHealth);
 
     }
     public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)

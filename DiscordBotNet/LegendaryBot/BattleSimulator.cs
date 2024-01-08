@@ -155,12 +155,23 @@ public class BattleSimulator : IBattleEventListener
         }
     }
 
+    /// <returns>The characters that were revived</returns>
     private void HandleCharactersPendingRevive()
     {
+        List<Character> revivedCharacters = [];
         foreach (var i in Characters.Where(j => j.RevivePending))
         {
-            i.HandlePendingRevive();
+            var revived = i.HandlePendingRevive();
+            if (revived)
+            {
+                revivedCharacters.Add(i);
+            }
         }
+        foreach (var i in revivedCharacters)
+        {
+            InvokeBattleEvent(new CharacterReviveEventArgs(i));
+        }
+        revivedCharacters.Clear();
     }
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
@@ -193,7 +204,7 @@ public class BattleSimulator : IBattleEventListener
 
 
     private string? _mainText = "battle begins";
-    private string _additionalText = "have fun!";
+    private StringBuilder _additionalTextStringBuilder = new("Have fun!");
     /// <summary>
     /// The character who is currently taking their tunr
     /// </summary>
@@ -235,30 +246,15 @@ public class BattleSimulator : IBattleEventListener
     public void CheckForWinnerIfTeamIsDead()
     {
         if(_winners is not null) return;
+        
         foreach (var i in CharacterTeams)
         {
-            if (!i.All(j => j.IsDead)) continue;
-            
+            if (!i.All(j => j.IsDead && !j.RevivePending)) continue;
             _winners = CharacterTeams.First(k => k != i);
             break;
         }
     }
-    /// <summary>
-    /// Adds all the additional texts to the _additionalText variable
-    /// </summary>
-    public void CheckAdditionalTexts()
-    {
-        foreach (var i in AdditionalTexts)
-        {
-            if (_additionalText != "") _additionalText += "\n";
-            _additionalText += i;
-        }
 
-        if (_additionalText.Length > 1024)
-            _additionalText = _additionalText.Substring(0, 1021) + "...";
-
-        AdditionalTexts.Clear();
-    }
 
     private bool _stopped = false;
     
@@ -451,7 +447,7 @@ public class BattleSimulator : IBattleEventListener
         }
     }
     public int Turn { get; set; } = 0;
-    public List<string> AdditionalTexts { get; } = new();
+
     public TimeSpan TimeOutSpan { get; protected set; } = TimeSpan.FromMinutes(1.5);
     /// <summary>
     /// Initiates a new battle between two teams, by editing the provided message
@@ -472,6 +468,10 @@ public class BattleSimulator : IBattleEventListener
             interaction: interaction, editInteraction: isInteractionEdit);
     }
 
+    public void AddAdditionalText(string additionalText)
+    {
+        _additionalTextStringBuilder.Append($"{additionalText}\n");
+    }
     /// <summary>
     /// Initiates a new battle between two teams, by sending a message to a channel
     /// </summary>
@@ -480,6 +480,7 @@ public class BattleSimulator : IBattleEventListener
         return StartAsync(messageInput: null,interaction: null, channel: channel);
     }
     
+
     private CancellationTokenSource CancellationTokenSource;
     private static DiscordButtonComponent InfoButton = new DiscordButtonComponent(ButtonStyle.Primary, "Info", "Info");
     protected async Task<BattleResult> StartAsync(
@@ -504,13 +505,16 @@ public class BattleSimulator : IBattleEventListener
 
         
         Character? target = null; 
+        
         // If you want the bot to update a message using an interactivity result instead of without, use this
 
         while (true)
         {
             var stop = new Stopwatch();
             stop.Start();
+            
             Turn += 1;
+     
             bool extraTurnGranted = false;
             var extraTurners =
                 Characters.Where(i => i.ShouldTakeExtraTurn)
@@ -555,15 +559,16 @@ public class BattleSimulator : IBattleEventListener
                 }
             }
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
+            var shouldDoTurn = !ActiveCharacter.IsDead;
+            if (!shouldDoTurn)
+                AddAdditionalText($"{ActiveCharacter} cannot take their turn because they died in the process of taking their turn!");
+
             HandleCharactersPendingRevive();
-            if (ActiveCharacter.IsDead)
-                AdditionalTexts.Add($"{ActiveCharacter} cannot take their turn because they are dead!");
+            var additionalText = _additionalTextStringBuilder.ToString();
 
-            CheckAdditionalTexts();
-
-
-
-            if (_additionalText == "") _additionalText = "No definition";
+            if (additionalText.Length == 0) additionalText = "No definition";
+            else if (additionalText.Length > 1024)
+                additionalText = additionalText.Substring(0, 1021) + "...";
             var name = "";
             if (ActiveCharacter.Team.UserName is not null)
             {
@@ -573,9 +578,10 @@ public class BattleSimulator : IBattleEventListener
                 .WithTitle("**BATTLE!!!**")
                 .WithAuthor($"{ActiveCharacter} [{ActiveCharacter.Position}]{name}", iconUrl: ActiveCharacter.IconUrl)
                 .WithColor(ActiveCharacter.Color)
-                .AddField(_mainText, _additionalText)
+                .AddField(_mainText, additionalText)
                 .WithImageUrl("attachment://battle.png");
-        
+
+            _additionalTextStringBuilder.Clear();
             using var combatImage = await GetCombatImageAsync();
     
             await using var stream = new MemoryStream();
@@ -586,12 +592,12 @@ public class BattleSimulator : IBattleEventListener
             var messageBuilder =new DiscordMessageBuilder()
                 .AddEmbed(embedToEdit.Build())
                 .AddFile("battle.png", stream);
-            
+
             CheckForWinnerIfTeamIsDead();
 
             var components = new List<DiscordComponent>();
             if (!(!ActiveCharacter.Team.IsPlayerTeam || ActiveCharacter.IsOverriden) 
-                && !ActiveCharacter.IsDead 
+                && shouldDoTurn
                 && _winners is null && !_stopped)
             {
                 components.Add(basicAttackButton);
@@ -662,7 +668,7 @@ public class BattleSimulator : IBattleEventListener
             if (ActiveCharacter.StatusEffects.Any())
                 mostPowerfulStatusEffect = ActiveCharacter.StatusEffects.OrderByDescending(i => i.OverrideTurnType).First();
         
-            if (ActiveCharacter.IsDead) await Task.Delay(5000);
+            if (!shouldDoTurn) await Task.Delay(5000);
  
             else if ( mostPowerfulStatusEffect is not null &&  mostPowerfulStatusEffect.OverrideTurnType > 0 )
             {
@@ -819,7 +825,6 @@ public class BattleSimulator : IBattleEventListener
             }
 
 
-            _additionalText = "";
 
 
             foreach (var i in ActiveCharacter.MoveList)
@@ -840,8 +845,9 @@ public class BattleSimulator : IBattleEventListener
                 }
             }
             InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
+
             HandleCharactersPendingRevive();
-            CheckAdditionalTexts();
+
 
         }
 

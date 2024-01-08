@@ -24,12 +24,12 @@ public class Sleep: StatusEffect
         if (damageEventArgs.DamageResult.StatusEffect is not null) return;
         var removed = owner.StatusEffects.Remove(this);
         if(removed)
-            owner.CurrentBattle.AdditionalTexts.Add($"{this} has been dispelled from {owner} due to an attack!");
+            owner.CurrentBattle.AddAdditionalText($"{this} has been dispelled from {owner} due to an attack!");
     }
 
     public override UsageResult OverridenUsage(Character affected, ref Character target, ref BattleDecision decision, UsageType usageType)
     {
-        affected.CurrentBattle.AdditionalTexts.Add($"{affected} is fast asleep");
+        affected.CurrentBattle.AddAdditionalText($"{affected} is fast asleep");
         return new UsageResult(this)
         {
             UsageType = usageType,
