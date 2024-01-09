@@ -353,7 +353,7 @@ public class BattleSimulator : IBattleEventListener
 
             var embed = new DiscordEmbedBuilder()
                 .WithAuthor(characterToDisplayBattleInfo.NameWithAlphabetIdentifier, iconUrl: characterToDisplayBattleInfo.IconUrl)
-                .WithTitle($"{characterToDisplayBattleInfo} [{characterToDisplayBattleInfo.AlphabetIdentifier}'s description")
+                .WithTitle($"{characterToDisplayBattleInfo} [{characterToDisplayBattleInfo.AlphabetIdentifier}]'s description")
                 .WithColor(characterToDisplayBattleInfo.Color)
                 .WithDescription(descriptionStringBuilder.ToString());
 
