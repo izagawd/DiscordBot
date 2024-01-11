@@ -52,7 +52,7 @@ public class BlowAway : Skill
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
                 
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner} threw multiple bombs at the opposing team!");
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} threw multiple bombs at the opposing team!");
         foreach (var i in GetPossibleTargets(owner))
         {
 
@@ -88,7 +88,7 @@ public class VolcanicEruption : Surge
     {
         var isCharging = owner.AddStatusEffect(new VolcanicEruptionCharging(owner){Duration = 3});
         if(isCharging)
-            owner.CurrentBattle.AddAdditionalBattleText($"{owner} is charging up a very powerful attack!");
+            owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} is charging up a very powerful attack!");
         return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner, Text = "What's this?"};
     }
 }

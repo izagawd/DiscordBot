@@ -1,4 +1,5 @@
 ﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.StatusEffects;
@@ -39,14 +40,26 @@ public class YourLifeEnergyIsMine : Skill
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
     }
-    
+
+    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    {
+        base.OnBattleEvent(eventArgs, owner);
+        if (eventArgs is not CharacterDeathEventArgs idk) return;
+        owner.CurrentBattle.AddAdditionalBattleText($"ugh... {idk.Killed} died. sigh");
+    }
+
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        foreach (var i in owner.Team)
+        using (owner.CurrentBattle.PauseBattleEventScope)
         {
-            if(i == owner) continue;
-            i.Health = 0;
+            foreach (var i in owner.Team)
+            {
+                if(i == owner) continue;
+                i.Health = 0;
+            }
         }
+
+        
         var damageResult = target.Damage(new DamageArgs(this)
         {
             Damage = owner.Attack * 2.5,
@@ -56,13 +69,6 @@ public class YourLifeEnergyIsMine : Skill
         });
         if(damageResult is not null)
             owner.RecoverHealth(damageResult.Damage * 0.2);
-
-
-
-        
-        
-        
-        
         
         return new UsageResult(this)
         {

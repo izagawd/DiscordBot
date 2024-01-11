@@ -133,7 +133,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 if (added)
                 {
-                    CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been inflicted on {this}!");
+                    CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been inflicted on {NameWithAlphabetIdentifier}!");
                 }
                 else
                 {
@@ -155,12 +155,12 @@ public abstract partial  class Character : BattleEntity, ISetup
                 onlyStatus.Duration = statusEffect.Duration;
             }
             onlyStatus.RenewWith(statusEffect);
-            CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been optimized on {this}!");
+            CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been optimized on {NameWithAlphabetIdentifier}!");
 
 
             return true;
         }
-        CurrentBattle.AddAdditionalBattleText($"{this} cannot take any more {statusEffect.Name}!");
+        CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} cannot take any more {statusEffect.Name}!");
         return false;
     }
     /// <summary>
@@ -216,14 +216,14 @@ public abstract partial  class Character : BattleEntity, ISetup
             if (BasicFunction.RandomChance(percentToResist))
             {
                 if(announceDecrease)
-                    CurrentBattle.AddAdditionalBattleText($"{this} resisted combat readiness decrease!");
+                    CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} resisted combat readiness decrease!");
                 return 0;
             }
         }
 
         CombatReadiness -= decreaseAmount;
         if(announceDecrease && decreaseAmount > 0)
-            CurrentBattle.AddAdditionalBattleText($"{this} combat readiness has been decreased by {decreaseAmount}%");
+            CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} combat readiness has been decreased by {decreaseAmount}%");
         return decreaseAmount;
     }
 
@@ -308,7 +308,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         if(RevivePending) return;
         RevivePending = true;
-        CurrentBattle.AddAdditionalBattleText($"{Name} has been revived");
+        CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} has been revived");
     }
     /// <summary>
     /// 
@@ -397,7 +397,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         if(IsDead && !RevivePending) return;
         _shouldTakeExtraTurn = true;
-        CurrentBattle.AddAdditionalBattleText($"{this} has been granted an extra turn");
+        CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} has been granted an extra turn");
     }
     public override string IconUrl =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
     public float ShieldPercentage
@@ -669,7 +669,12 @@ public abstract partial  class Character : BattleEntity, ISetup
         return image;
     }
 
-
+    public override string ToString()
+    {
+        if (CurrentBattle is null)
+            return Name;
+        return NameWithAlphabetIdentifier;
+    }
 
 
     [NotMapped] public int BaseMaxHealth    { get

@@ -48,7 +48,9 @@ public class VolcanicEruptionCharging : StatusEffect
                 User = affected
             };
         }
-        affected.CurrentBattle.AddAdditionalBattleText(new($"{affected} is charging up a very powerful attack. {Duration-1} more turns till it is released"));
+
+        affected.CurrentBattle.AddAdditionalBattleText(
+            $"{affected} is charging up a very powerful attack. {Duration - 1} more turns till it is released");
         return new UsageResult(this)
         {
             TargetType = TargetType.None,

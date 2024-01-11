@@ -23,7 +23,7 @@ public class  YouCanDoIt : Skill
     {
         target.IncreaseCombatReadiness(100);
         target.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
-        owner.CurrentBattle.AddAdditionalBattleText(new($"{owner} wants {target} to prevail!"));
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner} wants {target} to prevail!");
         return new UsageResult(this)
         {
             TargetType = TargetType.SingleTarget,
@@ -49,7 +49,7 @@ public class YouCanMakeItEveryone : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText(new($"{owner} encourages her allies!"));
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner} encourages her allies!");
         var targets = GetPossibleTargets(owner).ToArray();
         foreach (var i in targets)
         {

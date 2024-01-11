@@ -137,7 +137,11 @@ public class BattleSimulator : IBattleEventListener
 
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
-
+        if (IsEventsPaused)
+        {
+            _queuedBattleEvents.Add(eventArgs);
+            return;
+        }
         OnBattleEvent(eventArgs,null!);
         foreach (var i in Characters)
         {
@@ -414,11 +418,49 @@ public class BattleSimulator : IBattleEventListener
         }
 
     }
-
-    private void HandleInfo(ComponentInteractionCreateEventArgs args)
+    
+    
+    public class PauseBattleEventsInstance : IDisposable
     {
-        
+        private BattleSimulator _battleSimulator;
+        public PauseBattleEventsInstance(BattleSimulator battleSimulator)
+        {
+            _battleSimulator = battleSimulator;
+            battleSimulator._pauseBattleEventsInstances.Add(this);
+        }
+
+        private bool disposed = false;
+
+        public void Dispose()
+        {
+            if(disposed) return;
+            
+            _battleSimulator._pauseBattleEventsInstances.Remove(this);
+            disposed = true;
+
+            if(_battleSimulator.IsEventsPaused) return;
+            foreach (var i in _battleSimulator._queuedBattleEvents)
+            {
+               _battleSimulator.InvokeBattleEvent(i);
+            }
+            _battleSimulator._queuedBattleEvents.Clear();
+        }
     }
+
+
+    private List<BattleEventArgs> _queuedBattleEvents = [];
+    
+    public bool IsEventsPaused => _pauseBattleEventsInstances
+        .Where(i => i is not null)
+        .Any();
+    private HashSet<PauseBattleEventsInstance> _pauseBattleEventsInstances = [];
+    
+    /// <summary>
+    /// Battle events will be paused unti this scope is disposed
+    /// </summary>
+    public PauseBattleEventsInstance PauseBattleEventScope => new(this);
+
+
     private async Task CheckForForfeitOrInfoAsync()
     {
         using (CancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
@@ -571,7 +613,7 @@ public class BattleSimulator : IBattleEventListener
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
             var shouldDoTurn = !ActiveCharacter.IsDead;
             if (!shouldDoTurn)
-                AddAdditionalBattleText($"{ActiveCharacter} cannot take their turn because they died in the process of taking their turn!");
+                AddAdditionalBattleText($"{ActiveCharacter.NameWithAlphabetIdentifier} cannot take their turn because they died in the process of taking their turn!");
 
             HandleCharactersPendingRevive();
             var additionalText = _additionalTextStringBuilder.ToString();

@@ -44,7 +44,7 @@ public class MuscleFlex : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText(new($"{owner}... flexed his muscles?"));
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner}... flexed his muscles?");
         return new UsageResult(this)
         {
             Text = $"Hmph!",
@@ -71,7 +71,7 @@ public class ThumbsUp : Skill
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText(new($"{owner} is cheering {target} on!"));
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner} is cheering {target} on!");
         return new UsageResult(this)
         {
             UsageType = usageType,
