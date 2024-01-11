@@ -39,9 +39,14 @@ public class YourLifeEnergyIsMine : Skill
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
     }
-
+    
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
+        foreach (var i in owner.Team)
+        {
+            if(i == owner) continue;
+            i.Health = 0;
+        }
         var damageResult = target.Damage(new DamageArgs(this)
         {
             Damage = owner.Attack * 2.5,
@@ -89,7 +94,7 @@ public class Arise : Surge
     
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalText($"With her necromancy powers, {owner} attempts to bring back all her dead allies!");
+        owner.CurrentBattle.AddAdditionalBattleText($"With her necromancy powers, {owner} attempts to bring back all her dead allies!");
 
         foreach (var i in GetPossibleTargets(owner))
         {

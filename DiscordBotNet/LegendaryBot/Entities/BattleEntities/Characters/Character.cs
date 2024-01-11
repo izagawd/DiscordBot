@@ -133,11 +133,11 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 if (added)
                 {
-                    CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been inflicted on {this}!");
+                    CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been inflicted on {this}!");
                 }
                 else
                 {
-                    CurrentBattle.AddAdditionalText($"{this} resisted {statusEffect.Name}!");
+                    CurrentBattle.AddAdditionalBattleText($"{this} resisted {statusEffect.Name}!");
                 }
             }
 
@@ -155,12 +155,12 @@ public abstract partial  class Character : BattleEntity, ISetup
                 onlyStatus.Duration = statusEffect.Duration;
             }
             onlyStatus.RenewWith(statusEffect);
-            CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been optimized on {this}!");
+            CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been optimized on {this}!");
 
 
             return true;
         }
-        CurrentBattle.AddAdditionalText($"{this} cannot take any more {statusEffect.Name}!");
+        CurrentBattle.AddAdditionalBattleText($"{this} cannot take any more {statusEffect.Name}!");
         return false;
     }
     /// <summary>
@@ -195,9 +195,10 @@ public abstract partial  class Character : BattleEntity, ISetup
         if (increaseAmount < 0) throw new ArgumentException("Increase amount should be at least 0");
         CombatReadiness += increaseAmount;
         if(announceIncrease && increaseAmount > 0)
-            CurrentBattle.AddAdditionalText($"{this} combat readiness increased by {increaseAmount}%");
+            CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier}'s combat readiness has increased by {increaseAmount}%!");
         return increaseAmount;
     }
+
 
     
     /// <param name="decreaseAmount">amount to decrease</param>
@@ -215,14 +216,14 @@ public abstract partial  class Character : BattleEntity, ISetup
             if (BasicFunction.RandomChance(percentToResist))
             {
                 if(announceDecrease)
-                    CurrentBattle.AddAdditionalText($"{this} resisted combat readiness decrease!");
+                    CurrentBattle.AddAdditionalBattleText($"{this} resisted combat readiness decrease!");
                 return 0;
             }
         }
 
         CombatReadiness -= decreaseAmount;
         if(announceDecrease && decreaseAmount > 0)
-            CurrentBattle.AddAdditionalText($"{this} combat readiness has been decreased by {decreaseAmount}%");
+            CurrentBattle.AddAdditionalBattleText($"{this} combat readiness has been decreased by {decreaseAmount}%");
         return decreaseAmount;
     }
 
@@ -288,7 +289,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             if (_health <= 0)
             {
                 _health = 0;
-                CurrentBattle.AddAdditionalText($"{Name} has died");
+                CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} has died...");
                 _statusEffects.Clear();
                 CurrentBattle.InvokeBattleEvent(new CharacterDeathEventArgs(this));
                 
@@ -307,7 +308,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         if(RevivePending) return;
         RevivePending = true;
-        CurrentBattle.AddAdditionalText($"{Name} has been revived");
+        CurrentBattle.AddAdditionalBattleText($"{Name} has been revived");
     }
     /// <summary>
     /// 
@@ -396,7 +397,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         if(IsDead && !RevivePending) return;
         _shouldTakeExtraTurn = true;
-        CurrentBattle.AddAdditionalText($"{this} has been granted an extra turn");
+        CurrentBattle.AddAdditionalBattleText($"{this} has been granted an extra turn");
     }
     public override string IconUrl =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
     public float ShieldPercentage
@@ -1301,7 +1302,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             damageText = "A critical hit! " + damageText;
 
     
-        CurrentBattle.AddAdditionalText(damageText);
+        CurrentBattle.AddAdditionalBattleText(damageText);
         
         TakeDamageWhileConsideringShield(actualDamage);
         DamageResult damageResult;
@@ -1376,7 +1377,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             damageText = $"{this} took $ fixed damage!";
         }
-        CurrentBattle.AddAdditionalText(damageText.Replace("$", damage.Round().ToString()));
+        CurrentBattle.AddAdditionalBattleText(damageText.Replace("$", damage.Round().ToString()));
         TakeDamageWhileConsideringShield(damage.Round());
         DamageResult damageResult;
         if (damageArgs.Move is not null)
@@ -1430,7 +1431,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             recoveryText = $"{this} recovered $ health!";
         
         if(announceHealing)
-            CurrentBattle.AddAdditionalText(recoveryText.Replace("$",healthToRecover.ToString()));
+            CurrentBattle.AddAdditionalBattleText(recoveryText.Replace("$",healthToRecover.ToString()));
         
 
         return healthToRecover;
@@ -1461,8 +1462,6 @@ public abstract partial  class Character : BattleEntity, ISetup
         
         var levelBefore = Level;
         Experience += exp;
-
-
         var nextLevelEXP =GetRequiredExperienceToNextLevel(Level);
         while (Experience >= nextLevelEXP && Level < MaxLevel)
         {
@@ -1470,7 +1469,6 @@ public abstract partial  class Character : BattleEntity, ISetup
             Level += 1;
             nextLevelEXP = GetRequiredExperienceToNextLevel(Level);
         }
-
         expGainText += $"{this} gained {exp} exp";
         if (levelBefore != Level)
         {
@@ -1489,8 +1487,5 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         Experience = experience;
     }
-
-
-
-
+    
 }

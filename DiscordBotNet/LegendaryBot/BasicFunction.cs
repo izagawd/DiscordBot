@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
@@ -7,6 +8,36 @@ namespace DiscordBotNet.LegendaryBot;
 
 public static class BasicFunction
 {
+    public static string CommaConcatenator(IEnumerable<string> values)
+    {
+        var valuesArray = values.ToArray();
+        int length = valuesArray.Length;
+
+        if (length == 0)
+        {
+            return "";
+        }
+        if (length == 1)
+        {
+            return valuesArray[0];
+        }
+        if (length == 2)
+        {
+            return $"{valuesArray[0]} and {valuesArray[1]}";
+        }
+    
+        var resultBuilder = new StringBuilder($"{valuesArray[0]}, {valuesArray[1]}");
+
+        for (int i = 2; i < length - 1; i++)
+        {
+            resultBuilder.Append($", {valuesArray[i]}");
+        }
+
+        resultBuilder.Append($" and {valuesArray[length - 1]}");
+
+        return resultBuilder.ToString();
+        
+    }
     private static ConcurrentDictionary<string, Image<Rgba32>> EntityImages { get; } = new();
 
     private static MemoryCache UserImages { get; } = new(new MemoryCacheOptions());

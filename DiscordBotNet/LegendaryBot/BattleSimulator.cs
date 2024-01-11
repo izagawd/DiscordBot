@@ -470,10 +470,15 @@ public class BattleSimulator : IBattleEventListener
             interaction: interaction, editInteraction: isInteractionEdit);
     }
 
-    public void AddAdditionalText(string additionalText)
+
+
+    public void AddAdditionalBattleText( string battleText)
     {
-        _additionalTextStringBuilder.Append($"{additionalText}\n");
+        if(battleText is null) return;
+        _additionalTextStringBuilder.Append($"\n{battleText}");
     }
+
+
     /// <summary>
     /// Initiates a new battle between two teams, by sending a message to a channel
     /// </summary>
@@ -566,7 +571,7 @@ public class BattleSimulator : IBattleEventListener
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
             var shouldDoTurn = !ActiveCharacter.IsDead;
             if (!shouldDoTurn)
-                AddAdditionalText($"{ActiveCharacter} cannot take their turn because they died in the process of taking their turn!");
+                AddAdditionalBattleText($"{ActiveCharacter} cannot take their turn because they died in the process of taking their turn!");
 
             HandleCharactersPendingRevive();
             var additionalText = _additionalTextStringBuilder.ToString();

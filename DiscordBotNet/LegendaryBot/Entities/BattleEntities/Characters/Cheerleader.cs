@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Moves;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 
@@ -22,7 +23,7 @@ public class  YouCanDoIt : Skill
     {
         target.IncreaseCombatReadiness(100);
         target.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
-        owner.CurrentBattle.AddAdditionalText($"{owner} wants {target} to prevail!");
+        owner.CurrentBattle.AddAdditionalBattleText(new($"{owner} wants {target} to prevail!"));
         return new UsageResult(this)
         {
             TargetType = TargetType.SingleTarget,
@@ -48,13 +49,17 @@ public class YouCanMakeItEveryone : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalText($"{owner} encourages her allies!");
-        foreach (var i in owner.Team)
+        owner.CurrentBattle.AddAdditionalBattleText(new($"{owner} encourages her allies!"));
+        var targets = GetPossibleTargets(owner).ToArray();
+        foreach (var i in targets)
         {
             i.IncreaseCombatReadiness(CombatIncreaseAmount);
+  
+        }
+        foreach (var i in targets)
+        {
             i.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
         }
-
         return new UsageResult(this)
         {
             TargetType = TargetType.AOE,
@@ -68,6 +73,11 @@ public class YouCanMakeItEveryone : Surge
 }
 public class Cheerleader : Character
 {
+    public override int GetSpeedValue(int points)
+    {
+        return (base.GetSpeedValue(points) * 1.2).Round();
+    }
+
     public override BasicAttack BasicAttack { get; } = new BasicAttackSample();
     public override Skill? Skill { get; } = new YouCanDoIt();
     public override Surge? Surge { get; } = new YouCanMakeItEveryone();
