@@ -23,80 +23,11 @@ public class StatusEffectSet : ISet<StatusEffect>
 /// <returns>true if the status effect was successfully added</returns>
     public bool Add(StatusEffect item)
     {
-        return Add(item, null);
+        return statusEffects.Add(item);
     }
 
   
 
-    public void AddRange(IEnumerable<StatusEffect> statusEffectEnumerable)
-    {
-        foreach (var i in statusEffectEnumerable)
-        {
-            Add(i);
-        }
-    }
-    /// <param name="effectiveness">the effectiveness of the caster</param>
-/// <returns>true if the status effect was successfully added</returns>
-    public bool Add(StatusEffect statusEffect,int? effectiveness)
-    {
-        
-        if (Affected.IsDead && !Affected.RevivePending) return false;
-        var arrayOfType =
-            this.Where(i => i.GetType() == statusEffect.GetType())
-                .ToArray();
-
-        if (arrayOfType.Length < statusEffect.MaxStacks)
-        {
-            bool added = false;
-            if (effectiveness is not null && statusEffect.EffectType == StatusEffectType.Debuff)
-            {
-                var percentToResistance =Affected.Resistance -effectiveness;
-                
-                if (percentToResistance < 0) percentToResistance = 0;
-                if (!BasicFunction.RandomChance((int)percentToResistance))
-                {
-                    added = statusEffects.Add(statusEffect);
-                }
-                    
-                
-            }
-            else
-            {
-                added = statusEffects.Add(statusEffect);
-                
-            }
-
-            if (added)
-            {
-                Affected.CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been inflicted on {Affected}!");
-            }
-            else
-            {
-                Affected.CurrentBattle.AddAdditionalText($"{Affected} resisted {statusEffect.Name}!");
-            }
-
-            return added;
-        }
-        if (!statusEffect.IsStackable && arrayOfType.Any() && statusEffect.IsRenewable)
-        {
-            StatusEffect onlyStatus = arrayOfType.First();
-            if (statusEffect.Level > onlyStatus.Level)
-            {
-                onlyStatus.Level = statusEffect.Level;
-            }
-            if (statusEffect.Duration > onlyStatus.Duration)
-            {
-                onlyStatus.Duration = statusEffect.Duration;
-            }
-            onlyStatus.RenewWith(statusEffect);
-            Affected.CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been optimized on {Affected}!");
-
-
-            return true;
-        }
-        Affected.CurrentBattle.AddAdditionalText($"{Affected} cannot take any more {statusEffect.Name}!");
-        return false;
-    }
 
 
 
@@ -154,26 +85,7 @@ public class StatusEffectSet : ISet<StatusEffect>
     {
         return statusEffects.Overlaps(other);
     }
-    /// <summary>
-    /// Dispells (removes) a debuff from the character
-    /// </summary>
-    /// <param name="statusEffect">The status effect to remove</param>
-    /// <param name="effectiveness">If not null, will do some rng based on effectiveness to see whether or not to dispell debuff</param>
-    /// <returns>true if status effect was successfully dispelled</returns>
-    public bool Dispell(StatusEffect statusEffect, int? effectiveness = null)
-    {
-        if (effectiveness is null || statusEffect.EffectType == StatusEffectType.Debuff)
-            return statusEffects.Add(statusEffect);
-        var percentToResistance = Affected.Resistance - effectiveness;
-                
-        if (percentToResistance < 0) percentToResistance = 0;
-        if (!BasicFunction.RandomChance((int)percentToResistance))
-        {
-            return statusEffects.Add(statusEffect);
-        }
-        return false;
-        
-    }
+
     public bool Remove(StatusEffect item)
     {
         return statusEffects.Remove(item);

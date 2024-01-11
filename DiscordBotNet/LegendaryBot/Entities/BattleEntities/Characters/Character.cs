@@ -97,14 +97,139 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
     }
 
+    /// <param name="statusEffect">The status effect to add</param>
+    /// <param name="effectiveness">the effectiveness of the caster. Null to ignore effect resistance</param>
+    /// <returns>true if the status effect was successfully added</returns>
+    public bool AddStatusEffect(StatusEffect statusEffect,int? effectiveness = null, bool announce =  true)
+    {
+        
+        if (IsDead && !RevivePending) return false;
+        var arrayOfType =
+            _statusEffects.Where(i => i.GetType() == statusEffect.GetType())
+                .ToArray();
+
+        if (arrayOfType.Length < statusEffect.MaxStacks)
+        {
+            bool added = false;
+            if (effectiveness is not null && statusEffect.EffectType == StatusEffectType.Debuff)
+            {
+                var percentToResistance =Resistance -effectiveness;
+                
+                if (percentToResistance < 0) percentToResistance = 0;
+                if (!BasicFunction.RandomChance((int)percentToResistance))
+                {
+                    added = _statusEffects.Add(statusEffect);
+                }
+                    
+                
+            }
+            else
+            {
+                added = _statusEffects.Add(statusEffect);
+                
+            }
+
+            if (announce)
+            {
+                if (added)
+                {
+                    CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been inflicted on {this}!");
+                }
+                else
+                {
+                    CurrentBattle.AddAdditionalText($"{this} resisted {statusEffect.Name}!");
+                }
+            }
+
+            return added;
+        }
+        if (!statusEffect.IsStackable && arrayOfType.Any() && statusEffect.IsRenewable)
+        {
+            StatusEffect onlyStatus = arrayOfType.First();
+            if (statusEffect.Level > onlyStatus.Level)
+            {
+                onlyStatus.Level = statusEffect.Level;
+            }
+            if (statusEffect.Duration > onlyStatus.Duration)
+            {
+                onlyStatus.Duration = statusEffect.Duration;
+            }
+            onlyStatus.RenewWith(statusEffect);
+            CurrentBattle.AddAdditionalText($"{statusEffect.Name} has been optimized on {this}!");
+
+
+            return true;
+        }
+        CurrentBattle.AddAdditionalText($"{this} cannot take any more {statusEffect.Name}!");
+        return false;
+    }
+    /// <summary>
+    /// Dispells (removes) a debuff from the character
+    /// </summary>
+    /// <param name="statusEffect">The status effect to remove</param>
+    /// <param name="effectiveness">If not null, will do some rng based on effectiveness to see whether or not to dispell debuff</param>
+    /// <returns>true if status effect was successfully dispelled</returns>
+    public bool DispellStatusEffect(StatusEffect statusEffect, int? effectiveness = null)
+    {
+        if (effectiveness is null || statusEffect.EffectType == StatusEffectType.Debuff)
+            return _statusEffects.Remove(statusEffect);
+
+        if (!BattleFunction.CheckForResist(effectiveness.Value,Resistance))
+        {
+            return _statusEffects.Remove(statusEffect);
+        }
+        return false;
+        
+    }
     [NotMapped]
     public virtual bool IsInStandardBanner => true;
+
+    /// <summary>
+    /// Increases combat readiness
+    /// </summary>
+    /// <param name="increaseAmount"> the amount to increase</param>
+    /// <param name="announceIncrease">whetheer or not to announce the fact that combat readiness was increased</param>
+    /// <returns>The amount of combat readiness increased</returns>
+    public int IncreaseCombatReadiness(int increaseAmount, bool announceIncrease = true)
+    {
+        if (increaseAmount < 0) throw new ArgumentException("Increase amount should be at least 0");
+        CombatReadiness += increaseAmount;
+        if(announceIncrease && increaseAmount > 0)
+            CurrentBattle.AddAdditionalText($"{this} combat readiness increased by {increaseAmount}%");
+        return increaseAmount;
+    }
+
     
+    /// <param name="decreaseAmount">amount to decrease</param>
+    /// <param name="effectiveness">Use if it is resistable</param>
+    /// <param name="announceDecrease">Whether or not to announce the fact that combat readiness was decreased</param>
+    /// <returns>the amount decreased</returns>
+    public int DecreaseCombatReadiness(int decreaseAmount, int? effectiveness = 0, bool announceDecrease = true)
+    {
+        
+        if(decreaseAmount < 0)throw new ArgumentException("Decrease amount should be at least 0");
+        if (effectiveness is not null)
+        {
+            var percentToResist = Resistance - effectiveness.Value;
+            
+            if (BasicFunction.RandomChance(percentToResist))
+            {
+                if(announceDecrease)
+                    CurrentBattle.AddAdditionalText($"{this} resisted combat readiness decrease!");
+                return 0;
+            }
+        }
+
+        CombatReadiness -= decreaseAmount;
+        if(announceDecrease && decreaseAmount > 0)
+            CurrentBattle.AddAdditionalText($"{this} combat readiness has been decreased by {decreaseAmount}%");
+        return decreaseAmount;
+    }
 
     public  Blessing? Blessing { get; set; }
 
 
-    public Barrier? Shield => StatusEffects.OfType<Barrier>().FirstOrDefault();
+    public Barrier? Shield => _statusEffects.OfType<Barrier>().FirstOrDefault();
 
     [NotMapped] public IEnumerable<Move> MoveList => new Move[] { BasicAttack, Skill, Surge }.Where(i => i is not null)
         .ToArray();
@@ -156,7 +281,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             if (_health <= 0 )return;
             var tempMaxHealth = MaxHealth;
 
-            if (value <= 0 && StatusEffects.Any(i => i is Immortality))
+            if (value <= 0 && _statusEffects.Any(i => i is Immortality))
                 value = 1;
             _health = value;
             
@@ -164,7 +289,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 _health = 0;
                 CurrentBattle.AddAdditionalText($"{Name} has died");
-                StatusEffects.Clear();
+                _statusEffects.Clear();
                 CurrentBattle.InvokeBattleEvent(new CharacterDeathEventArgs(this));
                 
             }
@@ -512,7 +637,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         xOffSet = 0;
         yOffSet += moveLength + 5;
 
-        var statusEffectsToUse = StatusEffects.Take(16).ToArray();
+        var statusEffectsToUse = _statusEffects.Take(16).ToArray();
         ConcurrentBag<Image<Rgba32>> statusEffectImages =  new ConcurrentBag<Image<Rgba32>>();
 
         await Parallel.ForEachAsync(statusEffectsToUse, async (statusEffect, images) =>
@@ -898,9 +1023,10 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
     }
 
-    [NotMapped]
-    public StatusEffectSet StatusEffects { get; set; }
+    [NotMapped] private readonly HashSet<StatusEffect> _statusEffects = [];
 
+    [NotMapped]
+    public StatusEffect[] StatusEffectsCopy => _statusEffects.ToArray();
     [NotMapped] public virtual DiscordColor Color { get; protected set; } = DiscordColor.Green;
 
     [NotMapped]
@@ -978,12 +1104,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
     [NotMapped] public BattleSimulator CurrentBattle => Team?.CurrentBattle!;
 
-    public Character() 
-    {
-        StatusEffects = new(this);
-
-    }
-
+    public bool RemoveStatusEffect(StatusEffect statusEffect) => _statusEffects.Remove(statusEffect);
 
     public override int MaxLevel => 120;
     
@@ -1238,7 +1359,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         get
         {
-            return StatusEffects.Any(i => i.OverrideTurnType > 0);
+            return _statusEffects.Any(i => i.OverrideTurnType > 0);
         }
     }
     /// <param name="damageText">if there is a text for the damage, then use this. Use $ in the string and it will be replaced with the damage dealt</param>

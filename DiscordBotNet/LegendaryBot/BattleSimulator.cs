@@ -147,7 +147,7 @@ public class BattleSimulator : IBattleEventListener
             {
                 j.OnBattleEvent(eventArgs,i);
             }
-            foreach (var j in i.StatusEffects)
+            foreach (var j in i.StatusEffectsCopy)
             {
                 j.OnBattleEvent(eventArgs,i);
             }
@@ -192,7 +192,7 @@ public class BattleSimulator : IBattleEventListener
                 statsModifierArgsList.AddRange(statsModifierBlessing.GetAllStatsModifierArgs(i));
             }
 
-            foreach (var j in i.StatusEffects.OfType<IStatsModifier>())
+            foreach (var j in i.StatusEffectsCopy.OfType<IStatsModifier>())
             {
                 statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
             }
@@ -322,12 +322,13 @@ public class BattleSimulator : IBattleEventListener
 
             }
 
-            if (characterToDisplayBattleInfo.StatusEffects.Any())
+            var statusEffectsCopy = characterToDisplayBattleInfo.StatusEffectsCopy;
+            if (characterToDisplayBattleInfo.StatusEffectsCopy.Any())
             {
                 descriptionStringBuilder.Append("Status Effects\n\n");
 
                 Dictionary<StatusEffect, int> statusCounts = [];
-                foreach (var i in characterToDisplayBattleInfo.StatusEffects)
+                foreach (var i in statusEffectsCopy)
                 {
                     var instance = statusCounts.Keys
                         .FirstOrDefault(j => j.GetType() == i.GetType());
@@ -552,14 +553,14 @@ public class BattleSimulator : IBattleEventListener
 
             
             ActiveCharacter.CombatReadiness = 0;
-            foreach (StatusEffect i in ActiveCharacter.StatusEffects.ToArray())
+            foreach (StatusEffect i in ActiveCharacter.StatusEffectsCopy)
             {
 
                 //this code executes for status effects that occur just before the beginning of the turn
                 if (i.ExecuteStatusEffectBeforeTurn)
                 {
                      i.PassTurn(ActiveCharacter);
-                     if (i.Duration <= 0) ActiveCharacter.StatusEffects.Remove(i);
+                     if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
                 }
             }
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
@@ -669,8 +670,9 @@ public class BattleSimulator : IBattleEventListener
             var battleDecision =BattleDecision.Other;
  
             StatusEffect? mostPowerfulStatusEffect = null;
-            if (ActiveCharacter.StatusEffects.Any())
-                mostPowerfulStatusEffect = ActiveCharacter.StatusEffects.OrderByDescending(i => i.OverrideTurnType).First();
+            var copy = ActiveCharacter.StatusEffectsCopy;
+            if (copy.Any())
+                mostPowerfulStatusEffect = copy.OrderByDescending(i => i.OverrideTurnType).First();
         
             if (!shouldDoTurn) await Task.Delay(5000);
  
@@ -839,13 +841,13 @@ public class BattleSimulator : IBattleEventListener
                 }
             }
 
-            foreach (var i in ActiveCharacter.StatusEffects.ToArray())
+            foreach (var i in ActiveCharacter.StatusEffectsCopy)
             {
 
                 if (i.ExecuteStatusEffectAfterTurn)
                 {
                     i.PassTurn(ActiveCharacter);
-                    if (i.Duration <= 0) ActiveCharacter.StatusEffects.Remove(i);
+                    if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
                 }
             }
             InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));

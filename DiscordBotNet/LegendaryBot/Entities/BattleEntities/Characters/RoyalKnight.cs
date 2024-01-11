@@ -35,7 +35,7 @@ public class ShieldBash : BasicAttack
         };
         if (BasicFunction.RandomChance(ShieldStunChanceByBash))
         {
-            target.StatusEffects.Add(new Stun(owner));
+            target.AddStatusEffect(new Stun(owner));
         }
 
         return usageResult;
@@ -57,7 +57,7 @@ public class IWillBeYourShield : Skill
     public int ShieldBasedOnDefense => 300;
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        target.StatusEffects.Add(new Barrier(owner, (ShieldBasedOnDefense * 0.01 * owner.Defense).Round()){Duration = 3});
+        target.AddStatusEffect(new Barrier(owner, (ShieldBasedOnDefense * 0.01 * owner.Defense).Round()){Duration = 3});
 
 
         return new UsageResult(this)
@@ -87,7 +87,7 @@ public class IWillProtectUs : Surge
     {
         foreach (var i in GetPossibleTargets(owner))
         {
-            i.StatusEffects.Add(new DefenseBuff(owner) { Duration = 2 });
+            i.AddStatusEffect(new DefenseBuff(owner) { Duration = 2 });
             
         }
 

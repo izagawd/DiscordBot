@@ -22,7 +22,7 @@ public class GooeyStrike : BasicAttack
         });
         if (BasicFunction.RandomChance(10))
         {
-            target.StatusEffects.Add(new Poison(owner));
+            target.AddStatusEffect(new Poison(owner));
         }
         return new UsageResult(this)
         {

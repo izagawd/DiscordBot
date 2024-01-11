@@ -35,7 +35,7 @@ public class ChamomileSachetWhack : BasicAttack
 
         if (BasicFunction.RandomChance(SleepChance))
         {
-            target.StatusEffects.Add(new Sleep(owner), owner.Effectiveness);
+            target.AddStatusEffect(new Sleep(owner), owner.Effectiveness);
         }
         return result;
     }
@@ -88,12 +88,12 @@ public class LilyOfTheValley : Surge
         {
             if (BasicFunction.RandomChance(PoisonInflictChance))
             {
-                i.StatusEffects.Add(new Poison(owner){Duration = 2}, owner.Effectiveness);
+                i.AddStatusEffect(new Poison(owner){Duration = 2}, owner.Effectiveness);
 
             }
             if (BasicFunction.RandomChance(StunInflictChance))
             {
-                i.StatusEffects.Add(new Stun(owner){Duration = 1}, owner.Effectiveness);
+                i.AddStatusEffect(new Stun(owner){Duration = 1}, owner.Effectiveness);
             }
         }
 

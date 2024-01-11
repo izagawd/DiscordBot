@@ -59,9 +59,10 @@ public class VolcanicEruptionCharging : StatusEffect
     }
     public override void PassTurn(Character affected)
     {
-        if (affected.StatusEffects.Any(i => (int)i.OverrideTurnType > (int)OverrideTurnType))
+        var copy = affected.StatusEffectsCopy;
+        if (affected.StatusEffectsCopy.Any(i => (int)i.OverrideTurnType > (int)OverrideTurnType))
         {
-            affected.StatusEffects.Remove(this);
+            affected.RemoveStatusEffect(this);
             return;
         }
 

@@ -28,6 +28,13 @@ public static  class BattleFunction
 
         return (long)Math.Floor(expGain / 10) + 1;
     }
+
+    public static bool CheckForResist(int effectiveness, int resistance)
+    {
+        var percentToResistance = resistance - effectiveness;
+        if (percentToResistance < 0) percentToResistance = 0;
+        return BasicFunction.RandomChance(percentToResistance);
+    }
     /// <summary>
     /// use it to estimate the maximum tier a level can reach
     /// </summary>

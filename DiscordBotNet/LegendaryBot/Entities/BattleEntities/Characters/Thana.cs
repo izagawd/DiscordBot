@@ -18,7 +18,7 @@ public class SoulAttack : BasicAttack
         });
         if (BasicFunction.RandomChance(25))
         {
-            target.StatusEffects.Add(new Sleep(owner));
+            target.AddStatusEffect(new Sleep(owner));
         }
         return new UsageResult(this)
         {
@@ -101,9 +101,9 @@ public class Arise : Surge
             {
                 duration = 3;
             }
-            i.StatusEffects.Add(new Immortality(owner){Duration = duration});
+            i.AddStatusEffect(new Immortality(owner){Duration = duration});
         }
-        owner.StatusEffects.Add(new AttackBuff(owner) { Duration = 3 });
+        owner.AddStatusEffect(new AttackBuff(owner) { Duration = 3 });
         owner.GrantExtraTurn();
         return new UsageResult(this)
         {

@@ -22,7 +22,7 @@ public class Sleep: StatusEffect
         if(eventArgs is not CharacterDamageEventArgs damageEventArgs) return;
         if(damageEventArgs.DamageResult.DamageReceiver != owner) return;
         if (damageEventArgs.DamageResult.StatusEffect is not null) return;
-        var removed = owner.StatusEffects.Remove(this);
+        var removed = owner.RemoveStatusEffect(this);
         if(removed)
             owner.CurrentBattle.AddAdditionalText($"{this} has been dispelled from {owner} due to an attack!");
     }

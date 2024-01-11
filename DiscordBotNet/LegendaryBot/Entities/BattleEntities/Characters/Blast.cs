@@ -30,7 +30,7 @@ public class MethaneSlap : BasicAttack
         };
         if (BasicFunction.RandomChance(DetonateChance))
         {
-            foreach (var i in target.StatusEffects.OfType<Bomb>())
+            foreach (var i in target.StatusEffectsCopy.OfType<Bomb>())
                 i.Detonate(target,owner);
         }
         return result;
@@ -61,7 +61,7 @@ public class BlowAway : Skill
                 if (BasicFunction.RandomChance(BombInflictChance))
                 {
                                 
-                    i.StatusEffects.Add(new Bomb(owner){Duration = 2}, owner.Effectiveness);
+                    i.AddStatusEffect(new Bomb(owner){Duration = 2}, owner.Effectiveness);
                 }
             }
 
@@ -86,7 +86,7 @@ public class VolcanicEruption : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        var isCharging = owner.StatusEffects.Add(new VolcanicEruptionCharging(owner){Duration = 3});
+        var isCharging = owner.AddStatusEffect(new VolcanicEruptionCharging(owner){Duration = 3});
         if(isCharging)
             owner.CurrentBattle.AddAdditionalText($"{owner} is charging up a very powerful attack!");
         return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner, Text = "What's this?"};

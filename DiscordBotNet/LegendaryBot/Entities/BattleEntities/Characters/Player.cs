@@ -60,7 +60,7 @@ public class FireBall : Skill
         });
         if (BasicFunction.RandomChance(40))
         {
-            target.StatusEffects.Add(new Burn(owner),owner.Effectiveness);
+            target.AddStatusEffect(new Burn(owner),owner.Effectiveness);
         }
 
 
@@ -92,7 +92,7 @@ public class Ignite : Surge
         {
             if (BasicFunction.RandomChance(IgniteChance))
             {
-                target.StatusEffects.Add(new Burn(owner),owner.Effectiveness);
+                target.AddStatusEffect(new Burn(owner),owner.Effectiveness);
             }
         }
 

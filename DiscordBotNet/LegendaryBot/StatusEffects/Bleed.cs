@@ -11,7 +11,7 @@ public class Bleed : StatusEffect, IDetonatable
     public int Attack { get;  }
     public DamageResult? Detonate(Character affected, Character detonator)
     {
-        var removed =affected.StatusEffects.Remove(this);
+        var removed =affected.RemoveStatusEffect(this);
         if (removed) return DoDamage(affected);
         return null;
 

@@ -31,7 +31,7 @@ public class Barrier : StatusEffect
         if (value <= 0)
         {
             value = 0;
-            owner.StatusEffects.Remove(this);
+            owner.RemoveStatusEffect(this);
         }
         _shieldValue = value;
         
