@@ -40,32 +40,13 @@ public class YourLifeEnergyIsMine : Skill
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
     }
-
-    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
-    {
-        base.OnBattleEvent(eventArgs, owner);
-        if (eventArgs is not CharacterDeathEventArgs idk) return;
-        owner.CurrentBattle.AddAdditionalBattleText($"ugh... {idk.Killed} died. sigh");
-    }
-
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        using (owner.CurrentBattle.PauseBattleEventScope)
-        {
-            foreach (var i in owner.Team)
-            {
-                if(i == owner) continue;
-                i.Health = 0;
-            }
-        }
-
-        
         var damageResult = target.Damage(new DamageArgs(this)
         {
             Damage = owner.Attack * 2.5,
             Caster = owner,
             DamageText = $"{owner} sucks the life essence out of {target} and deals $ damage!"
-
         });
         if(damageResult is not null)
             owner.RecoverHealth(damageResult.Damage * 0.2);

@@ -418,15 +418,13 @@ public class BattleSimulator : IBattleEventListener
         }
 
     }
-    
-    
     public class PauseBattleEventsInstance : IDisposable
     {
         private BattleSimulator _battleSimulator;
         public PauseBattleEventsInstance(BattleSimulator battleSimulator)
         {
             _battleSimulator = battleSimulator;
-            battleSimulator._pauseBattleEventsInstances.Add(this);
+            _battleSimulator.pauseCount++;
         }
 
         private bool disposed = false;
@@ -434,27 +432,28 @@ public class BattleSimulator : IBattleEventListener
         public void Dispose()
         {
             if(disposed) return;
-            
-            _battleSimulator._pauseBattleEventsInstances.Remove(this);
+
+            _battleSimulator.pauseCount--;
             disposed = true;
 
             if(_battleSimulator.IsEventsPaused) return;
-            foreach (var i in _battleSimulator._queuedBattleEvents)
+            _battleSimulator.pauseCount = 0;
+            foreach (var i in _battleSimulator._queuedBattleEvents.ToArray())
             {
-               _battleSimulator.InvokeBattleEvent(i);
+                if (_battleSimulator.IsEventsPaused) break;
+                if(!_battleSimulator._queuedBattleEvents.Contains(i)) continue;
+                _battleSimulator._queuedBattleEvents.Remove(i);
+                _battleSimulator.InvokeBattleEvent(i);
             }
-            _battleSimulator._queuedBattleEvents.Clear();
+       
         }
     }
 
 
     private List<BattleEventArgs> _queuedBattleEvents = [];
-    
-    public bool IsEventsPaused => _pauseBattleEventsInstances
-        .Where(i => i is not null)
-        .Any();
-    private HashSet<PauseBattleEventsInstance> _pauseBattleEventsInstances = [];
-    
+    private int pauseCount = 0;
+    public bool IsEventsPaused => pauseCount > 0;
+
     /// <summary>
     /// Battle events will be paused unti this scope is disposed
     /// </summary>
@@ -539,7 +538,7 @@ public class BattleSimulator : IBattleEventListener
         DiscordMessage? messageInput = null, DiscordInteraction? interaction = null,
         DiscordChannel? channel = null, bool editInteraction = true)
     {
-
+        pauseCount = 0;
         _stopped = false;
         _message = null;
         Team1.CurrentBattle = this;
@@ -600,16 +599,20 @@ public class BattleSimulator : IBattleEventListener
 
             
             ActiveCharacter.CombatReadiness = 0;
-            foreach (StatusEffect i in ActiveCharacter.StatusEffectsCopy)
+            using (PauseBattleEventScope)
             {
-
-                //this code executes for status effects that occur just before the beginning of the turn
-                if (i.ExecuteStatusEffectBeforeTurn)
+                foreach (var i in ActiveCharacter.StatusEffectsCopy)
                 {
-                     i.PassTurn(ActiveCharacter);
-                     if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
+
+                    //this code executes for status effects that occur just before the beginning of the turn
+                    if (i.ExecuteStatusEffectBeforeTurn)
+                    {
+                        i.PassTurn(ActiveCharacter);
+                        if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
+                    }
                 }
             }
+
             InvokeBattleEvent(new TurnStartEventArgs(ActiveCharacter));
             var shouldDoTurn = !ActiveCharacter.IsDead;
             if (!shouldDoTurn)
@@ -621,14 +624,10 @@ public class BattleSimulator : IBattleEventListener
             if (additionalText.Length == 0) additionalText = "No definition";
             else if (additionalText.Length > 1024)
                 additionalText = additionalText.Substring(0, 1021) + "...";
-            var name = "";
-            if (ActiveCharacter.Team.UserName is not null)
-            {
-                name = $" ({ActiveCharacter.Team.UserName})";
-            }
+
             DiscordEmbedBuilder embedToEdit = new DiscordEmbedBuilder()
                 .WithTitle("**BATTLE!!!**")
-                .WithAuthor($"{ActiveCharacter} [{ActiveCharacter.AlphabetIdentifier}]{name}", iconUrl: ActiveCharacter.IconUrl)
+                .WithAuthor($"{ActiveCharacter.Name} [{ActiveCharacter.AlphabetIdentifier}]", iconUrl: ActiveCharacter.IconUrl)
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, additionalText)
                 .WithImageUrl("attachment://battle.png");
@@ -888,15 +887,19 @@ public class BattleSimulator : IBattleEventListener
                 }
             }
 
-            foreach (var i in ActiveCharacter.StatusEffectsCopy)
+            using (PauseBattleEventScope)
             {
-
-                if (i.ExecuteStatusEffectAfterTurn)
+                foreach (var i in ActiveCharacter.StatusEffectsCopy)
                 {
-                    i.PassTurn(ActiveCharacter);
-                    if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
+
+                    if (i.ExecuteStatusEffectAfterTurn)
+                    {
+                        i.PassTurn(ActiveCharacter);
+                        if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
+                    }
                 }
             }
+            
             InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
 
             HandleCharactersPendingRevive();

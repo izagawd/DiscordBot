@@ -12,11 +12,7 @@ public class CharacterTeam : ISet<Character>
     /// If the owner of the team is a real person, this should be their discord id
     /// </summary>
     public long? TryGetUserDataId => (this as PlayerTeam)?.UserDataId;
-    /// <summary>
-    /// The name of the owner of the team. Does not need to be a user.<br/>
-    /// But if the owner of the team is a user, this must be set to their id. it probably would be unless I suck at coding 
-    /// </summary>
-    public string? UserName { get; } 
+
     public bool IsPlayerTeam => TryGetUserDataId is not null;
 
     /// <summary>
@@ -184,10 +180,7 @@ public class CharacterTeam : ISet<Character>
 
 
 
-    public CharacterTeam(string userName,params Character[] characters) : this(characters)
-    {
-        UserName = userName;
-    }
+
 
     public bool Contains(Character character)
     {

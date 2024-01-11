@@ -25,12 +25,12 @@ public class PlayerTeam : CharacterTeam
     }
 
 
-    public PlayerTeam(long tryGetUserDataId, string userName,params Character[] characters) : base(userName,characters)
+    public PlayerTeam(long userDataId, params Character[] characters) : base(characters)
     {
-        UserDataId = tryGetUserDataId;
+        UserDataId = userDataId;
         
     }
-    public PlayerTeam(DiscordUser user,params Character[] characters) : this((long)user.Id,user.Username,characters)
+    public PlayerTeam(DiscordUser user,params Character[] characters) : this((long)user.Id,characters)
     {
 
     }
