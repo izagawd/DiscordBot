@@ -5,26 +5,12 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class DefenseDebuff: StatusEffect,IStatsModifier
 {
-    public override bool IsRenewable => true;
 
-    private float DefensePercentage
-    {
-        get
-        {
-            switch (Level)
-            {
-                case 1:
-                    return -30;
-                case 2:
-                    return -50;
-                default:
-                    return -70;
-            }
-        }
-    }
-    public override bool HasLevels => true;
+
+
+
     public override int MaxStacks => 1;
-    public override int MaxLevel => 3;
+
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
 
     public DefenseDebuff( Character caster) : base( caster)
@@ -38,7 +24,7 @@ public class DefenseDebuff: StatusEffect,IStatsModifier
             new ()
             {
                 CharacterToAffect = owner,
-                ValueToChangeWith = DefensePercentage,
+                ValueToChangeWith = -50,
                 WorksAfterGearCalculation = true
             }
         };

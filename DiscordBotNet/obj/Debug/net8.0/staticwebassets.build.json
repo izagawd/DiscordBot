@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "iyj5yaIno3PU1PmNG/pLhuiRO0bIUEA2giIxekgV9qI=",
+  "Hash": "AR4DZxtqi/2Y1YBXUkEslZJ9dnxX43lXVKwHVF/l8UU=",
   "Source": "DiscordBotNet",
   "BasePath": "_content/DiscordBotNet",
   "Mode": "Default",
@@ -91,6 +91,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\battle_images\\characters\\Blast.png"
+    },
+    {
+      "Identity": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\Cheerleader.png",
+      "SourceId": "DiscordBotNet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\",
+      "BasePath": "_content/DiscordBotNet",
+      "RelativePath": "battle_images/characters/Cheerleader.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\battle_images\\characters\\Cheerleader.png"
     },
     {
       "Identity": "C:\\Users\\theiz\\OneDrive\\Documents\\coding\\CS-Workspace\\DiscordBotNet\\wwwroot\\battle_images\\characters\\CoachChad.png",

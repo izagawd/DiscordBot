@@ -6,8 +6,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 public class Frozen : StatusEffect
 {
     public override string Description { get; } = "Makes affected not able to move";
-    public override bool IsRenewable => true;
-    public override bool HasLevels => false;
+
 
     public Frozen(Character caster) : base( caster)
     {

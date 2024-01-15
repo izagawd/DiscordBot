@@ -5,7 +5,6 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 public class Barrier : StatusEffect
 {
     public override string Description { get; } = "Protects the caster with a barrier";
-    public override bool IsRenewable => true;
     public override int MaxStacks => 1;
     public override StatusEffectType EffectType => StatusEffectType.Buff;
     private int _shieldValue;

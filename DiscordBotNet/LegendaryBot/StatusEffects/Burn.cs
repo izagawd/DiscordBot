@@ -8,7 +8,7 @@ public class Burn : StatusEffect, IDetonatable
     public override string Description => "Does damage at the start of the affected's turn. Damage ignores 70% of defense";
     private int _characterAttack;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
-    public override bool HasLevels => false;
+
     public override bool ExecuteStatusEffectAfterTurn => false;
     public Burn( Character caster) : base(caster)
     {

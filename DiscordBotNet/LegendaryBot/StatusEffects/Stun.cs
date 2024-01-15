@@ -6,8 +6,6 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 public class Stun : StatusEffect
 {
     public override string Description { get; } = "Makes affected not able to move";
-    public override bool IsRenewable => true;
-    public override bool HasLevels => false;
 
     public Stun(Character caster) : base( caster)
     {

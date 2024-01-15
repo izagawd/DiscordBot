@@ -12,10 +12,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
 {
     public virtual string Description => "Does the bla bla bla of the bla bla bla";
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/status_effects/{GetType().Name}.png";
-    // is renewable means that if a new status effect of the same type should be added to the character,
-    // if it has a higher level it will override the old ones level. if it has a higher duration it will override
-    // the old ones duration
-    public virtual bool IsRenewable => false;
+
     /// <summary>
     /// Returns true if the status effect is executed after the character's turn
     /// </summary>
@@ -29,16 +26,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
     /// </summary>
     public bool IsStackable => MaxStacks > 1;
 
-    private int _level = 1;
-    
-    /// <summary>
-    /// Returns true if the status effect has a max level higher than 1
-    /// </summary>
-    public virtual bool HasLevels => MaxLevel > 1;
-    /// <summary>
-    /// The max level of a status effects
-    /// </summary>
-    public virtual int MaxLevel => 1;
+
     
 
     public async Task<Image<Rgba32>> GetImageForCombatAsync()
@@ -75,17 +63,17 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
     /// if there is more than one status effect with an override turn type enum number at least 1, it is the status effect with the
     /// highest override turn type enum number that will take effect</summary>
     public virtual OverrideTurnType OverrideTurnType => OverrideTurnType.None;
-   /// <summary>
-   /// Some status effects may have levels. The higher the level, the stronger it is
-   /// </summary>
-    public int Level { get => _level;
-        set { _level = value; if (_level > MaxLevel) _level = MaxLevel; if (_level <= 0) _level = 1; } }
-   /// <summary>
-   /// When status effect renewing has occured this will be called
-   /// </summary>
-   /// <param name="statusEffect">The status effect to renew with. the status effect instance that calls this method will be used as the status effect, not the parameter</param>
-   public virtual void RenewWith(StatusEffect statusEffect)
-    {}
+
+
+    /// <summary>
+    /// When status effect optimizing has occured this will be called
+    /// </summary>
+    /// <param name="statusEffect">The status effect to optimize with. the status effect instance that calls this method will be used as the status effect, not the parameter</param>
+    public virtual void OptimizeWith(StatusEffect statusEffect)
+    {
+        if (statusEffect.Duration > Duration)
+            Duration = statusEffect.Duration;
+    }
     public virtual int MaxStacks => int.MaxValue;
     /// <summary>
     /// The duration of the status effect

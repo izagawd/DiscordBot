@@ -102,8 +102,8 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// <returns>true if the status effect was successfully added</returns>
     public bool AddStatusEffect(StatusEffect statusEffect,int? effectiveness = null, bool announce =  true)
     {
-        
-        if (IsDead && !RevivePending) return false;
+        if (statusEffect is null) return false;
+        if (IsDead) return false;
         var arrayOfType =
             _statusEffects.Where(i => i.GetType() == statusEffect.GetType())
                 .ToArray();
@@ -133,7 +133,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 if (added)
                 {
-                    CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been inflicted on {NameWithAlphabetIdentifier}!");
+                    CurrentBattle.AddAdditionalBattleText(new StatusEffectBattleText(this,statusEffect));
                 }
                 else
                 {
@@ -143,19 +143,12 @@ public abstract partial  class Character : BattleEntity, ISetup
 
             return added;
         }
-        if (!statusEffect.IsStackable && arrayOfType.Any() && statusEffect.IsRenewable)
+        if (!statusEffect.IsStackable && arrayOfType.Any())
         {
-            StatusEffect onlyStatus = arrayOfType.First();
-            if (statusEffect.Level > onlyStatus.Level)
-            {
-                onlyStatus.Level = statusEffect.Level;
-            }
-            if (statusEffect.Duration > onlyStatus.Duration)
-            {
-                onlyStatus.Duration = statusEffect.Duration;
-            }
-            onlyStatus.RenewWith(statusEffect);
-            CurrentBattle.AddAdditionalBattleText($"{statusEffect.Name} has been optimized on {NameWithAlphabetIdentifier}!");
+            var onlyStatus = arrayOfType.First();
+
+            onlyStatus.OptimizeWith(statusEffect);
+            CurrentBattle.AddAdditionalBattleText(new StatusEffectBattleText(this,statusEffect,true));
 
 
             return true;
@@ -195,10 +188,9 @@ public abstract partial  class Character : BattleEntity, ISetup
         if (increaseAmount < 0) throw new ArgumentException("Increase amount should be at least 0");
         CombatReadiness += increaseAmount;
         if(announceIncrease && increaseAmount > 0)
-            CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier}'s combat readiness has increased by {increaseAmount}%!");
+            CurrentBattle.AddAdditionalBattleText(new CombatReadinessChangeBattleText(this, increaseAmount));
         return increaseAmount;
     }
-
 
     
     /// <param name="decreaseAmount">amount to decrease</param>
@@ -223,7 +215,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
         CombatReadiness -= decreaseAmount;
         if(announceDecrease && decreaseAmount > 0)
-            CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} combat readiness has been decreased by {decreaseAmount}%");
+            CurrentBattle.AddAdditionalBattleText(new CombatReadinessChangeBattleText(this, -decreaseAmount));
         return decreaseAmount;
     }
 
@@ -277,7 +269,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     [NotMapped]
     public virtual int Health { 
         get => _health;
-         set
+        set
         {
             if (_health <= 0 )return;
             var tempMaxHealth = MaxHealth;
@@ -289,7 +281,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             if (_health <= 0)
             {
                 _health = 0;
-                CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} has died...");
+                CurrentBattle.AddAdditionalBattleText(new DeathBattleText(this));
                 _statusEffects.Clear();
                 CurrentBattle.InvokeBattleEvent(new CharacterDeathEventArgs(this));
                 
@@ -298,33 +290,17 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
     }
 
-
-    public bool RevivePending { get; protected set; }
     /// <summary>
-    /// Revives a character from the dead. Note: this doesnt revive the character immediately
+    /// Revives a character from the dead.
     /// </summary>
-    /// <param name="onRevive">Optional delegate to call after the character has been revived</param>
     public void Revive()
     {
-        if(RevivePending) return;
-        RevivePending = true;
-        CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} has been revived");
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns>Whether or not the character was revived.</returns>
-    public  bool HandlePendingRevive()
-    {
-        if (!RevivePending) return false;
+        if(!IsDead) return;
         _health = 1;
+        CurrentBattle.AddAdditionalBattleText(new ReviveBattleText(this));
 
-        RevivePending = false;
-        Health += _pendingHealthToRecover;
-        _pendingHealthToRecover = 0;
-        return true;
     }
-    
+
     private bool _shouldTakeExtraTurn;
     [NotMapped]
     public bool ShouldTakeExtraTurn
@@ -395,9 +371,9 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// </summary>
     public void GrantExtraTurn()
     {
-        if(IsDead && !RevivePending) return;
+        if(IsDead) return;
         _shouldTakeExtraTurn = true;
-        CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} has been granted an extra turn");
+        CurrentBattle.AddAdditionalBattleText(new ExtraTurnBattleText(this));
     }
     public override string IconUrl =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
     public float ShieldPercentage
@@ -1424,25 +1400,19 @@ public abstract partial  class Character : BattleEntity, ISetup
     public virtual int RecoverHealth(double toRecover,
         string? recoveryText = null, bool announceHealing = true)
     {
-        if (IsDead && !RevivePending) return 0;
+        if (IsDead) return 0;
         var healthToRecover = toRecover.Round();
-        if (!IsDead)
-            Health += healthToRecover;
-        else
-        {
-            _pendingHealthToRecover += healthToRecover;
-        }
+
+        Health += healthToRecover;
         if (recoveryText is null)
             recoveryText = $"{this} recovered $ health!";
-        
         if(announceHealing)
             CurrentBattle.AddAdditionalBattleText(recoveryText.Replace("$",healthToRecover.ToString()));
         
-
         return healthToRecover;
     }
 
-    private int _pendingHealthToRecover = 0;
+
     /// <summary>
     /// checks if it is currently the character's turn
     /// </summary>

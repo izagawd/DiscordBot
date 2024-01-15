@@ -5,6 +5,7 @@ using System.Text;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Moves;
@@ -159,25 +160,7 @@ public class BattleSimulator : IBattleEventListener
         }
     }
 
-    /// <summary>
-    /// Handles characters that their reviving is pending
-    /// </summary>
-    private void HandleCharactersPendingRevive()
-    {
-        List<Character> revivedCharacters = [];
-        foreach (var i in Characters.Where(j => j.RevivePending))
-        {
-            var revived = i.HandlePendingRevive();
-            if (revived)
-            {
-                revivedCharacters.Add(i);
-            }
-        }
-        foreach (var i in revivedCharacters)
-        {
-            InvokeBattleEvent(new CharacterReviveEventArgs(i));
-        }
-    }
+
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
         List<StatsModifierArgs> statsModifierArgsList = [];
@@ -209,7 +192,7 @@ public class BattleSimulator : IBattleEventListener
 
 
     private string? _mainText = "battle begins";
-    private StringBuilder _additionalTextStringBuilder = new("Have fun!");
+
     /// <summary>
     /// The character who is currently taking their tunr
     /// </summary>
@@ -254,7 +237,7 @@ public class BattleSimulator : IBattleEventListener
         
         foreach (var i in CharacterTeams)
         {
-            if (!i.All(j => j.IsDead && !j.RevivePending)) continue;
+            if (!i.All(j => j.IsDead)) continue;
             _winners = CharacterTeams.First(k => k != i);
             break;
         }
@@ -513,10 +496,13 @@ public class BattleSimulator : IBattleEventListener
 
 
 
-    public void AddAdditionalBattleText( string battleText)
+
+    private List<AdditionalBattleText> _battleTextInstances = ["Have fun!"];
+
+    public void AddAdditionalBattleText(AdditionalBattleText additionalBattleTextInstance)
     {
-        if(battleText is null) return;
-        _additionalTextStringBuilder.Append($"\n{battleText}");
+        if(additionalBattleTextInstance is null) return;
+       _battleTextInstances.Add(additionalBattleTextInstance);
     }
 
 
@@ -579,13 +565,10 @@ public class BattleSimulator : IBattleEventListener
             }
             while (!Characters.Any(i => i.CombatReadiness >= 100 && !i.IsDead) && !extraTurnGranted)
             {
-                
                 foreach (var j in Characters)
                 {
-                    if(!j.IsDead) j.CombatReadiness +=  (0.0025 * j.Speed);
+                    if(!j.IsDead) j.CombatReadiness +=  0.0025 * j.Speed;
                 }
-     
-                
             }
 
             if (!extraTurnGranted)
@@ -617,9 +600,13 @@ public class BattleSimulator : IBattleEventListener
             var shouldDoTurn = !ActiveCharacter.IsDead;
             if (!shouldDoTurn)
                 AddAdditionalBattleText($"{ActiveCharacter.NameWithAlphabetIdentifier} cannot take their turn because they died in the process of taking their turn!");
-
-            HandleCharactersPendingRevive();
-            var additionalText = _additionalTextStringBuilder.ToString();
+            
+            
+            
+            var additionalText =AdditionalBattleText
+                .Combine(_battleTextInstances)
+                .Select(i => i.Text).Join("\n");
+            _battleTextInstances.Clear();
 
             if (additionalText.Length == 0) additionalText = "No definition";
             else if (additionalText.Length > 1024)
@@ -632,7 +619,7 @@ public class BattleSimulator : IBattleEventListener
                 .AddField(_mainText, additionalText)
                 .WithImageUrl("attachment://battle.png");
 
-            _additionalTextStringBuilder.Clear();
+  
             using var combatImage = await GetCombatImageAsync();
     
             await using var stream = new MemoryStream();
@@ -902,7 +889,7 @@ public class BattleSimulator : IBattleEventListener
             
             InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
 
-            HandleCharactersPendingRevive();
+  
 
 
         }

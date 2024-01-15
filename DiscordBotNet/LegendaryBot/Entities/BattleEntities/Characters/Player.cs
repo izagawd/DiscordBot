@@ -50,19 +50,22 @@ public class FireBall : Skill
     public override int MaxCooldown=> 2;
   
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
-    {  
-        DamageResult damageResult = target.Damage(      new DamageArgs(this)
+    {
+        DamageResult? damageResult;
+        using (owner.CurrentBattle.PauseBattleEventScope)
         {
-            Damage = owner.Attack * 2.4,
-            Caster = owner,
-            CanCrit = true,
-            DamageText =$"{owner} threw a fireball at {target} and dealt $ damage!",
-        });
-        if (BasicFunction.RandomChance(40))
-        {
-            target.AddStatusEffect(new Burn(owner),owner.Effectiveness);
+            
+            damageResult = target.Damage(      new DamageArgs(this)
+            {
+                Damage = owner.Attack * 2.4,
+                Caster = owner,
+                DamageText =$"{owner} threw a fireball at {target} and dealt $ damage!",
+            });
+            if (BasicFunction.RandomChance(10))
+            {
+                target.AddStatusEffect(new Burn(owner),owner.Effectiveness);
+            }
         }
-
 
         return new UsageResult(this)
         {
@@ -88,7 +91,10 @@ public class Ignite : Surge
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} " +
-                                                        $"attempts to make a human torch out of {target.NameWithAlphabetIdentifier}!");
+               
+                                                    $"attempts to make a human torch out of {target.NameWithAlphabetIdentifier}!");
+        
+        
         for (int i = 0; i < 3; i++)
         {
             if (BasicFunction.RandomChance(IgniteChance))

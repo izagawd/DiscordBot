@@ -35,9 +35,11 @@ public static class Bot
 
 
 
-    private static readonly IEnumerable<Type> AllAssemblyTypes = Assembly
+    private static readonly IEnumerable<Type> AllAssemblyTypes =
+        Assembly
         .GetExecutingAssembly()
-        .GetTypes().ToImmutableArray();
+        .GetTypes()
+        .ToImmutableArray();
 
     private static async Task DoShit()
     {

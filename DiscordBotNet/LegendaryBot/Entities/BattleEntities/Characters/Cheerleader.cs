@@ -50,16 +50,22 @@ public class YouCanMakeItEveryone : Surge
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         owner.CurrentBattle.AddAdditionalBattleText($"{owner} encourages her allies!");
+
         var targets = GetPossibleTargets(owner).ToArray();
-        foreach (var i in targets)
+
+        using (owner.CurrentBattle.PauseBattleEventScope)
         {
-            i.IncreaseCombatReadiness(CombatIncreaseAmount);
-  
+            foreach (var i in targets)
+            {
+                i.IncreaseCombatReadiness(CombatIncreaseAmount);
+            }
+            foreach (var i in targets)
+            {
+                i.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
+            }
+
         }
-        foreach (var i in targets)
-        {
-            i.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
-        }
+
         return new UsageResult(this)
         {
             TargetType = TargetType.AOE,
