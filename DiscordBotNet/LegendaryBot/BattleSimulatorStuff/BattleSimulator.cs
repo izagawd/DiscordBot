@@ -66,23 +66,17 @@ public class BattleSimulator : IBattleEventListener
         int yOffset = 0;
         IImageProcessingContext imageCtx = null!;
         image.Mutate(ctx => imageCtx = ctx);
-        var characterImagesInTeam1 = new ConcurrentDictionary<Character,Image<Rgba32>>();
-        var characterImagesInTeam2 = new ConcurrentDictionary<Character, Image<Rgba32>>();
+        var characterImagesDictionary = new ConcurrentDictionary<Character,Image<Rgba32>>();
         await Parallel.ForEachAsync(Characters, async (character, token) =>
         {
-            if (character.Team == Team1)
-                characterImagesInTeam1[character] = await character.GetCombatImageAsync();
-            else
-                characterImagesInTeam2[character] = await character.GetCombatImageAsync();
+            characterImagesDictionary[character] = await character.GetCombatImageAsync();
         });
         foreach (var i in CharacterTeams)
         {
-            var characterImagesInTeam = characterImagesInTeam1;
-            if (i == Team2)
-                characterImagesInTeam = characterImagesInTeam2;
+
             foreach (var j in i)
             {
-                using var gottenImage = characterImagesInTeam[j];
+                using var gottenImage = characterImagesDictionary[j];
                 if (gottenImage.Width > widest)
                 {
                     widest = gottenImage.Width;

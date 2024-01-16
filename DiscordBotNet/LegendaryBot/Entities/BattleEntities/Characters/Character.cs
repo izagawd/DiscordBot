@@ -7,6 +7,7 @@ using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.DialogueNamespace;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 
@@ -97,13 +98,63 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
     }
 
+
+    public void AddStatusEffects(IEnumerable<StatusEffect> statusEffects, int? effectiveness = null,
+        bool announce = true)
+    {
+  
+        var statusEffectsAsArray = statusEffects.ToArray();
+        if (!announce)
+        {
+            foreach (var i in statusEffects)
+            {
+                AddStatusEffect(i, effectiveness, false);
+            }
+            return;
+        }
+
+        List<StatusEffect> resisted = [];
+        List<StatusEffect> succeeded = [];
+        List<StatusEffect> failed = [];
+
+        foreach (var i in statusEffectsAsArray)
+        {
+            var result = AddStatusEffect(i, effectiveness, false);
+            switch (result)
+            {
+                case StatusEffectInflictResult.Resisted:
+                    resisted.Add(i);
+                    break;
+                case StatusEffectInflictResult.Succeeded:
+                    succeeded.Add(i);
+                    break;
+                default:
+                    failed.Add(i);
+                    break;
+            }
+        }
+        
+        
+        
+        if(succeeded.Count > 0)
+            CurrentBattle.AddAdditionalBattleText(new StatusEffectInflictBattleText(this,StatusEffectInflictResult.Succeeded
+                ,succeeded.ToArray()));
+        if(resisted.Count > 0)
+            CurrentBattle.AddAdditionalBattleText(new StatusEffectInflictBattleText(this,StatusEffectInflictResult.Resisted
+                ,resisted.ToArray()));
+        if(failed.Count > 0)
+            CurrentBattle.AddAdditionalBattleText(new StatusEffectInflictBattleText(this,StatusEffectInflictResult.Failed
+                ,failed.ToArray()));
+        
+    }
     /// <param name="statusEffect">The status effect to add</param>
     /// <param name="effectiveness">the effectiveness of the caster. Null to ignore effect resistance</param>
     /// <returns>true if the status effect was successfully added</returns>
-    public bool AddStatusEffect(StatusEffect statusEffect,int? effectiveness = null, bool announce =  true)
+    public StatusEffectInflictResult AddStatusEffect(StatusEffect statusEffect,int? effectiveness = null, bool announce =  true)
     {
-        if (statusEffect is null) return false;
-        if (IsDead) return false;
+        var inflictResult = StatusEffectInflictResult.Failed;
+        if (statusEffect is null) return StatusEffectInflictResult.Failed;
+        if (IsDead) return StatusEffectInflictResult.Failed;
         var arrayOfType =
             _statusEffects.Where(i => i.GetType() == statusEffect.GetType())
                 .ToArray();
@@ -120,7 +171,6 @@ public abstract partial  class Character : BattleEntity, ISetup
                 {
                     added = _statusEffects.Add(statusEffect);
                 }
-                    
                 
             }
             else
@@ -128,33 +178,33 @@ public abstract partial  class Character : BattleEntity, ISetup
                 added = _statusEffects.Add(statusEffect);
                 
             }
-
+            inflictResult = StatusEffectInflictResult.Resisted;
+            if (added) 
+                inflictResult =  StatusEffectInflictResult.Succeeded;
             if (announce)
             {
-                if (added)
-                {
-                    CurrentBattle.AddAdditionalBattleText(new StatusEffectBattleText(this,statusEffect));
-                }
-                else
-                {
-                    CurrentBattle.AddAdditionalBattleText($"{this} resisted {statusEffect.Name}!");
-                }
+                CurrentBattle.AddAdditionalBattleText(new StatusEffectInflictBattleText(this,inflictResult, statusEffect));
             }
+            return inflictResult;
 
-            return added;
+
         }
         if (!statusEffect.IsStackable && arrayOfType.Any())
         {
             var onlyStatus = arrayOfType.First();
 
             onlyStatus.OptimizeWith(statusEffect);
-            CurrentBattle.AddAdditionalBattleText(new StatusEffectBattleText(this,statusEffect,true));
+            CurrentBattle.AddAdditionalBattleText(new StatusEffectInflictBattleText(this,StatusEffectInflictResult.Succeeded, statusEffect));
 
 
-            return true;
+            return StatusEffectInflictResult.Succeeded;
         }
-        CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} cannot take any more {statusEffect.Name}!");
-        return false;
+        inflictResult = StatusEffectInflictResult.Failed;
+        if (announce)
+        {
+            CurrentBattle.AddAdditionalBattleText(new StatusEffectInflictBattleText(this,inflictResult, statusEffect));
+        }
+        return inflictResult;
     }
     /// <summary>
     /// Dispells (removes) a debuff from the character
@@ -615,15 +665,16 @@ public abstract partial  class Character : BattleEntity, ISetup
         yOffSet += moveLength + 5;
 
         var statusEffectsToUse = _statusEffects.Take(16).ToArray();
-        ConcurrentBag<Image<Rgba32>> statusEffectImages =  new ConcurrentBag<Image<Rgba32>>();
+        var statusEffectImages =  new ConcurrentDictionary<StatusEffect,Image<Rgba32>>();
 
         await Parallel.ForEachAsync(statusEffectsToUse, async (statusEffect, images) =>
         {
-            statusEffectImages.Add(await statusEffect.GetImageForCombatAsync());
+            
+            statusEffectImages.TryAdd(statusEffect, await statusEffect.GetImageForCombatAsync());
         });
-        foreach (var statusImage in statusEffectImages)
+        foreach (var i in statusEffectsToUse)
         {
-
+            var statusImage = statusEffectImages[i];
             var statusLength = statusImage.Size.Width;
             if (xOffSet + statusLength + 2 >= 185)
             {
@@ -1463,4 +1514,8 @@ public abstract partial  class Character : BattleEntity, ISetup
         Experience = experience;
     }
     
+}
+public enum StatusEffectInflictResult
+{
+    Succeeded, Resisted, Failed
 }

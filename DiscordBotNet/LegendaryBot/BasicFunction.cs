@@ -12,29 +12,15 @@ public static class BasicFunction
     {
         var valuesArray = values.ToArray();
         int length = valuesArray.Length;
-
-        if (length == 0)
-        {
-            return "";
-        }
-        if (length == 1)
-        {
-            return valuesArray[0];
-        }
-        if (length == 2)
-        {
-            return $"{valuesArray[0]} and {valuesArray[1]}";
-        }
-    
+        if (length == 0) return "";
+        if (length == 1) return valuesArray[0];
+        if (length == 2) return $"{valuesArray[0]} and {valuesArray[1]}";
         var resultBuilder = new StringBuilder($"{valuesArray[0]}, {valuesArray[1]}");
-
         for (int i = 2; i < length - 1; i++)
         {
             resultBuilder.Append($", {valuesArray[i]}");
         }
-
         resultBuilder.Append($" and {valuesArray[length - 1]}");
-
         return resultBuilder.ToString();
         
     }

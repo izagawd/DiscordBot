@@ -5,9 +5,10 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 public partial class Character
 {
-    class StatusEffectBattleText : AdditionalBattleText
+    class StatusEffectInflictBattleText : AdditionalBattleText
     {
-        private StatusEffect _statusEffect;
+        private StatusEffectInflictResult _effectInflictResult;
+        private List<StatusEffect> _statusEffects = [];
         private List<Character> _affectedCharacters;
 
         public override string Text
@@ -16,36 +17,69 @@ public partial class Character
             {
                 var noun = "has";
 
-                if (_affectedCharacters.Count > 1)
+                if (_statusEffects.Count > 1)
                     noun = "have";
                 var concatenated = BasicFunction.CommaConcatenator(_affectedCharacters
                     .Select(i => i.NameWithAlphabetIdentifier));
-                var whatsDone = "added to";
-                if (_isAnOptimization)
-                    whatsDone = "optimized on";
-                return $"{_statusEffect.Name} {noun} been {whatsDone} {concatenated}";
+
+                Dictionary<StatusEffect, int> countTracker = [];
+
+                foreach (var i in _statusEffects)
+                {
+                    var theStatus = countTracker.Keys.FirstOrDefault(j => j.GetType() == i.GetType());
+                    if (theStatus is null)
+                    {
+                        countTracker[i] = 1;
+                    }
+                    else
+                    {
+                        countTracker[theStatus]++;
+                    }
+                }
+
+                var statusEffectsString = BasicFunction.CommaConcatenator(countTracker.Select(i =>
+                {
+                    string toUse = i.Key.Name;
+                    if (i.Value > 1) toUse += $" x{i.Value}";
+                    return toUse;
+                }));
+                switch (_effectInflictResult)
+                {
+                    case StatusEffectInflictResult.Succeeded:
+                        return $"{statusEffectsString} " +
+                               $"{noun} been inflicted on {concatenated}!";
+                    case StatusEffectInflictResult.Resisted:
+                        return $"{concatenated} resisted {statusEffectsString}!";
+                    default:
+                        return $"{statusEffectsString} " +
+                               $"failed to be inflicted on {concatenated}!";
+                }
+
             }
         }
 
-        private bool _isAnOptimization = false;
-        public StatusEffectBattleText(Character character, StatusEffect statusEffect, bool isAnOptimization = false)
+        public StatusEffectInflictBattleText(Character character, StatusEffectInflictResult effectInflictResult, params StatusEffect[] statusEffects)
         {
             _affectedCharacters = [character];
-            _statusEffect = statusEffect;
-            _isAnOptimization = isAnOptimization;
+            _statusEffects = [..statusEffects];
+            _effectInflictResult = effectInflictResult;
         }
-        protected StatusEffectBattleText(){}
+        protected StatusEffectInflictBattleText(){}
         public override AdditionalBattleText? Merge(AdditionalBattleText additionalBattleTextInstance)
         {
-            if (additionalBattleTextInstance is not StatusEffectBattleText addStatusEffectBattleText) return null;
-            if (addStatusEffectBattleText._statusEffect.GetType() != _statusEffect.GetType()) return null;
-            if (_isAnOptimization != addStatusEffectBattleText._isAnOptimization) return null;
-            if (_affectedCharacters.Any(i => addStatusEffectBattleText._affectedCharacters.Contains(i))) return null;
-            return new StatusEffectBattleText()
+            if (additionalBattleTextInstance is not StatusEffectInflictBattleText statusEffectBattleText) return null;
+            if (_effectInflictResult != statusEffectBattleText._effectInflictResult) return null;
+            if (_statusEffects.Count != statusEffectBattleText._statusEffects.Count) return null;
+            foreach (var i in Enumerable.Range(0,_statusEffects.Count))
             {
-                _isAnOptimization = _isAnOptimization,
-                _statusEffect =  _statusEffect,
-                _affectedCharacters = [.._affectedCharacters, ..addStatusEffectBattleText._affectedCharacters]
+                if (_statusEffects[i].GetType() !=  statusEffectBattleText._statusEffects[i].GetType()) return null;
+            }
+            if (_affectedCharacters.Any(i => statusEffectBattleText._affectedCharacters.Contains(i))) return null;
+            return new StatusEffectInflictBattleText()
+            {
+                _effectInflictResult =  _effectInflictResult,
+                _statusEffects =  _statusEffects,
+                _affectedCharacters = [.._affectedCharacters, ..statusEffectBattleText._affectedCharacters]
             };
 
         }

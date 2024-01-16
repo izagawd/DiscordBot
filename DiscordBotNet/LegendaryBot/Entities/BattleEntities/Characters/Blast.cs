@@ -87,7 +87,7 @@ public class VolcanicEruption : Surge
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
         var isCharging = owner.AddStatusEffect(new VolcanicEruptionCharging(owner){Duration = 3});
-        if(isCharging)
+        if(isCharging == StatusEffectInflictResult.Succeeded)
             owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} is charging up a very powerful attack!");
         return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner, Text = "What's this?"};
     }

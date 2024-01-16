@@ -93,16 +93,17 @@ public class Ignite : Surge
         owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} " +
                
                                                     $"attempts to make a human torch out of {target.NameWithAlphabetIdentifier}!");
-        
-        
+
+        List<StatusEffect> burns = [];
         for (int i = 0; i < 3; i++)
         {
             if (BasicFunction.RandomChance(IgniteChance))
             {
-                target.AddStatusEffect(new Burn(owner),owner.Effectiveness);
+                burns.Add(new Burn(owner));
             }
         }
 
+        target.AddStatusEffects([..burns, new Bleed(owner)],0);
         return new UsageResult(this)
         {
             UsageType = usageType,
@@ -116,7 +117,7 @@ public class Player : Character
 {
     public override int GetSpeedValue(int points)
     {
-        return (base.GetSpeedValue(points) * 1.02).Round();
+        return (base.GetSpeedValue(points) * 1.5).Round();
     }
 
     public override bool IsInStandardBanner => false;
