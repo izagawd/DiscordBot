@@ -7,7 +7,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Hunt : BaseCommandClass
 {
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Battle;
+    public override BotCommandType BotCommandType => BotCommandType.Battle;
 
     [SlashCommand("hunt", "Hunt for mobs to get materials and be stronger!")]
     public async Task Execute(InteractionContext ctx,

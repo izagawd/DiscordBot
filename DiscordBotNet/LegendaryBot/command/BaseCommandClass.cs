@@ -18,7 +18,7 @@ public abstract class BaseCommandClass : ApplicationCommandModule
     public bool HasSubCommands { get; } = false;
     public virtual BotCommandType BotCommandType { get;  } = BotCommandType.Other;
     protected SlashCommandAttribute CommandResult { get; set; }
-    public virtual string Example { get; } = "None";
+    public virtual string Example => "None";
     static BaseCommandClass()
     {
         var types = Assembly.GetExecutingAssembly().GetTypes();

@@ -65,7 +65,7 @@ public class YourLifeEnergyIsMine : Skill
         };
     }
 
-    public override int MaxCooldown { get; } = 3;
+    public override int MaxCooldown => 3;
 }
 public class Arise : Surge
 {

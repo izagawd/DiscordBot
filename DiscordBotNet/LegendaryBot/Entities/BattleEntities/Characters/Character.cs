@@ -1276,7 +1276,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         var canCrit = damageArgs.CanCrit;
         var didCrit = false;
         var defenseToIgnore = Math.Clamp(damageArgs.DefenseToIgnore,0,100);
-        var defenseToUse = ((100 - defenseToIgnore) *0.01) * Defense;
+        var defenseToUse = (100 - defenseToIgnore) *0.01 * Defense;
         var damageModifyPercentage = 0;
         
         damage = DamageFormula(damage, defenseToUse);

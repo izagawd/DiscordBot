@@ -6,7 +6,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Roll :  BaseCommandClass
 {
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Fun;
+    public override BotCommandType BotCommandType => BotCommandType.Fun;
     [SlashCommand("roll", "Gets a random number")]
     public async Task Execute(InteractionContext ctx)
     {

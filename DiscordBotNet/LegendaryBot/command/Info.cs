@@ -8,7 +8,7 @@ public class Info : BaseCommandClass
 {
 
 
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Battle;
+    public override BotCommandType BotCommandType => BotCommandType.Battle;
     [SlashCommand("info", "Shows basic information about your progress, or someone else's progress")]
     public async Task Execute(InteractionContext ctx,[Option("user","the user you want to check info about")]DiscordUser? author = null)
     {  

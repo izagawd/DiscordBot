@@ -7,7 +7,7 @@ public class Bleed : StatusEffect, IDetonatable
 {
     public override string Description => "Does damage proportional to the caster's attack to the affected at the start of the affected's turn." +
                                           " Ignores 70% of the affecteed's defense";
-    public override bool ExecuteStatusEffectAfterTurn { get; } = false;
+    public override bool ExecuteStatusEffectAfterTurn => false;
     public int Attack { get;  }
     public DamageResult? Detonate(Character affected, Character detonator)
     {

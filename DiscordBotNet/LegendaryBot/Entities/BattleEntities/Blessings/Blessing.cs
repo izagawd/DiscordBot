@@ -108,8 +108,8 @@ public abstract class Blessing : BattleEntity
     public override string IconUrl => $"{Website.DomainName}/battle_images/blessings/{GetType().Name}.png";
 
     public sealed  override int MaxLevel => 15;
-    [NotMapped] public virtual int Attack { get; } = 200;
-    [NotMapped] public virtual int Health{ get; } = 200;
+    [NotMapped] public virtual int Attack => 200;
+    [NotMapped] public virtual int Health => 200;
 
 
     public override async Task<Image<Rgba32>> GetDetailsImageAsync()

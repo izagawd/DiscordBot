@@ -9,7 +9,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 public class Color : BaseCommandClass
 {
 
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Other;
+    public override BotCommandType BotCommandType => BotCommandType.Other;
     [SlashCommand("color", "Changes the color of the embed messages I send to you")]
     public async Task Execute(InteractionContext ctx,
         [Choice("Blue","blue")]

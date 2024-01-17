@@ -5,7 +5,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class VolcanicEruptionCharging : StatusEffect
 {
-    public override string Description { get; } =
+    public override string Description =>
         "Makes the affected charge up a powerful attack that's released at the end of the effect's duration";
 
 

@@ -7,7 +7,7 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Avatar: BaseCommandClass
 {
-    public override BotCommandType BotCommandType { get; } = BotCommandType.Other;
+    public override BotCommandType BotCommandType => BotCommandType.Other;
     public override string Example => $"/avatar\n/avatar @Izagawd";
 
     [SlashCommand("avatar", "Displays your avatar, or someone elses avatar")]

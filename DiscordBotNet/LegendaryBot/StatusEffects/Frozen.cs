@@ -5,7 +5,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class Frozen : StatusEffect
 {
-    public override string Description { get; } = "Makes affected not able to move";
+    public override string Description => "Makes affected not able to move";
 
 
     public Frozen(Character caster) : base( caster)

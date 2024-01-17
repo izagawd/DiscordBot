@@ -5,7 +5,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public class Stun : StatusEffect
 {
-    public override string Description { get; } = "Makes affected not able to move";
+    public override string Description => "Makes affected not able to move";
 
     public Stun(Character caster) : base( caster)
     {

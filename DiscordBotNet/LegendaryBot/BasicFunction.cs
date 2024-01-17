@@ -238,9 +238,6 @@ public static class BasicFunction
 
         if (number < 0) throw new Exception("Number must be between 0 or 100");
         Random random = new();
-        int randomNumberGotten = random.Next(0, 100);
-        if (randomNumberGotten <= number) return true;
-        return false;
-
+        return random.Next(0, 100) <= number;
     }
 }

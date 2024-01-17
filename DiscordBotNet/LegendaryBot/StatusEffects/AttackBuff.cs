@@ -7,7 +7,7 @@ public class AttackBuff : StatusEffect, IStatsModifier
 {
 
 
-    public override string Description { get; } = "Increases the caster's attack by 50%";
+    public override string Description => "Increases the caster's attack by 50%";
 
 
     public override int MaxStacks => 1;
