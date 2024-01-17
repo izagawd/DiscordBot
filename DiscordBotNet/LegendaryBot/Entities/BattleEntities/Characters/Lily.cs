@@ -84,17 +84,21 @@ public class LilyOfTheValley : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
+        List<StatusEffect> statusEffects = [];
+        var effectiveness = owner.Effectiveness;
         foreach (var i in GetPossibleTargets(owner))
         {
+            
             if (BasicFunction.RandomChance(PoisonInflictChance))
             {
-                i.AddStatusEffect(new Poison(owner){Duration = 2}, owner.Effectiveness);
-
+                statusEffects.Add(new Poison(owner){Duration = 2});
             }
             if (BasicFunction.RandomChance(StunInflictChance))
             {
-                i.AddStatusEffect(new Stun(owner){Duration = 1}, owner.Effectiveness);
+                statusEffects.Add(new Stun(owner){Duration = 2});
             }
+            if(statusEffects.Any()) i.AddStatusEffects(statusEffects,effectiveness);
+            statusEffects.Clear();
         }
 
         return new UsageResult(this)

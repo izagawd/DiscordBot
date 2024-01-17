@@ -86,12 +86,12 @@ public class ThumbsUp : Skill
 }
 public class CoachChad : Character
 {
-    public override int GetResistanceValue(int points)
+    public override float GetResistanceValue(int points)
     {
         return 50;
     }
 
-    public override int GetSpeedValue(int points)
+    public override float GetSpeedValue(int points)
     {
         return (base.GetSpeedValue(points) * 1.02f).Round();
     }

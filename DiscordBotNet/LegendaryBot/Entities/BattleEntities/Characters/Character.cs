@@ -348,7 +348,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         if(!IsDead) return;
         _health = 1;
         CurrentBattle.AddAdditionalBattleText(new ReviveBattleText(this));
-
+        CurrentBattle.InvokeBattleEvent(new CharacterReviveEventArgs(this));
     }
 
     private bool _shouldTakeExtraTurn;
@@ -369,38 +369,38 @@ public abstract partial  class Character : BattleEntity, ISetup
     
 
     public List<CharacterBuild> CharacterBuilds { get; protected set; } = [];
-    public virtual int GetMaxHealthValue(int points)
+    public virtual float GetMaxHealthValue(int points)
     {
         return CalculateStat(3000, 20000, points);
     }
-    public virtual int GetAttackValue(int points)
+    public virtual float GetAttackValue(int points)
     {
         return CalculateStat(700, 5000, points);
     }
 
-    public virtual int GetSpeedValue(int points)
+    public virtual float GetSpeedValue(int points)
     {
         return CalculateStat(100, 300, points);
     }
 
-    public virtual int GetEffectivenessValue(int points)
+    public virtual float GetEffectivenessValue(int points)
     {
 
         return CalculateStat(0, 300, points);
     }
-    public virtual int GetResistanceValue(int points)
+    public virtual float GetResistanceValue(int points)
     {
         return CalculateStat(0, 300, points);
     }
-    public virtual int GetCriticalChanceValue(int points)
+    public virtual float GetCriticalChanceValue(int points)
     {
         return CalculateStat(20, 100, points);
     }
-    public virtual int GetCriticalDamageValue(int points)
+    public virtual float GetCriticalDamageValue(int points)
     {
         return CalculateStat(150, 350, points);
     }
-    public virtual int GetDefenseValue(int points)
+    public virtual float GetDefenseValue(int points)
     {
         return CalculateStat(300, 2000, points);
     }
@@ -708,7 +708,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.MaxHealthPoints;
 
-            return GetMaxHealthValue(points.GetValueOrDefault(0));
+            return GetMaxHealthValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -753,7 +753,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.DefensePoints;
 
-            return GetDefenseValue(points.GetValueOrDefault(0));
+            return GetDefenseValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -763,7 +763,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.SpeedPoints;
 
-            return GetSpeedValue(points.GetValueOrDefault(0));
+            return GetSpeedValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -842,7 +842,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.AttackPoints;
             
-            return GetAttackValue(points.GetValueOrDefault(0));
+            return GetAttackValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -889,7 +889,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.CriticalDamagePoints;
 
-            return GetCriticalDamageValue(points.GetValueOrDefault(0));
+            return GetCriticalDamageValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -923,7 +923,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.EffectivenessPoints;
 
-            return GetEffectivenessValue(points.GetValueOrDefault(0));
+            return GetEffectivenessValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -1090,7 +1090,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.ResistancePoints;
 
-            return GetResistanceValue(points.GetValueOrDefault(0));
+            return GetResistanceValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -1130,7 +1130,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var points = EquippedCharacterBuild?.CriticalChancePoints;
 
-            return GetCriticalChanceValue(points.GetValueOrDefault(0));
+            return GetCriticalChanceValue(points.GetValueOrDefault(0)).Round();
 
         }
     }
@@ -1142,7 +1142,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     public override int MaxLevel => 120;
     
     
-    public static int CalculateStat(int initialValue,  int maxValue, int points)
+    public static float CalculateStat(int initialValue,  int maxValue, int points)
     {
         var maxPoints = CharacterBuild.MaxPointsPerStat;
         // Ensure points are within the valid range (0 to maxPoints)
@@ -1152,7 +1152,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         float increasePerPoint = (float)(maxValue - initialValue) / maxPoints;
 
         // Calculate the final stat value
-        int finalStatValue = initialValue + (points * increasePerPoint).Round();
+        var finalStatValue = initialValue + (points * increasePerPoint);
 
         // Ensure the final value doesn't exceed the maxValue
         finalStatValue = Math.Min(finalStatValue, maxValue);

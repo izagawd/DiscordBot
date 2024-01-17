@@ -14,7 +14,7 @@ public class Info : BaseCommandClass
     {  
 
             
-        if(author is null)author = ctx.User;
+        if(author is null) author = ctx.User;
         
         var userData = await DatabaseContext.UserData.FindOrCreateAsync((long)author.Id);
   

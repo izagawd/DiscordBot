@@ -115,9 +115,9 @@ public class Ignite : Surge
 }
 public class Player : Character
 {
-    public override int GetSpeedValue(int points)
+    public override float GetSpeedValue(int points)
     {
-        return (base.GetSpeedValue(points) * 1.5).Round();
+        return base.GetSpeedValue(points) * 1.15f;
     }
 
     public override bool IsInStandardBanner => false;

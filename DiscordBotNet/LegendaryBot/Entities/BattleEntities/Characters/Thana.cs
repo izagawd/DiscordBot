@@ -108,7 +108,7 @@ public class Arise : Surge
 }
 public class Thana : Character
 {
-    public override int GetSpeedValue(int points)
+    public override float GetSpeedValue(int points)
     {
         return (base.GetSpeedValue(points) * 1.1).Round();
     }

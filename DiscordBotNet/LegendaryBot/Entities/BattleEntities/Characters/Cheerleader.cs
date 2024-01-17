@@ -21,9 +21,10 @@ public class  YouCanDoIt : Skill
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner} wants {target} to prevail!");
         target.IncreaseCombatReadiness(100);
         target.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner} wants {target} to prevail!");
+
         return new UsageResult(this)
         {
             TargetType = TargetType.SingleTarget,
@@ -79,7 +80,7 @@ public class YouCanMakeItEveryone : Surge
 }
 public class Cheerleader : Character
 {
-    public override int GetSpeedValue(int points)
+    public override float GetSpeedValue(int points)
     {
         return (base.GetSpeedValue(points) * 1.2).Round();
     }

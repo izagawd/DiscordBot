@@ -36,12 +36,12 @@ public class GooeyStrike : BasicAttack
 }
 public class Slime : Character
 {
-    public override int GetSpeedValue(int points)
+    public override float GetSpeedValue(int points)
     {
         return (base.GetSpeedValue(points) * 0.8).Round();
     }
 
-    public override int GetAttackValue(int points)
+    public override float GetAttackValue(int points)
     {
         return (base.GetAttackValue(points) * 0.7).Round();
     }
