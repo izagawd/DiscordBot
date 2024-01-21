@@ -169,7 +169,7 @@ public class Player : Character
         Element = element;
     }
 
-    public override string IconUrl { get; protected set; }
+    public override string ImageRepresentation { get; protected set; }
     public override Task<Image<Rgba32>> GetDetailsImageAsync(bool loadBuild)
     {
     
@@ -189,7 +189,7 @@ public class Player : Character
     {
         await base.LoadAsync(build);
         Name = claimsUser.GetDiscordUserName();
-        IconUrl = claimsUser.GetDiscordUserAvatarUrl();
+        ImageRepresentation = claimsUser.GetDiscordUserAvatarUrl();
         if (UserData is not null)
         {
             Color = UserData.Color;
@@ -207,7 +207,7 @@ public class Player : Character
         }
 
         Name = User.Username;
-        IconUrl = User.AvatarUrl;
+        ImageRepresentation = User.AvatarUrl;
         if (UserData is not null)
         {
             Color = UserData.Color;

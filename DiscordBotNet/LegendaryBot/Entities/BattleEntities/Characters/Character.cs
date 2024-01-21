@@ -427,7 +427,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         _shouldTakeExtraTurn = true;
         CurrentBattle.AddAdditionalBattleText(new ExtraTurnBattleText(this));
     }
-    public override string IconUrl =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
+    public override string ImageRepresentation =>$"{Website.DomainName}/battle_images/characters/{GetType().Name}.png";
     public float ShieldPercentage
     {
         get
@@ -605,7 +605,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
 
         var image = new Image<Rgba32>(190, 150);
-        var url = IconUrl;
+        var url = ImageRepresentation;
         if (!_cachedCombatCroppedImages.TryGetValue(url, out Image<Rgba32> characterImage))
         {
             characterImage = await  BasicFunction.GetImageFromUrlAsync(url);
@@ -982,7 +982,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             CharacterColor = Color,
             CharacterName = Name,
-            CharacterUrl = IconUrl
+            CharacterUrl = ImageRepresentation
         };
 
     /// <summary>
@@ -1000,7 +1000,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
     public async Task<Image<Rgba32>> GetInfoAsync()
     {
-        using var userImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+        using var userImage = await BasicFunction.GetImageFromUrlAsync(ImageRepresentation);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         var userImagePoint = new Point(20, 20);

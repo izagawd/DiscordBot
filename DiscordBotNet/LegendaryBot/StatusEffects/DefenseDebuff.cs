@@ -19,14 +19,14 @@ public class DefenseDebuff: StatusEffect,IStatsModifier
     }
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
-        return new DefensePercentageModifierArgs[]
-        {
-            new ()
+        return
+        [
+            new DefensePercentageModifierArgs
             {
                 CharacterToAffect = owner,
                 ValueToChangeWith = -50,
                 WorksAfterGearCalculation = true
             }
-        };
+        ];
     }
 }

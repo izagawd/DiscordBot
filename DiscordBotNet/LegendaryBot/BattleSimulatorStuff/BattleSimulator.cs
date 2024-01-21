@@ -78,13 +78,7 @@ public class BattleSimulator : IBattleEventListener
         _cachedResizedForAvatarsMemoryCache.Set(url, characterImageToDraw, entryOptions);
         return characterImageToDraw.Clone();
     }
-    /// <summary>
-    /// 
-    /// This will be used to invoke an event if it happens
-    /// 
-    /// </summary>
-    /// <param name="eventArgs">The argument instance of the battle event</param>
-    /// <typeparam name="T">the type of argument of the battle event</typeparam>
+
     
     public async Task<Image<Rgba32>> GetCombatImageAsync()
     {
@@ -132,7 +126,7 @@ public class BattleSimulator : IBattleEventListener
         foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
             
-            using var characterImageToDraw = await GetAvatarAsync(i.IconUrl);
+            using var characterImageToDraw = await GetAvatarAsync(i.ImageRepresentation);
             var circleBgColor = Color.DarkBlue;
             if (i.Team == Team2)
                 circleBgColor = Color.DarkRed;
@@ -162,7 +156,13 @@ public class BattleSimulator : IBattleEventListener
         return image;
     }
 
-
+    /// <summary>
+    /// 
+    /// This will be used to invoke an event if it happens
+    /// 
+    /// </summary>
+    /// <param name="eventArgs">The argument instance of the battle event</param>
+    /// <typeparam name="T">the type of argument of the battle event</typeparam>
     public void InvokeBattleEvent<T>(T eventArgs) where T : BattleEventArgs
     {
         if (IsEventsPaused)
@@ -367,7 +367,7 @@ public class BattleSimulator : IBattleEventListener
 
 
             var embed = new DiscordEmbedBuilder()
-                .WithAuthor(characterToDisplayBattleInfo.NameWithAlphabetIdentifier, iconUrl: characterToDisplayBattleInfo.IconUrl)
+                .WithAuthor(characterToDisplayBattleInfo.NameWithAlphabetIdentifier, iconUrl: characterToDisplayBattleInfo.ImageRepresentation)
                 .WithTitle($"{characterToDisplayBattleInfo} [{characterToDisplayBattleInfo.AlphabetIdentifier}]'s description")
                 .WithColor(characterToDisplayBattleInfo.Color)
                 .WithDescription(descriptionStringBuilder.ToString());
@@ -641,7 +641,7 @@ public class BattleSimulator : IBattleEventListener
 
             DiscordEmbedBuilder embedToEdit = new DiscordEmbedBuilder()
                 .WithTitle("**BATTLE!!!**")
-                .WithAuthor($"{ActiveCharacter.Name} [{ActiveCharacter.AlphabetIdentifier}]", iconUrl: ActiveCharacter.IconUrl)
+                .WithAuthor($"{ActiveCharacter.Name} [{ActiveCharacter.AlphabetIdentifier}]", iconUrl: ActiveCharacter.ImageRepresentation)
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, additionalText)
                 .WithImageUrl("attachment://battle.png");

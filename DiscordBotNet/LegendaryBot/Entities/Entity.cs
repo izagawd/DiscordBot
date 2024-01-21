@@ -4,7 +4,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Entities;
 
-public abstract class Entity : ICloneable, IDatabaseModel
+public abstract class Entity : ICloneable, IDatabaseModel, IImageHaver
 {
     public DateTime DateAcquired { get; set; } = DateTime.UtcNow;
     public override string ToString()
@@ -57,8 +57,9 @@ public abstract class Entity : ICloneable, IDatabaseModel
     public UserData? UserData { get; set; }
 
     [NotMapped]
-    public virtual string IconUrl { get; protected set; }
+    public virtual string ImageRepresentation { get; protected set; }
 
     public long Id { get;  set; } 
-    public long UserDataId { get; set; } 
+    public long UserDataId { get; set; }
+    public IEnumerable<string> ImageUrls => [ImageRepresentation];
 }

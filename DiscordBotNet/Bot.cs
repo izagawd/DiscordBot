@@ -7,6 +7,7 @@ using System.Text;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
@@ -45,17 +46,14 @@ public static class Bot
         .GetTypes()
         .ToImmutableArray();
 
-    private static async Task DoShit()
-    {
 
- 
-    }
 
     private static async Task Main(string[] args)
     {
 
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
+
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
         stopwatch.Start();
@@ -95,10 +93,12 @@ public static class Bot
         };
         Interactivity = Client.UseInteractivity(interactivityConfiguration);
         Client.SocketOpened += OnReady;
-  
+       
         await Client.ConnectAsync();
+     
+        await Website.StartAsync(args);
 
-        await Website.Start(args);
+
     }
 
     public static InteractivityExtension Interactivity { get; private set; } = null!;

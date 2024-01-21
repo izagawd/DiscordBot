@@ -1,8 +1,12 @@
 
 using System.Globalization;
+using System.Net;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using AspNet.Security.OAuth.Discord;
 using DiscordBotNet.Database;
+using DiscordBotNet.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -87,7 +91,37 @@ public static class Website
             }).AddCertificate(i => i.Validate());
 
     }
-    public static async Task Start(string[] args)
+
+
+    public static async Task<bool> IsLoadedAsync()
+    {
+        try
+        {
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback = 
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    if (cert is not null && !cert.Verify())
+                    {
+                        return httpRequestMessage.RequestUri is not null
+                               && httpRequestMessage.RequestUri.ToString().Contains(Website.DomainName);
+                    }
+                    return cert is not null;
+                };
+            using var webClient = new HttpClient(handler);
+
+            var checkingResponse = await webClient.GetAsync(DomainName);
+            return checkingResponse.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+ 
+    }
+
+    public static async Task StartAsync(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         ConfigureServices(builder.Services);
@@ -120,6 +154,7 @@ public static class Website
         });
 
         await app.RunAsync(DomainName);
+   
 
     }
 }

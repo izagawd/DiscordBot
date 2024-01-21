@@ -15,7 +15,7 @@ public abstract class Blessing : BattleEntity
     public long? CharacterId { get; set; }
     public virtual async Task<Image<Rgba32>> GetInfoAsync()
     {
-        using var userImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+        using var userImage = await BasicFunction.GetImageFromUrlAsync(ImageRepresentation);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         var userImagePoint = new Point(20, 20);
@@ -105,7 +105,7 @@ public abstract class Blessing : BattleEntity
     public abstract string GetDescription(int level);
 
     public sealed override string Description => GetDescription(Level);
-    public override string IconUrl => $"{Website.DomainName}/battle_images/blessings/{GetType().Name}.png";
+    public override string ImageRepresentation => $"{Website.DomainName}/battle_images/blessings/{GetType().Name}.png";
 
     public sealed  override int MaxLevel => 15;
     [NotMapped] public virtual int Attack => 200;
@@ -115,7 +115,7 @@ public abstract class Blessing : BattleEntity
     public override async Task<Image<Rgba32>> GetDetailsImageAsync()
     {
         var image = new Image<Rgba32>(500, 350);
-        using var blessingImage = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+        using var blessingImage = await BasicFunction.GetImageFromUrlAsync(ImageRepresentation);
         blessingImage.Mutate(i => i.Resize(200,200));
         var drawing = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 20));
         drawing.Origin = new Vector2(10, 200);

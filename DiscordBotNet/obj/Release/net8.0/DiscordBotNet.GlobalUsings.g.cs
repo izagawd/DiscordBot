@@ -8,7 +8,6 @@ global using global::Microsoft.Extensions.DependencyInjection;
 global using global::Microsoft.Extensions.Hosting;
 global using global::Microsoft.Extensions.Logging;
 global using global::SixLabors.ImageSharp;
-global using global::SixLabors.ImageSharp.PixelFormats;
 global using global::SixLabors.ImageSharp.Processing;
 global using global::SixLabors.ImageSharp.Web;
 global using global::System;
