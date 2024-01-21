@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
@@ -19,7 +20,9 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
+using SixLabors.ImageSharp.PixelFormats;
 using Color = SixLabors.ImageSharp.Color;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
@@ -45,14 +48,13 @@ public static class Bot
     private static async Task DoShit()
     {
 
-
+ 
     }
 
     private static async Task Main(string[] args)
     {
 
-        await DoShit();
-        
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

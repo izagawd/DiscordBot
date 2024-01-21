@@ -26,7 +26,7 @@ public class Bomb : StatusEffect, IDetonatable
         
     }
 
-    public DamageResult Detonate(Character affected, Character detonator)
+    public DamageResult? Detonate(Character affected, Character detonator)
     {
         affected.RemoveStatusEffect(this);
         affected.AddStatusEffect(new Stun(detonator));

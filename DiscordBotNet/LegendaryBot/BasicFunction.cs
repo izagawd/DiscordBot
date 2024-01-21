@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Text;
+using DiscordBotNet.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
@@ -24,19 +25,14 @@ public static class BasicFunction
         return resultBuilder.ToString();
         
     }
-    private static ConcurrentDictionary<string, Image<Rgba32>> EntityImages { get; } = new();
 
-    private static MemoryCache UserImages { get; } = new(new MemoryCacheOptions());
 
-    private static MemoryCacheEntryOptions EntryOptions { get; } =new MemoryCacheEntryOptions
+    private static MemoryCache CachedImages { get; } = new(new MemoryCacheOptions());
+
+
+    public static async void DisposeEvictionCallback(object key, object? value, EvictionReason reason, object? state)
     {
-        SlidingExpiration = new TimeSpan(0, 30, 0),
-        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = EvictionCallback } }
-        
-    };
 
-    private static async void EvictionCallback(object key, object? value, EvictionReason reason, object? state)
-    {
         if (value is IAsyncDisposable asyncDisposable)
         {
             await asyncDisposable.DisposeAsync();
@@ -54,8 +50,7 @@ public static class BasicFunction
     /// <returns></returns>
     public static async Task<Image<Rgba32>> GetImageFromUrlAsync(string url)
     {
-        if (EntityImages.TryGetValue(url, out var image)) return image.Clone();
-        if (UserImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!.Clone();
+        if (CachedImages.TryGetValue(url, out Image<Rgba32>? gottenImage)) return gottenImage!.Clone();
         try{
             var handler = new HttpClientHandler();
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
@@ -70,31 +65,34 @@ public static class BasicFunction
                     return cert is not null;
                 };
             using var webClient = new HttpClient(handler);
-  
             await using var memoryStream = await webClient.GetStreamAsync(url);
             var characterImage = await Image.LoadAsync<Rgba32>(memoryStream);
-    
-            //checks if the image is from this bot's domain  so it can permanently cache it
-            //instead of temporarily cache it
-            if (url.Contains(Website.DomainName))
-                EntityImages[url] = characterImage;  
-            else
-                UserImages.Set(url,characterImage,EntryOptions);
+            var entryOptions = EntryOptions;
+
+            if (!url.Contains(Website.DomainName))
+            {
+                entryOptions = ExpiryEntryOptions;
+            }
+            CachedImages.Set(url, characterImage, entryOptions);
             return characterImage.Clone();
         }
         catch
         {
-
             var alternateImage =  await GetImageFromUrlAsync($"{Website.DomainName}/battle_images/moves/guilotine.png");
-            if (url.Contains(Website.DomainName))
-                EntityImages[url] = alternateImage;
-            else
-                UserImages.Set(url,alternateImage,new MemoryCacheEntryOptions{SlidingExpiration =new TimeSpan(0,30,0) });
+            CachedImages.Set(url,alternateImage,EntryOptions);
             return alternateImage.Clone();
         } 
     }
+    private static readonly MemoryCacheEntryOptions EntryOptions =new()
+    {
 
-
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration{EvictionCallback = DisposeEvictionCallback } }
+    };
+    private static readonly MemoryCacheEntryOptions ExpiryEntryOptions  =new()
+    {
+        SlidingExpiration = new TimeSpan(0,0,30),
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration{EvictionCallback = DisposeEvictionCallback } }
+    };
     public static int GetRandomNumberInBetween(int a, int b)
     {
         return new Random().Next(a, b + 1);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
@@ -17,6 +18,7 @@ using DiscordBotNet.LegendaryBot.Results;
 using DiscordBotNet.LegendaryBot.Rewards;
 using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -583,19 +585,41 @@ public abstract partial  class Character : BattleEntity, ISetup
     }
 
 
-    
- public async Task<Image<Rgba32>> GetCombatImageAsync()
+    /// <summary>
+    /// Caches the cropped combat images, since cropping takes time
+    /// </summary>
+    private static MemoryCache _cachedCombatCroppedImages = new(new MemoryCacheOptions());
+
+    private static readonly MemoryCacheEntryOptions EntryOptionsExpiry = new()
     {
-        
+        SlidingExpiration = new TimeSpan(0,30,0),
+        PostEvictionCallbacks =
+            { new PostEvictionCallbackRegistration() { EvictionCallback= BasicFunction.DisposeEvictionCallback } }
+    };
+    private static readonly MemoryCacheEntryOptions EntryOptions = new()
+    {
+        PostEvictionCallbacks =
+            { new PostEvictionCallbackRegistration() { EvictionCallback= BasicFunction.DisposeEvictionCallback } }
+    };
+    public async Task<Image<Rgba32>> GetCombatImageAsync()
+    {
+
         var image = new Image<Rgba32>(190, 150);
-
-        using var characterImage = await  BasicFunction.GetImageFromUrlAsync(IconUrl);
-
-        characterImage.Mutate(ctx =>
+        var url = IconUrl;
+        if (!_cachedCombatCroppedImages.TryGetValue(url, out Image<Rgba32> characterImage))
         {
-        ctx.Resize(new Size(50, 50));
-        });
-     
+            characterImage = await  BasicFunction.GetImageFromUrlAsync(url);
+            characterImage.Mutate(ctx =>
+            {
+                ctx.Resize(new Size(50, 50));
+            });
+            var entryOptions = EntryOptions;
+            
+            //any image outside of the domain will n=be removed after a certain amount of time using this entry option
+            if (!url.Contains(Website.DomainName)) entryOptions = EntryOptionsExpiry;
+            _cachedCombatCroppedImages.Set(url,characterImage,entryOptions);
+        }
+ 
         IImageProcessingContext ctx = null!;
         image.Mutate(idk => ctx = idk);
        
@@ -607,7 +631,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
         new RectangleF(52.5f, 20, 70, 11.5f));
-    
+
         ctx.DrawText(Name + $" [{AlphabetIdentifier}] [{Position}]", SystemFonts.CreateFont(Bot.GlobalFontName, 11),
         SixLabors.ImageSharp.Color.Black, new PointF(55, 36.2f));
         ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
@@ -638,9 +662,11 @@ public abstract partial  class Character : BattleEntity, ISetup
         int yOffSet = 50 + barHeight + 5;
 
         int moveLength = 25; 
-    
+
         foreach (var i in MoveList)
         {
+            //do not change size of the move image here.
+            //do it in the method that gets the image
             using var moveImage = await i.GetImageForCombatAsync();
             ctx.DrawImage(moveImage, new Point(xOffSet, yOffSet), new GraphicsOptions());
             xOffSet += moveLength;
@@ -664,17 +690,14 @@ public abstract partial  class Character : BattleEntity, ISetup
         xOffSet = 0;
         yOffSet += moveLength + 5;
 
-        var statusEffectsToUse = _statusEffects.Take(16).ToArray();
-        var statusEffectImages =  new ConcurrentDictionary<StatusEffect,Image<Rgba32>>();
-
-        await Parallel.ForEachAsync(statusEffectsToUse, async (statusEffect, images) =>
+      
+        
+        foreach (var i in _statusEffects.Take(16))
         {
             
-            statusEffectImages.TryAdd(statusEffect, await statusEffect.GetImageForCombatAsync());
-        });
-        foreach (var i in statusEffectsToUse)
-        {
-            var statusImage = statusEffectImages[i];
+            //do not change size of the status effect image here.
+            //do it in the method that gets the image
+            using var statusImage = await i.GetImageForCombatAsync();
             var statusLength = statusImage.Size.Width;
             if (xOffSet + statusLength + 2 >= 185)
             {
@@ -692,7 +715,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
         ctx.EntropyCrop(0.05f);
      
-  
+
         return image;
     }
 

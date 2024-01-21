@@ -2,6 +2,8 @@
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
+using DSharpPlus;
+using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -16,15 +18,37 @@ public abstract class Move : IBattleEventListener
     
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/moves/{GetType().Name}.png";
 
+    protected static MemoryCache _croppedCombatImagesMemoryCache { get; } = new(new MemoryCacheOptions());
+
+    protected static MemoryCacheEntryOptions ExpireEntryOptions { get; } = new()
+    {
+        SlidingExpiration = new TimeSpan(0,30,0),
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+    };
+    protected static MemoryCacheEntryOptions EntryOptions { get; } = new()
+    {
+        SlidingExpiration = new TimeSpan(0,30,0),
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+    };
     public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
+        var url = IconUrl;
+        if (!_croppedCombatImagesMemoryCache.TryGetValue(url, out Image<Rgba32> image))
+        {
+            image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+            image.Mutate(i => i
+                .Resize(25, 25)
+                .Draw(Color.Black, 3, new RectangleF(0, 0, 24,24)));
+            var entryOption = EntryOptions;
+            if (!url.Contains(Website.DomainName))
+                entryOption = ExpireEntryOptions;
+            _croppedCombatImagesMemoryCache.Set(url, image, entryOption);
+        }
 
-        var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
-        image.Mutate(i => i
-            .Resize(25, 25)
-            .Draw(Color.Black, 3, new RectangleF(0, 0, 24,24)));
 
-        return image;
+
+
+        return image.Clone();
     }
 
     /// <summary>
@@ -37,10 +61,6 @@ public abstract class Move : IBattleEventListener
     /// </summary>
     /// <param name="level"></param>
     public abstract string GetDescription(Character character);
-
-    /// <summary>
-    /// Gets the description of the Move, based on the move level
-    /// </summary>
 
 
 

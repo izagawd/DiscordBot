@@ -18,6 +18,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -44,8 +45,39 @@ public class BattleSimulator : IBattleEventListener
 
     public static DiscordButtonComponent proceed = new(ButtonStyle.Success, "Proceed", "Proceed");
 
+
+    protected static MemoryCache _cachedResizedForAvatarsMemoryCache = new(new MemoryCacheOptions());
     
     
+    protected static MemoryCacheEntryOptions EntryOptions { get; } = new()
+    {
+        SlidingExpiration = new TimeSpan(0,30,0),
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+    };
+    protected static MemoryCacheEntryOptions ExpiredEntryOptions { get; } = new()
+    {
+        SlidingExpiration = new TimeSpan(0,30,0),
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+    };
+
+
+    private  async Task<Image<Rgba32>> GetAvatarAsync(string url)
+    {
+        if(_cachedResizedForAvatarsMemoryCache.TryGetValue(url, out Image<Rgba32> characterImageToDraw))
+        {
+            return characterImageToDraw.Clone();
+        }
+
+        characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(url);
+        characterImageToDraw.Mutate(mutator =>
+        {
+            mutator.Resize(30, 30);
+        });
+        var entryOptions = EntryOptions;
+        if (!url.Contains(Website.DomainName)) entryOptions = ExpiredEntryOptions;
+        _cachedResizedForAvatarsMemoryCache.Set(url, characterImageToDraw, entryOptions);
+        return characterImageToDraw.Clone();
+    }
     /// <summary>
     /// 
     /// This will be used to invoke an event if it happens
@@ -67,10 +99,11 @@ public class BattleSimulator : IBattleEventListener
         IImageProcessingContext imageCtx = null!;
         image.Mutate(ctx => imageCtx = ctx);
         var characterImagesDictionary = new ConcurrentDictionary<Character,Image<Rgba32>>();
-        await Parallel.ForEachAsync(Characters, async (character, token) =>
+        foreach (var character in Characters)
         {
             characterImagesDictionary[character] = await character.GetCombatImageAsync();
-        });
+        }
+
         foreach (var i in CharacterTeams)
         {
 
@@ -98,19 +131,19 @@ public class BattleSimulator : IBattleEventListener
 
         foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
         {
-            using var characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(i.IconUrl);
+            
+            using var characterImageToDraw = await GetAvatarAsync(i.IconUrl);
+            var circleBgColor = Color.DarkBlue;
+            if (i.Team == Team2)
+                circleBgColor = Color.DarkRed;
+            characterImageToDraw.Mutate(j =>
+            
+                j.BackgroundColor(circleBgColor)
+                .ConvertToAvatar()
+            );
             var circleColor = Color.Blue;
             if (i.Team == Team2)
                 circleColor = Color.Red;
-            characterImageToDraw.Mutate(mutator =>
-            {
-                var circleBgColor = Color.DarkBlue;
-                if (i.Team == Team2)
-                    circleBgColor = Color.DarkRed;
-                mutator.Resize(30, 30);
-                mutator.BackgroundColor(circleBgColor);
-                mutator.ConvertToAvatar();
-            });
             var characterImagePoint =
                 new Point(((combatReadinessLineTRectangle.X + (combatReadinessLineTRectangle.Width / 2.0))
                            - (characterImageToDraw.Width / 2.0)).Round(),

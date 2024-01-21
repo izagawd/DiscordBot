@@ -11,7 +11,8 @@ public class Hunt : BaseCommandClass
 
     [SlashCommand("hunt", "Hunt for mobs to get materials and be stronger!")]
     public async Task Execute(InteractionContext ctx,
-        [Option("mob_name", "The name of the mob you want to hunt")] string characterName )
+        [Option("mob_name", "The name of the mob you want to hunt")] string characterName,
+        [Option("enemy_count","number of enemies")] long enemyCount = 1 )
     {
         var author = ctx.User;
 
@@ -51,7 +52,8 @@ public class Hunt : BaseCommandClass
 
         await MakeOccupiedAsync(userData);
         Character enemy =(Character) Activator.CreateInstance(characterType)!;
-
+        CharacterTeam enemyTeam = new CharacterTeam((enemy * (int)enemyCount)
+            .OfType<Character>().ToArray());
         embedToBuild = embedToBuild
             .WithTitle($"Keep your guard up!")
             .WithDescription($"A wild {enemy} has appeared!");
@@ -59,7 +61,7 @@ public class Hunt : BaseCommandClass
         var message = await ctx.GetOriginalResponseAsync();
         var userTeam = await userData.EquippedPlayerTeam.LoadAsync(author);
         enemy.SetLevel(userTeam.Select(i => i.Level).Average().Round());
-        var simulator = new BattleSimulator(userTeam, await new CharacterTeam(enemy).LoadAsync());
+        var simulator = new BattleSimulator(userTeam, await enemyTeam.LoadAsync());
 
  
 

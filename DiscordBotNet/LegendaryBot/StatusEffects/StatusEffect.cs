@@ -2,6 +2,8 @@
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
+using DSharpPlus;
+using Microsoft.Extensions.Caching.Memory;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -26,21 +28,50 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
     /// </summary>
     public bool IsStackable => MaxStacks > 1;
 
-
+    private static MemoryCache _cachedResizedCombatImages = new MemoryCache(new MemoryCacheOptions());
     
+    protected static MemoryCacheEntryOptions EntryOptions { get; } = new()
+    {
+        SlidingExpiration = new TimeSpan(0,30,0),
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+    };
+    protected static MemoryCacheEntryOptions ExpiredEntryOptions { get; } = new()
+    {
+        SlidingExpiration = new TimeSpan(0,30,0),
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+    };
+
 
     public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
-        var backgroundColor = Color.Red;
-        if (EffectType == StatusEffectType.Buff)
+        var url = IconUrl;
+
+        if (!_cachedResizedCombatImages.TryGetValue(url, out Image<Rgba32> image))
         {
-            backgroundColor = Color.ParseHex("#67B0D8");
+            
+            image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+
+            var backgroundColor = Color.Red;
+            if (EffectType == StatusEffectType.Buff)
+            {
+                backgroundColor = Color.ParseHex("#67B0D8");
+            }
+            image.Mutate(ctx =>
+            {
+                ctx.BackgroundColor(backgroundColor);
+                ctx.Resize(new Size(20, 20));
+            });
+
+            var entry = EntryOptions;
+            if (!url.Contains(Website.DomainName)) entry = ExpiredEntryOptions;
+            _cachedResizedCombatImages.Set(url, image, entry);
+
         }
-        var image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+        image = image.Clone();
+
         image.Mutate(ctx =>
         {
-            ctx.Resize(new Size(20, 20));
-            ctx.BackgroundColor(backgroundColor);
+ 
             var x = 1;
             var xOffset = 0;
             var duration = Duration.ToString();
@@ -55,6 +86,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
  
             ctx.DrawText(Duration.ToString(), font, Color.White, new PointF(x, 0));
         });
+
         return image;
     }
     public virtual StatusEffectType EffectType => StatusEffectType.Buff;
@@ -114,10 +146,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
         Caster = caster;
     }
 
-    public StatusEffect Copy() 
-    {
-        return (StatusEffect) MemberwiseClone();
-    }
+
 
     public override string ToString()
     {
