@@ -123,7 +123,9 @@ public class BattleSimulator : IBattleEventListener
         imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
         imageCtx.Fill(Color.White, combatReadinessLineTRectangle);   
 
-        foreach (var i in Characters.Where(i => !i.IsDead && ActiveCharacter != i).OrderBy(i => i.CombatReadiness))
+        foreach (var i in Characters
+                     .Where(i => !i.IsDead && ActiveCharacter != i)
+                     .OrderBy(i => i.CombatReadiness))
         {
             
             using var characterImageToDraw = await GetAvatarAsync(i.ImageRepresentation);
