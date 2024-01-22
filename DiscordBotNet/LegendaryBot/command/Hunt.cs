@@ -51,16 +51,24 @@ public class Hunt : BaseCommandClass
         }
 
         await MakeOccupiedAsync(userData);
-        Character enemy =(Character) Activator.CreateInstance(characterType)!;
-        CharacterTeam enemyTeam = new CharacterTeam((enemy * (int)enemyCount)
-            .OfType<Character>().ToArray());
+        CharacterTeam enemyTeam = new CharacterTeam();
+        foreach (var i in Enumerable.Range(0,(int) enemyCount))
+        {
+            enemyTeam.Add((Character)Activator.CreateInstance(characterType)!);
+        }
+      
+
         embedToBuild = embedToBuild
             .WithTitle($"Keep your guard up!")
-            .WithDescription($"A wild {enemy} has appeared!");
+            .WithDescription($"Wild {enemyTeam.First()}(s) have appeared!");
         await ctx.CreateResponseAsync(embedToBuild.Build());
         var message = await ctx.GetOriginalResponseAsync();
         var userTeam = await userData.EquippedPlayerTeam.LoadAsync(author);
-        enemy.SetLevel(userTeam.Select(i => i.Level).Average().Round());
+        foreach (var i in enemyTeam)
+        {
+            i.SetLevel(userTeam.Select(i => i.Level).Average().Round());
+        }
+
         var simulator = new BattleSimulator(userTeam, await enemyTeam.LoadAsync());
 
  
@@ -69,7 +77,7 @@ public class Hunt : BaseCommandClass
 
 
 
-        var expToGain = BattleFunction.ExpGainFormula(enemy.Level);
+        var expToGain = battleResult.ExpToGain;
         if (battleResult.Winners != userTeam)
         {
             expToGain /= 2;

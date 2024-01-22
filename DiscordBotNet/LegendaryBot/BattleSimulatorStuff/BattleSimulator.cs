@@ -929,10 +929,10 @@ public class BattleSimulator : IBattleEventListener
         var losers = CharacterTeams.First(i => i != _winners);
        
        
-        var expToGain=(long) losers.Sum(i =>(long) BattleFunction.ExpGainFormula(i.Level) * i.ExpIncreaseScale);
+        var expToGain= losers.Sum(i =>BattleFunction.ExpGainFormula(i.Level) * i.ExpIncreaseScale);
         var coinsToGain = (losers.Sum(i => (i.Level + 60) * 100))/_winners.Count;
 
-        List<Reward> rewards = [new CoinsReward((long)coinsToGain), new UserExperienceReward(expToGain)];
+        List<Reward> rewards = [new CoinsReward(coinsToGain), new UserExperienceReward(expToGain)];
         foreach (var i in losers)
         {
             if (i.IsDead) rewards.AddRange(i.DroppedRewards);
