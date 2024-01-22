@@ -15,17 +15,23 @@ public class Hunt : BaseCommandClass
         [Option("enemy_count","number of enemies")] long enemyCount = 1 )
     {
         var author = ctx.User;
-
-  
         var userData = await DatabaseContext.UserData
             .IncludeTeamWithAllEquipments()
             .FindOrCreateAsync((long)author.Id);
+
 
         var embedToBuild = new DiscordEmbedBuilder()
             .WithUser(author)
             .WithTitle("Hmm")
             .WithColor(userData.Color)
             .WithDescription($"You cannot hunt because you have not yet become an adventurer with {Tier.Unranked}");
+        if (enemyCount < 1)
+        {
+            embedToBuild.WithDescription("There must be at least one enemy");
+            await ctx.CreateResponseAsync(embedToBuild);
+            return;
+        }
+
         if (userData.IsOccupied)
         {
             embedToBuild
