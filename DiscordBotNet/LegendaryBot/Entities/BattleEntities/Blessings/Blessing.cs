@@ -28,13 +28,13 @@ public abstract class Blessing : BattleEntity
         
             ctx
                 .DrawImage(userImage,userImagePoint, new GraphicsOptions())
-                .Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(userImagePoint,userImage.Size))
-                .Fill(SixLabors.ImageSharp.Color.Gray, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30))
-                .Fill(SixLabors.ImageSharp.Color.Green, new RectangleF(130, levelBarY, gottenExp, 30))
-                .Draw(SixLabors.ImageSharp.Color.Black, 3, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30))
-                .DrawText($"{Experience}/{GetRequiredExperienceToNextLevel()}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY+2))
-                .DrawText($"Name: {Name}", font, SixLabors.ImageSharp.Color.Black, new PointF(xPos, levelBarY -57))
-                .DrawText($"Level: {Level}",font,SixLabors.ImageSharp.Color.Black,new PointF(xPos,levelBarY - 30))
+                .Draw(Color.Black, 3, new RectangleF(userImagePoint,userImage.Size))
+                .Fill(Color.Gray, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30))
+                .Fill(Color.Green, new RectangleF(130, levelBarY, gottenExp, 30))
+                .Draw(Color.Black, 3, new RectangleF(130, levelBarY, levelBarMaxLevelWidth, 30))
+                .DrawText($"{Experience}/{GetRequiredExperienceToNextLevel()}",font,Color.Black,new PointF(xPos,levelBarY+2))
+                .DrawText($"Name: {Name}", font, Color.Black, new PointF(xPos, levelBarY -57))
+                .DrawText($"Level: {Level}",font,Color.Black,new PointF(xPos,levelBarY - 30))
                 .Resize(1000, 300));
         
 
