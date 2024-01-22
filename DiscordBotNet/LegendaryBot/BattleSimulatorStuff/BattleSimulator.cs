@@ -92,24 +92,19 @@ public class BattleSimulator : IBattleEventListener
         int yOffset = 0;
         IImageProcessingContext imageCtx = null!;
         image.Mutate(ctx => imageCtx = ctx);
-        var characterImagesDictionary = new ConcurrentDictionary<Character,Image<Rgba32>>();
-        foreach (var character in Characters)
-        {
-            characterImagesDictionary[character] = await character.GetCombatImageAsync();
-        }
 
         foreach (var i in CharacterTeams)
         {
 
             foreach (var j in i)
             {
-                using var gottenImage = characterImagesDictionary[j];
-                if (gottenImage.Width > widest)
+                using var characterCombatImage = await j.GetImageForCombatAsync();
+                if (characterCombatImage.Width > widest)
                 {
-                    widest = gottenImage.Width;
+                    widest = characterCombatImage.Width;
                 }
-                imageCtx.DrawImage(gottenImage, new Point(xOffSet, yOffset), new GraphicsOptions());
-                yOffset += gottenImage.Height + 15;
+                imageCtx.DrawImage(characterCombatImage, new Point(xOffSet, yOffset), new GraphicsOptions());
+                yOffset += characterCombatImage.Height + 15;
                 if (yOffset > length)
                 {
                     length = yOffset;
@@ -118,10 +113,12 @@ public class BattleSimulator : IBattleEventListener
             yOffset = 0;
             xOffSet += widest + 75;
         }
-        imageCtx.BackgroundColor(Color.Gray);
+
         var combatReadinessLineTRectangle = new Rectangle(30, 0, 3, length);
-        imageCtx.Draw(Color.Black, 8, combatReadinessLineTRectangle);
-        imageCtx.Fill(Color.White, combatReadinessLineTRectangle);   
+        imageCtx
+            .BackgroundColor(Color.Gray)
+            .Draw(Color.Black, 8, combatReadinessLineTRectangle)
+            .Fill(Color.White, combatReadinessLineTRectangle);   
 
         foreach (var i in Characters
                      .Where(i => !i.IsDead && ActiveCharacter != i)
@@ -129,28 +126,34 @@ public class BattleSimulator : IBattleEventListener
         {
             
             using var characterImageToDraw = await GetAvatarAsync(i.ImageRepresentation);
-            var circleBgColor = Color.DarkBlue;
-            if (i.Team == Team2)
+            Color circleBgColor;
+            if (i.Team == Team2) 
                 circleBgColor = Color.DarkRed;
+            else 
+                circleBgColor = Color.DarkBlue;
+            
             characterImageToDraw.Mutate(j =>
             
                 j.BackgroundColor(circleBgColor)
                 .ConvertToAvatar()
             );
-            var circleColor = Color.Blue;
+            Color circleColor;
             if (i.Team == Team2)
                 circleColor = Color.Red;
+            else
+                circleColor = Color.Blue;
+            
             var characterImagePoint =
                 new Point(((combatReadinessLineTRectangle.X + (combatReadinessLineTRectangle.Width / 2.0))
                            - (characterImageToDraw.Width / 2.0)).Round(),
                     (i.CombatReadiness * length / 100).Round());
-            imageCtx.DrawImage(characterImageToDraw, characterImagePoint
-                ,new GraphicsOptions());
+  
             var circlePolygon = new EllipsePolygon(characterImageToDraw.Width / 2.0f + characterImagePoint.X,
                 characterImageToDraw.Height / 2.0f + characterImagePoint.Y,
                 characterImageToDraw.Height / 2.0f);
-            imageCtx.Draw(circleColor, 2,
-                circlePolygon);
+            imageCtx
+                .DrawImage(characterImageToDraw, characterImagePoint,new GraphicsOptions())
+                .Draw(circleColor, 2, circlePolygon);
         }
 
         imageCtx.EntropyCrop();

@@ -601,7 +601,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         PostEvictionCallbacks =
             { new PostEvictionCallbackRegistration() { EvictionCallback= BasicFunction.DisposeEvictionCallback } }
     };
-    public async Task<Image<Rgba32>> GetCombatImageAsync()
+    public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
 
         var image = new Image<Rgba32>(190, 150);
@@ -623,19 +623,18 @@ public abstract partial  class Character : BattleEntity, ISetup
         IImageProcessingContext ctx = null!;
         image.Mutate(idk => ctx = idk);
        
-        ctx.DrawImage(characterImage, new Point(0, 0), new GraphicsOptions());
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1, new Rectangle(new Point(0, 0), new Size(50, 50)));
-
-        ctx.DrawText($"Lvl {Level}", SystemFonts.CreateFont(Bot.GlobalFontName, 10),
-        SixLabors.ImageSharp.Color.Black, new PointF(55, 21.5f));
-
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
-        new RectangleF(52.5f, 20, 70, 11.5f));
-
-        ctx.DrawText(Name + $" [{AlphabetIdentifier}] [{Position}]", SystemFonts.CreateFont(Bot.GlobalFontName, 11),
-        SixLabors.ImageSharp.Color.Black, new PointF(55, 36.2f));
-        ctx.Draw(SixLabors.ImageSharp.Color.Black, 1,
+        ctx
+            .DrawImage(characterImage, new Point(0, 0), new GraphicsOptions())
+            .Draw(SixLabors.ImageSharp.Color.Black, 1, new Rectangle(new Point(0, 0), new Size(50, 50)))
+            .DrawText($"Lvl {Level}", SystemFonts.CreateFont(Bot.GlobalFontName, 10),
+        SixLabors.ImageSharp.Color.Black, new PointF(55, 21.5f))
+            .Draw(SixLabors.ImageSharp.Color.Black, 1,
+        new RectangleF(52.5f, 20, 70, 11.5f))
+            .DrawText(Name + $" [{AlphabetIdentifier}] [{Position}]", SystemFonts.CreateFont(Bot.GlobalFontName, 11),
+        SixLabors.ImageSharp.Color.Black, new PointF(55, 36.2f))
+            .Draw(SixLabors.ImageSharp.Color.Black, 1,
         new RectangleF(52.5f, 35, 115, 12.5f));
+
         var healthPercentage = HealthPercentage;
         int width = 175;
         var shieldPercentage = ShieldPercentage;
