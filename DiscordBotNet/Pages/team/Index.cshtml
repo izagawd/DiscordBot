@@ -29,7 +29,7 @@
     {
         <a href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="the_href super_character_div character_in_team_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">
             <div class="character_div">
-                <img src="@i.ImageRepresentation" class="image_class" draggable="false"/>
+                <img src="@i.ImageUrl" class="image_class" draggable="false"/>
                 <div class="character_details">
                     <p>Level: @i.Level</p>
                     <p>Name : @i.Name</p>
@@ -68,7 +68,7 @@
     {
         <div class="super_character_div character_in_list_div" id="@i.Id.ToString()" draggable="true" ondragstart="dragStart(event)">
             <a draggable="false" href="characters/info?characterId=@HttpUtility.UrlEncode(i.Id.ToString())" class="character_div the_href">
-                <img src="@i.ImageRepresentation" class="image_class" draggable="false"/>
+                <img src="@i.ImageUrl" class="image_class" draggable="false"/>
                 <div class="character_details">
                     <p>Level: @i.Level</p>
                     <p>Name : @i.Name</p>

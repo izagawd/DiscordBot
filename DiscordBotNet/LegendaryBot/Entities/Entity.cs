@@ -57,9 +57,9 @@ public abstract class Entity : ICloneable, IDatabaseModel, IImageHaver
     public UserData? UserData { get; set; }
 
     [NotMapped]
-    public virtual string ImageRepresentation { get; protected set; }
+    public virtual string ImageUrl { get; protected set; }
 
     public long Id { get;  set; } 
     public long UserDataId { get; set; }
-    public IEnumerable<string> ImageUrls => [ImageRepresentation];
+    public IEnumerable<string> ImageUrls => [ImageUrl];
 }

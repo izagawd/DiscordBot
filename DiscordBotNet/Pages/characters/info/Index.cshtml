@@ -25,7 +25,7 @@
 <div id="super_character_div">
     <div style="display: flex;  position: relative;">
         <div id="character_with_blessing" >
-            <img style="width: 100px;height: 100px;" src="@Model.Character.ImageRepresentation"/>
+            <img style="width: 100px;height: 100px;" src="@Model.Character.ImageUrl"/>
             <div style="margin-left: 30px; margin-right: 30px;">
                 <p>Level: @Model.Character.Level</p>
                 <p>Name: @Model.Character.Name</p>
@@ -42,7 +42,7 @@
             {
                 name = blessing.Name;
                 level = blessing.Level;
-                iconUrl = blessing.ImageRepresentation;
+                iconUrl = blessing.ImageUrl;
                 draggable = true;
                 id = blessing.Id.ToString();
             }
@@ -67,7 +67,7 @@
         <div draggable="true" class="not_equipped" id="@i.Id.ToString()" style="margin-bottom: 10px; margin-top: 10px;" ondragstart="dragStart(event)">
             <div class="blessing_div">
           
-                    <img src="@i.ImageRepresentation" class="image_class" draggable="false">
+                    <img src="@i.ImageUrl" class="image_class" draggable="false">
             
                 <div class="blessing_details">
                     @if (i.Character is not null)
@@ -77,7 +77,7 @@
                             await player.LoadAsync();
                         }
                         <a href="/characters/info?characterId=@HttpUtility.UrlEncode(i.Character.Id.ToString())">
-                            <img src="@i.Character.ImageRepresentation" style="width: 25px; height: 25px;"/>
+                            <img src="@i.Character.ImageUrl" style="width: 25px; height: 25px;"/>
                         </a>
                     }
                     <p>Level: @i.Level</p>

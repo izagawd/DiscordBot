@@ -125,7 +125,7 @@ public class BattleSimulator : IBattleEventListener
                      .OrderBy(i => i.CombatReadiness))
         {
             
-            using var characterImageToDraw = await GetAvatarAsync(i.ImageRepresentation);
+            using var characterImageToDraw = await GetAvatarAsync(i.ImageUrl);
             Color circleBgColor;
             if (i.Team == Team2) 
                 circleBgColor = Color.DarkRed;
@@ -372,7 +372,7 @@ public class BattleSimulator : IBattleEventListener
 
 
             var embed = new DiscordEmbedBuilder()
-                .WithAuthor(characterToDisplayBattleInfo.NameWithAlphabetIdentifier, iconUrl: characterToDisplayBattleInfo.ImageRepresentation)
+                .WithAuthor(characterToDisplayBattleInfo.NameWithAlphabetIdentifier, iconUrl: characterToDisplayBattleInfo.ImageUrl)
                 .WithTitle($"{characterToDisplayBattleInfo} [{characterToDisplayBattleInfo.AlphabetIdentifier}]'s description")
                 .WithColor(characterToDisplayBattleInfo.Color)
                 .WithDescription(descriptionStringBuilder.ToString());
@@ -646,7 +646,7 @@ public class BattleSimulator : IBattleEventListener
 
             DiscordEmbedBuilder embedToEdit = new DiscordEmbedBuilder()
                 .WithTitle("**BATTLE!!!**")
-                .WithAuthor($"{ActiveCharacter.Name} [{ActiveCharacter.AlphabetIdentifier}]", iconUrl: ActiveCharacter.ImageRepresentation)
+                .WithAuthor($"{ActiveCharacter.Name} [{ActiveCharacter.AlphabetIdentifier}]", iconUrl: ActiveCharacter.ImageUrl)
                 .WithColor(ActiveCharacter.Color)
                 .AddField(_mainText, additionalText)
                 .WithImageUrl("attachment://battle.png");

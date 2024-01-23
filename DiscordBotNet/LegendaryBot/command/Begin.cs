@@ -92,7 +92,7 @@ public class Begin : BaseCommandClass
         var coachChadProfile = new DialogueProfile
         {
             CharacterColor = coachChad.Color, CharacterName = coachChad.Name,
-            CharacterUrl = coachChad.ImageRepresentation,
+            CharacterUrl = coachChad.ImageUrl,
         };
         
         

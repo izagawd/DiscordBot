@@ -11,7 +11,7 @@ public class Image : BaseCommandClass
     {
         var lily = new Lily();
         await ctx.CreateResponseAsync(new DiscordEmbedBuilder()
-            .WithImageUrl(lily.ImageRepresentation)
+            .WithImageUrl("https://miro.medium.com/v2/resize:fit:721/1*9m0eBRsmz2-_in8K9_D_gA.png")
             .WithTitle("bruh")
             .WithDescription("bruh"));
     }

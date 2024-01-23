@@ -8,6 +8,7 @@ using AspNet.Security.OAuth.Discord;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace DiscordBotNet;
@@ -20,17 +21,12 @@ public static class Website
     public static readonly string DomainName = "https://localhost";
     public static async Task<string> RenderImageTagAsync(Image image)
     {
-        if (image == null)
-        {
-            throw new ArgumentNullException(nameof(image));
-        }
+        if (image == null) throw new ArgumentNullException(nameof(image));
 
         await using var stream = new MemoryStream();
         await image.SaveAsPngAsync(stream);  // Save the image to a stream
-        byte[] imageBytes = stream.ToArray();
-        var base64Image = Convert.ToBase64String(imageBytes);
-        var imageSrc = $"data:image/png;base64,{base64Image}";
-        return imageSrc;
+        var base64Image = Convert.ToBase64String(stream.ToArray());
+        return  $"data:image/png;base64,{base64Image}";
     }
     public static string GetDiscordUserName(this ClaimsPrincipal user)
     {
@@ -49,7 +45,7 @@ public static class Website
     {
         var claim = user.FindFirst(i =>
             i.Type == "urn:discord:avatar:url");
-        return claim?.Value!;
+        return claim?.Value.Print()!;
     }
     public static void ConfigureServices(IServiceCollection services)
     {
@@ -88,7 +84,11 @@ public static class Website
             .AddCookie(options =>
             {
 
-            }).AddCertificate(i => i.Validate());
+            }).AddCertificate(options =>
+            {
+
+                options.Validate();
+            });
 
     }
 
