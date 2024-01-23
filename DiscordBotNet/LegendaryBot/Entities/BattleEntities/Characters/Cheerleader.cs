@@ -5,6 +5,33 @@ using DiscordBotNet.LegendaryBot.StatusEffects;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
+public class PomPomAttack : BasicAttack
+{
+    public override string GetDescription(Character character)
+    {
+        return "Caster hits the enemy with a pom-pom... and that it";
+    }
+
+    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    {
+
+        return new UsageResult(this)
+        {
+            DamageResults =
+            [
+                target.Damage(new DamageArgs(this)
+                {
+                    Caster = owner,
+                    Damage = 1,
+                    DamageText = $"{owner} hits {target} with their pompoms, dealing $ damage!"
+                })
+            ],
+            TargetType = TargetType.SingleTarget,
+            User = owner,
+            UsageType = usageType
+        };
+    }
+}
 
 public class  YouCanDoIt : Skill
 {
@@ -85,7 +112,7 @@ public class Cheerleader : Character
         return (base.GetSpeedValue(points) * 1.2).Round();
     }
 
-    public override BasicAttack BasicAttack { get; } = new BasicAttackSample();
+    public override BasicAttack BasicAttack { get; } = new PomPomAttack();
     public override Skill? Skill { get; } = new YouCanDoIt();
     public override Surge? Surge { get; } = new YouCanMakeItEveryone();
 }

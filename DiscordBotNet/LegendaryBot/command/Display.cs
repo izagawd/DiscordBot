@@ -125,7 +125,7 @@ public class Display : BaseCommandClass
                 .WithUser(context.User)
                 .WithColor(userData.Color)
                 .WithTitle($"Page {index + 1}")
-                .WithDescription(displayList[index].Join("\n\n").Print());
+                .WithDescription(displayList[index].Join("\n\n"));
             var messageBuilder = new DiscordMessageBuilder()
                 .AddComponents(First,Previous,Next,Last)
                 .WithEmbed(embed);
@@ -254,7 +254,7 @@ public class Display : BaseCommandClass
                 .WithUser(context.User)
                 .WithColor(userData.Color)
                 .WithTitle($"Page {index + 1}")
-                .WithDescription(displayList[index].Join("\n\n").Print());
+                .WithDescription(displayList[index].Join("\n\n"));
             var messageBuilder = new DiscordMessageBuilder()
                 .AddComponents(First,Previous,Next,Last)
                 .WithEmbed(embed);

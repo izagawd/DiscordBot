@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.Entities;
@@ -159,9 +160,14 @@ public class UserData : IDatabaseModel,  ICanBeLeveledUp
         return new ExperienceGainResult(){ExcessExperience = excessExp, Text = expGainText};
     }
 
+    [NotMapped]
+    public bool DailyPending => LastTimeDailyWasChecked.Date != DateTime.UtcNow.Date;
+    public DateTime LastTimeDailyWasChecked { get; set; } = DateTime.UtcNow.AddDays(-1);
     public long StandardPrayers { get; set; } = 0;
     
     public long SupremePrayers { get; set; } = 0;
+
+    public long ShardsOfTheGods { get; set; } = 0;
     public long Coins { get; set; } = 5000;
 
 

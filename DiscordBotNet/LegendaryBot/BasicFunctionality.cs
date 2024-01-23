@@ -2,6 +2,7 @@
 using System.Text;
 using DiscordBotNet.Extensions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Primitives;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -166,7 +167,7 @@ public static class BasicFunctionality
         
     /// <summary>Spaces out a sentence and makes each word start with a capital letter</summary>
     ///<returns>The computed string</returns>
-    public static string Englishify(string stringToEnglishify)
+    public static string Englishify(this string stringToEnglishify)
     {
         string[] newArray;
         if (stringToEnglishify.Contains("_"))
@@ -177,41 +178,20 @@ public static class BasicFunctionality
         else if(stringToEnglishify.Contains(" "))
         {
             newArray = stringToEnglishify.Split(" ");
-
         } else
         {
-            string tempString = "";
+            var tempStringBuilder = new StringBuilder();
             for(int i = 0; i < stringToEnglishify.Length; i++)
             {
-                tempString += stringToEnglishify[i];
+                tempStringBuilder.Append(stringToEnglishify[i]);
                 if (stringToEnglishify.Length > i + 1 &&  char.IsUpper(stringToEnglishify[i + 1]))
                 {
-                    tempString += ' ';
+                    tempStringBuilder.Append(' ');
                 }
             }
-            newArray = tempString.Split(" ");
+            newArray = tempStringBuilder.ToString().Split(" ");
         }
-        int len = newArray.Length;
-        string[] checkers = { "i", "ii", "iii", "iv", "v" };
-        for (int i = 0; i < len; i++)
-        {
-            if (checkers.Contains(newArray[i].ToLower()))
-            {
-                newArray[i] = newArray[i].ToUpper();
-       
-            }
-            else
-            {
-                newArray[i] = FirstLetterCapital(newArray[i]);
-
-            }
-
-        }
-            
-        string newString = string.Join(" ", newArray);
-
-        return newString;
-
+        return string.Join(" ", newArray);
 
 
     }
@@ -220,7 +200,7 @@ public static class BasicFunctionality
     ///<returns>The amount of time till the next day as a string</returns>
     public static string TimeTillNextDay()
     {
-        DateTime now = DateTime.Now;
+        DateTime now = DateTime.UtcNow;
         int hours = 0, minutes = 0, seconds = 0;
         hours = (24 - now.Hour) - 1;
         minutes = (60 - now.Minute) - 1;

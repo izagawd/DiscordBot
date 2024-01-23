@@ -56,7 +56,7 @@ public class Dialogue
         if (discordActionRows.Any(i =>
                 i.Components.Any(j => j.CustomId == "skip")))
         {
-            discordActionRows.ToList().ForEach(i => i.Components.ToList().ForEach(j =>j.CustomId.Print()));
+
             throw new Exception("No discord component in the provided action rows should have an Id of \"skip\"\n" +
                                 "since it is already preserved for another purpose");
         }

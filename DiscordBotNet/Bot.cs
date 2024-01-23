@@ -50,7 +50,8 @@ public static class Bot
 
     private static async Task Main(string[] args)
     {
-
+   
+        
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
@@ -119,14 +120,13 @@ public static class Bot
 
     public static string GlobalFontName => "Arial";
 
-
+    
     private static async  Task OnSlashCommandError(SlashCommandsExtension extension,SlashCommandErrorEventArgs ev)
     {
         Console.WriteLine(ev.Exception);
 
         List<DiscordUser> involvedUsers = [ev.Context.User];
-        if (ev.Context.ResolvedUserMentions is not null)
-            involvedUsers.AddRange(ev.Context.ResolvedUserMentions);
+        if (ev.Context.ResolvedUserMentions is not null) involvedUsers.AddRange(ev.Context.ResolvedUserMentions);
         var involvedIds = involvedUsers.Select(i => i.Id).ToArray();
         await using var databaseContext = new PostgreSqlContext();
         await databaseContext.UserData

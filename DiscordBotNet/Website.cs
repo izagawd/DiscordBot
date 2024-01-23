@@ -31,8 +31,7 @@ public static class Website
     public static string GetDiscordUserName(this ClaimsPrincipal user)
     {
         var claim = user.FindFirst(i => i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
-        return 
-            claim?.Value!;
+        return claim?.Value!;
     }
 
     public static long GetDiscordUserId(this ClaimsPrincipal user)
@@ -45,7 +44,7 @@ public static class Website
     {
         var claim = user.FindFirst(i =>
             i.Type == "urn:discord:avatar:url");
-        return claim?.Value.Print()!;
+        return claim?.Value!;
     }
     public static void ConfigureServices(IServiceCollection services)
     {
