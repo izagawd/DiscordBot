@@ -33,7 +33,7 @@ public class ShieldBash : BasicAttack
             UsageType = usageType
 
         };
-        if (BasicFunction.RandomChance(ShieldStunChanceByBash))
+        if (BasicFunctionality.RandomChance(ShieldStunChanceByBash))
         {
             target.AddStatusEffect(new Stun(owner));
         }

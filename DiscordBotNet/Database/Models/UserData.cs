@@ -46,7 +46,7 @@ public class UserData : IDatabaseModel,  ICanBeLeveledUp
         {
             throw new Exception("discord user's ID does not match user data's id");
         }
-        using var userImage = await BasicFunction.GetImageFromUrlAsync(user.AvatarUrl);
+        using var userImage = await BasicFunctionality.GetImageFromUrlAsync(user.AvatarUrl);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         image.Mutate(ctx =>
@@ -90,7 +90,7 @@ public class UserData : IDatabaseModel,  ICanBeLeveledUp
     public long Experience { get; protected set; }
     public long GetRequiredExperienceToNextLevel(int level)
     {
-        return BattleFunction.NextLevelFormula(level) * 10;
+        return BattleFunctionality.NextLevelFormula(level) * 10;
     }
     public long GetRequiredExperienceToNextLevel()
     {

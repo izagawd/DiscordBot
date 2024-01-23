@@ -17,7 +17,7 @@ public class CharacterBuild : IDatabaseModel
         var stringBuilder = new StringBuilder("");
         foreach (var i in Enum.GetValues<StatType>())
         {
-            stringBuilder.Append($"{BasicFunction.Englishify(i.ToString())} Points: {this[i]}\n");
+            stringBuilder.Append($"{BasicFunctionality.Englishify(i.ToString())} Points: {this[i]}\n");
         }
 
         stringBuilder.Append($"\nTotal Points: {TotalPoints}");

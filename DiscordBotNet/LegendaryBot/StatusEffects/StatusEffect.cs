@@ -33,12 +33,12 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
     protected static MemoryCacheEntryOptions EntryOptions { get; } = new()
     {
         SlidingExpiration = new TimeSpan(0,30,0),
-        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunctionality.DisposeEvictionCallback} }
     };
     protected static MemoryCacheEntryOptions ExpiredEntryOptions { get; } = new()
     {
         SlidingExpiration = new TimeSpan(0,30,0),
-        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunctionality.DisposeEvictionCallback} }
     };
 
 
@@ -49,7 +49,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
         if (!_cachedResizedCombatImages.TryGetValue(url, out Image<Rgba32> image))
         {
             
-            image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+            image = await BasicFunctionality.GetImageFromUrlAsync(IconUrl);
 
             var backgroundColor = Color.Red;
             if (EffectType == StatusEffectType.Buff)
@@ -118,7 +118,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener
     /// <summary>
     /// The name of the status effect
     /// </summary>
-    public virtual string Name => BasicFunction.Englishify(GetType().Name);
+    public virtual string Name => BasicFunctionality.Englishify(GetType().Name);
 
     public virtual UsageResult OverridenUsage(Character affected,ref Character target, ref BattleDecision decision, UsageType usageType) // the status effect might or might not replace the player's decision
     {

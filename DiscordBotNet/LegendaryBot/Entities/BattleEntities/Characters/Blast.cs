@@ -28,7 +28,7 @@ public class MethaneSlap : BasicAttack
             TargetType = TargetType.SingleTarget,
             DamageResults = damageResultList
         };
-        if (BasicFunction.RandomChance(DetonateChance))
+        if (BasicFunctionality.RandomChance(DetonateChance))
         {
             foreach (var i in target.StatusEffectsCopy.OfType<Bomb>())
                 i.Detonate(target,owner);
@@ -58,7 +58,7 @@ public class BlowAway : Skill
 
             foreach (var _ in Enumerable.Range(0,1))
             {
-                if (BasicFunction.RandomChance(BombInflictChance))
+                if (BasicFunctionality.RandomChance(BombInflictChance))
                 {
                                 
                     i.AddStatusEffect(new Bomb(owner){Duration = 2}, owner.Effectiveness);

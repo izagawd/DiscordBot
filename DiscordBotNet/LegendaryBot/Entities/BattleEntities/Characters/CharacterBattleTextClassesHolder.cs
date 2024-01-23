@@ -19,7 +19,7 @@ public partial class Character
 
                 if (_statusEffects.Count > 1)
                     noun = "have";
-                var concatenated = BasicFunction.CommaConcatenator(_affectedCharacters
+                var concatenated = BasicFunctionality.CommaConcatenator(_affectedCharacters
                     .Select(i => i.NameWithAlphabetIdentifier));
 
                 Dictionary<StatusEffect, int> countTracker = [];
@@ -37,7 +37,7 @@ public partial class Character
                     }
                 }
 
-                var statusEffectsString = BasicFunction.CommaConcatenator(countTracker.Select(i =>
+                var statusEffectsString = BasicFunctionality.CommaConcatenator(countTracker.Select(i =>
                 {
                     string toUse = i.Key.Name;
                     if (i.Value > 1) toUse += $" x{i.Value}";
@@ -111,7 +111,7 @@ public partial class Character
                     thingDone = "increased";
                 }
 
-                return BasicFunction.CommaConcatenator(_affectedCharacters
+                return BasicFunctionality.CommaConcatenator(_affectedCharacters
                            .Select(i => i.NameWithAlphabetIdentifier))
                        + $" {noun} their combat readiness {thingDone} by {Math.Abs(_combatReadinessChangeAmount)}%!";
             }
@@ -141,7 +141,7 @@ public partial class Character
 
             if (_extraTurners.Count > 1)
                 noun = "have";
-            return BasicFunction.CommaConcatenator(_extraTurners
+            return BasicFunctionality.CommaConcatenator(_extraTurners
                     .Select(i => i.NameWithAlphabetIdentifier)) + $" {noun} been granted an extra turn!";
         }
         
@@ -177,7 +177,7 @@ public partial class Character
 
                 if (_revivedCharacters.Count > 1)
                     noun = "have";
-                return BasicFunction.CommaConcatenator(_revivedCharacters
+                return BasicFunctionality.CommaConcatenator(_revivedCharacters
                         .Select(i => i.NameWithAlphabetIdentifier)) + $" {noun} been revived!";
             }
         }
@@ -207,7 +207,7 @@ public partial class Character
 
                 if (_deadCharacters.Count > 1)
                     noun = "have";
-                return BasicFunction.CommaConcatenator(_deadCharacters
+                return BasicFunctionality.CommaConcatenator(_deadCharacters
                     .Select(i => i.NameWithAlphabetIdentifier)) + $" {noun} died!";
             }
         }

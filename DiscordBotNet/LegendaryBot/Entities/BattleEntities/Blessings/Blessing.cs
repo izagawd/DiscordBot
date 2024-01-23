@@ -15,7 +15,7 @@ public abstract class Blessing : BattleEntity
     public long? CharacterId { get; set; }
     public virtual async Task<Image<Rgba32>> GetInfoAsync()
     {
-        using var userImage = await BasicFunction.GetImageFromUrlAsync(ImageUrl);
+        using var userImage = await BasicFunctionality.GetImageFromUrlAsync(ImageUrl);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         var userImagePoint = new Point(20, 20);
@@ -115,7 +115,7 @@ public abstract class Blessing : BattleEntity
     public override async Task<Image<Rgba32>> GetDetailsImageAsync()
     {
         var image = new Image<Rgba32>(500, 350);
-        using var blessingImage = await BasicFunction.GetImageFromUrlAsync(ImageUrl);
+        using var blessingImage = await BasicFunctionality.GetImageFromUrlAsync(ImageUrl);
         blessingImage.Mutate(i => i.Resize(200,200));
         var drawing = new RichTextOptions(SystemFonts.CreateFont(Bot.GlobalFontName, 20));
         drawing.Origin = new Vector2(10, 200);
@@ -138,12 +138,12 @@ public abstract class Blessing : BattleEntity
 
         var levelBefore = Level;
         Experience += experience;
-        var nextLevelEXP = BattleFunction.NextLevelFormula(Level);
+        var nextLevelEXP = BattleFunctionality.NextLevelFormula(Level);
         while (Experience >= nextLevelEXP &&  Level < MaxLevel)
         {
             Experience -= nextLevelEXP;
             Level += 1;
-            nextLevelEXP = BattleFunction.NextLevelFormula(Level);
+            nextLevelEXP = BattleFunctionality.NextLevelFormula(Level);
         }
         long excessExp = 0;
         if (Experience > nextLevelEXP)

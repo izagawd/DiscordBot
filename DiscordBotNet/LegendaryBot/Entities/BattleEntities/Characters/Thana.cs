@@ -17,7 +17,7 @@ public class SoulAttack : BasicAttack
             Caster = owner,
             DamageText = $"{owner} uses the souls of the dead to attack {target} and dealt $ damage!"
         });
-        if (BasicFunction.RandomChance(25))
+        if (BasicFunctionality.RandomChance(25))
         {
             target.AddStatusEffect(new Sleep(owner));
         }

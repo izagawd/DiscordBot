@@ -33,7 +33,7 @@ public class ChamomileSachetWhack : BasicAttack
         };
     
 
-        if (BasicFunction.RandomChance(SleepChance))
+        if (BasicFunctionality.RandomChance(SleepChance))
         {
             target.AddStatusEffect(new Sleep(owner), owner.Effectiveness);
         }
@@ -89,11 +89,11 @@ public class LilyOfTheValley : Surge
         foreach (var i in GetPossibleTargets(owner))
         {
             
-            if (BasicFunction.RandomChance(PoisonInflictChance))
+            if (BasicFunctionality.RandomChance(PoisonInflictChance))
             {
                 statusEffects.Add(new Poison(owner){Duration = 2});
             }
-            if (BasicFunction.RandomChance(StunInflictChance))
+            if (BasicFunctionality.RandomChance(StunInflictChance))
             {
                 statusEffects.Add(new Stun(owner){Duration = 2});
             }

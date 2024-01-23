@@ -20,7 +20,7 @@ public class GooeyStrike : BasicAttack
             Damage = owner.Attack * 1.7,
             DamageText = $"{owner} used a slime attack at {target} and dealt $ damage!"
         });
-        if (BasicFunction.RandomChance(10))
+        if (BasicFunctionality.RandomChance(10))
         {
             target.AddStatusEffect(new Poison(owner));
         }
@@ -51,7 +51,7 @@ public class Slime : Character
         get
         {
             List<Reward> droppedRewards = [];
-            if(BasicFunction.RandomChance(10))
+            if(BasicFunctionality.RandomChance(10))
                 droppedRewards.Add(new EntityReward([new Slime()]));
             return droppedRewards;
         }

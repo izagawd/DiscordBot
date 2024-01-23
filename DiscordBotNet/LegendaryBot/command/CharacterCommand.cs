@@ -24,7 +24,7 @@ public class CharacterCommand : BaseCommandClass
         foreach (var i in Enum.GetValues<StatType>())
         {
             count++;
-            rowToUse.Add(new DiscordButtonComponent(ButtonStyle.Success, i.ToString(), BasicFunction.Englishify(i.ToString())));
+            rowToUse.Add(new DiscordButtonComponent(ButtonStyle.Success, i.ToString(), BasicFunctionality.Englishify(i.ToString())));
             if (count >= 4)
             {
                 rowToUse = rowTwo;
@@ -50,7 +50,7 @@ public class CharacterCommand : BaseCommandClass
     [SlashCommand("increase_stat", "Raise a character's stats on their currently equipped build")]
     public async Task ExecuteIncreaseStat(InteractionContext ctx,[Option("name","the name of the character")] string name)
     {
-        var robotifiedName = BasicFunction.Robotify(name);
+        var robotifiedName = BasicFunctionality.Robotify(name);
         var userData = await DatabaseContext.UserData
             .Include(i => i.Inventory.Where(j => j is Character 
                                                  && EF.Property<string>(j,"Discriminator") == robotifiedName))
@@ -205,7 +205,7 @@ public class CharacterCommand : BaseCommandClass
                   await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                       new DiscordInteractionResponseBuilder()
                           .AsEphemeral()
-                          .WithContent($"stat type {BasicFunction.Englishify(statType.ToString())} has already reached it's maximum amount of points"));
+                          .WithContent($"stat type {BasicFunctionality.Englishify(statType.ToString())} has already reached it's maximum amount of points"));
               }
 
           }

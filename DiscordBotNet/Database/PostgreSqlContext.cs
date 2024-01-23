@@ -55,7 +55,7 @@ public class PostgreSqlContext : DbContext
         while (user.Quests.Count < 4)
         {
             if(availableQuests.Count <= 0) break;
-            var randomQuestType = BasicFunction.RandomChoice(availableQuests.AsEnumerable());
+            var randomQuestType = BasicFunctionality.RandomChoice(availableQuests.AsEnumerable());
             availableQuests.Remove(randomQuestType);
             if (user.Quests.Any(j => j.GetType() == randomQuestType)) continue;
             user.Quests.Add((Quest) Activator.CreateInstance(randomQuestType)!);

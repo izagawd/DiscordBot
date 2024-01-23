@@ -88,7 +88,7 @@ public abstract class BaseCommandClass : ApplicationCommandModule
     protected PostgreSqlContext DatabaseContext { get; private set; }
     public BaseCommandClass()
     {
-        Name = BasicFunction.Englishify(GetType().Name).ToLower();
+        Name = BasicFunctionality.Englishify(GetType().Name).ToLower();
         var type = GetType();
         var theCommandResultsOfThisInstance = _commandResults[type];
         if (_slashCommandGroupAttributes[type]  is null)

@@ -55,7 +55,7 @@ public class SimpleSlashOfPrecision : BasicAttack
             Damage = owner.Attack * 1.7,
             AlwaysCrits = true
         });
-        if (BasicFunction.RandomChance(BleedChance))
+        if (BasicFunctionality.RandomChance(BleedChance))
         {
             target.AddStatusEffect(new Bleed(owner));
         }

@@ -61,7 +61,7 @@ public class FireBall : Skill
                 Caster = owner,
                 DamageText =$"{owner} threw a fireball at {target} and dealt $ damage!",
             });
-            if (BasicFunction.RandomChance(10))
+            if (BasicFunctionality.RandomChance(10))
             {
                 target.AddStatusEffect(new Burn(owner),owner.Effectiveness);
             }
@@ -97,7 +97,7 @@ public class Ignite : Surge
         List<StatusEffect> burns = [];
         for (int i = 0; i < 3; i++)
         {
-            if (BasicFunction.RandomChance(IgniteChance))
+            if (BasicFunctionality.RandomChance(IgniteChance))
             {
                 burns.Add(new Burn(owner));
             }

@@ -113,8 +113,8 @@ public class CoachChad : Character
             possibleDecisions.Add(BattleDecision.Skill);
         if(Surge.CanBeUsed(this))
             possibleDecisions.Add(BattleDecision.Surge);
-        decision = BasicFunction.RandomChoice(possibleDecisions.AsEnumerable());
-        target = BasicFunction.RandomChoice(BasicAttack.GetPossibleTargets(this));
+        decision = BasicFunctionality.RandomChoice(possibleDecisions.AsEnumerable());
+        target = BasicFunctionality.RandomChoice(BasicAttack.GetPossibleTargets(this));
 
 
     }

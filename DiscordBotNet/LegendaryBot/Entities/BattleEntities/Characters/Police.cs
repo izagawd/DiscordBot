@@ -23,7 +23,7 @@ public class DoNotResist : BasicAttack
             Caster = owner,
             DamageText = $"{owner} tases {target} and dealt $ damage! it was shocking"
         });
-        if (BasicFunction.RandomChance(15))
+        if (BasicFunctionality.RandomChance(15))
         {
             target.AddStatusEffect(new Stun(owner){Duration = 1}, owner.Effectiveness);
         }
@@ -84,7 +84,7 @@ public class Police : Character
     {
         get
         {
-            if (BasicFunction.RandomChance(20))
+            if (BasicFunctionality.RandomChance(20))
             {
                 return [new EntityReward([new Police()])];
             }

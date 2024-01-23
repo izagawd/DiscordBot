@@ -14,7 +14,7 @@ public abstract class Quest
     [NotMapped]
     public abstract string Description { get; }
     [NotMapped]
-    public virtual string Title => BasicFunction.Englishify(GetType().Name);
+    public virtual string Title => BasicFunctionality.Englishify(GetType().Name);
     
     public bool Completed { get; set; } = false;
     public long Id { get; set; } 

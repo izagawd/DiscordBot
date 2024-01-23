@@ -169,7 +169,7 @@ public abstract partial  class Character : BattleEntity, ISetup
                 var percentToResistance =Resistance -effectiveness;
                 
                 if (percentToResistance < 0) percentToResistance = 0;
-                if (!BasicFunction.RandomChance((int)percentToResistance))
+                if (!BasicFunctionality.RandomChance((int)percentToResistance))
                 {
                     added = _statusEffects.Add(statusEffect);
                 }
@@ -219,7 +219,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         if (effectiveness is null || statusEffect.EffectType == StatusEffectType.Debuff)
             return _statusEffects.Remove(statusEffect);
 
-        if (!BattleFunction.CheckForResist(effectiveness.Value,Resistance))
+        if (!BattleFunctionality.CheckForResist(effectiveness.Value,Resistance))
         {
             return _statusEffects.Remove(statusEffect);
         }
@@ -257,7 +257,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             var percentToResist = Resistance - effectiveness.Value;
             
-            if (BasicFunction.RandomChance(percentToResist))
+            if (BasicFunctionality.RandomChance(percentToResist))
             {
                 if(announceDecrease)
                     CurrentBattle.AddAdditionalBattleText($"{NameWithAlphabetIdentifier} resisted combat readiness decrease!");
@@ -539,7 +539,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         var statsStringBuilder = new StringBuilder();
         foreach (var i in Enum.GetValues<StatType>())
         {
-            statsStringBuilder.Append($"{BasicFunction.Englishify(i.ToString())}: {GetStatFromType(i)}\n");
+            statsStringBuilder.Append($"{BasicFunctionality.Englishify(i.ToString())}: {GetStatFromType(i)}\n");
         }
 
         imageCtx.DrawText(options, statsStringBuilder.ToString() , color);
@@ -594,12 +594,12 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         SlidingExpiration = new TimeSpan(0,30,0),
         PostEvictionCallbacks =
-            { new PostEvictionCallbackRegistration() { EvictionCallback= BasicFunction.DisposeEvictionCallback } }
+            { new PostEvictionCallbackRegistration() { EvictionCallback= BasicFunctionality.DisposeEvictionCallback } }
     };
     private static readonly MemoryCacheEntryOptions EntryOptions = new()
     {
         PostEvictionCallbacks =
-            { new PostEvictionCallbackRegistration() { EvictionCallback= BasicFunction.DisposeEvictionCallback } }
+            { new PostEvictionCallbackRegistration() { EvictionCallback= BasicFunctionality.DisposeEvictionCallback } }
     };
     public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
@@ -608,7 +608,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         var url = ImageUrl;
         if (!_cachedCombatCroppedImages.TryGetValue(url, out Image<Rgba32> characterImage))
         {
-            characterImage = await  BasicFunction.GetImageFromUrlAsync(url);
+            characterImage = await  BasicFunctionality.GetImageFromUrlAsync(url);
             characterImage.Mutate(ctx =>
             {
                 ctx.Resize(new Size(50, 50));
@@ -999,7 +999,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
     public async Task<Image<Rgba32>> GetInfoAsync()
     {
-        using var userImage = await BasicFunction.GetImageFromUrlAsync(ImageUrl);
+        using var userImage = await BasicFunctionality.GetImageFromUrlAsync(ImageUrl);
         var image = new Image<Rgba32>(500, 150);
         userImage.Mutate(ctx => ctx.Resize(new Size(100,100)));
         var userImagePoint = new Point(20, 20);
@@ -1047,14 +1047,14 @@ public abstract partial  class Character : BattleEntity, ISetup
         Move move;
         BattleDecision moveDecision = BattleDecision.BasicAttack;
 
-        moveDecision =BasicFunction.RandomChoice<BattleDecision>(possibleDecisions);
+        moveDecision =BasicFunctionality.RandomChoice<BattleDecision>(possibleDecisions);
         move = this[moveDecision]!;
         Character[] possibleTargets = move.GetPossibleTargets(this).ToArray();
         possibleDecisions.Remove(moveDecision);
     
 
         
-        target = BasicFunction.RandomChoice(possibleTargets);
+        target = BasicFunctionality.RandomChoice(possibleTargets);
 
         decision = moveDecision;
 
@@ -1304,7 +1304,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         damage = DamageFormula(damage, defenseToUse);
 
 
-        var advantageLevel = BattleFunction.GetAdvantageLevel(caster.Element, Element);
+        var advantageLevel = BattleFunctionality.GetAdvantageLevel(caster.Element, Element);
         if (damageArgs.AffectedByCasterElement)
         {
             switch (advantageLevel){
@@ -1325,7 +1325,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         {
             chance = 100;
         }
-        if (BasicFunction.RandomChance(chance)&& canCrit)
+        if (BasicFunctionality.RandomChance(chance)&& canCrit)
         {
 
             damage *= caster.CriticalDamage / 100.0;
@@ -1495,7 +1495,7 @@ public abstract partial  class Character : BattleEntity, ISetup
  
     public override long GetRequiredExperienceToNextLevel(int level)
     {
-       return BattleFunction.NextLevelFormula(Level);
+       return BattleFunctionality.NextLevelFormula(Level);
     }
 
     /// <summary>

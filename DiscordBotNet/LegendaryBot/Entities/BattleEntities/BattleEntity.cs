@@ -19,7 +19,7 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListen
 
     public virtual long GetRequiredExperienceToNextLevel(int level)
     {
-        return BattleFunction.NextLevelFormula(level);
+        return BattleFunctionality.NextLevelFormula(level);
     }
     public long GetRequiredExperienceToNextLevel()
     {

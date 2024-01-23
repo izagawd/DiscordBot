@@ -7,7 +7,7 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace DiscordBotNet.LegendaryBot;
 
-public static class BasicFunction
+public static class BasicFunctionality
 {
     public static string CommaConcatenator(IEnumerable<string> values)
     {

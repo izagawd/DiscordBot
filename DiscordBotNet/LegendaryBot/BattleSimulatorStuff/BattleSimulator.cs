@@ -52,12 +52,12 @@ public class BattleSimulator : IBattleEventListener
     protected static MemoryCacheEntryOptions EntryOptions { get; } = new()
     {
         SlidingExpiration = new TimeSpan(0,30,0),
-        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunctionality.DisposeEvictionCallback} }
     };
     protected static MemoryCacheEntryOptions ExpiredEntryOptions { get; } = new()
     {
         SlidingExpiration = new TimeSpan(0,30,0),
-        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunctionality.DisposeEvictionCallback} }
     };
 
 
@@ -68,7 +68,7 @@ public class BattleSimulator : IBattleEventListener
             return characterImageToDraw.Clone();
         }
 
-        characterImageToDraw = await BasicFunction.GetImageFromUrlAsync(url);
+        characterImageToDraw = await BasicFunctionality.GetImageFromUrlAsync(url);
         characterImageToDraw.Mutate(mutator =>
         {
             mutator.Resize(30, 30);
@@ -591,7 +591,7 @@ public class BattleSimulator : IBattleEventListener
             
             if (extraTurners.Any())
             {
-                ActiveCharacter = BasicFunction.RandomChoice(extraTurners.AsEnumerable());
+                ActiveCharacter = BasicFunctionality.RandomChoice(extraTurners.AsEnumerable());
                 ActiveCharacter.ShouldTakeExtraTurn = false;
                 extraTurnGranted = true;
             }
@@ -605,7 +605,7 @@ public class BattleSimulator : IBattleEventListener
 
             if (!extraTurnGranted)
             {
-                ActiveCharacter = BasicFunction.RandomChoice(Characters.Where(i => i.CombatReadiness >= 100 && !i.IsDead));
+                ActiveCharacter = BasicFunctionality.RandomChoice(Characters.Where(i => i.CombatReadiness >= 100 && !i.IsDead));
 
             }
 
@@ -929,7 +929,7 @@ public class BattleSimulator : IBattleEventListener
         var losers = CharacterTeams.First(i => i != _winners);
        
        
-        var expToGain= losers.Sum(i =>BattleFunction.ExpGainFormula(i.Level) * i.ExpIncreaseScale);
+        var expToGain= losers.Sum(i =>BattleFunctionality.ExpGainFormula(i.Level) * i.ExpIncreaseScale);
         var coinsToGain = (losers.Sum(i => (i.Level + 60) * 100))/_winners.Count;
 
         List<Reward> rewards = [new CoinsReward(coinsToGain), new UserExperienceReward(expToGain)];

@@ -23,19 +23,19 @@ public abstract class Move : IBattleEventListener
     protected static MemoryCacheEntryOptions ExpireEntryOptions { get; } = new()
     {
         SlidingExpiration = new TimeSpan(0,30,0),
-        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunctionality.DisposeEvictionCallback} }
     };
     protected static MemoryCacheEntryOptions EntryOptions { get; } = new()
     {
         SlidingExpiration = new TimeSpan(0,30,0),
-        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunction.DisposeEvictionCallback} }
+        PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunctionality.DisposeEvictionCallback} }
     };
     public async Task<Image<Rgba32>> GetImageForCombatAsync()
     {
         var url = IconUrl;
         if (!_croppedCombatImagesMemoryCache.TryGetValue(url, out Image<Rgba32> image))
         {
-            image = await BasicFunction.GetImageFromUrlAsync(IconUrl);
+            image = await BasicFunctionality.GetImageFromUrlAsync(IconUrl);
             image.Mutate(i => i
                 .Resize(25, 25)
                 .Draw(Color.Black, 3, new RectangleF(0, 0, 24,24)));
@@ -106,7 +106,7 @@ public abstract class Move : IBattleEventListener
 
         return Name;
     }
-    public virtual string Name => BasicFunction.Englishify(GetType().Name);
+    public virtual string Name => BasicFunctionality.Englishify(GetType().Name);
 
     public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {

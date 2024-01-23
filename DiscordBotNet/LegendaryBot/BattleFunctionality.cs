@@ -1,6 +1,6 @@
 ﻿namespace DiscordBotNet.LegendaryBot;
 
-public static  class BattleFunction
+public static  class BattleFunctionality
 {
     /// <summary>
     /// use it to get the amount of exp to gain if a chosen level is defeated
@@ -33,7 +33,7 @@ public static  class BattleFunction
     {
         var percentToResistance = resistance - effectiveness;
         if (percentToResistance < 0) percentToResistance = 0;
-        return BasicFunction.RandomChance(percentToResistance);
+        return BasicFunctionality.RandomChance(percentToResistance);
     }
     /// <summary>
     /// use it to estimate the maximum tier a level can reach

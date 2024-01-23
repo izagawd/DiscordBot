@@ -26,7 +26,7 @@ public class Info : BaseCommandClass
             .AddField("Experience", $"`{userData.Experience}`", true)
             .AddField("Tier", $"`{userData.Tier}`", true)
             .AddField("Date Started", $"`{userData.StartTime}`", true)
-            .AddField("Time Till Next Day", $"`{BasicFunction.TimeTillNextDay()}`", true)
+            .AddField("Time Till Next Day", $"`{BasicFunctionality.TimeTillNextDay()}`", true)
             .WithImageUrl("attachment://info.png")
             .WithTimestamp(DateTime.Now);
         using var image = await userData.GetInfoAsync(author);

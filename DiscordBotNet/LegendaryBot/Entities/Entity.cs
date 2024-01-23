@@ -35,7 +35,7 @@ public abstract class Entity : ICloneable, IDatabaseModel, IImageHaver
     [NotMapped]
     public virtual string Name
     {
-        get => BasicFunction.Englishify(GetType().Name);
+        get => BasicFunctionality.Englishify(GetType().Name);
         protected set {}
     }
     public static IEnumerable<Entity> operator *(Entity a, int number)

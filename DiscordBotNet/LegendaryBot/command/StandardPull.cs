@@ -34,35 +34,35 @@ public class StandardPull : BaseCommandClass
             await ctx.CreateResponseAsync(embed);
             return;
         }
-        var choice  = BasicFunction.GetRandom(pullChances);
+        var choice  = BasicFunctionality.GetRandom(pullChances);
 
         Type acquiredType = null;
  
         switch (choice)
         {
             case PullChoice.ThreeStarBlessing:
-                acquiredType = BasicFunction.RandomChoice(Blessing.ThreeStarBlessingExamples
+                acquiredType = BasicFunctionality.RandomChoice(Blessing.ThreeStarBlessingExamples
                     .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.FourStarBlessing:
-                acquiredType = BasicFunction.RandomChoice(Blessing.FourStarBlessingExamples
+                acquiredType = BasicFunctionality.RandomChoice(Blessing.FourStarBlessingExamples
                     .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.FiveStarBlessing:
-                acquiredType = BasicFunction.RandomChoice(Blessing.FiveStarBlessingExamples
+                acquiredType = BasicFunctionality.RandomChoice(Blessing.FiveStarBlessingExamples
                     .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.ThreeStarCharacter:
-                acquiredType = BasicFunction.RandomChoice(Character.ThreeStarCharacterExamples
+                acquiredType = BasicFunctionality.RandomChoice(Character.ThreeStarCharacterExamples
                     .Where(i => i.IsInStandardBanner)).GetType();
                 break;
             case PullChoice.FourStarCharacter:
-                acquiredType = BasicFunction.RandomChoice(Character.FourStarCharacterExamples
+                acquiredType = BasicFunctionality.RandomChoice(Character.FourStarCharacterExamples
                     .Where(i => i.IsInStandardBanner)).GetType();
                 break;
 
             case PullChoice.FiveStarCharacter:
-                acquiredType = BasicFunction.RandomChoice(Character.FiveStarCharacterExamples
+                acquiredType = BasicFunctionality.RandomChoice(Character.FiveStarCharacterExamples
                         .Where(i => i.IsInStandardBanner))
                     .GetType();
                 break;
@@ -77,7 +77,7 @@ public class StandardPull : BaseCommandClass
             await DatabaseContext.SaveChangesAsync();
 
             embed.WithTitle("Nice!!")
-                .WithDescription($"You pulled a {BasicFunction.Englishify(choice.ToString())} called {acquiredType.Name}!");
+                .WithDescription($"You pulled a {BasicFunctionality.Englishify(choice.ToString())} called {acquiredType.Name}!");
             await using var stream = new MemoryStream();
             using var detailsImage =await acquiredEntity.GetDetailsImageAsync();
             await detailsImage.SaveAsPngAsync(stream);
