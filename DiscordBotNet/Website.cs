@@ -1,14 +1,9 @@
 
 using System.Globalization;
-using System.Net;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using AspNet.Security.OAuth.Discord;
 using DiscordBotNet.Database;
-using DiscordBotNet.Extensions;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace DiscordBotNet;

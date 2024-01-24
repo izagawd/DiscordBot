@@ -1,17 +1,10 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 using DiscordBotNet.Database;
-using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot;
-using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.command;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
-using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -21,10 +14,6 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
-using SixLabors.ImageSharp.PixelFormats;
-using Color = SixLabors.ImageSharp.Color;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 
@@ -46,13 +35,15 @@ public static class Bot
         .GetTypes()
         .ToImmutableArray();
 
+    private static async Task DoShitAsync()
+    {
 
+    }
 
     private static async Task Main(string[] args)
     {
-   
-        
-
+        await DoShitAsync();
+        return;
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

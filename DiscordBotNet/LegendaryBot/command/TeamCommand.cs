@@ -1,5 +1,4 @@
-﻿using System.Text;
-using DiscordBotNet.Extensions;
+﻿using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;

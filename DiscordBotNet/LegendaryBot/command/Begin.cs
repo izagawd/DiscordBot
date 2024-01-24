@@ -7,7 +7,6 @@ using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 
 namespace DiscordBotNet.LegendaryBot.command;

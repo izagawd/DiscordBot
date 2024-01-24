@@ -1,6 +1,4 @@
-﻿using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
-
-namespace DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
+﻿namespace DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 
 public class AdditionalBattleText
 {

@@ -1,8 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Text;
-using DiscordBotNet.Extensions;
+﻿using System.Text;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
 

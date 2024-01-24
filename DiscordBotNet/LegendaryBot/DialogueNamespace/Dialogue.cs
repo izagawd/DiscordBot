@@ -1,5 +1,4 @@
-﻿using DiscordBotNet.Extensions;
-using DiscordBotNet.LegendaryBot.Results;
+﻿using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
