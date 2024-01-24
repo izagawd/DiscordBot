@@ -2,9 +2,13 @@
 using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using DiscordBotNet.Database;
+using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.command;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Rewards;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -42,8 +46,8 @@ public static class Bot
 
     private static async Task Main(string[] args)
     {
-        await DoShitAsync();
-        return;
+
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

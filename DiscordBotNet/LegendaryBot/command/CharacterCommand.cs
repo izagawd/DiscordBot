@@ -279,7 +279,7 @@ public class CharacterCommand : BaseCommandClass
         await DatabaseContext.SaveChangesAsync();
         if (character is Player player) await player.LoadAsync(context.User, false);
         embed.WithTitle("Nice!")
-            .WithDescription($"{character} has equipped {blessing}!");
+            .WithDescription($"{character.Name} has equipped {blessing}!");
         await context.CreateResponseAsync(embed);
     }
     
@@ -329,7 +329,7 @@ public class CharacterCommand : BaseCommandClass
         await image.SaveAsPngAsync(stream);
         stream.Position = 0;
         embed.WithTitle("Select your build")
-            .WithDescription($"{character}'s build")
+            .WithDescription($"{character.Name}'s build")
             .WithImageUrl("attachment://detail.png");
 
         //all characters should have at least 4 builds. more than that is weird
