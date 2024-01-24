@@ -502,7 +502,7 @@ public class BattleSimulator : IBattleEventListener
     }
     public int Turn { get; set; } = 0;
 
-    public TimeSpan TimeOutSpan { get; protected set; } = TimeSpan.FromMinutes(1.5);
+    public TimeSpan TimeOutTimeSpan { get; protected set; } = TimeSpan.FromMinutes(1.5);
     /// <summary>
     /// Initiates a new battle between two teams, by editing the provided message
     /// </summary>
@@ -753,7 +753,7 @@ public class BattleSimulator : IBattleEventListener
             else
             {
                 InteractivityResult<ComponentInteractionCreateEventArgs> results;
-                using (CancellationTokenSource = new CancellationTokenSource(TimeOutSpan))
+                using (CancellationTokenSource = new CancellationTokenSource(TimeOutTimeSpan))
                 {
                     results = await _message.WaitForAnyComponentInteractionAsync(e =>
                     {
@@ -822,7 +822,7 @@ public class BattleSimulator : IBattleEventListener
                     _message = await results.Result.Interaction.GetOriginalResponseAsync();
 
                     InteractivityResult<ComponentInteractionCreateEventArgs> interactivityResult;
-                    using (CancellationTokenSource = new CancellationTokenSource(TimeOutSpan))
+                    using (CancellationTokenSource = new CancellationTokenSource(TimeOutTimeSpan))
                     {
                         interactivityResult = await  _message.WaitForAnyComponentInteractionAsync(e =>
                         {
@@ -926,7 +926,7 @@ public class BattleSimulator : IBattleEventListener
        
        
         var expToGain= losers.Sum(i =>BattleFunctionality.ExpGainFormula(i.Level) * i.ExpIncreaseScale);
-        var coinsToGain = (losers.Sum(i => (i.Level + 60) * 100))/_winners.Count;
+        var coinsToGain = losers.Sum(i => (i.Level + 60) * 100)/_winners.Count;
 
         List<Reward> rewards = [new CoinsReward(coinsToGain), new UserExperienceReward(expToGain)];
         foreach (var i in losers)

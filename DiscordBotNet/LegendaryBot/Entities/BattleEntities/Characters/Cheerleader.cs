@@ -112,6 +112,11 @@ public class Cheerleader : Character
         return (base.GetSpeedValue(points) * 1.2).Round();
     }
 
+    public override float GetMaxHealthValue(int points)
+    {
+        return base.GetMaxHealthValue(points) * 1.2f;
+    }
+
     public override BasicAttack BasicAttack { get; } = new PomPomAttack();
     public override Skill? Skill { get; } = new YouCanDoIt();
     public override Surge? Surge { get; } = new YouCanMakeItEveryone();

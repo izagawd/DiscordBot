@@ -21,7 +21,7 @@ public abstract class BaseCommandClass : ApplicationCommandModule
     static BaseCommandClass()
     {
         var types = Assembly.GetExecutingAssembly().GetTypes();
-        foreach (var i in types.Where(i => i.IsSubclassOf(typeof(BaseCommandClass))))
+        foreach (var i in types.Where(i => i.IsSubclassOf(typeof(BaseCommandClass)) && !i.IsAbstract))
         {
 
             _slashCommandGroupAttributes.Add(i, i.GetCustomAttribute<SlashCommandGroupAttribute>());
