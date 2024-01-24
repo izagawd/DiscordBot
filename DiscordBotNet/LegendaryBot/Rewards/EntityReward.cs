@@ -37,15 +37,12 @@ public class EntityReward : Reward
         Dictionary<string, int> nameSorter = [];
         foreach (var i in EntitiesToReward)
         {
-            var asString = i.ToString();
+            var asString = i.Name;
             if(nameSorter.ContainsKey(asString)) nameSorter[asString]++;
             else nameSorter[asString] = 1;
         }
 
-        foreach (var i in nameSorter)
-        {
-            stringBuilder.Append($"{i.Key}: {i.Value}\n");
-        }
+        stringBuilder.AppendJoin('\n', nameSorter.Select(i => $"{i.Key}: {i.Value}"));
 
         return stringBuilder.ToString();
 
