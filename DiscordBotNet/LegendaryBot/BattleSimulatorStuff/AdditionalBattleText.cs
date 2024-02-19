@@ -3,7 +3,7 @@
 public class AdditionalBattleText
 {
     public static implicit operator AdditionalBattleText(string text) => new(text);
-    public virtual string Text { get; protected set; } 
+    public virtual string Text { get; } 
 
     public AdditionalBattleText(string text)
     {

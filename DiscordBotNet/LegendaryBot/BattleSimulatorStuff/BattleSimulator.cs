@@ -56,7 +56,7 @@ public class BattleSimulator : IBattleEventListener
         PostEvictionCallbacks = { new PostEvictionCallbackRegistration(){EvictionCallback = BasicFunctionality.DisposeEvictionCallback} }
     };
 
-
+    private bool _battleBegun = false;
     private  async Task<Image<Rgba32>> GetAvatarAsync(string url)
     {
         if(_cachedResizedForAvatarsMemoryCache.TryGetValue(url, out Image<Rgba32> characterImageToDraw))
@@ -579,7 +579,11 @@ public class BattleSimulator : IBattleEventListener
             stop.Start();
             
             Turn += 1;
-     
+            if (!_battleBegun)
+            {
+                _battleBegun = true;
+                InvokeBattleEvent(new BattleBeginEvent());
+            }
             bool extraTurnGranted = false;
             var extraTurners =
                 Characters.Where(i => i.ShouldTakeExtraTurn)

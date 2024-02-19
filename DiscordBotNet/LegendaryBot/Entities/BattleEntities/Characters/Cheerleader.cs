@@ -109,7 +109,7 @@ public class Cheerleader : Character
 {
     public override float GetSpeedValue(int points)
     {
-        return (base.GetSpeedValue(points) * 1.2).Round();
+        return base.GetSpeedValue(points) * 1.2f;
     }
 
     public override float GetMaxHealthValue(int points)

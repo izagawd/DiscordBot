@@ -6,9 +6,12 @@ using System.Runtime.CompilerServices;
 using DiscordBotNet.Database;
 using DiscordBotNet.Database.Models;
 using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Rewards;
+using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -39,6 +42,25 @@ public static class Bot
         .GetTypes()
         .ToImmutableArray();
 
+
+    private static T[] QuickSort<T>(T[] toSort)  where T : IComparable<T>
+    {
+        if (toSort.Length <= 1) return toSort;
+        var pivot = toSort.Length / 2;
+        var pivotValue = toSort[pivot];
+
+        var asList = toSort.ToList();
+        asList.Remove(pivotValue);
+        var back = asList.Where(i => i.CompareTo(pivotValue) <= 0).ToArray();
+        var front = asList.Where(i => i.CompareTo(pivotValue) > 0).ToArray();
+
+        var sortedBack = QuickSort<T>(back);
+        var sortedFront = QuickSort<T>(front);
+
+        return [..sortedBack, pivotValue, ..sortedFront];
+    }
+
+    private static long SlenderId => 334412512919420928;
     private static async Task DoShitAsync()
     {
 
@@ -46,7 +68,6 @@ public static class Bot
 
     private static async Task Main(string[] args)
     {
-
 
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
