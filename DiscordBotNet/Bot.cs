@@ -46,9 +46,9 @@ public static class Bot
         
     }
 
-    private static async Task FirstTimeSetupAsync()
+    private static  Task FirstTimeSetupAsync()
     {
-        await new PostgreSqlContext().ResetDatabaseAsync();
+        return new PostgreSqlContext().ResetDatabaseAsync();
     }
     private static async Task Main(string[] args)
     {
