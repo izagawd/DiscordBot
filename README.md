@@ -1,6 +1,6 @@
 A discord chat bot that simulates a turn by turn based video game using c#
 
-Note: A discord bot, a postgresql database and .net core 8.0 is required to test this
+Note: A discord bot, a postgresql database (can be a local db) and .net core 8.0 is required to test this
 
 
 
@@ -13,4 +13,5 @@ Note: A discord bot, a postgresql database and .net core 8.0 is required to test
 </configuration>
 
 2. Set value of key "BotToken"  in the App.config file to your discord bot's bot token
-3. Set value of key "ConnectionString"  in the App.config file to your postgre sql database connection string, and the program should work.
+3. Set value of key "ConnectionString"  in the App.config file to your postgre sql database connection string.
+4. Before running public static async Task main in Bot.cs, run the FirstTimeSetupAsync method in the same Bot.cs script. (simply call it in the beginning of the main method). If done correctly, the project should run as expected

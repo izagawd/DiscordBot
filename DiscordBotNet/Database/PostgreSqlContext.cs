@@ -93,6 +93,13 @@ public class PostgreSqlContext : DbContext
         Database.EnsureCreated();
       
     }
+    public async Task ResetDatabaseAsync()
+    {
+        await Database.EnsureDeletedAsync();
+        await Database.EnsureCreatedAsync();
+      
+    }
+
 
 
     private static readonly IEnumerable<Type> QuestTypes =

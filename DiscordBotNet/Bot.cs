@@ -46,6 +46,10 @@ public static class Bot
         
     }
 
+    private static async Task FirstTimeSetupAsync()
+    {
+        await new PostgreSqlContext().ResetDatabaseAsync();
+    }
     private static async Task Main(string[] args)
     {
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
