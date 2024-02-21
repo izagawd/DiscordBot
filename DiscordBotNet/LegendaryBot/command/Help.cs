@@ -17,7 +17,10 @@ public class Help : BaseCommandClass
     {
         DiscordUser author = ctx.User;
 
-        DiscordColor color = await DatabaseContext.UserData.FindOrCreateSelectAsync((long)author.Id, i => i.Color);
+        DiscordColor color = await DatabaseContext
+            .UserData
+            .FindOrCreateSelectAsync((long)author.Id, 
+                i => i.Color);
 
         DiscordEmbedBuilder embedToBuild = new DiscordEmbedBuilder()
             .WithTitle("Help")

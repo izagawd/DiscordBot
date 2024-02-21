@@ -18,8 +18,7 @@ namespace DiscordBotNet.Database.Models;
 public class UserData : IDatabaseModel,  ICanBeLeveledUp
 {
     public long Id { get; set; }
-
-
+    
     public UserData(long id) : this()
     {
         Id = id;
@@ -35,8 +34,7 @@ public class UserData : IDatabaseModel,  ICanBeLeveledUp
     public List<PlayerTeam> PlayerTeams { get; set; } = [];
 
     public List<QuoteReaction> QuoteReactions { get; set; } = [];
-
-
+    
     public async Task<Image<Rgba32>> GetInfoAsync(DiscordUser? user = null)
     {
         if (user is null)

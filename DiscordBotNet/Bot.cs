@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
 using DSharpPlus;
 
@@ -39,12 +40,14 @@ public static class Bot
     private static long SlenderId => 334412512919420928;
     private static async Task DoShitAsync()
     {
-
+        var a = BasicFunctionality.GetRandomNumberInBetween(0, 100);
+        if (a == 6) return;
+        Console.WriteLine("hello");
+        
     }
 
     private static async Task Main(string[] args)
     {
-        new PostgreSqlContext().ResetDatabase();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 
