@@ -6,6 +6,7 @@ using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -38,9 +39,14 @@ public static class Bot
 
 
     private static long SlenderId => 334412512919420928;
-    private  unsafe static async Task DoShitAsync()
+    private   static async Task DoShitAsync()
     {
-        
+        new Lily();
+        new Lily();
+        var stop = new Stopwatch(); stop.Start();
+        new Lily();
+        stop.Stop();
+        stop.Elapsed.TotalMicroseconds.Print();
     }
 
     private static  Task FirstTimeSetupAsync()
@@ -49,6 +55,7 @@ public static class Bot
     }
     private static async Task Main(string[] args)
     {
+        await DoShitAsync();
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 
