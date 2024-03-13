@@ -40,7 +40,7 @@ public static class Bot
     private static long SlenderId => 334412512919420928;
     private  unsafe static async Task DoShitAsync()
     {
-       
+        
     }
 
     private static  Task FirstTimeSetupAsync()
