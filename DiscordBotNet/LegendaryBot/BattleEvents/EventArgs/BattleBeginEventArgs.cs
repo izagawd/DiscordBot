@@ -1,6 +1,6 @@
 ﻿namespace DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 
-public class BattleBeginEvent : BattleEventArgs
+public class BattleBeginEventArgs : BattleEventArgs
 {
     
 }

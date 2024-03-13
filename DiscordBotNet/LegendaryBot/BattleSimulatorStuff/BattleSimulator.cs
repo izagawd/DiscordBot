@@ -582,7 +582,7 @@ public class BattleSimulator : IBattleEventListener
             if (!_battleBegun)
             {
                 _battleBegun = true;
-                InvokeBattleEvent(new BattleBeginEvent());
+                InvokeBattleEvent(new BattleBeginEventArgs());
             }
             bool extraTurnGranted = false;
             var extraTurners =
@@ -887,10 +887,11 @@ public class BattleSimulator : IBattleEventListener
             }
             var move = ActiveCharacter[battleDecision];
 
-
+  
+            
             var moveResult =  move?.Utilize(ActiveCharacter,target, UsageType.NormalUsage);
 
-            if (moveResult?.Text != null)
+            if (moveResult?.Text is not null)
             {
                 _mainText = moveResult.Text;
             }
@@ -920,9 +921,7 @@ public class BattleSimulator : IBattleEventListener
             }
             
             InvokeBattleEvent(new TurnEndEventArgs(ActiveCharacter));
-
-  
-
+       
 
         }
 

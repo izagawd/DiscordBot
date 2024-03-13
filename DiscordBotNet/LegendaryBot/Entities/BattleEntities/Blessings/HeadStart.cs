@@ -24,7 +24,7 @@ public class HeadStart : Blessing
     {
         base.OnBattleEvent(eventArgs, owner);
         if(owner.IsDead) return;
-        if(eventArgs is not BattleBeginEvent) return;
+        if(eventArgs is not BattleBeginEventArgs) return;
         owner.IncreaseCombatReadiness(GetCombatReadinessIncreaseAmount(Level));
     }
 }

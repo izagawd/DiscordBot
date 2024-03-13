@@ -38,12 +38,9 @@ public static class Bot
 
 
     private static long SlenderId => 334412512919420928;
-    private static async Task DoShitAsync()
+    private  unsafe static async Task DoShitAsync()
     {
-        var a = BasicFunctionality.GetRandomNumberInBetween(0, 100);
-        if (a == 6) return;
-        Console.WriteLine("hello");
-        
+       
     }
 
     private static  Task FirstTimeSetupAsync()

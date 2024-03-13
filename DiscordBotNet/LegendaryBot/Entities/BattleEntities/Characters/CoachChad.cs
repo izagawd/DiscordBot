@@ -124,7 +124,7 @@ public class CoachChad : Character
         if (eventArgs is not CharacterDeathEventArgs deathEventArgs) return;
         if (deathEventArgs.Killed != this) return;
         Revive();
-
+        
     }
 
     private void HandleTurnEnd(BattleEventArgs eventArgs, Character owner)
