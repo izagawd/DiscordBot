@@ -39,17 +39,7 @@ public static class Bot
 
 
     private static long SlenderId => 334412512919420928;
-    private class  bruh
-    {
-        public int a = 5;
-    }
-    private static unsafe void idk()
-    {
-        var idk = new bruh();
-        var idk2 = &idk;
-        idk2->a = 4;
 
-    }
     private   static async Task DoShitAsync()
     {
 
