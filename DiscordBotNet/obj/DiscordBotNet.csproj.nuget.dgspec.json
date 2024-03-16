@@ -83,11 +83,11 @@
             },
             "Microsoft.AspNetCore.Authentication.Certificate": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.3, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.3, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
@@ -103,11 +103,11 @@
             },
             "SixLabors.ImageSharp.Drawing": {
               "target": "Package",
-              "version": "[2.1.1, )"
+              "version": "[2.1.2, )"
             },
             "SixLabors.ImageSharp.Web": {
               "target": "Package",
-              "version": "[3.1.0, )"
+              "version": "[3.1.1, )"
             },
             "System.Configuration.ConfigurationManager": {
               "target": "Package",

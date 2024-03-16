@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
@@ -43,7 +44,7 @@ public static class Bot
     private   static async Task DoShitAsync()
     {
 
-     
+
     }
 
     private static  Task FirstTimeSetupAsync()

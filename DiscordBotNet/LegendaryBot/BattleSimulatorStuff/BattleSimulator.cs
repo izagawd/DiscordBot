@@ -175,7 +175,6 @@ public class BattleSimulator : IBattleEventListener
         foreach (var i in Characters)
         {
             i.OnBattleEvent(eventArgs,i);
-
             foreach (var j in i.MoveList)
             {
                 j.OnBattleEvent(eventArgs,i);
@@ -194,25 +193,20 @@ public class BattleSimulator : IBattleEventListener
         List<StatsModifierArgs> statsModifierArgsList = [];
         foreach (var i in Characters)
         {
-            if (i is IStatsModifier statsModifierCharacter)
-            {
-                statsModifierArgsList.AddRange(statsModifierCharacter.GetAllStatsModifierArgs(i));
-            }
-            foreach (var j in i.MoveList.OfType<IStatsModifier>())
+            statsModifierArgsList.AddRange(i.GetAllStatsModifierArgs(i));
+            foreach (var j in i.MoveList)
             {
                 statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
             }
-            if (i.Blessing is not null && i.Blessing is IStatsModifier statsModifierBlessing)
+            if (i.Blessing is not null)
             {
-                statsModifierArgsList.AddRange(statsModifierBlessing.GetAllStatsModifierArgs(i));
+                statsModifierArgsList.AddRange(i.Blessing.GetAllStatsModifierArgs(i));
             }
-
-            foreach (var j in i.StatusEffectsCopy.OfType<IStatsModifier>())
+            foreach (var j in i.StatusEffectsCopy)
             {
                 statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
             }
         }
-
         return statsModifierArgsList;
     }
 

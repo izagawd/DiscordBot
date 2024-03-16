@@ -28,7 +28,7 @@ namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 /// Characters can also be loaded at once if they are in a CharacterTeam and LoadAsync is called
 /// from the CharacterTeam
 /// </summary>
-public abstract partial  class Character : BattleEntity, ISetup
+public abstract partial  class Character : BattleEntity, ISetup, IStatsModifier
 {
         private static Type[] _characterTypes = Assembly.GetExecutingAssembly().GetTypes()
         .Where(i => i.IsSubclassOf(typeof(Character)) && !i.IsAbstract).ToArray();
@@ -719,6 +719,11 @@ public abstract partial  class Character : BattleEntity, ISetup
         if (CurrentBattle is null)
             return Name;
         return NameWithAlphabetIdentifier;
+    }
+
+    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    {
+        return [];
     }
 
 
