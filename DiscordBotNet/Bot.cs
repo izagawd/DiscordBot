@@ -39,14 +39,21 @@ public static class Bot
 
 
     private static long SlenderId => 334412512919420928;
+    private class  bruh
+    {
+        public int a = 5;
+    }
+    private static unsafe void idk()
+    {
+        var idk = new bruh();
+        var idk2 = &idk;
+        idk2->a = 4;
+
+    }
     private   static async Task DoShitAsync()
     {
-        new Lily();
-        new Lily();
-        var stop = new Stopwatch(); stop.Start();
-        new Lily();
-        stop.Stop();
-        stop.Elapsed.TotalMicroseconds.Print();
+
+     
     }
 
     private static  Task FirstTimeSetupAsync()
@@ -56,6 +63,7 @@ public static class Bot
     private static async Task Main(string[] args)
     {
         await DoShitAsync();
+     
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 
