@@ -9,7 +9,7 @@ public abstract class StatsModifierArgs
     /// </summary>
     public float ValueToChangeWith { get; init; }
 
-    public Character CharacterToAffect { get; init; } = null!;
+    public required Character CharacterToAffect { get; init; }
  
     public bool WorksAfterGearCalculation { get; init; } = true;
 
