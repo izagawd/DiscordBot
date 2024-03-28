@@ -73,6 +73,10 @@
       "PackagePath": "staticwebassets\\battle_images\\status_effects\\AttackBuff.png"
     },
     {
+      "Id": "C:\\Users\\theiz\\Documents\\coding\\DiscordBotSolution\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\AttackDebuff.png",
+      "PackagePath": "staticwebassets\\battle_images\\status_effects\\AttackDebuff.png"
+    },
+    {
       "Id": "C:\\Users\\theiz\\Documents\\coding\\DiscordBotSolution\\DiscordBotNet\\wwwroot\\battle_images\\status_effects\\Bomb.png",
       "PackagePath": "staticwebassets\\battle_images\\status_effects\\Bomb.png"
     },

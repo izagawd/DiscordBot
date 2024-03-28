@@ -153,7 +153,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener, IStatsMo
         return Name;
     }
 
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public virtual  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
         return [];
     }

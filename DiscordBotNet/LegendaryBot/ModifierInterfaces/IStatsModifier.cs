@@ -1,4 +1,4 @@
-﻿using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 namespace DiscordBotNet.LegendaryBot.ModifierInterfaces;
 

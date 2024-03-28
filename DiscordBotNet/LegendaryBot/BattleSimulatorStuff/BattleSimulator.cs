@@ -188,7 +188,7 @@ public class BattleSimulator : IBattleEventListener
     }
 
 
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
+    public  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
         List<StatsModifierArgs> statsModifierArgsList = [];
         foreach (var i in Characters)

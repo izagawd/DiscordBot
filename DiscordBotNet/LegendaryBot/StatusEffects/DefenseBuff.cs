@@ -3,7 +3,7 @@ using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class DefenseBuff: StatusEffect, IStatsModifier
+public class DefenseBuff: StatusEffect
 {
 
 
@@ -18,7 +18,7 @@ public class DefenseBuff: StatusEffect, IStatsModifier
 
     }
 
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
         return new StatsModifierArgs[]
         {

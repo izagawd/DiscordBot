@@ -11,7 +11,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 
-public abstract class Blessing : BattleEntity, IStatsModifier
+public abstract class Blessing : BattleEntity
 {
     public long? CharacterId { get; set; }
     public virtual async Task<Image<Rgba32>> GetInfoAsync()
@@ -161,10 +161,5 @@ public abstract class Blessing : BattleEntity, IStatsModifier
         expGainText += "!";
         return new ExperienceGainResult() { Text = expGainText, ExcessExperience = excessExp };
 
-    }
-
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
-    {
-        return [];
     }
 }

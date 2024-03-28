@@ -107,7 +107,7 @@ public abstract class Move : IBattleEventListener, IStatsModifier
         return Name;
     }
 
-    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
         return [];
     }

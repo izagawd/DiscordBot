@@ -2,11 +2,12 @@
 using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities;
 
-public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListener
+public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListener, IStatsModifier
 {
     
     public virtual int Level { get; protected set; } = 1;
@@ -34,5 +35,10 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListen
     public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
        
+    }
+
+    public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    {
+        return [];
     }
 }
