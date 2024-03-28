@@ -460,7 +460,7 @@ public class BattleSimulator : IBattleEventListener
     public bool IsEventsPaused => pauseCount > 0;
 
     /// <summary>
-    /// Battle events will be paused unti this scope is disposed
+    /// Battle events will be paused until this scope is disposed
     /// </summary>
     public PauseBattleEventsInstance PauseBattleEventScope => new(this);
 
@@ -541,7 +541,6 @@ public class BattleSimulator : IBattleEventListener
     }
 
     private CancellationTokenSource CancellationTokenSource;
-    private static DiscordButtonComponent InfoButton = new DiscordButtonComponent(ButtonStyle.Primary, "Info", "Info");
     protected async Task<BattleResult> StartAsync(
         DiscordMessage? messageInput = null, DiscordInteraction? interaction = null,
         DiscordChannel? channel = null, bool editInteraction = true)
