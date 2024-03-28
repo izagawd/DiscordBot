@@ -22,7 +22,7 @@ public class FourthWallBreaker: BasicAttack
 
                     Caster = owner,
                     DamageText =
-                        $"Breaks the fourth wall, causing {target} to cringe, and making them receive $ damage!",
+                        $"Breaks the fourth wall, causing {target.NameWithAlphabetIdentifier} to cringe, and making them receive $ damage!",
                     Damage = owner.Attack * 1.7
 
                 })
@@ -58,7 +58,7 @@ public class FireBall : Skill
             {
                 Damage = owner.Attack * 2.4,
                 Caster = owner,
-                DamageText =$"{owner} threw a fireball at {target} and dealt $ damage!",
+                DamageText =$"{owner.NameWithAlphabetIdentifier} threw a fireball at {target.NameWithAlphabetIdentifier} and dealt $ damage!",
             });
             if (BasicFunctionality.RandomChance(10))
             {
@@ -77,7 +77,7 @@ public class FireBall : Skill
 }
 public class Ignite : Surge
 {
-    public override int MaxCooldown => 1;
+    public override int MaxCooldown => 4;
     public override string GetDescription(Character character) =>$"Ignites the enemy with 3 burns. {IgniteChance}% chance each";
     
 
@@ -102,7 +102,7 @@ public class Ignite : Surge
             }
         }
 
-        target.AddStatusEffects([..burns, new Bleed(owner)],0);
+        target.AddStatusEffects(burns,owner.Effectiveness);
         return new UsageResult(this)
         {
             UsageType = usageType,
@@ -111,6 +111,7 @@ public class Ignite : Surge
             User = owner
         };
     }
+    
 }
 public class Player : Character
 {

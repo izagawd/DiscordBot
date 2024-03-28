@@ -17,8 +17,8 @@ public class BasicAttackSample : BasicAttack
             Damage = owner.Attack * 1.7,
             Caster = owner,
             CanCrit = true,
-            DamageText = $"{owner} gave" +
-                         $" {target} a punch and dealt $ damage!"
+            DamageText = $"{owner.NameWithAlphabetIdentifier} gave" +
+                         $" {target.NameWithAlphabetIdentifier} a punch and dealt $ damage!"
         });
         return new UsageResult(this)
         {

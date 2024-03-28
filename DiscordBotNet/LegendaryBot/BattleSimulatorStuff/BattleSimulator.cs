@@ -496,7 +496,7 @@ public class BattleSimulator : IBattleEventListener
     }
     public int Turn { get; set; } = 0;
 
-    public TimeSpan TimeOutTimeSpan { get; protected set; } = TimeSpan.FromMinutes(1.5);
+    public TimeSpan TimeOutTimeSpan { get;  set; } = TimeSpan.FromMinutes(1.5);
     /// <summary>
     /// Initiates a new battle between two teams, by editing the provided message
     /// </summary>

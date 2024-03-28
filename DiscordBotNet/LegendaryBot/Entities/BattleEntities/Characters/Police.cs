@@ -21,7 +21,7 @@ public class DoNotResist : BasicAttack
         {
             Damage = owner.Attack * 1.7,
             Caster = owner,
-            DamageText = $"{owner} tases {target} and dealt $ damage! it was shocking"
+            DamageText = $"{owner.NameWithAlphabetIdentifier} tases {target.NameWithAlphabetIdentifier} and dealt $ damage! it was shocking"
         });
         if (BasicFunctionality.RandomChance(15))
         {
@@ -46,7 +46,6 @@ public class IAmShooting : Skill
     {
         return "Shoots the enemy twice, causing two bleed effects for two turns";
     }
-
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
         return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
@@ -58,7 +57,7 @@ public class IAmShooting : Skill
         {
             Caster = owner,
             Damage = owner.Attack * 2,
-            DamageText = $"{owner} shoots at {target} for resisting arrest, dealing $ damage"
+            DamageText = $"{owner.NameWithAlphabetIdentifier} shoots at {target.NameWithAlphabetIdentifier} for resisting arrest, dealing $ damage"
         });
         foreach (var _ in Enumerable.Range(0,2))
         {
@@ -74,7 +73,7 @@ public class IAmShooting : Skill
         };
     }
 
-    public override int MaxCooldown { get; }
+    public override int MaxCooldown => 3;
 }
 public class Police : Character
 {

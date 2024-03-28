@@ -20,7 +20,7 @@ public class ChamomileSachetWhack : BasicAttack
             Damage = owner.Attack * 1.7,
             Caster = owner,
             CanCrit = true,
-            DamageText = $"That was a harsh snoozy whack that dealt $ damage on {target}!",
+            DamageText = $"That was a harsh snoozy whack that dealt $ damage on {target.NameWithAlphabetIdentifier}!",
 
         });
         var result = new UsageResult(this)
@@ -59,7 +59,7 @@ public class BlossomTouch : Skill
         target.RecoverHealth((owner.MaxHealth *HealthHealScaling* 0.01).Round());
         return new UsageResult(this)
         {
-            Text = $"{owner} used Blossom Touch!",
+            Text = $"{owner.NameWithAlphabetIdentifier} used Blossom Touch!",
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             User = owner
@@ -103,7 +103,7 @@ public class LilyOfTheValley : Surge
 
         return new UsageResult(this)
         {
-            Text =  $"{owner} used Lily of The Valley, and released a dangerous gas to the enemy team!",
+            Text =  $"{owner.NameWithAlphabetIdentifier} used Lily of The Valley, and released a dangerous gas to the enemy team!",
             TargetType = TargetType.AOE,
             UsageType = usageType,
             User = owner

@@ -102,7 +102,7 @@ public class Begin : BaseCommandClass
                 DialogueProfile = coachChadProfile,
                 DialogueTexts =
                     [
-                        "Hey Izagawd! my name is Chad. So you want to register as an adventurer? That's great!",
+                        $"Hey {author.Username}! my name is Chad. So you want to register as an adventurer? That's great!",
                         "But before you go on your adventure, I would need to confirm if you are strong enough to **Battle**!",
                         "Lily will accompany you just for this fight. When you feel like you have gotten the hang of **BATTLE**, click on **FORFEIT!**"
                     ]

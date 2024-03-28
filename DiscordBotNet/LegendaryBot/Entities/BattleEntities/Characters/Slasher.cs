@@ -63,7 +63,7 @@ public class SimpleSlashOfPrecision : BasicAttack
         {
             DamageResults = [damageResult],
             TargetType = TargetType.SingleTarget,
-            Text = $"{owner} does a simple slash to {target}!",
+            Text = $"{owner.NameWithAlphabetIdentifier} does a simple slash to {target.NameWithAlphabetIdentifier}!",
             User = owner,
             UsageType = usageType
         };
@@ -88,7 +88,7 @@ public class ConsecutiveSlashesOfPrecision : Surge
             Caster = owner,
             Damage = owner.Attack * 1.7 *2,
             AlwaysCrits = true,
-            DamageText = $"The slash was so precise it dealt $ damage to {target}!",
+            DamageText = $"The slash was so precise it dealt $ damage to {target.NameWithAlphabetIdentifier}!",
      
         });
 

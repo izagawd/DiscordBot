@@ -18,7 +18,7 @@ public class GooeyStrike : BasicAttack
         {
             Caster = owner,
             Damage = owner.Attack * 1.7,
-            DamageText = $"{owner} used a slime attack at {target} and dealt $ damage!"
+            DamageText = $"{owner.NameWithAlphabetIdentifier} used a slime attack at {target.NameWithAlphabetIdentifier} and dealt $ damage!"
         });
         if (BasicFunctionality.RandomChance(10))
         {

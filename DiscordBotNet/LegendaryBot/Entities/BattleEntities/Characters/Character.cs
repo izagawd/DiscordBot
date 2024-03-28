@@ -714,12 +714,7 @@ public abstract partial  class Character : BattleEntity, ISetup, IStatsModifier
         return image;
     }
 
-    public override string ToString()
-    {
-        if (CurrentBattle is null)
-            return Name;
-        return NameWithAlphabetIdentifier;
-    }
+
 
     public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {

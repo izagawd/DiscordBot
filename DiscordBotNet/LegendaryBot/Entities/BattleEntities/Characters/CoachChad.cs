@@ -19,7 +19,7 @@ public class GigaPunch : BasicAttack
                 {
                     Caster = owner,
                     Damage = owner.Attack * 1.7,
-                    DamageText = $"{owner} smiles chadly, and punches {target} in a cool way and dealt $ damage!"
+                    DamageText = $"{owner.NameWithAlphabetIdentifier} smiles chadly, and punches {target.NameWithAlphabetIdentifier} in a cool way and dealt $ damage!"
 
                 })
             ],
@@ -44,7 +44,7 @@ public class MuscleFlex : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner}... flexed his muscles?");
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier}... flexed his muscles?");
         return new UsageResult(this)
         {
             Text = $"Hmph!",
@@ -71,12 +71,12 @@ public class ThumbsUp : Skill
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner} is cheering {target} on!");
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} is cheering {target.NameWithAlphabetIdentifier} on!");
         return new UsageResult(this)
         {
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
-            Text = $"{owner} gave {target} a thumbs up!",
+            Text = $"{owner.NameWithAlphabetIdentifier} gave {target.NameWithAlphabetIdentifier} a thumbs up!",
             User = owner
         };
 

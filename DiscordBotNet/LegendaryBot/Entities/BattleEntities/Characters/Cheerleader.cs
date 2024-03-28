@@ -21,8 +21,8 @@ public class PomPomAttack : BasicAttack
                 target.Damage(new DamageArgs(this)
                 {
                     Caster = owner,
-                    Damage = 1,
-                    DamageText = $"{owner} hits {target} with their pompoms, dealing $ damage!"
+                    Damage = owner.Attack * 0.8,
+                    DamageText = $"{owner.NameWithAlphabetIdentifier} hits {target.NameWithAlphabetIdentifier} with their pompoms, dealing $ damage!"
                 })
             ],
             TargetType = TargetType.SingleTarget,
@@ -47,7 +47,7 @@ public class  YouCanDoIt : Skill
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner} wants {target} to prevail!");
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} wants {target.NameWithAlphabetIdentifier} to prevail!");
         target.IncreaseCombatReadiness(100);
         target.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
 
@@ -76,7 +76,7 @@ public class YouCanMakeItEveryone : Surge
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner} encourages her allies!");
+        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} encourages her allies!");
 
         var targets = GetPossibleTargets(owner).ToArray();
 

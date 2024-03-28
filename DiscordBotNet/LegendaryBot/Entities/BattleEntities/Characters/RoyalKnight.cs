@@ -22,7 +22,7 @@ public class ShieldBash : BasicAttack
                 {
                     Caster = owner,
                     DamageText =
-                        $"{owner} bashes {target} with his shield , making them receive $ damage!",
+                        $"{owner.NameWithAlphabetIdentifier} bashes {target.NameWithAlphabetIdentifier} with his shield , making them receive $ damage!",
                     Damage = owner.Attack * 1.7
 
                 }),
@@ -62,7 +62,7 @@ public class IWillBeYourShield : Skill
 
         return new UsageResult(this)
         {
-            Text = $"As a loyal knight, {owner} helps {target}!",
+            Text = $"As a loyal knight, {owner.NameWithAlphabetIdentifier} helps {target.NameWithAlphabetIdentifier}!",
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             User = owner
@@ -95,7 +95,7 @@ public class IWillProtectUs : Surge
         {
             UsageType = usageType,
             TargetType = TargetType.AOE,
-            Text = $"As a loyal knight, {owner} increases the defense of all allies for three turns",
+            Text = $"As a loyal knight, {owner.NameWithAlphabetIdentifier} increases the defense of all allies for three turns",
             User = owner
         };
     }

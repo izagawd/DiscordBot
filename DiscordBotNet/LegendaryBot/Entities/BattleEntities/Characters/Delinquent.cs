@@ -25,7 +25,7 @@ public class BaseballBatWhack : BasicAttack
                 {
                     Damage = owner.Attack * 1.7,
                     Caster = owner,
-                    DamageText = $"{owner} whacks {target} with a baseball bat, dealing $ damage"
+                    DamageText = $"{owner.NameWithAlphabetIdentifier} whacks {target.NameWithAlphabetIdentifier} with a baseball bat, dealing $ damage"
                 })
             ],
             User = owner

@@ -14,7 +14,7 @@ public class SoulAttack : BasicAttack
         {
             Damage = owner.Attack * 1.7,
             Caster = owner,
-            DamageText = $"{owner} uses the souls of the dead to attack {target} and dealt $ damage!"
+            DamageText = $"{owner.NameWithAlphabetIdentifier} uses the souls of the dead to attack {target.NameWithAlphabetIdentifier} and dealt $ damage!"
         });
         if (BasicFunctionality.RandomChance(25))
         {
@@ -45,7 +45,7 @@ public class YourLifeEnergyIsMine : Skill
         {
             Damage = owner.Attack * 2.5,
             Caster = owner,
-            DamageText = $"{owner} sucks the life essence out of {target} and deals $ damage!"
+            DamageText = $"{owner.NameWithAlphabetIdentifier} sucks the life essence out of {target.NameWithAlphabetIdentifier} and deals $ damage!"
         });
         if(damageResult is not null)
             owner.RecoverHealth(damageResult.Damage * 0.2);
@@ -80,7 +80,7 @@ public class Arise : Surge
     
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"With her necromancy powers, {owner} attempts to bring back all her dead allies!");
+        owner.CurrentBattle.AddAdditionalBattleText($"With her necromancy powers, {owner.NameWithAlphabetIdentifier} attempts to bring back all her dead allies!");
 
         foreach (var i in GetPossibleTargets(owner))
         {

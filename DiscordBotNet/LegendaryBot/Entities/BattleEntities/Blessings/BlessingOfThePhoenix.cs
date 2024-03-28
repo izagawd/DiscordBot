@@ -23,7 +23,7 @@ public class BlessingOfThePhoenix : Blessing
         if(eventArgs is not CharacterDamageEventArgs characterDamageEventArgs) return;
         if (characterDamageEventArgs.DamageResult.DamageReceiver != owner) return;
 
-         owner.RecoverHealth((GetHealthPercentRecovering(Level) *  0.01 * owner.MaxHealth).Round(),$"{owner} recovered $ health via the blessing of the phoenix");
+         owner.RecoverHealth((GetHealthPercentRecovering(Level) *  0.01 * owner.MaxHealth).Round(),$"{owner.NameWithAlphabetIdentifier} recovered $ health via the blessing of the phoenix");
   
 
     }

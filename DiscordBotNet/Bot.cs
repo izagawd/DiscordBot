@@ -8,6 +8,9 @@ using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+using DiscordBotNet.LegendaryBot.Moves;
+using DiscordBotNet.LegendaryBot.Results;
+using DiscordBotNet.LegendaryBot.StatusEffects;
 using DSharpPlus;
 
 using DSharpPlus.EventArgs;
@@ -41,9 +44,9 @@ public static class Bot
 
     private static long SlenderId => 334412512919420928;
 
-    private   static async Task DoShitAsync()
-    {
 
+    private static async Task DoShitAsync()
+    {
 
     }
 
@@ -51,10 +54,10 @@ public static class Bot
     {
         return new PostgreSqlContext().ResetDatabaseAsync();
     }
+
     private static async Task Main(string[] args)
     {
-        await DoShitAsync();
-     
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 

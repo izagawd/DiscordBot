@@ -25,7 +25,7 @@ public class ThugPunch : BasicAttack
                 {
                     Damage = owner.Attack * 1.7,
                     Caster = owner,
-                    DamageText = $"{owner} punches {target} in a thug way!"
+                    DamageText = $"{owner.NameWithAlphabetIdentifier} punches {target.NameWithAlphabetIdentifier} in a thug way!"
                 })
             ],
             User = owner

@@ -18,7 +18,7 @@ public class MethaneSlap : BasicAttack
             Damage = owner.Attack * 1.7,
             Caster = owner,
             CanCrit = true,
-            DamageText = $"That was a harsh slap on {target} dealt $ damage!"
+            DamageText = $"That was a harsh slap on {target.NameWithAlphabetIdentifier} dealt $ damage!"
         });
         var damageResultList = new []{ damageResult };
         var result = new UsageResult(this)

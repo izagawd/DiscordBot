@@ -25,11 +25,11 @@ public class Burn : StatusEffect, IDetonatable
 
     private DamageResult? DoDamage(Character affected)
     {
-        return affected.Damage(        new DamageArgs(this)
+        return affected.Damage(new DamageArgs(this)
         {
             DefenseToIgnore = 70,
             AffectedByCasterElement = false,
-            Damage = _characterAttack * 2,
+            Damage = _characterAttack * 0.6,
             Caster = Caster,
             CanCrit = false,
             DamageText =$"{affected} took $ damage from burn!"
