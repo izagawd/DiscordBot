@@ -8,7 +8,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Challenge :BaseCommandClass
+public class Challenge :GeneralCommandClass
 {   
     public override BotCommandType BotCommandType => BotCommandType.Battle;
     private static readonly DiscordButtonComponent yes = new(ButtonStyle.Primary, "yes", "YES");

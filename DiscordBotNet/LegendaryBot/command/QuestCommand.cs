@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class QuestCommand : BaseCommandClass
+public class QuestCommand : GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Battle;
 

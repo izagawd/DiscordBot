@@ -31,7 +31,7 @@ namespace DiscordBotNet;
 public static class Bot
 {
 
-    public static ImmutableArray<BaseCommandClass> CommandInstanceSamples { get; private set; } = [];
+    public static ImmutableArray<GeneralCommandClass> CommandInstanceSamples { get; private set; } = [];
 
 
 
@@ -58,7 +58,7 @@ public static class Bot
     private static async Task Main(string[] args)
     {
 
-        var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(BaseCommandClass))).ToArray();
+        var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(GeneralCommandClass))).ToArray();
 
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
@@ -75,7 +75,7 @@ public static class Bot
         }
 
         CommandInstanceSamples = commandArrayType
-            .Select(i => (BaseCommandClass)Activator.CreateInstance(i)!)
+            .Select(i => (GeneralCommandClass)Activator.CreateInstance(i)!)
             .ToImmutableArray();
 
         var config = new DiscordConfiguration

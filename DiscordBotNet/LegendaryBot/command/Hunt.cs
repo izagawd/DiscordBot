@@ -5,7 +5,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Hunt : BaseCommandClass
+public class Hunt : GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Battle;
 

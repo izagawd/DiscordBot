@@ -4,7 +4,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Roll :  BaseCommandClass
+public class Roll :  GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Fun;
     [SlashCommand("roll", "Gets a random number")]

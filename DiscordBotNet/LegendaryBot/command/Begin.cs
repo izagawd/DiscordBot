@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Begin : BaseCommandClass
+public class Begin : GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Battle;
 

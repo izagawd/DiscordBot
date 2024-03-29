@@ -4,7 +4,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Help : BaseCommandClass
+public class Help : GeneralCommandClass
 {
 
 

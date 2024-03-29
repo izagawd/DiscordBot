@@ -5,7 +5,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Avatar: BaseCommandClass
+public class Avatar: GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Other;
     public override string Example => $"/avatar\n/avatar @Izagawd";

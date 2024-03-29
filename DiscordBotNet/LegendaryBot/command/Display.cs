@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DiscordBotNet.LegendaryBot.command;
 
 [SlashCommandGroup("display", "Display stuff from your inventory")]
-public class Display : BaseCommandClass
+public class Display : GeneralCommandClass
 {
     protected static DiscordButtonComponent Next = new DiscordButtonComponent(ButtonStyle.Success, "next", "NEXT");
     protected static DiscordButtonComponent Previous = new DiscordButtonComponent(ButtonStyle.Primary, "previous", "PREVIOUS");

@@ -4,7 +4,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class SimulateBattle : BaseCommandClass
+public class SimulateBattle : GeneralCommandClass
 {
     [SlashCommand("simulate_battle","simulates a set number of battles")]
     public async Task Execute(InteractionContext context,[Option("battle_count","the battle count")] long battleCount = 1)

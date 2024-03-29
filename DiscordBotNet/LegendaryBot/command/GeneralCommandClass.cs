@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public abstract class BaseCommandClass : ApplicationCommandModule
+public abstract class GeneralCommandClass : ApplicationCommandModule
 {
 
     protected static Dictionary<Type, IEnumerable<SlashCommandAttribute>> _commandResults = new();
@@ -18,10 +18,10 @@ public abstract class BaseCommandClass : ApplicationCommandModule
     public virtual BotCommandType BotCommandType { get;  } = BotCommandType.Other;
     protected SlashCommandAttribute CommandResult { get; set; }
     public virtual string Example => "None";
-    static BaseCommandClass()
+    static GeneralCommandClass()
     {
         var types = Assembly.GetExecutingAssembly().GetTypes();
-        foreach (var i in types.Where(i => i.IsSubclassOf(typeof(BaseCommandClass)) && !i.IsAbstract))
+        foreach (var i in types.Where(i => i.IsSubclassOf(typeof(GeneralCommandClass)) && !i.IsAbstract))
         {
 
             _slashCommandGroupAttributes.Add(i, i.GetCustomAttribute<SlashCommandGroupAttribute>());
@@ -85,7 +85,7 @@ public abstract class BaseCommandClass : ApplicationCommandModule
     /// This exists cuz it's disposed at the end of a slash command and cuz I tend to forget to dispose disposable stuff
     /// </summary>
     protected PostgreSqlContext DatabaseContext { get; private set; }
-    public BaseCommandClass()
+    public GeneralCommandClass()
     {
         Name = BasicFunctionality.Englishify(GetType().Name).ToLower();
         var type = GetType();

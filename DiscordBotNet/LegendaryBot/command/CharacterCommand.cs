@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("character","changes things about the character")]
-public class CharacterCommand : BaseCommandClass
+public class CharacterCommand : GeneralCommandClass
 {
     
     static CharacterCommand()

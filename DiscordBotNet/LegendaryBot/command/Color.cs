@@ -6,7 +6,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Color : BaseCommandClass
+public class Color : GeneralCommandClass
 {
 
     public override BotCommandType BotCommandType => BotCommandType.Other;

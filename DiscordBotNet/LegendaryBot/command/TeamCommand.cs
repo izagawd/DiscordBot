@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("team","teams related command")]
-public class TeamCommand : BaseCommandClass
+public class TeamCommand : GeneralCommandClass
 {
     
     

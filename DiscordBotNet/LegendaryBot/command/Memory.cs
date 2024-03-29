@@ -3,7 +3,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("memory","commands for memory consumptiom")]
-public class Memory : BaseCommandClass
+public class Memory : GeneralCommandClass
 {
     [SlashCommand("usage","gets memory usage in bytes")]
     public async Task ExecuteGetTotalMemoryUsedInBytes(InteractionContext context)

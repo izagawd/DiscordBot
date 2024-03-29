@@ -8,7 +8,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
  
-public class StandardPull : BaseCommandClass
+public class StandardPull : GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Battle;
     private static readonly Dictionary<PullChoice, double> pullChances = new ()

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("Quote", "Post a quote or send a quote")]
-public class QuoteCommand : BaseCommandClass
+public class QuoteCommand : GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Fun;
     [SlashCommand("read", "gets a random quote")]

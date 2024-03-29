@@ -4,7 +4,7 @@ using DSharpPlus.SlashCommands;
 
 namespace DiscordBotNet.LegendaryBot.command;
 
-public class Daily : BaseCommandClass
+public class Daily : GeneralCommandClass
 {
     public override BotCommandType BotCommandType => BotCommandType.Battle;
     [SlashCommand("daily", "Gets daily rewards")]
