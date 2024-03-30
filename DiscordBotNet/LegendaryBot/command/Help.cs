@@ -16,7 +16,6 @@ public class Help : GeneralCommandClass
         Dictionary<BotCommandType, StringBuilder> botCommandTypeBuilders = new();
         foreach (var i in Enum.GetValues<BotCommandType>())
             botCommandTypeBuilders[i] = new StringBuilder();
-           
         foreach (var i in Bot.CommandInstanceSamples)
         {
             var slashCom = i.GetType().GetCustomAttribute<SlashCommandGroupAttribute>();
@@ -30,7 +29,6 @@ public class Help : GeneralCommandClass
             }
             else
             {
-
                 var selected = i.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public  | BindingFlags.Instance)
                     .Select(j =>new{Additional= j.GetCustomAttribute<AdditionalSlashCommandAttribute>(),
                         Default = j.GetCustomAttribute<SlashCommandAttribute>()});
@@ -43,7 +41,6 @@ public class Help : GeneralCommandClass
                     botCommandTypeBuilders[type].Append($"{j.Default.Name}  ");
                 }
             }
-   
         }
         foreach(var i in Enum.GetValues<BotCommandType>())
             _botCommandTypeDic[i] = botCommandTypeBuilders[i].ToString();
