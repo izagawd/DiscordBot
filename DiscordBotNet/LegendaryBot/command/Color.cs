@@ -9,8 +9,9 @@ namespace DiscordBotNet.LegendaryBot.command;
 public class Color : GeneralCommandClass
 {
 
-    public override BotCommandType BotCommandType => BotCommandType.Other;
-    [SlashCommand("color", "Changes the color of the embed messages I send to you")]
+
+    [SlashCommand("color", "Changes the color of the embed messages I send to you"),
+    AdditionalSlashCommand("/color Blue",BotCommandType.Other)]
     public async Task Execute(InteractionContext ctx,
         [Choice("Blue","blue")]
         [Choice("Red","red")]

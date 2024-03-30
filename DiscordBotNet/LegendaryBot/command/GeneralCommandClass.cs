@@ -9,31 +9,9 @@ namespace DiscordBotNet.LegendaryBot.command;
 public abstract class GeneralCommandClass : ApplicationCommandModule
 {
 
-    protected static Dictionary<Type, IEnumerable<SlashCommandAttribute>> _commandResults = new();
-    protected static Dictionary<Type, SlashCommandGroupAttribute?> _slashCommandGroupAttributes = new();
-
-    public string Name { get; }
-    public string Description { get; }
-    public bool HasSubCommands { get; } = false;
-    public virtual BotCommandType BotCommandType { get;  } = BotCommandType.Other;
-    protected SlashCommandAttribute CommandResult { get; set; }
+ 
+ 
     public virtual string Example => "None";
-    static GeneralCommandClass()
-    {
-        var types = Assembly.GetExecutingAssembly().GetTypes();
-        foreach (var i in types.Where(i => i.IsSubclassOf(typeof(GeneralCommandClass)) && !i.IsAbstract))
-        {
-
-            _slashCommandGroupAttributes.Add(i, i.GetCustomAttribute<SlashCommandGroupAttribute>());
-
-            var typeEnumerables = i.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(j => j.GetCustomAttribute<SlashCommandAttribute>() is not null)
-                .Select(j => j.GetCustomAttribute<SlashCommandAttribute>()!);
-            _commandResults.Add(i, typeEnumerables);
-
-        }
-        
-    }
 
     public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
     {
@@ -85,27 +63,7 @@ public abstract class GeneralCommandClass : ApplicationCommandModule
     /// This exists cuz it's disposed at the end of a slash command and cuz I tend to forget to dispose disposable stuff
     /// </summary>
     protected PostgreSqlContext DatabaseContext { get; private set; }
-    public GeneralCommandClass()
-    {
-        Name = BasicFunctionality.Englishify(GetType().Name).ToLower();
-        var type = GetType();
-        var theCommandResultsOfThisInstance = _commandResults[type];
-        if (_slashCommandGroupAttributes[type]  is null)
-        {
-           
-            var firstResult = theCommandResultsOfThisInstance.First();
-            Description = firstResult.Description;
-            Name = firstResult.Name;
-        }
-        else
-        {
-            HasSubCommands = true;
-            var commandGroupAttribute = _slashCommandGroupAttributes[type];
-            Name = commandGroupAttribute.Name;
-            Description = commandGroupAttribute.Description;
-           
-        }
-    }
+
 
 
 }

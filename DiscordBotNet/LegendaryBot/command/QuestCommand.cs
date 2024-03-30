@@ -11,9 +11,10 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class QuestCommand : GeneralCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Battle;
 
-    [SlashCommand("quest", "do a daily quest")]
+
+    [SlashCommand("quest", "do a daily quest"),
+    AdditionalSlashCommand("/quest",BotCommandType.Battle)]
     public async Task Execute(InteractionContext ctx)
     {
         var author = ctx.User;

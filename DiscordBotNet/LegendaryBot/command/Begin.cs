@@ -13,9 +13,10 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Begin : GeneralCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Battle;
+ 
 
-    [SlashCommand("begin", "Begin your journey by playing the tutorial!")]
+    [SlashCommand("begin", "Begin your journey by playing the tutorial!"),
+    AdditionalSlashCommand("/begin",BotCommandType.Battle)]
     public async Task Execute(InteractionContext ctx)
     {
         DiscordEmbedBuilder embedToBuild = new();

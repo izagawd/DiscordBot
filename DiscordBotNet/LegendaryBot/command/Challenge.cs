@@ -10,11 +10,12 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Challenge :GeneralCommandClass
 {   
-    public override BotCommandType BotCommandType => BotCommandType.Battle;
+
     private static readonly DiscordButtonComponent yes = new(ButtonStyle.Primary, "yes", "YES");
     private static readonly DiscordButtonComponent no = new(ButtonStyle.Primary, "no", "NO");
 
-    [SlashCommand("challenge", "Challenge other players to a duel!")]
+    [SlashCommand("challenge", "Challenge other players to a duel!"),
+    AdditionalSlashCommand("/challenge @user",BotCommandType.Battle)]
     public async Task Execute(InteractionContext ctx,[Option("user", "User to challenge")] DiscordUser opponent)
     {
         

@@ -10,7 +10,7 @@ namespace DiscordBotNet.LegendaryBot.command;
  
 public class StandardPull : GeneralCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Battle;
+
     private static readonly Dictionary<PullChoice, double> pullChances = new ()
     {
         { PullChoice.FiveStarCharacter, 2.0 },
@@ -20,7 +20,8 @@ public class StandardPull : GeneralCommandClass
         { PullChoice.ThreeStarCharacter, 35.25 }, // Adjusted to maintain a total of 100%
         { PullChoice.ThreeStarBlessing, 40.25 } // Adjusted to maintain a total of 100%
     };
-    [SlashCommand("standard_pull", "Pull for a character and add it to your collection!")]
+    [SlashCommand("standard_pull", "Pull for a character and add it to your collection!"),
+    AdditionalSlashCommand("/standard_pull",BotCommandType.Battle)]
     public async Task Execute(InteractionContext ctx)
     {
         var userData = await DatabaseContext.UserData.FindOrCreateAsync((long)ctx.User.Id);

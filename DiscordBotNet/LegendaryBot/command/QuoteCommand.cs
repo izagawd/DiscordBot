@@ -13,8 +13,9 @@ namespace DiscordBotNet.LegendaryBot.command;
 [SlashCommandGroup("Quote", "Post a quote or send a quote")]
 public class QuoteCommand : GeneralCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Fun;
-    [SlashCommand("read", "gets a random quote")]
+
+    [SlashCommand("read", "gets a random quote"),
+    AdditionalSlashCommand("/read",BotCommandType.Fun)]
     public async Task Read(InteractionContext ctx)
     {
         var anon = await DatabaseContext.Quote
@@ -122,7 +123,8 @@ public class QuoteCommand : GeneralCommandClass
         }
 
     }
-    [SlashCommand("write", "creates a quote")]
+    [SlashCommand("write", "creates a quote"),
+    AdditionalSlashCommand("/write Be good and good will come",BotCommandType.Fun)]
     public async Task Write(InteractionContext ctx, [Option("text", "the quote")] string text)
     {
         var userData = await DatabaseContext.UserData.FindOrCreateAsync((long)ctx.User.Id);

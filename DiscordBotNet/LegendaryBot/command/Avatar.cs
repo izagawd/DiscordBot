@@ -7,10 +7,11 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Avatar: GeneralCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Other;
+
     public override string Example => $"/avatar\n/avatar @Izagawd";
 
-    [SlashCommand("avatar", "Displays your avatar, or someone elses avatar")]
+    [SlashCommand("avatar", "Displays your avatar, or someone elses avatar"),
+    AdditionalSlashCommand("/avatar\n/avatar @user",BotCommandType.Fun)]
     public async Task Execute(InteractionContext ctx, [Option("user", "User to display avatar. if none selected, self avatar will be displayed")] DiscordUser? user = null)
     {
         if(user is null)

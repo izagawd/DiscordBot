@@ -6,8 +6,9 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Daily : GeneralCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Battle;
-    [SlashCommand("daily", "Gets daily rewards")]
+
+    [SlashCommand("daily", "Gets daily rewards"),
+    AdditionalSlashCommand("/daily",BotCommandType.Battle)]
     public async Task Execute(InteractionContext ctx)
     {
         var userData =await  DatabaseContext.UserData.FindOrCreateAsync((long)ctx.User.Id);

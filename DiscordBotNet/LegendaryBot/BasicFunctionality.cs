@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using DiscordBotNet.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
@@ -71,11 +72,13 @@ public static class BasicFunctionality
             {
                 entryOptions = ExpiryEntryOptions;
             }
+            
             CachedImages.Set(url, characterImage, entryOptions);
             return characterImage.Clone();
         }
-        catch
+        catch(HttpRequestException e)
         {
+    
             var alternateImage =  await GetImageFromUrlAsync($"{Website.DomainName}/battle_images/moves/guilotine.png");
             CachedImages.Set(url,alternateImage,EntryOptions);
             return alternateImage.Clone();

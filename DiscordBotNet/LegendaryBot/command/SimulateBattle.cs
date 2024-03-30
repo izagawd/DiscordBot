@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
+﻿using DiscordBotNet.Extensions;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.SlashCommands;
 
@@ -19,7 +20,20 @@ public class SimulateBattle : GeneralCommandClass
             {
                 await j.LoadAsync();
             }
-            battleSim.StartAsync(context.Channel);
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await battleSim.StartAsync(context.Channel);
+                }
+                catch (Exception e)
+                {
+                    e.Print();
+                }
+                
+            });
+            
         }
         
     }

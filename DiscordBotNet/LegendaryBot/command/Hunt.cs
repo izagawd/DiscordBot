@@ -7,9 +7,10 @@ namespace DiscordBotNet.LegendaryBot.command;
 
 public class Hunt : GeneralCommandClass
 {
-    public override BotCommandType BotCommandType => BotCommandType.Battle;
+    
 
-    [SlashCommand("hunt", "Hunt for mobs to get materials and be stronger!")]
+    [SlashCommand("hunt", "Hunt for mobs to get materials and be stronger!"),
+    AdditionalSlashCommand("/hunt Coach Chad",BotCommandType.Battle)]
     public async Task Execute(InteractionContext ctx,
         [Option("mob_name", "The name of the mob you want to hunt")] string characterName,
         [Option("enemy_count","number of enemies")] long enemyCount = 1 )

@@ -47,7 +47,22 @@ public static class Bot
 
     private static async Task DoShitAsync()
     {
-
+        var help = new Help();
+        var stop = new Stopwatch(); stop.Start();
+        help.GetType().GetCustomAttributes<AdditionalSlashCommandAttribute>();
+        stop.Stop();
+        stop.Elapsed.TotalMilliseconds.Print();
+        help.GetType().GetMethods()
+            .Select(i => i.GetCustomAttribute<AdditionalSlashCommandAttribute>())
+            .Where(i => i is not null)
+            .Count();
+        stop = new Stopwatch(); stop.Start();
+        help.GetType().GetMethods()
+            .Select(i => i.GetCustomAttribute<AdditionalSlashCommandAttribute>())
+            .Where(i => i is not null)
+            .Count();
+        stop.Stop();
+        stop.Elapsed.TotalMilliseconds.Print();
     }
 
     private static  Task FirstTimeSetupAsync()
@@ -77,7 +92,7 @@ public static class Bot
         CommandInstanceSamples = commandArrayType
             .Select(i => (GeneralCommandClass)Activator.CreateInstance(i)!)
             .ToImmutableArray();
-
+        Help.LoadHelpMenu();
         var config = new DiscordConfiguration
         {
             Token = ConfigurationManager.AppSettings["BotToken"]!,
