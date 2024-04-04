@@ -30,41 +30,18 @@ namespace DiscordBotNet;
 
 public static class Bot
 {
-
     public static ImmutableArray<GeneralCommandClass> CommandInstanceSamples { get; private set; } = [];
-
-
-
     private static readonly IEnumerable<Type> AllAssemblyTypes =
         Assembly
         .GetExecutingAssembly()
         .GetTypes()
         .ToImmutableArray();
-
-
     private static long SlenderId => 334412512919420928;
-
 
     private static async Task DoShitAsync()
     {
-        var help = new Help();
-        var stop = new Stopwatch(); stop.Start();
-        help.GetType().GetCustomAttributes<AdditionalSlashCommandAttribute>();
-        stop.Stop();
-        stop.Elapsed.TotalMilliseconds.Print();
-        help.GetType().GetMethods()
-            .Select(i => i.GetCustomAttribute<AdditionalSlashCommandAttribute>())
-            .Where(i => i is not null)
-            .Count();
-        stop = new Stopwatch(); stop.Start();
-        help.GetType().GetMethods()
-            .Select(i => i.GetCustomAttribute<AdditionalSlashCommandAttribute>())
-            .Where(i => i is not null)
-            .Count();
-        stop.Stop();
-        stop.Elapsed.TotalMilliseconds.Print();
+        
     }
-
     private static  Task FirstTimeSetupAsync()
     {
         return new PostgreSqlContext().ResetDatabaseAsync();
@@ -72,9 +49,7 @@ public static class Bot
 
     private static async Task Main(string[] args)
     {
-
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(GeneralCommandClass))).ToArray();
-
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");
         stopwatch.Start();
