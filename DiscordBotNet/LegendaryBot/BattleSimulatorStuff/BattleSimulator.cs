@@ -188,27 +188,38 @@ public class BattleSimulator : IBattleEventListener
     }
 
 
-    public  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
+    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
-        List<StatsModifierArgs> statsModifierArgsList = [];
-        foreach (var i in Characters)
+        foreach (var character in Characters)
         {
-            statsModifierArgsList.AddRange(i.GetAllStatsModifierArgs(i));
-            foreach (var j in i.MoveList)
+            foreach (var move in character.MoveList)
             {
-                statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
+                foreach (var statsModifierArgs in move.GetAllStatsModifierArgs(character))
+                {
+                    yield return statsModifierArgs;
+                }
             }
-            if (i.Blessing is not null)
+            if (character.Blessing is not null)
             {
-                statsModifierArgsList.AddRange(i.Blessing.GetAllStatsModifierArgs(i));
+                foreach (var statsModifierArgs in character.Blessing.GetAllStatsModifierArgs(character))
+                {
+                    yield return statsModifierArgs;
+                }
             }
-            foreach (var j in i.StatusEffectsCopy)
+            foreach (var statusEffect in character.StatusEffectsCopy)
             {
-                statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
+                foreach (var statsModifierArgs in statusEffect.GetAllStatsModifierArgs(character))
+                {
+                    yield return statsModifierArgs;
+                }
+            }
+            foreach (var statsModifierArgs in character.GetAllStatsModifierArgs(character))
+            {
+                yield return statsModifierArgs;
             }
         }
-        return statsModifierArgsList;
     }
+
 
     public IEnumerable<CharacterTeam> CharacterTeams => [Team1, Team2];
 
