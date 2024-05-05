@@ -16,8 +16,11 @@ public class GooeyStrike : BasicAttack
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
             Caster = owner,
-            Damage = owner.Attack * 1.7,
+            Damage = owner.Attack * 1.7f,
             DamageText = $"{owner.NameWithAlphabetIdentifier} used a slime attack at {target.NameWithAlphabetIdentifier} and dealt $ damage!"
         });
         if (BasicFunctionality.RandomChance(10))

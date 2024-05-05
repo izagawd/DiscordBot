@@ -20,8 +20,11 @@ public class PomPomAttack : BasicAttack
             [
                 target.Damage(new DamageArgs(this)
                 {
+                    ElementToDamageWith = owner.Element,
+                    CriticalChance = owner.CriticalChance,
+                    CriticalDamage = owner.CriticalDamage,
                     Caster = owner,
-                    Damage = owner.Attack * 0.8,
+                    Damage = owner.Attack * 0.8f,
                     DamageText = $"{owner.NameWithAlphabetIdentifier} hits {target.NameWithAlphabetIdentifier} with their pompoms, dealing $ damage!"
                 })
             ],

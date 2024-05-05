@@ -267,6 +267,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         return decreaseAmount;
     }
 
+  
     public  Blessing? Blessing { get; set; }
 
 
@@ -297,13 +298,13 @@ public abstract partial  class Character : BattleEntity, ISetup
     [NotMapped]
     private int _health = 1;
     [NotMapped]
-    private double _combatReadiness;
+    private float _combatReadiness;
     
     public bool IsDead => Health <= 0;
     [NotMapped]
     public CharacterTeam Team { get; set; }
     [NotMapped]
-    public double CombatReadiness
+    public float CombatReadiness
     {
         get => _combatReadiness;
         set
@@ -435,7 +436,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
     }
 
-    public int GetStatFromType(StatType statType)
+    public float GetStatFromType(StatType statType)
     {
         switch (statType)
         {
@@ -732,19 +733,19 @@ public abstract partial  class Character : BattleEntity, ISetup
         get
         {
 
-            double percentage = 100;
-            double originalMaxHealth = TotalMaxHealth;
+            float percentage = 100;
+            float originalMaxHealth = TotalMaxHealth;
             var modifiedStats =
                 GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<MaxHealthPercentageModifierArgs>())
             {
-                originalMaxHealth += originalMaxHealth * 0.01 * i.ValueToChangeWith;
+                originalMaxHealth += originalMaxHealth * 0.01f * i.ValueToChangeWith;
             }
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<MaxHealthFlatModifierArgs>())
             {
                 originalMaxHealth += i.ValueToChangeWith;
             }
-            double flat = 0;
+            float flat = 0;
 
             foreach (var i in modifiedStats.Where(i => i.WorksAfterGearCalculation).OfType<MaxHealthPercentageModifierArgs>())
             {
@@ -755,10 +756,10 @@ public abstract partial  class Character : BattleEntity, ISetup
                 flat += i.ValueToChangeWith;
             }
 
-            double newMaxHealth = originalMaxHealth  * percentage * 0.01;
+            float newMaxHealth = originalMaxHealth  * percentage * 0.01f;
             newMaxHealth += flat;
             if (newMaxHealth < 0) newMaxHealth = 0;
-    
+
             return newMaxHealth.Round();
         }
     }
@@ -781,23 +782,23 @@ public abstract partial  class Character : BattleEntity, ISetup
 
         }
     }
-    public int Speed
+    public float Speed
     {
         get
         {
-            double percentage = 100;
-            double originalSpeed = TotalSpeed;
+            float percentage = 100;
+            float originalSpeed = TotalSpeed;
 
             var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<SpeedPercentageModifierArgs>())
             {
-                originalSpeed += originalSpeed * 0.01 * i.ValueToChangeWith;
+                originalSpeed += originalSpeed * 0.01f * i.ValueToChangeWith;
             }
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<SpeedFlatModifierArgs>())
             {
                 originalSpeed += i.ValueToChangeWith;
             }
-            double flat = 0;
+            float flat = 0;
 
 
             foreach (var i in modifiedStats.Where(i => i.WorksAfterGearCalculation).OfType<SpeedPercentageModifierArgs>())
@@ -809,29 +810,29 @@ public abstract partial  class Character : BattleEntity, ISetup
                 flat += i.ValueToChangeWith;
             }
 
-            double newSpeed = originalSpeed  * percentage * 0.01;
+            float newSpeed = originalSpeed  * percentage * 0.01f;
             newSpeed += flat;
             if (newSpeed < 0) newSpeed = 0;
-         
-            return newSpeed.Round();
+
+            return newSpeed;
         }
     }
 
-    public int Defense { 
+    public float Defense { 
         get
         {
-            double percentage = 100;
-            double originalDefense = TotalDefense;
+            float percentage = 100;
+            float originalDefense = TotalDefense;
             var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<DefensePercentageModifierArgs>())
             {
-                originalDefense += originalDefense * 0.01 * i.ValueToChangeWith;
+                originalDefense += originalDefense * 0.01f * i.ValueToChangeWith;
             }
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<DefenseFlatModifierArgs>())
             {
                 originalDefense += i.ValueToChangeWith;
             }
-            double flat = 0;
+            float flat = 0;
 
             foreach (var i in modifiedStats.Where(i => i.WorksAfterGearCalculation).OfType<DefensePercentageModifierArgs>())
             {
@@ -842,10 +843,10 @@ public abstract partial  class Character : BattleEntity, ISetup
                 flat += i.ValueToChangeWith;
             }
 
-            double newDefense = originalDefense  * percentage * 0.01;
+            float newDefense = originalDefense  * percentage * 0.01f;
             newDefense += flat;
             if (newDefense < 0) newDefense = 0;
-            return newDefense.Round();
+            return newDefense;
         } 
     }
 
@@ -863,22 +864,22 @@ public abstract partial  class Character : BattleEntity, ISetup
 
 
 
-    public int Attack { 
+    public float Attack { 
         get     
         {
          
-            double percentage = 100;
-            double originalAttack = TotalAttack;
+            float percentage = 100;
+            float originalAttack = TotalAttack;
             var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<AttackPercentageModifierArgs>())
             {
-                originalAttack += originalAttack * 0.01 * i.ValueToChangeWith;
+                originalAttack += originalAttack * 0.01f * i.ValueToChangeWith;
             }
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<AttackFlatModifierArgs>())
             {
                 originalAttack += i.ValueToChangeWith;
             }
-            double flat = 0;
+            float flat = 0;
             foreach (var i in modifiedStats.Where(i => i.WorksAfterGearCalculation).OfType<AttackPercentageModifierArgs>())
             {
        
@@ -889,11 +890,11 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 flat += i.ValueToChangeWith;
             }
-            double newAttack = originalAttack  * percentage * 0.01;
+            float newAttack = originalAttack  * percentage * 0.01f;
             newAttack += flat;
             if (newAttack < 0) newAttack = 0;
 
-            return newAttack.Round();
+            return newAttack;
         } 
     }
 
@@ -908,11 +909,11 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
     }
 
-    public int CriticalDamage {
+    public float CriticalDamage {
         get
         {
-            double percentage = 0;
-            double originalCriticalDamage = TotalCriticalDamage;
+            float percentage = 0;
+            float originalCriticalDamage = TotalCriticalDamage;
             var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<CriticalDamageModifierArgs>())
             {
@@ -925,10 +926,10 @@ public abstract partial  class Character : BattleEntity, ISetup
             }
 
 
-            double newCriticalDamage = originalCriticalDamage + percentage;
+            float newCriticalDamage = originalCriticalDamage + percentage;
 
             if (newCriticalDamage < 0) newCriticalDamage = 0;
-            return newCriticalDamage.Round();
+            return newCriticalDamage;
         }
     }
 
@@ -946,8 +947,8 @@ public abstract partial  class Character : BattleEntity, ISetup
         get
         {
             {
-                double percentage = 0;
-                double originalResistance = TotalResistance;
+                float percentage = 0;
+                float originalResistance = TotalResistance;
                 var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
                 foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<ResistanceModifierArgs>())
                 {
@@ -958,7 +959,7 @@ public abstract partial  class Character : BattleEntity, ISetup
                 {
                     percentage +=i.ValueToChangeWith;
                 }
-                double newResistance = originalResistance + percentage;
+                float newResistance = originalResistance + percentage;
 
                 if (newResistance < 0) newResistance = 0;
                 return newResistance.Round();
@@ -1081,8 +1082,8 @@ public abstract partial  class Character : BattleEntity, ISetup
     {
         get
         {
-            double percentage =0;
-            double originalEffectiveness = TotalEffectiveness;
+            float percentage =0;
+            float originalEffectiveness = TotalEffectiveness;
             var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
             foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<EffectivenessModifierArgs>())
             {
@@ -1093,7 +1094,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 percentage +=i.ValueToChangeWith;
             }
-            double newEffectiveness = originalEffectiveness  +percentage;
+            float newEffectiveness = originalEffectiveness  +percentage;
 
             if (newEffectiveness < 0) newEffectiveness = 0;
             return newEffectiveness.Round();
@@ -1111,12 +1112,12 @@ public abstract partial  class Character : BattleEntity, ISetup
 
 
     [NotMapped]
-    public int CriticalChance {
+    public float CriticalChance {
         get
         {
             {
-                double percentage = 0;
-                double originalCriticalChance = TotalCriticalChance;
+                float percentage = 0;
+                float originalCriticalChance = TotalCriticalChance;
                 var modifiedStats = GetAllStatsModifierArgs<StatsModifierArgs>().ToArray();
                 foreach (var i in modifiedStats.Where(i => !i.WorksAfterGearCalculation).OfType<CriticalChanceModifierArgs>())
                 {
@@ -1129,10 +1130,10 @@ public abstract partial  class Character : BattleEntity, ISetup
                 }
 
 
-                double newCriticalChance = originalCriticalChance  + percentage;
+                float newCriticalChance = originalCriticalChance  + percentage;
 
                 if (newCriticalChance < 0) newCriticalChance = 0;
-                return newCriticalChance.Round();
+                return newCriticalChance;
             }
         }
         
@@ -1179,21 +1180,21 @@ public abstract partial  class Character : BattleEntity, ISetup
         Level = level;
     }
     [NotMapped]
-    public double TotalAttack { get; set; }
+    public float TotalAttack { get; set; }
     [NotMapped]
-    public double TotalDefense { get; set; }
+    public float TotalDefense { get; set; }
     [NotMapped]
-    public double TotalMaxHealth { get; set; }
+    public float TotalMaxHealth { get; set; }
     [NotMapped]
-    public double TotalSpeed { get; set; }
+    public float TotalSpeed { get; set; }
     [NotMapped]
-    public double TotalCriticalChance { get; set; }
+    public float TotalCriticalChance { get; set; }
     [NotMapped]
-    public double TotalCriticalDamage { get; set; }
+    public float TotalCriticalDamage { get; set; }
     [NotMapped]
-    public double TotalEffectiveness { get; set; }
+    public float TotalEffectiveness { get; set; }
     [NotMapped]
-    public double TotalResistance { get; set; }
+    public float TotalResistance { get; set; }
 
     /// <summary>
     /// Use this to load the build (stats) of the character. if u want to manually set the stats of this character, just
@@ -1265,11 +1266,9 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
         shield.SetShieldValue(this,shieldValue);
     }
-    public static double DamageFormula(double potentialDamage, double defense)
+    public static float DamageFormula(float potentialDamage, float defense)
     {
-
-        
-        return (potentialDamage * 375) / (300.0 + defense);
+        return (potentialDamage * 375) / (300 + defense);
     }
     /// <summary>
     /// Used to damage this character
@@ -1280,69 +1279,64 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// <param name="canCrit">Whether the damage can cause a critical hit or not</param>
     /// <param name="damageElement">The element of the damage</param>
     /// <returns>The results of the damage</returns>
-    public  DamageResult? Damage(DamageArgs damageArgs)
+    public  DamageResult Damage(DamageArgs damageArgs)
     {
-        if (IsDead) return null;
-        var damageText = damageArgs.DamageText;
-        var damage = damageArgs.Damage;
-        var caster = damageArgs.Caster;
-        var canBeCountered = damageArgs.CanBeCountered;
-        var canCrit = damageArgs.CanCrit;
+        if (IsDead) throw new Exception("Cannot damage dead character");
+        CurrentBattle.InvokeBattleEvent(new CharacterPreDamageEventArgs(damageArgs));
         var didCrit = false;
         var defenseToIgnore = Math.Clamp(damageArgs.DefenseToIgnore,0,100);
-        var defenseToUse = (100 - defenseToIgnore) *0.01 * Defense;
+        var defenseToUse = (100 - defenseToIgnore) * 0.01f * Defense;
         var damageModifyPercentage = 0;
         
-        damage = DamageFormula(damage, defenseToUse);
+        var damage = DamageFormula(damageArgs.Damage, defenseToUse);
 
+        var advantageLevel = ElementalAdvantage.Neutral;
+        if(damageArgs.ElementToDamageWith is not null)
+            advantageLevel = BattleFunctionality.GetAdvantageLevel(damageArgs.ElementToDamageWith.Value, Element);
 
-        var advantageLevel = BattleFunctionality.GetAdvantageLevel(caster.Element, Element);
-        if (damageArgs.AffectedByCasterElement)
-        {
-            switch (advantageLevel){
-                case ElementalAdvantage.Disadvantage:
-                    damageModifyPercentage -= 30;
-                    break;
-                case ElementalAdvantage.Advantage:
-
-                    damageModifyPercentage += 30;
-                    break;
-            }
+        switch (advantageLevel){
+            case ElementalAdvantage.Disadvantage:
+                damageModifyPercentage -= 30;
+                break;
+            case ElementalAdvantage.Advantage:
+                damageModifyPercentage += 30;
+                break;
         }
+    
 
 
-        damage = (damage * 0.01 * (damageModifyPercentage + 100)).Round();
-        var chance = caster.CriticalChance;
+        damage = (damage * 0.01f * (damageModifyPercentage + 100));
+        var chance = damageArgs.CriticalChance;
         if (damageArgs.AlwaysCrits)
         {
             chance = 100;
         }
-        if (BasicFunctionality.RandomChance(chance)&& canCrit)
+        if (BasicFunctionality.RandomChance(chance) && damageArgs.CanCrit)
         {
 
-            damage *= caster.CriticalDamage / 100.0;
+            damage *= damageArgs.CriticalDamage / 100.0f;
             didCrit = true;
         }
 
         int actualDamage = damage.Round();
+        var damageText = damageArgs.DamageText;
         if (damageText is null)
         {
-            damageText = $"{caster} dealt {actualDamage} damage to {this}!";
+            damageText = $"{damageArgs.Caster} dealt {actualDamage} damage to {this}!";
         }
 
         damageText = damageText.Replace("$", actualDamage.ToString());
-        if (damageArgs.AffectedByCasterElement)
+
+        switch (advantageLevel)
         {
-            switch (advantageLevel)
-            {
-                case ElementalAdvantage.Advantage:
-                    damageText = "It's super effective! " + damageText;
-                    break;
-                case ElementalAdvantage.Disadvantage:
-                    damageText = "It's not that effective... " + damageText;
-                    break;
-            }
+            case ElementalAdvantage.Advantage:
+                damageText = "It's super effective! " + damageText;
+                break;
+            case ElementalAdvantage.Disadvantage:
+                damageText = "It's not that effective... " + damageText;
+                break;
         }
+    
 
         if (didCrit)
             damageText = "A critical hit! " + damageText;
@@ -1358,23 +1352,24 @@ public abstract partial  class Character : BattleEntity, ISetup
             {
                 WasCrit = didCrit,
                 Damage = actualDamage,
-                DamageDealer = caster,
+                DamageDealer = damageArgs.Caster,
                 DamageReceiver = this,
-                CanBeCountered = canBeCountered
+                CanBeCountered = damageArgs.CanBeCountered
             };
         }
         else
         {
             damageResult = new DamageResult(damageArgs.StatusEffect)
             {
+                
                 WasCrit = didCrit,
                 Damage = actualDamage,
-                DamageDealer = caster,
+                DamageDealer = damageArgs.Caster,
                 DamageReceiver = this,
-                CanBeCountered = canBeCountered
+                CanBeCountered = damageArgs.CanBeCountered
             };
         }
-        CurrentBattle.InvokeBattleEvent(new CharacterDamageEventArgs(damageResult));
+        CurrentBattle.InvokeBattleEvent(new CharacterPostDamageEventArgs(damageResult));
         return damageResult;
     }
 
@@ -1451,7 +1446,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             };
         }
             
-        CurrentBattle.InvokeBattleEvent(new CharacterDamageEventArgs(damageResult));
+        CurrentBattle.InvokeBattleEvent(new CharacterPostDamageEventArgs(damageResult));
         return damageResult;
     }
 
@@ -1462,7 +1457,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// <param name="toRecover">Amount to recover</param>
     /// <param name="recoveryText">text to say when health recovered. use $ to represent health recovered</param>
     /// <returns>Amount recovered</returns>
-    public virtual int RecoverHealth(double toRecover,
+    public virtual int RecoverHealth(float toRecover,
         string? recoveryText = null, bool announceHealing = true)
     {
         if (IsDead) return 0;
@@ -1478,10 +1473,6 @@ public abstract partial  class Character : BattleEntity, ISetup
     }
 
 
-    /// <summary>
-    /// checks if it is currently the character's turn
-    /// </summary>
-    public bool IsActive => CurrentBattle.ActiveCharacter == this;
 
 
  

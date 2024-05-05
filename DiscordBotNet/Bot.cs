@@ -7,6 +7,7 @@ using DiscordBotNet.Database;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot;
 using DiscordBotNet.LegendaryBot.command;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
@@ -38,17 +39,35 @@ public static class Bot
         .ToImmutableArray();
     private static long SlenderId => 334412512919420928;
 
-    private static async Task DoShitAsync()
-    {
-        
-    }
+
     private static  Task FirstTimeSetupAsync()
     {
         return new PostgreSqlContext().ResetDatabaseAsync();
     }
 
+
+
+    private static int bruh;
+
+    class idkClass()
+    {
+        public void Die(int a)
+        {
+            bruh++;
+        }
+    }
+
+
+
+  
+    private static async Task DoShitAsync()
+    {
+
+
+    }
     private static async Task Main(string[] args)
     {
+
         var commandArrayType = AllAssemblyTypes.Where(t =>  t.IsSubclassOf(typeof(GeneralCommandClass))).ToArray();
         var stopwatch = new Stopwatch(); 
         Console.WriteLine("Making all users unoccupied...");

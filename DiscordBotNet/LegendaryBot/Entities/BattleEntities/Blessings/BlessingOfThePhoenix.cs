@@ -20,7 +20,7 @@ public class BlessingOfThePhoenix : Blessing
 
     public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
-        if(eventArgs is not CharacterDamageEventArgs characterDamageEventArgs) return;
+        if(eventArgs is not CharacterPostDamageEventArgs characterDamageEventArgs) return;
         if (characterDamageEventArgs.DamageResult.DamageReceiver != owner) return;
 
          owner.RecoverHealth((GetHealthPercentRecovering(Level) *  0.01 * owner.MaxHealth).Round(),$"{owner.NameWithAlphabetIdentifier} recovered $ health via the blessing of the phoenix");

@@ -7,10 +7,14 @@ namespace DiscordBotNet.LegendaryBot.Results;
 public class DamageArgs
 {
     /// <summary>
+    /// if null, will not consider element for damage calculation
+    /// </summary>
+    public required Element? ElementToDamageWith { get; set; }
+    /// <summary>
     /// The percentage of defense to ignore if possible
     /// </summary>
-    public int DefenseToIgnore { get; init; } = 0;
-    public bool AffectedByCasterElement { get; init; } = true;
+    public int DefenseToIgnore { get; set; } = 0;
+
     public Move? Move { get; private set; }
     public StatusEffect? StatusEffect { get; private set; }
 
@@ -19,13 +23,15 @@ public class DamageArgs
         Move = move;
     }
 
+    public bool IsCausedByMove => Move is not null;
+    public bool IsCausedByStatusEffect => StatusEffect is not null;
     public DamageArgs(StatusEffect statusEffect)
     {
         StatusEffect = statusEffect;
     }
-    public required double Damage
+    public required float Damage
     {
-        get; init;
+        get; set;
     }
     /// <summary>
     /// The one who casted the attack
@@ -42,6 +48,9 @@ public class DamageArgs
             init;
         } = true;
 
+
+        public  float CriticalDamage { get; set; } = 150;
+        public  float CriticalChance { get; set; } = 50;
         /// <summary>
         /// if true, the attack always lands a critical hit. Doesnt work in fixed damage
         /// </summary>

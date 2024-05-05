@@ -592,7 +592,7 @@ public class BattleSimulator : IBattleEventListener
             {
                 foreach (var j in Characters)
                 {
-                    if(!j.IsDead) j.CombatReadiness +=  0.0025 * j.Speed;
+                    if(!j.IsDead) j.CombatReadiness +=  0.0025f * j.Speed;
                 }
             }
 

@@ -20,10 +20,13 @@ public class ShieldBash : BasicAttack
             [
                 target.Damage(new DamageArgs(this)
                 {
+                    ElementToDamageWith = owner.Element,
+                    CriticalChance = owner.CriticalChance,
+                    CriticalDamage = owner.CriticalDamage,
                     Caster = owner,
                     DamageText =
                         $"{owner.NameWithAlphabetIdentifier} bashes {target.NameWithAlphabetIdentifier} with his shield , making them receive $ damage!",
-                    Damage = owner.Attack * 1.7
+                    Damage = owner.Attack * 1.7f
 
                 }),
             ],

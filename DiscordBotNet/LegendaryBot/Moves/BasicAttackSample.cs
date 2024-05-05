@@ -14,7 +14,10 @@ public class BasicAttackSample : BasicAttack
  
         DamageResult? damageResult = target.Damage(       new DamageArgs(this)
         {
-            Damage = owner.Attack * 1.7,
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
+            Damage = owner.Attack * 1.7f,
             Caster = owner,
             CanCrit = true,
             DamageText = $"{owner.NameWithAlphabetIdentifier} gave" +

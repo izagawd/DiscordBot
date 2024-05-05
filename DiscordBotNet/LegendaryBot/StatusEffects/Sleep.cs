@@ -19,7 +19,7 @@ public class Sleep: StatusEffect
 
     public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
     {
-        if(eventArgs is not CharacterDamageEventArgs damageEventArgs) return;
+        if(eventArgs is not CharacterPostDamageEventArgs damageEventArgs) return;
         if(damageEventArgs.DamageResult.DamageReceiver != owner) return;
         if (damageEventArgs.DamageResult.StatusEffect is not null) return;
         var removed = owner.RemoveStatusEffect(this);

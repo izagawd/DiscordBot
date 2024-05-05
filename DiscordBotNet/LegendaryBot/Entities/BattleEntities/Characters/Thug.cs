@@ -23,7 +23,10 @@ public class ThugPunch : BasicAttack
             [
                 target.Damage(new DamageArgs(this)
                 {
-                    Damage = owner.Attack * 1.7,
+                    ElementToDamageWith = owner.Element,
+                    CriticalChance = owner.CriticalChance,
+                    CriticalDamage = owner.CriticalDamage,
+                    Damage = owner.Attack * 1.7f,
                     Caster = owner,
                     DamageText = $"{owner.NameWithAlphabetIdentifier} punches {target.NameWithAlphabetIdentifier} in a thug way!"
                 })

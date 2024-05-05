@@ -9,7 +9,7 @@ public class Bomb : StatusEffect, IDetonatable
     public override string Description => "Detonates on the affected when the duration of this status effect finishes." +
                                           " Detonation damage is proportional to the caster's attack. After detonation, the affected gets stunned";
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
-    public int Attack { get; }
+    public float Attack { get; }
     public Bomb(Character caster) : base(caster)
     {
         Attack = caster.Attack;
@@ -32,7 +32,8 @@ public class Bomb : StatusEffect, IDetonatable
         affected.AddStatusEffect(new Stun(detonator));
         return affected.Damage(        new DamageArgs(this)
         {
-            AffectedByCasterElement = false,
+            ElementToDamageWith = null,
+
             Damage = Attack * 3,
             Caster = Caster,
             CanCrit = false,

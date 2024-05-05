@@ -6,7 +6,7 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 public class Burn : StatusEffect, IDetonatable
 {
     public override string Description => "Does damage at the start of the affected's turn. Damage ignores 70% of defense";
-    private int _characterAttack;
+    private float _characterAttack;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
 
     public override bool ExecuteStatusEffectAfterTurn => false;
@@ -28,8 +28,8 @@ public class Burn : StatusEffect, IDetonatable
         return affected.Damage(new DamageArgs(this)
         {
             DefenseToIgnore = 70,
-            AffectedByCasterElement = false,
-            Damage = _characterAttack * 0.6,
+            ElementToDamageWith = null,
+            Damage = _characterAttack * 0.6f,
             Caster = Caster,
             CanCrit = false,
             DamageText =$"{affected} took $ damage from burn!"
@@ -38,9 +38,8 @@ public class Burn : StatusEffect, IDetonatable
     }
 
     public DamageResult? Detonate(Character affected, Character detonator)
-    {
-        var removed = affected.RemoveStatusEffect(this);
-        if (removed) return DoDamage(affected);
-        return null;
+    { 
+        affected.RemoveStatusEffect(this);
+        return DoDamage(affected);
     }
 }

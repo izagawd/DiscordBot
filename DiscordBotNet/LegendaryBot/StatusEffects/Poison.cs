@@ -25,10 +25,10 @@ public class Poison : StatusEffect, IDetonatable
 
     private DamageResult? DoDamage(Character affected)
     {
-        return affected.FixedDamage(        new DamageArgs(this)
+        return affected.FixedDamage(new DamageArgs(this)
         {
-
-            Damage = affected.MaxHealth * 0.05,
+            ElementToDamageWith = null,
+            Damage = affected.MaxHealth * 0.05f,
             Caster = Caster,
             CanCrit = false,
             DamageText =$"{affected} took $ damage from being poisoned!"

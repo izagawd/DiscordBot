@@ -22,7 +22,14 @@ public class WindSlash : Skill
         foreach (var i in GetPossibleTargets(owner))
         {
             var damageResult = i.Damage(new DamageArgs(this)
-                { Caster = owner, Damage = owner.Attack * 1.7, DamageText = $"The slash dealt $ damage to {i}!" });
+            {
+                ElementToDamageWith = owner.Element,
+                CriticalChance = owner.CriticalChance,
+                CriticalDamage = owner.CriticalDamage,
+                Caster = owner,
+                Damage = owner.Attack * 1.7f, 
+                DamageText = $"The slash dealt $ damage to {i}!"
+            });
             if(damageResult is not null)
                 damageResults.Add(damageResult);
         }
@@ -51,8 +58,11 @@ public class SimpleSlashOfPrecision : BasicAttack
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
             Caster = owner,
-            Damage = owner.Attack * 1.7,
+            Damage = owner.Attack * 1.7f,
             AlwaysCrits = true
         });
         if (BasicFunctionality.RandomChance(BleedChance))
@@ -84,9 +94,12 @@ public class ConsecutiveSlashesOfPrecision : Surge
     {
         var damageResult =target.Damage(new DamageArgs(this)
         {
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
             CanCrit = true,
             Caster = owner,
-            Damage = owner.Attack * 1.7 *2,
+            Damage = owner.Attack * 1.7f *2,
             AlwaysCrits = true,
             DamageText = $"The slash was so precise it dealt $ damage to {target.NameWithAlphabetIdentifier}!",
      

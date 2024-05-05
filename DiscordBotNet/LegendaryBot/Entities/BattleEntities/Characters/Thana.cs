@@ -12,7 +12,10 @@ public class SoulAttack : BasicAttack
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            Damage = owner.Attack * 1.7,
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
+            Damage = owner.Attack * 1.7f,
             Caster = owner,
             DamageText = $"{owner.NameWithAlphabetIdentifier} uses the souls of the dead to attack {target.NameWithAlphabetIdentifier} and dealt $ damage!"
         });
@@ -43,12 +46,15 @@ public class YourLifeEnergyIsMine : Skill
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            Damage = owner.Attack * 2.5,
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
+            Damage = owner.Attack * 2.5f,
             Caster = owner,
             DamageText = $"{owner.NameWithAlphabetIdentifier} sucks the life essence out of {target.NameWithAlphabetIdentifier} and deals $ damage!"
         });
         if(damageResult is not null)
-            owner.RecoverHealth(damageResult.Damage * 0.2);
+            owner.RecoverHealth(damageResult.Damage * 0.2f);
         
         return new UsageResult(this)
         {

@@ -19,7 +19,10 @@ public class DoNotResist : BasicAttack
     {
         var damageResult= target.Damage(new DamageArgs(this)
         {
-            Damage = owner.Attack * 1.7,
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
+            Damage = owner.Attack * 1.7f,
             Caster = owner,
             DamageText = $"{owner.NameWithAlphabetIdentifier} tases {target.NameWithAlphabetIdentifier} and dealt $ damage! it was shocking"
         });
@@ -55,6 +58,9 @@ public class IAmShooting : Skill
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
+            ElementToDamageWith = owner.Element,
+            CriticalChance = owner.CriticalChance,
+            CriticalDamage = owner.CriticalDamage,
             Caster = owner,
             Damage = owner.Attack * 2,
             DamageText = $"{owner.NameWithAlphabetIdentifier} shoots at {target.NameWithAlphabetIdentifier} for resisting arrest, dealing $ damage"

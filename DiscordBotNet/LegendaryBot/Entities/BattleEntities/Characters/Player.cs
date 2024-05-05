@@ -19,11 +19,13 @@ public class FourthWallBreaker: BasicAttack
             DamageResults = [
                 target.Damage(new DamageArgs(this)
                 {
-
+                    ElementToDamageWith = owner.Element,
+                    CriticalChance = owner.CriticalChance,
+                    CriticalDamage = owner.CriticalDamage,
                     Caster = owner,
                     DamageText =
                         $"Breaks the fourth wall, causing {target.NameWithAlphabetIdentifier} to cringe, and making them receive $ damage!",
-                    Damage = owner.Attack * 1.7
+                    Damage = owner.Attack * 1.7f
 
                 })
             ],
@@ -56,7 +58,10 @@ public class FireBall : Skill
             
             damageResult = target.Damage(      new DamageArgs(this)
             {
-                Damage = owner.Attack * 2.4,
+                ElementToDamageWith = owner.Element,
+                CriticalChance = owner.CriticalChance,
+                CriticalDamage = owner.CriticalDamage,
+                Damage = owner.Attack * 2.4f,
                 Caster = owner,
                 DamageText =$"{owner.NameWithAlphabetIdentifier} threw a fireball at {target.NameWithAlphabetIdentifier} and dealt $ damage!",
             });

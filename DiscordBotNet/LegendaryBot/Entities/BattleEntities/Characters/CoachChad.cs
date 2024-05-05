@@ -17,8 +17,11 @@ public class GigaPunch : BasicAttack
             [
             target.Damage(new DamageArgs(this)
                 {
+                    ElementToDamageWith = owner.Element,
+                    CriticalDamage = owner.CriticalDamage,
+                    CriticalChance = owner.CriticalChance,
                     Caster = owner,
-                    Damage = owner.Attack * 1.7,
+                    Damage = owner.Attack * 1.7f,
                     DamageText = $"{owner.NameWithAlphabetIdentifier} smiles chadly, and punches {target.NameWithAlphabetIdentifier} in a cool way and dealt $ damage!"
 
                 })

@@ -211,11 +211,27 @@ public static class BasicFunctionality
     /// False if it does not proc
     ///</returns>
     ///<param name="number">Percentage chance</param>
-    public static bool RandomChance(int number)
+    public static bool RandomChance(double number)
     {
 
         if (number < 0) throw new Exception("Number must be between 0 or 100");
         Random random = new();
         return random.Next(0, 100) <= number;
+    }
+    ///<returns>True if the percentage chance procs.
+    /// False if it does not proc
+    ///</returns>
+    ///<param name="number">Percentage chance</param>
+    public static bool RandomChance(float number)
+    {
+        return RandomChance((double)number);
+    }
+    ///<returns>True if the percentage chance procs.
+    /// False if it does not proc
+    ///</returns>
+    ///<param name="number">Percentage chance</param>
+    public static bool RandomChance(int number)
+    {
+        return RandomChance((double)number);
     }
 }
