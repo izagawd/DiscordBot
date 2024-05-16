@@ -1281,6 +1281,7 @@ public abstract partial  class Character : BattleEntity, ISetup
     /// <returns>The results of the damage</returns>
     public  DamageResult Damage(DamageArgs damageArgs)
     {
+        if (IsDead) throw new Exception("Cannot damage dead character");
         CurrentBattle.InvokeBattleEvent(new CharacterPreDamageEventArgs(damageArgs));
         var didCrit = false;
         var defenseToIgnore = Math.Clamp(damageArgs.DefenseToIgnore,0,100);

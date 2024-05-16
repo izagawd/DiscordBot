@@ -19,12 +19,13 @@ public class Burn : StatusEffect, IDetonatable
     public override void PassTurn(Character affected)
     {
         base.PassTurn(affected);
-
+        
         DoDamage(affected);
     }
 
     private DamageResult? DoDamage(Character affected)
     {
+        if (affected.IsDead) return null;
         return affected.Damage(new DamageArgs(this)
         {
             DefenseToIgnore = 70,
