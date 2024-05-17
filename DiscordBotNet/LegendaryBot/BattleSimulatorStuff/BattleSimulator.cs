@@ -186,8 +186,14 @@ public class BattleSimulator
     }
 
     private static ConcurrentDictionary<Type, Dictionary<MethodInfo,BattleEventListenerMethodAttribute>> _methodsCache = [];
-
-    private IEnumerable<EntityAndOwnerPair<T>> GetStuff<T>()
+    
+    /// <summary>
+    /// Used to get entities connected to this battle simulator and it's owner
+    /// (eg for a blessing, the character who owns it)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    private IEnumerable<EntityAndOwnerPair<T>> GetConnectedEntities<T>()
     {
         if (this is T thisAsT) yield return new EntityAndOwnerPair<T>(thisAsT,null);
         foreach (var i in Characters)
@@ -228,9 +234,7 @@ public class BattleSimulator
     /// <returns></returns>
     private IEnumerable<BattleEventListenerMethodContainer> GetAllEventMethods()
     {
-        //.Where(k=> 
-          //  eventArgs.GetType().IsRelatedToType(k.Key.GetParameters()[0].ParameterType))
-        foreach (var i in GetStuff<IBattleEventListener>())
+        foreach (var i in GetConnectedEntities<IBattleEventListener>())
         {
             foreach (var j in 
                      _methodsCache[i.Entity.GetType()])
@@ -297,7 +301,14 @@ public class BattleSimulator
         }
     }
 
-    public IEnumerable<CharacterTeam> CharacterTeams => [Team1, Team2];
+    public IEnumerable<CharacterTeam> CharacterTeams
+    {
+        get
+        {
+            yield return Team1;
+            yield return Team2;
+        }
+    }
 
 
     private string? _mainText = "battle begins";

@@ -45,14 +45,10 @@ public abstract class Entity : ICloneable, IDatabaseModel, IImageHaver
             throw new Exception("Entity times a negative number or 0 doesn't make sense");
             
         }
-
-        List<Entity> clonedEntities = [];
-        foreach (var i in Enumerable.Range(0, number))
+        foreach (var _ in Enumerable.Range(0, number))
         {
-            clonedEntities.Add(a.Clone());
+            yield return a.Clone();
         }
-
-        return clonedEntities;
     }
     public UserData? UserData { get; set; }
 
@@ -61,5 +57,8 @@ public abstract class Entity : ICloneable, IDatabaseModel, IImageHaver
 
     public long Id { get;  set; } 
     public long UserDataId { get; set; }
-    public IEnumerable<string> ImageUrls => [ImageUrl];
+    public IEnumerable<string> ImageUrls
+    {
+        get { yield return ImageUrl; }
+    }
 }

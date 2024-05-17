@@ -91,10 +91,9 @@ public class Police : Character
         {
             if (BasicFunctionality.RandomChance(20))
             {
-                return [new EntityReward([new Police()])];
+                yield return new EntityReward([new Police()]);
             }
 
-            return [];
         }
     }
 

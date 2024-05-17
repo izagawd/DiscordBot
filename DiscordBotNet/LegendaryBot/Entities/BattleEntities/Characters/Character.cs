@@ -273,7 +273,16 @@ public abstract partial  class Character : BattleEntity, ISetup
 
     public Barrier? Shield => _statusEffects.OfType<Barrier>().FirstOrDefault();
 
-    [NotMapped] public IEnumerable<Move> MoveList => new Move[] { BasicAttack, Skill, Surge }.Where(i => i is not null);
+    [NotMapped]
+    public IEnumerable<Move> MoveList
+    {
+        get
+        {
+            yield return BasicAttack;
+            if (Skill is not null) yield return Skill;
+            if (Surge is not null) yield return Surge;
+        }
+    }
 
     /// <summary>
     /// 
@@ -1072,7 +1081,18 @@ public abstract partial  class Character : BattleEntity, ISetup
 
     [NotMapped] private readonly HashSet<StatusEffect> _statusEffects = [];
 
-    [NotMapped] public IEnumerable<StatusEffect> StatusEffects => _statusEffects;
+    [NotMapped]
+    public IEnumerable<StatusEffect> StatusEffects
+    {
+        get
+        {
+            foreach (var i in _statusEffects)
+            {
+                yield return i;
+            }
+        }
+    }
+
     [NotMapped] public virtual DiscordColor Color { get; protected set; } = DiscordColor.Green;
 
     [NotMapped]

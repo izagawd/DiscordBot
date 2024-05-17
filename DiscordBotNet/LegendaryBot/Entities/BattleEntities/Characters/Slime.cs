@@ -53,10 +53,8 @@ public class Slime : Character
     {
         get
         {
-            List<Reward> droppedRewards = [];
-            if(BasicFunctionality.RandomChance(10))
-                droppedRewards.Add(new EntityReward([new Slime()]));
-            return droppedRewards;
+            if (BasicFunctionality.RandomChance(10))
+                yield return new EntityReward([new Slime()]);
         }
     }
 

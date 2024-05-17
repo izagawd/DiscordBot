@@ -43,7 +43,7 @@ public class MuscleFlex : Surge
 
     public override IEnumerable<Character> GetPossibleTargets(Character owner)
     {
-        return new[] { owner };
+        yield return owner;
     }
 
     protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)

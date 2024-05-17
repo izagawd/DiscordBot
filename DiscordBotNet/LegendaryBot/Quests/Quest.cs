@@ -10,15 +10,15 @@ namespace DiscordBotNet.LegendaryBot.Quests;
 public abstract class Quest
 {
     private static List<Type> _questTypes = [];
-    public static IEnumerable<Type> QuestTypes => _questTypes.ToArray();
+    public static IEnumerable<Type> QuestTypes => _questTypes;
     [NotMapped]
     public abstract string Description { get; }
     [NotMapped]
     public virtual string Title => BasicFunctionality.Englishify(GetType().Name);
     
     public bool Completed { get; set; } = false;
-    public long Id { get; set; } 
-    public static IEnumerable<Quest> QuestSampleInstances => _exampleQuests.ToArray();
+    public long Id { get; set; }
+    public static IEnumerable<Quest> QuestSampleInstances => _exampleQuests;
     private static List<Quest> _exampleQuests;
     static Quest()
     {
