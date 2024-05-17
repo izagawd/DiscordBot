@@ -47,19 +47,6 @@ public static class Bot
 
 
 
-    private static int bruh;
-
-    class idkClass()
-    {
-        public void Die(int a)
-        {
-            bruh++;
-        }
-    }
-
-
-
-  
     private static async Task DoShitAsync()
     {
 
