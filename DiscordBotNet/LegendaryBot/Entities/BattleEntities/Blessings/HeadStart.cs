@@ -21,10 +21,9 @@ public class HeadStart : Blessing, IBattleEventListener
             $"Increases combat readiness of the owner at the beginning of the battle by {GetCombatReadinessIncreaseAmount(level)}%!";
     
     [BattleEventListenerMethod]
-    public  void OnStart(BattleEventArgs eventArgs, Character owner)
+    public  void OnStart(BattleBeginEventArgs eventArgs, Character owner)
     {
         if(owner.IsDead) return;
-        if(eventArgs is not BattleBeginEventArgs) return;
         owner.IncreaseCombatReadiness(GetCombatReadinessIncreaseAmount(Level));
     }
 }

@@ -19,14 +19,13 @@ public class DefenseDebuff: StatusEffect
     }
     public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
-        return
-        [
+        yield return
             new DefensePercentageModifierArgs
             {
                 CharacterToAffect = owner,
                 ValueToChangeWith = -50,
                 WorksAfterGearCalculation = true
-            }
-        ];
+            };
+
     }
 }

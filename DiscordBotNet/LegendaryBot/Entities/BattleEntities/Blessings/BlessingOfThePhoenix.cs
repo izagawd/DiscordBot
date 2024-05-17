@@ -19,10 +19,10 @@ public class BlessingOfThePhoenix : Blessing, IBattleEventListener
         return 5;
     }
     [BattleEventListenerMethod]
-    public  void HealOnTurnStart(BattleEventArgs eventArgs, Character owner)
+    public  void HealOnDamage(CharacterPostDamageEventArgs eventArgs, Character owner)
     {
-        if(eventArgs is not CharacterPostDamageEventArgs characterDamageEventArgs) return;
-        if (characterDamageEventArgs.DamageResult.DamageReceiver != owner) return;
+
+        if (eventArgs.DamageResult.DamageReceiver != owner) return;
 
          owner.RecoverHealth((GetHealthPercentRecovering(Level) *  0.01 * owner.MaxHealth).Round(),$"{owner.NameWithAlphabetIdentifier} recovered $ health via the blessing of the phoenix");
   

@@ -36,6 +36,6 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp,IStatsModifier
 
     public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
-        return [];
+        yield break;
     }
 }

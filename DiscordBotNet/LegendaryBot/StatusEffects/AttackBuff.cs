@@ -24,14 +24,11 @@ public class AttackBuff : StatusEffect
 
     public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
-        return new StatsModifierArgs[]
-        {
-            new AttackPercentageModifierArgs
+        yield return new AttackPercentageModifierArgs
             {
                 CharacterToAffect = owner,
                 ValueToChangeWith = 50,
                 WorksAfterGearCalculation = true
-            }
-        };
+            };
     }
 }

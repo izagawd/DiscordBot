@@ -6,6 +6,7 @@ using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
+using DiscordBotNet.LegendaryBot.Entities.BattleEntities;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Moves;
@@ -254,7 +255,7 @@ public class BattleSimulator
             return;
         }
         foreach (var i in GetAllEventMethods()
-                     .Where(k=> eventArgs.GetType().IsRelatedToType(k.MethodInfo.GetParameters()[0].ParameterType))
+                     .Where(k => eventArgs.GetType().IsRelatedToType(k.MethodInfo.GetParameters()[0].ParameterType))
                      .OrderByDescending(j => j.Attribute.Priority))
         {
             i.MethodInfo.Invoke(i.Entity, [eventArgs, i.Owner]);
@@ -264,27 +265,36 @@ public class BattleSimulator
 
     public  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
-        var stop = new Stopwatch(); stop.Start();
-        List<StatsModifierArgs> statsModifierArgsList = [];
+        
         foreach (var i in Characters)
         {
-            statsModifierArgsList.AddRange(i.GetAllStatsModifierArgs(i));
+            foreach (var j in i.GetAllStatsModifierArgs(i))
+            {
+                yield return j;
+            }
             foreach (var j in i.MoveList)
             {
-                statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
+                foreach (var k in j.GetAllStatsModifierArgs(i))
+                {
+                    yield return k;
+                }
             }
             if (i.Blessing is not null)
             {
-                statsModifierArgsList.AddRange(i.Blessing.GetAllStatsModifierArgs(i));
+                foreach (var j in i.Blessing.GetAllStatsModifierArgs(i))
+                {
+                    yield return j;
+                }
+            
             }
             foreach (var j in i.StatusEffects)
             {
-                statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
+                foreach (var k in j.GetAllStatsModifierArgs(i))
+                {
+                    yield return k;
+                }
             }
         }
-        stop.Stop();
-        stop.Elapsed.TotalMilliseconds.Print();
-        return statsModifierArgsList;
     }
 
     public IEnumerable<CharacterTeam> CharacterTeams => [Team1, Team2];

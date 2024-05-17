@@ -110,7 +110,7 @@ public abstract class Move : IStatsModifier
 
     public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
-        return [];
+        yield break;
     }
 
     public virtual string Name => BasicFunctionality.Englishify(GetType().Name);

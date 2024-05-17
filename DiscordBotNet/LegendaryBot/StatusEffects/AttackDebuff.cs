@@ -21,16 +21,13 @@ public class AttackDebuff : StatusEffect
 
  
 
-    public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner) 
+    public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
-        return new StatsModifierArgs[]
+        yield return new AttackPercentageModifierArgs()
         {
-            new AttackPercentageModifierArgs()
-            {
-                CharacterToAffect = owner,
-                ValueToChangeWith = -50,
-                WorksAfterGearCalculation = true
-            }
+            CharacterToAffect = owner,
+            ValueToChangeWith = -50,
+            WorksAfterGearCalculation = true
         };
     }
 

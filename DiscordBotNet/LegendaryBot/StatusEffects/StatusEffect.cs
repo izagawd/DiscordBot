@@ -155,7 +155,7 @@ public abstract class StatusEffect : ICloneable ,  IStatsModifier
 
     public virtual  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {
-        return [];
+        yield break;
     }
 
  
