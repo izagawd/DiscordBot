@@ -7,7 +7,7 @@ using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities;
 
-public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListener, IStatsModifier
+public abstract class BattleEntity : Entity, ICanBeLeveledUp,IStatsModifier
 {
     
     public virtual int Level { get; protected set; } = 1;
@@ -32,10 +32,7 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp, IBattleEventListen
         protected set;
     }
 
-    public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
-    {
-       
-    }
+
 
     public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
     {

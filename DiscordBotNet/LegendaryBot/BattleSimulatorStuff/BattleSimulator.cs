@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents;
@@ -30,7 +32,7 @@ public enum BattleDecision
 }
 
 
-public class BattleSimulator : IBattleEventListener
+public class BattleSimulator
 {
 
 
@@ -157,7 +159,87 @@ public class BattleSimulator : IBattleEventListener
         return image;
     }
 
+    struct EntityAndOwnerPair<T>
+    {
+        public T Entity { get; }
+        public Character Owner { get; }
+
+        public EntityAndOwnerPair(T entity, Character owner)
+        {
+            Entity = entity;
+            Owner = owner;
+        }
+    }
+   
+
+    static BattleSimulator()
+    {
+        foreach (var i in Assembly.GetExecutingAssembly().GetTypes().Where(j => !j.IsAbstract && j.GetInterfaces().Contains(typeof(IBattleEventListener))))
+        {
+            _methodsCache[i] = i.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                .Where(j => j.GetCustomAttribute<BattleEventListenerMethodAttribute>() is not null)
+                .ToDictionary(j => j, j => j.GetCustomAttribute<BattleEventListenerMethodAttribute>())!;
+            
+            
+        }
+    }
+
+    private static ConcurrentDictionary<Type, Dictionary<MethodInfo,BattleEventListenerMethodAttribute>> _methodsCache = [];
+
+    private IEnumerable<EntityAndOwnerPair<T>> GetStuff<T>()
+    {
+        if (this is T thisAsT) yield return new EntityAndOwnerPair<T>(thisAsT,null);
+        foreach (var i in Characters)
+        {
+            if (i is T characterAsT) yield return new EntityAndOwnerPair<T>(characterAsT,i);
+            foreach (var j in i.MoveList.OfType<T>())
+            {
+                yield return new EntityAndOwnerPair<T>(j,i);
+            }
+
+            foreach (var j in i.StatusEffects.OfType<T>())
+            {
+                yield return new EntityAndOwnerPair<T>(j,i);
+            }
+            if (i.Blessing is T blessingAsT) yield  return new EntityAndOwnerPair<T>(blessingAsT,i);
+        }
+    }
+    struct BattleEventListenerMethodContainer
+    {
+        public IBattleEventListener Entity { get; }
+        public Character Owner { get; }
+        public MethodInfo MethodInfo { get; }
+
+        public BattleEventListenerMethodAttribute Attribute { get;}
+        public BattleEventListenerMethodContainer(IBattleEventListener entity, Character owner, MethodInfo methodInfo,
+            BattleEventListenerMethodAttribute attribute)
+        {
+            Entity = entity;
+            Owner = owner;
+            MethodInfo = methodInfo;
+            Attribute = attribute;
+        }
+        
+    }
     /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerable<BattleEventListenerMethodContainer> GetAllEventMethods()
+    {
+        //.Where(k=> 
+          //  eventArgs.GetType().IsRelatedToType(k.Key.GetParameters()[0].ParameterType))
+        foreach (var i in GetStuff<IBattleEventListener>())
+        {
+            foreach (var j in 
+                     _methodsCache[i.Entity.GetType()])
+            {
+                yield return new BattleEventListenerMethodContainer(i.Entity, i.Owner,
+                    j.Key, j.Value);
+            }
+        }
+    }
+  /// <summary>
     /// 
     /// This will be used to invoke an event if it happens
     /// 
@@ -171,25 +253,18 @@ public class BattleSimulator : IBattleEventListener
             _queuedBattleEvents.Add(eventArgs);
             return;
         }
-        OnBattleEvent(eventArgs,null!);
-        foreach (var i in Characters)
+        foreach (var i in GetAllEventMethods()
+                     .Where(k=> eventArgs.GetType().IsRelatedToType(k.MethodInfo.GetParameters()[0].ParameterType))
+                     .OrderByDescending(j => j.Attribute.Priority))
         {
-            i.OnBattleEvent(eventArgs,i);
-            foreach (var j in i.MoveList)
-            {
-                j.OnBattleEvent(eventArgs,i);
-            }
-            foreach (var j in i.StatusEffectsCopy)
-            {
-                j.OnBattleEvent(eventArgs,i);
-            }
-            i.Blessing?.OnBattleEvent(eventArgs,i);
+            i.MethodInfo.Invoke(i.Entity, [eventArgs, i.Owner]);
         }
     }
 
 
     public  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
+        var stop = new Stopwatch(); stop.Start();
         List<StatsModifierArgs> statsModifierArgsList = [];
         foreach (var i in Characters)
         {
@@ -202,11 +277,13 @@ public class BattleSimulator : IBattleEventListener
             {
                 statsModifierArgsList.AddRange(i.Blessing.GetAllStatsModifierArgs(i));
             }
-            foreach (var j in i.StatusEffectsCopy)
+            foreach (var j in i.StatusEffects)
             {
                 statsModifierArgsList.AddRange(j.GetAllStatsModifierArgs(i));
             }
         }
+        stop.Stop();
+        stop.Elapsed.TotalMilliseconds.Print();
         return statsModifierArgsList;
     }
 
@@ -331,8 +408,8 @@ public class BattleSimulator : IBattleEventListener
 
             }
 
-            var statusEffectsCopy = characterToDisplayBattleInfo.StatusEffectsCopy;
-            if (characterToDisplayBattleInfo.StatusEffectsCopy.Any())
+            var statusEffectsCopy = characterToDisplayBattleInfo.StatusEffects;
+            if (characterToDisplayBattleInfo.StatusEffects.Any())
             {
                 descriptionStringBuilder.Append("Status Effects\n\n");
 
@@ -540,6 +617,7 @@ public class BattleSimulator : IBattleEventListener
          return (Alphabet)Characters.ToList().IndexOf(character);
     }
 
+ 
     private CancellationTokenSource CancellationTokenSource;
     protected async Task<BattleResult> StartAsync(
         DiscordMessage? messageInput = null, DiscordInteraction? interaction = null,
@@ -609,7 +687,7 @@ public class BattleSimulator : IBattleEventListener
             ActiveCharacter.CombatReadiness = 0;
             using (PauseBattleEventScope)
             {
-                foreach (var i in ActiveCharacter.StatusEffectsCopy)
+                foreach (var i in ActiveCharacter.StatusEffects)
                 {
 
                     //this code executes for status effects that occur just before the beginning of the turn
@@ -728,7 +806,7 @@ public class BattleSimulator : IBattleEventListener
             var battleDecision =BattleDecision.Other;
  
             StatusEffect? mostPowerfulStatusEffect = null;
-            var copy = ActiveCharacter.StatusEffectsCopy;
+            var copy = ActiveCharacter.StatusEffects;
             if (copy.Any())
                 mostPowerfulStatusEffect = copy.OrderByDescending(i => i.OverrideTurnType).First();
         
@@ -902,7 +980,7 @@ public class BattleSimulator : IBattleEventListener
 
             using (PauseBattleEventScope)
             {
-                foreach (var i in ActiveCharacter.StatusEffectsCopy)
+                foreach (var i in ActiveCharacter.StatusEffects)
                 {
 
                     if (i.ExecuteStatusEffectAfterTurn)
@@ -945,8 +1023,5 @@ public class BattleSimulator : IBattleEventListener
         };
     }
 
-    public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
-    {
-        
-    }
+
 }

@@ -1,10 +1,11 @@
 ﻿using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.Results;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class Sleep: StatusEffect
+public class Sleep: StatusEffect, IBattleEventListener
 {
     public override string Description =>
         "Makes affected not able to move. Is dispelled when affected takes damage from a move";
@@ -17,7 +18,8 @@ public class Sleep: StatusEffect
     public override OverrideTurnType OverrideTurnType => OverrideTurnType.CannotMove;
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
 
-    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    [BattleEventListenerMethod]
+    public void OnTurnStart(BattleEventArgs eventArgs, Character owner)
     {
         if(eventArgs is not CharacterPostDamageEventArgs damageEventArgs) return;
         if(damageEventArgs.DamageResult.DamageReceiver != owner) return;

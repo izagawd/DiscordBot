@@ -1,5 +1,6 @@
 ﻿using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 using DiscordBotNet.LegendaryBot.Results;
@@ -9,7 +10,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Moves;
 
-public abstract class Move : IBattleEventListener, IStatsModifier
+public abstract class Move : IStatsModifier
 {
     /// <summary>
     /// The maximum amount this move can be enhanced to
@@ -114,8 +115,5 @@ public abstract class Move : IBattleEventListener, IStatsModifier
 
     public virtual string Name => BasicFunctionality.Englishify(GetType().Name);
 
-    public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
-    {
-        
-    }
+
 }

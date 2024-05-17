@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations.Schema;
 using DSharpPlus.Entities;
 using System.Diagnostics;
 using System.Reflection;
@@ -46,10 +49,37 @@ public static class Bot
     }
 
 
-
+    [SlashCommand("d","D")]
     private static async Task DoShitAsync()
     {
+        Hashtable idk;
+        
+        
+        ConcurrentDictionary<MethodInfo,SlashCommandAttribute > dic = new ConcurrentDictionary<MethodInfo, SlashCommandAttribute>( typeof(Character).GetMethods().ToDictionary(i => i,
+            i => i.GetCustomAttribute<SlashCommandAttribute>()).Take(10));
+  
+        var meth = typeof(Bot)
+            .GetMethod("DoShitAsync", BindingFlags.NonPublic | BindingFlags.Static);
+        var stop = new Stopwatch(); stop.Start(); stop.Stop();
+        meth.GetCustomAttribute<SlashCommandAttribute>();
+        meth.GetCustomAttribute<SlashCommandAttribute>();
+        meth.GetCustomAttribute<SlashCommandAttribute>();
 
+        foreach (var i in  new int []{2,34,5} )
+        {
+            await Task.Delay(100);
+            stop = new Stopwatch(); stop.Start(); 
+            meth.GetCustomAttribute<SlashCommandAttribute>();
+            stop.Stop();
+            stop.Elapsed.TotalMicroseconds.Print();
+            await Task.Delay(100);
+
+            stop = new Stopwatch(); stop.Start(); 
+            meth.GetCustomAttribute<SlashCommandAttribute>();
+            stop.Stop();
+            stop.Elapsed.TotalMicroseconds.Print();
+            await Task.Delay(100);
+        }
 
     }
     private static async Task Main(string[] args)

@@ -102,11 +102,7 @@ public class Police : Character
     public override BasicAttack BasicAttack => new DoNotResist();
     public override Skill? Skill => new IAmShooting();
 
-    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
-    {
-        base.OnBattleEvent(eventArgs, owner);
 
-    }
 
     public override Surge? Surge { get; }
 }

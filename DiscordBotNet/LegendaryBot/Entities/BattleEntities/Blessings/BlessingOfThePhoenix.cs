@@ -1,10 +1,11 @@
 ﻿using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 
-public class BlessingOfThePhoenix : Blessing
+public class BlessingOfThePhoenix : Blessing, IBattleEventListener
 {
     public override Rarity Rarity { get; protected set; } = Rarity.FiveStar;
 
@@ -17,8 +18,8 @@ public class BlessingOfThePhoenix : Blessing
         if (level >= 3) return 6;
         return 5;
     }
-
-    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    [BattleEventListenerMethod]
+    public  void HealOnTurnStart(BattleEventArgs eventArgs, Character owner)
     {
         if(eventArgs is not CharacterPostDamageEventArgs characterDamageEventArgs) return;
         if (characterDamageEventArgs.DamageResult.DamageReceiver != owner) return;

@@ -10,7 +10,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public abstract class StatusEffect : ICloneable , IBattleEventListener, IStatsModifier
+public abstract class StatusEffect : ICloneable ,  IStatsModifier
 {
     public virtual string Description => "Does the bla bla bla of the bla bla bla";
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/status_effects/{GetType().Name}.png";
@@ -158,10 +158,7 @@ public abstract class StatusEffect : ICloneable , IBattleEventListener, IStatsMo
         return [];
     }
 
-    public virtual void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
-    {
-    
-    }
+ 
 
     object ICloneable.Clone()
     {

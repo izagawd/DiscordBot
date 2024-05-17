@@ -1,5 +1,6 @@
 ﻿using DiscordBotNet.Extensions;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.Moves;
 using DiscordBotNet.LegendaryBot.Results;
 using DSharpPlus.Entities;
@@ -87,7 +88,7 @@ public class ThumbsUp : Skill
 
     public override int MaxCooldown => 1;
 }
-public class CoachChad : Character
+public class CoachChad : Character, IBattleEventListener
 {
     public override float GetResistanceValue(int points)
     {
@@ -122,27 +123,20 @@ public class CoachChad : Character
 
     }
 
-    private void HandleRevive(BattleEventArgs eventArgs, Character owner)
+    [BattleEventListenerMethod]
+    private void HandleRevive(CharacterDeathEventArgs deathEventArgs, Character owner)
     {
-        if (eventArgs is not CharacterDeathEventArgs deathEventArgs) return;
+        
         if (deathEventArgs.Killed != this) return;
         Revive();
         
     }
-
-    private void HandleTurnEnd(BattleEventArgs eventArgs, Character owner)
+    [BattleEventListenerMethod]
+    private void HandleTurnEnd(TurnEndEventArgs turnEnd, Character owner)
     {
-        if (eventArgs is not TurnEndEventArgs turnEndEvent) return;
-    
-        if (turnEndEvent.Character != owner) return;
-        RecoverHealth(MaxHealth);
+        if (turnEnd.Character != owner) return;
+        RecoverHealth(100);
 
-    }
-    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
-    {
-        base.OnBattleEvent(eventArgs,owner);
-        HandleRevive(eventArgs,owner);
-        HandleTurnEnd(eventArgs,owner);
     }
 
 

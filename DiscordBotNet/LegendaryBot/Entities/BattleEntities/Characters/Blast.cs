@@ -33,7 +33,7 @@ public class MethaneSlap : BasicAttack
         };
         if (BasicFunctionality.RandomChance(DetonateChance))
         {
-            foreach (var i in target.StatusEffectsCopy.OfType<Bomb>())
+            foreach (var i in target.StatusEffects.OfType<Bomb>())
                 i.Detonate(target,owner);
         }
         return result;

@@ -1,9 +1,10 @@
 ﻿using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
+using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
 
 namespace DiscordBotNet.LegendaryBot.Entities.BattleEntities.Blessings;
 
-public class HeadStart : Blessing
+public class HeadStart : Blessing, IBattleEventListener
 {
     public override Rarity Rarity => Rarity.FiveStar;
 
@@ -19,10 +20,9 @@ public class HeadStart : Blessing
     public override string GetDescription(int level)=> 
             $"Increases combat readiness of the owner at the beginning of the battle by {GetCombatReadinessIncreaseAmount(level)}%!";
     
-
-    public override void OnBattleEvent(BattleEventArgs eventArgs, Character owner)
+    [BattleEventListenerMethod]
+    public  void OnStart(BattleEventArgs eventArgs, Character owner)
     {
-        base.OnBattleEvent(eventArgs, owner);
         if(owner.IsDead) return;
         if(eventArgs is not BattleBeginEventArgs) return;
         owner.IncreaseCombatReadiness(GetCombatReadinessIncreaseAmount(Level));
