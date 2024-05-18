@@ -302,8 +302,7 @@ public class BattleSimulator
 
     public  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
-        var stop = new Stopwatch(); stop.Start();
-        ;
+      
         foreach (var i in GetConnectedEntities<IStatsModifier>())
         {
             foreach (var j in i.GetAllStatsModifierArgs())
@@ -311,9 +310,6 @@ public class BattleSimulator
                 yield return j;
             }
         }
-        stop.Stop();
-        ;
-        stop.Elapsed.TotalMicroseconds.Print();
 
     }
 
