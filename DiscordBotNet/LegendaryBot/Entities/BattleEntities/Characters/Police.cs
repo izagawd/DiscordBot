@@ -15,20 +15,20 @@ public class DoNotResist : BasicAttack
         return "Tases the enemy, with a 15% chance to stun for one turn";
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         var damageResult= target.Damage(new DamageArgs(this)
         {
-            ElementToDamageWith = owner.Element,
-            CriticalChance = owner.CriticalChance,
-            CriticalDamage = owner.CriticalDamage,
-            Damage = owner.Attack * 1.7f,
-            Caster = owner,
-            DamageText = $"{owner.NameWithAlphabetIdentifier} tases {target.NameWithAlphabetIdentifier} and dealt $ damage! it was shocking"
+            ElementToDamageWith = User.Element,
+            CriticalChance = User.CriticalChance,
+            CriticalDamage = User.CriticalDamage,
+            Damage = User.Attack * 1.7f,
+            Caster = User,
+            DamageText = $"{User.NameWithAlphabetIdentifier} tases {target.NameWithAlphabetIdentifier} and dealt $ damage! it was shocking"
         });
         if (BasicFunctionality.RandomChance(15))
         {
-            target.AddStatusEffect(new Stun(owner){Duration = 1}, owner.Effectiveness);
+            target.AddStatusEffect(new Stun(User){Duration = 1}, User.Effectiveness);
         }
 
         return new UsageResult(this)
@@ -37,7 +37,7 @@ public class DoNotResist : BasicAttack
             Text = "DO NOT RESIST!",
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
-            User = owner,
+            User = User,
 
         };
     }
@@ -49,31 +49,31 @@ public class IAmShooting : Skill
     {
         return "Shoots the enemy twice, causing two bleed effects for two turns";
     }
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team && !i.IsDead);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            ElementToDamageWith = owner.Element,
-            CriticalChance = owner.CriticalChance,
-            CriticalDamage = owner.CriticalDamage,
-            Caster = owner,
-            Damage = owner.Attack * 2,
-            DamageText = $"{owner.NameWithAlphabetIdentifier} shoots at {target.NameWithAlphabetIdentifier} for resisting arrest, dealing $ damage"
+            ElementToDamageWith = User.Element,
+            CriticalChance = User.CriticalChance,
+            CriticalDamage = User.CriticalDamage,
+            Caster = User,
+            Damage = User.Attack * 2,
+            DamageText = $"{User.NameWithAlphabetIdentifier} shoots at {target.NameWithAlphabetIdentifier} for resisting arrest, dealing $ damage"
         });
         foreach (var _ in Enumerable.Range(0,2))
         {
-            target.AddStatusEffect(new Bleed(owner), owner.Effectiveness);
+            target.AddStatusEffect(new Bleed(User), User.Effectiveness);
         }
         return new UsageResult(this)
         {
             DamageResults = [damageResult],
             Text = "I warned you!",
-            User = owner,
+            User = User,
             TargetType = TargetType.SingleTarget,
             UsageType = usageType,
         };

@@ -15,29 +15,27 @@ public class Bomb : StatusEffect, IDetonatable
         Attack = caster.Attack;
     }
 
-    public override void PassTurn(Character affected)
+    public override void PassTurn()
     {
-        base.PassTurn(affected);
+        base.PassTurn();
         if (Duration == 0)
         {
-            Detonate(affected, Caster);
+            Detonate(Caster);
         }
-
-        
     }
 
-    public DamageResult? Detonate(Character affected, Character detonator)
+    public DamageResult? Detonate( Character detonator)
     {
-        affected.RemoveStatusEffect(this);
-        affected.AddStatusEffect(new Stun(detonator));
-        return affected.Damage(        new DamageArgs(this)
+        Affected.RemoveStatusEffect(this);
+        Affected.AddStatusEffect(new Stun(detonator));
+        return Affected.Damage(        new DamageArgs(this)
         {
             ElementToDamageWith = null,
 
             Damage = Attack * 3,
             Caster = Caster,
             CanCrit = false,
-            DamageText = $"Bomb detonated on {affected} and dealt $ damage!"
+            DamageText = $"Bomb detonated on {Affected} and dealt $ damage!"
         });
    
     }

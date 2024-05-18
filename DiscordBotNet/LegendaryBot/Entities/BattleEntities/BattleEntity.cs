@@ -34,7 +34,7 @@ public abstract class BattleEntity : Entity, ICanBeLeveledUp,IStatsModifier
 
 
 
-    public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
     {
         yield break;
     }

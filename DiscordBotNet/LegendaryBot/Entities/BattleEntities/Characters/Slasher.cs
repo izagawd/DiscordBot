@@ -11,23 +11,23 @@ public class WindSlash : Skill
     public override string GetDescription(Character character) => "Attacks all enemies with a sharp wind";
     
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         List<DamageResult> damageResults = [];
-        foreach (var i in GetPossibleTargets(owner))
+        foreach (var i in GetPossibleTargets())
         {
             var damageResult = i.Damage(new DamageArgs(this)
             {
-                ElementToDamageWith = owner.Element,
-                CriticalChance = owner.CriticalChance,
-                CriticalDamage = owner.CriticalDamage,
-                Caster = owner,
-                Damage = owner.Attack * 1.7f, 
+                ElementToDamageWith = User.Element,
+                CriticalChance = User.CriticalChance,
+                CriticalDamage = User.CriticalDamage,
+                Caster = User,
+                Damage = User.Attack * 1.7f, 
                 DamageText = $"The slash dealt $ damage to {i}!"
             });
             if(damageResult is not null)
@@ -38,7 +38,7 @@ public class WindSlash : Skill
         {
             DamageResults = damageResults,
             TargetType = TargetType.AOE,
-            User = owner,
+            User = User,
             Text = "Wind Slash!",
             UsageType = usageType
 
@@ -54,27 +54,27 @@ public class SimpleSlashOfPrecision : BasicAttack
     public override string GetDescription(Character character) =>$"Does a simple slash. Always lands a critical hit, with a {BleedChance}% chance to cause bleed for 2 turns";
     
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            ElementToDamageWith = owner.Element,
-            CriticalChance = owner.CriticalChance,
-            CriticalDamage = owner.CriticalDamage,
-            Caster = owner,
-            Damage = owner.Attack * 1.7f,
+            ElementToDamageWith = User.Element,
+            CriticalChance = User.CriticalChance,
+            CriticalDamage = User.CriticalDamage,
+            Caster = User,
+            Damage = User.Attack * 1.7f,
             AlwaysCrits = true
         });
         if (BasicFunctionality.RandomChance(BleedChance))
         {
-            target.AddStatusEffect(new Bleed(owner));
+            target.AddStatusEffect(new Bleed(User));
         }
         return new UsageResult(this)
         {
             DamageResults = [damageResult],
             TargetType = TargetType.SingleTarget,
-            Text = $"{owner.NameWithAlphabetIdentifier} does a simple slash to {target.NameWithAlphabetIdentifier}!",
-            User = owner,
+            Text = $"{User.NameWithAlphabetIdentifier} does a simple slash to {target.NameWithAlphabetIdentifier}!",
+            User = User,
             UsageType = usageType
         };
     }
@@ -85,21 +85,21 @@ public class ConsecutiveSlashesOfPrecision : Surge
     public override string GetDescription(Character character)
         =>"Slashes the enemy many times, dealing crazy damage. This attack will always deal a critical hit";
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team && !i.IsDead);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         var damageResult =target.Damage(new DamageArgs(this)
         {
-            ElementToDamageWith = owner.Element,
-            CriticalChance = owner.CriticalChance,
-            CriticalDamage = owner.CriticalDamage,
+            ElementToDamageWith = User.Element,
+            CriticalChance = User.CriticalChance,
+            CriticalDamage = User.CriticalDamage,
             CanCrit = true,
-            Caster = owner,
-            Damage = owner.Attack * 1.7f *2,
+            Caster = User,
+            Damage = User.Attack * 1.7f *2,
             AlwaysCrits = true,
             DamageText = $"The slash was so precise it dealt $ damage to {target.NameWithAlphabetIdentifier}!",
      
@@ -110,7 +110,7 @@ public class ConsecutiveSlashesOfPrecision : Surge
             DamageResults =  [damageResult],
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
-            User = owner
+            User = User
         };
     }
 

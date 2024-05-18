@@ -15,29 +15,29 @@ public class Poison : StatusEffect, IDetonatable
     }
 
 
-    public override void PassTurn(Character affected)
+    public override void PassTurn()
     {
-        base.PassTurn(affected);
+        base.PassTurn();
 
-        DoDamage(affected);
+        DoDamage();
 
     }
 
-    private DamageResult? DoDamage(Character affected)
+    private DamageResult? DoDamage()
     {
-        return affected.FixedDamage(new DamageArgs(this)
+        return Affected.FixedDamage(new DamageArgs(this)
         {
             ElementToDamageWith = null,
-            Damage = affected.MaxHealth * 0.05f,
+            Damage = Affected.MaxHealth * 0.05f,
             Caster = Caster,
             CanCrit = false,
-            DamageText =$"{affected} took $ damage from being poisoned!"
+            DamageText =$"{Affected} took $ damage from being poisoned!"
         });
     }
-    public DamageResult? Detonate(Character affected, Character detonator)
+    public DamageResult? Detonate( Character detonator)
     {
-        var removed = affected.RemoveStatusEffect(this);
-        if (removed) return DoDamage(affected);
+        var removed = Affected.RemoveStatusEffect(this);
+        if (removed) return DoDamage();
         return null;
     }
 }

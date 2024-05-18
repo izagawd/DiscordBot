@@ -9,15 +9,15 @@ public abstract class BasicAttack : Move
 
 
 
-
-    public sealed override IEnumerable<Character> GetPossibleTargets(Character owner)
+    
+    public sealed override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team && !i.IsDead);
     }
 
-    public sealed override UsageResult Utilize(Character owner, Character target, UsageType usageType)
+    public sealed override UsageResult Utilize(Character target, UsageType usageType)
     {
-        return base.Utilize(owner, target, usageType);
+        return base.Utilize(target, usageType);
     }
 
 

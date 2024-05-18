@@ -16,31 +16,31 @@ public class Burn : StatusEffect, IDetonatable
     }
 
 
-    public override void PassTurn(Character affected)
+    public override void PassTurn()
     {
-        base.PassTurn(affected);
+        base.PassTurn();
         
-        DoDamage(affected);
+        DoDamage();
     }
 
-    private DamageResult? DoDamage(Character affected)
+    private DamageResult? DoDamage()
     {
-        if (affected.IsDead) return null;
-        return affected.Damage(new DamageArgs(this)
+        if (Affected.IsDead) return null;
+        return Affected.Damage(new DamageArgs(this)
         {
             DefenseToIgnore = 70,
             ElementToDamageWith = null,
             Damage = _characterAttack * 0.6f,
             Caster = Caster,
             CanCrit = false,
-            DamageText =$"{affected} took $ damage from burn!"
+            DamageText = $"{Affected} took $ damage from burn!"
         });
         
     }
 
-    public DamageResult? Detonate(Character affected, Character detonator)
+    public DamageResult? Detonate( Character detonator)
     { 
-        affected.RemoveStatusEffect(this);
-        return DoDamage(affected);
+        Affected.RemoveStatusEffect(this);
+        return DoDamage();
     }
 }

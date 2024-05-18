@@ -19,9 +19,9 @@ public abstract class Special : Move
     public bool IsOnCooldown => Cooldown > 0;
 
 
-    public sealed override bool CanBeUsed(Character owner)
+    public sealed override bool CanBeUsed()
     {
-        return base.CanBeUsed(owner) && !IsOnCooldown;
+        return base.CanBeUsed() && !IsOnCooldown;
     }
 
     public override string ToString()
@@ -31,7 +31,7 @@ public abstract class Special : Move
         return base.ToString();
     }
 
-    public sealed override UsageResult Utilize(Character owner, Character target, UsageType usageType)
+    public sealed override UsageResult Utilize(Character target, UsageType usageType)
     {
         if (usageType == UsageType.NormalUsage)
         {
@@ -40,6 +40,6 @@ public abstract class Special : Move
 
         }
         
-        return base.Utilize(owner, target, usageType);
+        return base.Utilize(target, usageType);
     }
 }

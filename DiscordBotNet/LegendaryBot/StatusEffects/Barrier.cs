@@ -13,9 +13,9 @@ public class Barrier : StatusEffect
     /// </summary>
     /// <param name="owner"></param>
     /// <returns></returns>
-    public int GetShieldValue(Character owner)
+    public int GetShieldValue(Character User)
     {
-        var maxHealth = owner.MaxHealth;
+        var maxHealth = User.MaxHealth;
         if (_shieldValue <= maxHealth)
         {
             return _shieldValue;
@@ -25,12 +25,12 @@ public class Barrier : StatusEffect
         return maxHealth;
     }
 
-    public void SetShieldValue(Character owner, int value)
+    public void SetShieldValue(int value)
     {
         if (value <= 0)
         {
             value = 0;
-            owner.RemoveStatusEffect(this);
+            Affected.RemoveStatusEffect(this);
         }
         _shieldValue = value;
         

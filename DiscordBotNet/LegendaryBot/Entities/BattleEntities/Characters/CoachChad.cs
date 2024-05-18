@@ -10,7 +10,7 @@ public class GigaPunch : BasicAttack
 {
     public override string GetDescription(Character character) => "Punch is thrown gigaly";
     
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         return new UsageResult(this)
         {
@@ -18,17 +18,17 @@ public class GigaPunch : BasicAttack
             [
             target.Damage(new DamageArgs(this)
                 {
-                    ElementToDamageWith = owner.Element,
-                    CriticalDamage = owner.CriticalDamage,
-                    CriticalChance = owner.CriticalChance,
-                    Caster = owner,
-                    Damage = owner.Attack * 1.7f,
-                    DamageText = $"{owner.NameWithAlphabetIdentifier} smiles chadly, and punches {target.NameWithAlphabetIdentifier} in a cool way and dealt $ damage!"
+                    ElementToDamageWith = User.Element,
+                    CriticalDamage = User.CriticalDamage,
+                    CriticalChance = User.CriticalChance,
+                    Caster = User,
+                    Damage = User.Attack * 1.7f,
+                    DamageText = $"{User.NameWithAlphabetIdentifier} smiles chadly, and punches {target.NameWithAlphabetIdentifier} in a cool way and dealt $ damage!"
 
                 })
             ],
             TargetType = TargetType.SingleTarget,
-            User = owner,
+            User = User,
             UsageType = usageType,
             Text = "Hrrah!"
         };
@@ -41,19 +41,19 @@ public class MuscleFlex : Surge
     public override string GetDescription(Character character) => "Flexes muscles";
     
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        yield return owner;
+        yield return User;
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier}... flexed his muscles?");
+        User.CurrentBattle.AddAdditionalBattleText($"{User.NameWithAlphabetIdentifier}... flexed his muscles?");
         return new UsageResult(this)
         {
             Text = $"Hmph!",
             TargetType = TargetType.None,
-            User = owner,
+            User = User,
             UsageType = usageType
         };
     
@@ -68,20 +68,20 @@ public class ThumbsUp : Skill
     public override string GetDescription(Character character) => "Gives the enemy a thumbs up!";
     
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team&& !i.IsDead);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} is cheering {target.NameWithAlphabetIdentifier} on!");
+        User.CurrentBattle.AddAdditionalBattleText($"{User.NameWithAlphabetIdentifier} is cheering {target.NameWithAlphabetIdentifier} on!");
         return new UsageResult(this)
         {
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
-            Text = $"{owner.NameWithAlphabetIdentifier} gave {target.NameWithAlphabetIdentifier} a thumbs up!",
-            User = owner
+            Text = $"{User.NameWithAlphabetIdentifier} gave {target.NameWithAlphabetIdentifier} a thumbs up!",
+            User = User
         };
 
     }
@@ -113,18 +113,18 @@ public class CoachChad : Character, IBattleEventListener
         List<BattleDecision> possibleDecisions = [BattleDecision.BasicAttack];
         
         
-        if(Skill.CanBeUsed(this))
+        if(Skill.CanBeUsed())
             possibleDecisions.Add(BattleDecision.Skill);
-        if(Surge.CanBeUsed(this))
+        if(Surge.CanBeUsed())
             possibleDecisions.Add(BattleDecision.Surge);
         decision = BasicFunctionality.RandomChoice(possibleDecisions.AsEnumerable());
-        target = BasicFunctionality.RandomChoice(BasicAttack.GetPossibleTargets(this));
+        target = BasicFunctionality.RandomChoice(BasicAttack.GetPossibleTargets());
 
 
     }
 
     [BattleEventListenerMethod]
-    private void HandleRevive(CharacterDeathEventArgs deathEventArgs, Character owner)
+    private void HandleRevive(CharacterDeathEventArgs deathEventArgs)
     {
         
         if (deathEventArgs.Killed != this) return;
@@ -132,9 +132,9 @@ public class CoachChad : Character, IBattleEventListener
         
     }
     [BattleEventListenerMethod]
-    private void HandleTurnEnd(TurnEndEventArgs turnEnd, Character owner)
+    private void HandleTurnEnd(TurnEndEventArgs turnEnd)
     {
-        if (turnEnd.Character != owner) return;
+        if (turnEnd.Character != this) return;
         RecoverHealth(100);
 
     }

@@ -19,13 +19,13 @@ public class Sleep: StatusEffect, IBattleEventListener
     public override StatusEffectType EffectType => StatusEffectType.Debuff;
 
     [BattleEventListenerMethod]
-    public void OnTurnStart(CharacterPostDamageEventArgs eventArgs, Character owner)
+    public void OnTurnStart(CharacterPostDamageEventArgs eventArgs)
     {
-        if(eventArgs.DamageResult.DamageReceiver != owner) return;
+        if(eventArgs.DamageResult.DamageReceiver != Affected) return;
         if (eventArgs.DamageResult.StatusEffect is not null) return;
-        var removed = owner.RemoveStatusEffect(this);
+        var removed = Affected.RemoveStatusEffect(this);
         if(removed)
-            owner.CurrentBattle.AddAdditionalBattleText($"{this} has been dispelled from {owner.NameWithAlphabetIdentifier} due to an attack!");
+            Affected.CurrentBattle.AddAdditionalBattleText($"{this} has been dispelled from {Affected.NameWithAlphabetIdentifier} due to an attack!");
     }
 
     public override UsageResult OverridenUsage(Character affected, ref Character target, ref BattleDecision decision, UsageType usageType)

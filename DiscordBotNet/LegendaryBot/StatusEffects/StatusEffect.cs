@@ -12,6 +12,10 @@ namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
 public abstract class StatusEffect : ICloneable ,  IStatsModifier
 {
+    /// <summary>
+    /// The character currently affected by the status effect
+    /// </summary>
+    public Character Affected { get; set; }
     public virtual string Description => "Does the bla bla bla of the bla bla bla";
     public virtual string IconUrl => $"{Website.DomainName}/battle_images/status_effects/{GetType().Name}.png";
 
@@ -129,12 +133,12 @@ public abstract class StatusEffect : ICloneable ,  IStatsModifier
             User = affected
         };
     }
+
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="affected"></param>
     /// <returns>if the status effect has any additional texts it will return a string if not it returns null</returns>
-    public virtual void PassTurn(Character affected)
+    public virtual void PassTurn()
     {
         Duration -= 1;
 
@@ -153,7 +157,7 @@ public abstract class StatusEffect : ICloneable ,  IStatsModifier
         return Name;
     }
 
-    public virtual  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public virtual  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
     {
         yield break;
     }

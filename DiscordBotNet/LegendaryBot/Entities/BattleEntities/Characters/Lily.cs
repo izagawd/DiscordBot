@@ -13,15 +13,15 @@ public class ChamomileSachetWhack : BasicAttack
     
 
     public int SleepChance => 40;
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            ElementToDamageWith = owner.Element,
-            CriticalChance = owner.CriticalChance,
-            CriticalDamage = owner.CriticalDamage,
-            Damage = owner.Attack * 1.7f,
-            Caster = owner,
+            ElementToDamageWith = User.Element,
+            CriticalChance = User.CriticalChance,
+            CriticalDamage = User.CriticalDamage,
+            Damage = User.Attack * 1.7f,
+            Caster = User,
             CanCrit = true,
             DamageText = $"That was a harsh snoozy whack that dealt $ damage on {target.NameWithAlphabetIdentifier}!",
 
@@ -30,7 +30,7 @@ public class ChamomileSachetWhack : BasicAttack
         {
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
-            User = owner,
+            User = User,
             Text = "Chamomile Whack!",
             DamageResults = [damageResult],
         };
@@ -38,7 +38,7 @@ public class ChamomileSachetWhack : BasicAttack
 
         if (BasicFunctionality.RandomChance(SleepChance))
         {
-            target.AddStatusEffect(new Sleep(owner), owner.Effectiveness);
+            target.AddStatusEffect(new Sleep(User), User.Effectiveness);
         }
         return result;
     }
@@ -47,9 +47,9 @@ public class BlossomTouch : Skill
 {
     public override int MaxCooldown => 3;
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.Team.Where(i =>!i.IsDead);
+        return User.Team.Where(i =>!i.IsDead);
     }
 
     public int HealthHealScaling => 30;
@@ -57,15 +57,15 @@ public class BlossomTouch : Skill
     public override string GetDescription(Character character) =>  $"With the power of flowers, recovers the hp of an ally with {HealthHealScaling}% of the caster's max health, dispelling one debuff";
     
  
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
-        target.RecoverHealth((owner.MaxHealth *HealthHealScaling* 0.01).Round());
+        target.RecoverHealth((User.MaxHealth *HealthHealScaling* 0.01).Round());
         return new UsageResult(this)
         {
-            Text = $"{owner.NameWithAlphabetIdentifier} used Blossom Touch!",
+            Text = $"{User.NameWithAlphabetIdentifier} used Blossom Touch!",
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
-            User = owner
+            User = User
         };
     }
 }
@@ -73,10 +73,10 @@ public class LilyOfTheValley : Surge
 {
     public override int MaxCooldown  => 5;
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
         
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team && !i.IsDead);
     }
 
     public int PoisonInflictChance => 100;
@@ -85,20 +85,20 @@ public class LilyOfTheValley : Surge
     public override  string GetDescription(Character character) => $"Releases a poisonous gas to all enemies, with an {StunInflictChance}% chance of inflicting stun for 1 turn and a {PoisonInflictChance}% chance of inflicting poison for one turn";
     
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         List<StatusEffect> statusEffects = [];
-        var effectiveness = owner.Effectiveness;
-        foreach (var i in GetPossibleTargets(owner))
+        var effectiveness = User.Effectiveness;
+        foreach (var i in GetPossibleTargets())
         {
             
             if (BasicFunctionality.RandomChance(PoisonInflictChance))
             {
-                statusEffects.Add(new Poison(owner){Duration = 2});
+                statusEffects.Add(new Poison(User){Duration = 2});
             }
             if (BasicFunctionality.RandomChance(StunInflictChance))
             {
-                statusEffects.Add(new Stun(owner){Duration = 2});
+                statusEffects.Add(new Stun(User){Duration = 2});
             }
             if(statusEffects.Any()) i.AddStatusEffects(statusEffects,effectiveness);
             statusEffects.Clear();
@@ -106,10 +106,10 @@ public class LilyOfTheValley : Surge
 
         return new UsageResult(this)
         {
-            Text =  $"{owner.NameWithAlphabetIdentifier} used Lily of The Valley, and released a dangerous gas to the enemy team!",
+            Text =  $"{User.NameWithAlphabetIdentifier} used Lily of The Valley, and released a dangerous gas to the enemy team!",
             TargetType = TargetType.AOE,
             UsageType = usageType,
-            User = owner
+            User = User
         };
     }
 }
@@ -124,15 +124,15 @@ public class Lily : Character
 
     public override void NonPlayerCharacterAi(ref Character target, ref BattleDecision decision)
     {
-        if (Surge.CanBeUsed(this))
+        if (Surge.CanBeUsed())
         {
             decision = BattleDecision.Surge;
-            target = Surge.GetPossibleTargets(this).First();
+            target = Surge.GetPossibleTargets().First();
             return;
         }
 
         var teamMateWithLowestHealth = Team.OrderBy(i => i.Health).First();
-        if (Skill.CanBeUsed(this) && teamMateWithLowestHealth.Health < teamMateWithLowestHealth.MaxHealth * 0.7)
+        if (Skill.CanBeUsed() && teamMateWithLowestHealth.Health < teamMateWithLowestHealth.MaxHealth * 0.7)
         {
             decision = BattleDecision.Skill;
             target = teamMateWithLowestHealth;
@@ -141,7 +141,7 @@ public class Lily : Character
 
         decision = BattleDecision.BasicAttack;
         
-        target = BasicAttack.GetPossibleTargets(this).OrderBy(i => i.Health).First();
+        target = BasicAttack.GetPossibleTargets().OrderBy(i => i.Health).First();
 
     }
 

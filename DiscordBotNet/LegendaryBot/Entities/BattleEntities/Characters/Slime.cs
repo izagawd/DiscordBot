@@ -12,20 +12,20 @@ public class GooeyStrike : BasicAttack
 {
     
     public override string GetDescription(Character character) => "Slams it's body on the enemy, with a 10% chance to inflict poison";
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            ElementToDamageWith = owner.Element,
-            CriticalChance = owner.CriticalChance,
-            CriticalDamage = owner.CriticalDamage,
-            Caster = owner,
-            Damage = owner.Attack * 1.7f,
-            DamageText = $"{owner.NameWithAlphabetIdentifier} used a slime attack at {target.NameWithAlphabetIdentifier} and dealt $ damage!"
+            ElementToDamageWith = User.Element,
+            CriticalChance = User.CriticalChance,
+            CriticalDamage = User.CriticalDamage,
+            Caster = User,
+            Damage = User.Attack * 1.7f,
+            DamageText = $"{User.NameWithAlphabetIdentifier} used a slime attack at {target.NameWithAlphabetIdentifier} and dealt $ damage!"
         });
         if (BasicFunctionality.RandomChance(10))
         {
-            target.AddStatusEffect(new Poison(owner));
+            target.AddStatusEffect(new Poison(User));
         }
         return new UsageResult(this)
         {
@@ -33,7 +33,7 @@ public class GooeyStrike : BasicAttack
             TargetType = TargetType.SingleTarget,
             UsageType = usageType,
             Text = "Sulaimu attacku!",
-            User = owner
+            User = User
         };
     }
 }

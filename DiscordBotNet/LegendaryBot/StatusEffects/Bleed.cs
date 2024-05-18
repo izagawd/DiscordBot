@@ -9,30 +9,30 @@ public class Bleed : StatusEffect, IDetonatable
                                           " Ignores 70% of the affecteed's defense";
     public override bool ExecuteStatusEffectAfterTurn => false;
     public float Attack { get;  }
-    public DamageResult? Detonate(Character affected, Character detonator)
+    public DamageResult? Detonate( Character detonator)
     {
-        var removed =affected.RemoveStatusEffect(this);
-        if (removed) return DoDamage(affected);
+        var removed =Affected.RemoveStatusEffect(this);
+        if (removed) return DoDamage();
         return null;
 
     }
 
-    private DamageResult? DoDamage(Character affected)
+    private DamageResult? DoDamage()
     {
-        return affected.Damage(new DamageArgs(this)
+        return Affected.Damage(new DamageArgs(this)
         {
             ElementToDamageWith = null,
             DefenseToIgnore = 70,
 
             Damage = Attack,
-            DamageText = $"{affected} took $ bleed damage!",
+            DamageText = $"{Affected} took $ bleed damage!",
             Caster = Caster,
         });
     }
-    public override void PassTurn(Character affected)
+    public override void PassTurn()
     {
-        base.PassTurn(affected);
-        DoDamage(affected);
+        base.PassTurn();
+        DoDamage();
     }
 
     public Bleed(Character caster) : base(caster)

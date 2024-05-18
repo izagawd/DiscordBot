@@ -12,7 +12,7 @@ public class BaseballBatWhack : BasicAttack
         return "Swings a baseball bat at the enemy, causing solid  damage";
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         return new UsageResult(this)
         {
@@ -23,15 +23,15 @@ public class BaseballBatWhack : BasicAttack
             [
                 target.Damage(new DamageArgs(this)
                 {
-                    ElementToDamageWith = owner.Element,
-                    CriticalChance = owner.CriticalChance,
-                    CriticalDamage = owner.CriticalDamage,
-                    Damage = owner.Attack * 1.7f,
-                    Caster = owner,
-                    DamageText = $"{owner.NameWithAlphabetIdentifier} whacks {target.NameWithAlphabetIdentifier} with a baseball bat, dealing $ damage"
+                    ElementToDamageWith = User.Element,
+                    CriticalChance = User.CriticalChance,
+                    CriticalDamage = User.CriticalDamage,
+                    Damage = User.Attack * 1.7f,
+                    Caster = User,
+                    DamageText = $"{User.NameWithAlphabetIdentifier} whacks {target.NameWithAlphabetIdentifier} with a baseball bat, dealing $ damage"
                 })
             ],
-            User = owner
+            User = User
         };
     }
 }

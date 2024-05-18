@@ -165,13 +165,13 @@ public class BattleSimulator
         public T Entity { get; }
         public Character Owner { get; }
 
-        public EntityAndOwnerPair(T entity, Character owner)
+        public EntityAndOwnerPair(T entity, Character User)
         {
             Entity = entity;
-            Owner = owner;
+            Owner = User;
         }
     }
-   
+
 
     static BattleSimulator()
     {
@@ -183,46 +183,80 @@ public class BattleSimulator
             
             
         }
+
+        List<MethodInfo> invalidMethods = [];
+
+        foreach (var i in _methodsCache.SelectMany(i => i.Value.Keys))
+        {
+            if(i.GetParameters().Length != 1 ||!i.GetParameters()[0].ParameterType.IsRelatedToType(typeof(BattleEventArgs)) )
+                invalidMethods.Add(i);
+
+        }
+
+        var stringBuilder = new StringBuilder();
+        if (invalidMethods.Count > 0)
+        {
+            stringBuilder.Append(
+                $"The following methods need to have one parameter, " +
+                $"and that one parameter should be a type or subtype of {nameof(BattleEventArgs)},\n"
+                +$"since it uses the {nameof(BattleEventListenerMethodAttribute)} to listen to events:\n");
+
+            foreach (var i in invalidMethods)
+            {
+                stringBuilder.Append($"Method \"{i.Name}\" from class \"{i.DeclaringType}\"");
+            }
+
+            stringBuilder.ToString().Print();
+            Environment.Exit(1);
+        }
     }
 
     private static ConcurrentDictionary<Type, Dictionary<MethodInfo,BattleEventListenerMethodAttribute>> _methodsCache = [];
     
     /// <summary>
-    /// Used to get entities connected to this battle simulator and it's owner
-    /// (eg for a blessing, the character who owns it)
+    /// Used to get entities connected to this battle simulator 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    private IEnumerable<EntityAndOwnerPair<T>> GetConnectedEntities<T>()
+    private IEnumerable<T> GetConnectedEntities<T>()
     {
-        if (this is T thisAsT) yield return new EntityAndOwnerPair<T>(thisAsT,null);
+        if (this is T thisAsT) yield return thisAsT;
         foreach (var i in Characters)
         {
-            if (i is T characterAsT) yield return new EntityAndOwnerPair<T>(characterAsT,i);
+            if (i is T characterAsT) yield return characterAsT;
             foreach (var j in i.MoveList.OfType<T>())
             {
-                yield return new EntityAndOwnerPair<T>(j,i);
+                yield return j;
             }
 
             foreach (var j in i.StatusEffects.OfType<T>())
             {
-                yield return new EntityAndOwnerPair<T>(j,i);
+                yield return j;
             }
-            if (i.Blessing is T blessingAsT) yield  return new EntityAndOwnerPair<T>(blessingAsT,i);
+            if (i.Blessing is T blessingAsT) yield  return blessingAsT;
         }
     }
     struct BattleEventListenerMethodContainer
     {
+        /// <summary>
+        /// The entity to invoke the method with
+        /// </summary>
         public IBattleEventListener Entity { get; }
-        public Character Owner { get; }
+    
+        /// <summary>
+        /// The method to invoke
+        /// </summary>
         public MethodInfo MethodInfo { get; }
-
+        
+        /// <summary>
+        /// The BattleEventListener attribute the method has
+        /// </summary>
         public BattleEventListenerMethodAttribute Attribute { get;}
-        public BattleEventListenerMethodContainer(IBattleEventListener entity, Character owner, MethodInfo methodInfo,
+        public BattleEventListenerMethodContainer(IBattleEventListener entity,MethodInfo methodInfo,
             BattleEventListenerMethodAttribute attribute)
         {
+
             Entity = entity;
-            Owner = owner;
             MethodInfo = methodInfo;
             Attribute = attribute;
         }
@@ -237,10 +271,9 @@ public class BattleSimulator
         foreach (var i in GetConnectedEntities<IBattleEventListener>())
         {
             foreach (var j in 
-                     _methodsCache[i.Entity.GetType()])
+                     _methodsCache[i.GetType()])
             {
-                yield return new BattleEventListenerMethodContainer(i.Entity, i.Owner,
-                    j.Key, j.Value);
+                yield return new BattleEventListenerMethodContainer(i, j.Key, j.Value);
             }
         }
     }
@@ -262,7 +295,7 @@ public class BattleSimulator
                      .Where(k => eventArgs.GetType().IsRelatedToType(k.MethodInfo.GetParameters()[0].ParameterType))
                      .OrderByDescending(j => j.Attribute.Priority))
         {
-            i.MethodInfo.Invoke(i.Entity, [eventArgs, i.Owner]);
+            i.MethodInfo.Invoke(i.Entity, [eventArgs]);
         }
     }
 
@@ -272,20 +305,20 @@ public class BattleSimulator
         
         foreach (var i in Characters)
         {
-            foreach (var j in i.GetAllStatsModifierArgs(i))
+            foreach (var j in i.GetAllStatsModifierArgs())
             {
                 yield return j;
             }
             foreach (var j in i.MoveList)
             {
-                foreach (var k in j.GetAllStatsModifierArgs(i))
+                foreach (var k in j.GetAllStatsModifierArgs())
                 {
                     yield return k;
                 }
             }
             if (i.Blessing is not null)
             {
-                foreach (var j in i.Blessing.GetAllStatsModifierArgs(i))
+                foreach (var j in i.Blessing.GetAllStatsModifierArgs())
                 {
                     yield return j;
                 }
@@ -293,7 +326,7 @@ public class BattleSimulator
             }
             foreach (var j in i.StatusEffects)
             {
-                foreach (var k in j.GetAllStatsModifierArgs(i))
+                foreach (var k in j.GetAllStatsModifierArgs())
                 {
                     yield return k;
                 }
@@ -309,12 +342,29 @@ public class BattleSimulator
             yield return Team2;
         }
     }
-
+    /// <summary>
+    /// Call this for a character that you want to add to a battle,
+    /// or a change in blessing, or move is made to a character. Does not need to be manually called for
+    /// characters that started with this battle
+    /// </summary>
+    /// <param name="character"></param>
+    private void SetupCharacterForThisBattle(Character character)
+    {
+        if (!CharacterTeams.Any(i => i.Contains(character)))
+            throw new Exception("Character must be in a team that is in this battle to be set up");
+        if (character.Blessing is not null)
+            character.Blessing.Character = character;
+        foreach (var i in character.MoveList)
+        {
+            i.User = character;
+        }
+        
+    }
 
     private string? _mainText = "battle begins";
 
     /// <summary>
-    /// The character who is currently taking their tunr
+    /// The character who is currently taking their turn
     /// </summary>
     public Character ActiveCharacter { get; protected set; }
 
@@ -654,7 +704,7 @@ public class BattleSimulator
             foreach (var j in i)
             {
                 j.Team = i;
-
+                SetupCharacterForThisBattle(j);
             }
         }
    
@@ -714,7 +764,7 @@ public class BattleSimulator
                     //this code executes for status effects that occur just before the beginning of the turn
                     if (i.ExecuteStatusEffectBeforeTurn)
                     {
-                        i.PassTurn(ActiveCharacter);
+                        i.PassTurn();
                         if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
                     }
                 }
@@ -764,11 +814,11 @@ public class BattleSimulator
             {
                 components.Add(basicAttackButton);
 
-                if (ActiveCharacter.Skill is not null &&  ActiveCharacter.Skill.CanBeUsed(ActiveCharacter))
+                if (ActiveCharacter.Skill is not null &&  ActiveCharacter.Skill.CanBeUsed())
                 {
                     components.Add(skillButton);
                 }
-                if (ActiveCharacter.Surge is not null && ActiveCharacter.Surge.CanBeUsed(ActiveCharacter))
+                if (ActiveCharacter.Surge is not null && ActiveCharacter.Surge.CanBeUsed())
                 {
                     components.Add(surgeButton);
                 }
@@ -895,7 +945,7 @@ public class BattleSimulator
                 List<Character> possibleTargets = [];
                 if ( ActiveCharacter[battleDecision] is Move theMove)
                 {
-                    possibleTargets.AddRange(theMove.GetPossibleTargets(ActiveCharacter));
+                    possibleTargets.AddRange(theMove.GetPossibleTargets());
                     foreach (var i in possibleTargets)
                     {
                         bool isEnemy = i.Team != ActiveCharacter.Team;
@@ -981,7 +1031,7 @@ public class BattleSimulator
 
   
             
-            var moveResult =  move?.Utilize(ActiveCharacter,target, UsageType.NormalUsage);
+            var moveResult =  move?.Utilize(target, UsageType.NormalUsage);
 
             if (moveResult?.Text is not null)
             {
@@ -1006,7 +1056,7 @@ public class BattleSimulator
 
                     if (i.ExecuteStatusEffectAfterTurn)
                     {
-                        i.PassTurn(ActiveCharacter);
+                        i.PassTurn();
                         if (i.Duration <= 0) ActiveCharacter.RemoveStatusEffect(i);
                     }
                 }

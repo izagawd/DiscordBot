@@ -11,22 +11,22 @@ public class MethaneSlap : BasicAttack
                                                                   $"producing methane around the enemy, with a " +
                                                                   $"{DetonateChance}% chance to detonate all the bombs the target has";
     public int DetonateChance => 75;
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         var damageResult = target.Damage(new DamageArgs(this)
         {
-            ElementToDamageWith = owner.Element,
-            CriticalChance = owner.CriticalChance,
-            CriticalDamage = owner.CriticalDamage,
-            Damage = owner.Attack * 1.7f,
-            Caster = owner,
+            ElementToDamageWith = User.Element,
+            CriticalChance = User.CriticalChance,
+            CriticalDamage = User.CriticalDamage,
+            Damage = User.Attack * 1.7f,
+            Caster = User,
             CanCrit = true,
             DamageText = $"That was a harsh slap on {target.NameWithAlphabetIdentifier} dealt $ damage!"
         });
         var damageResultList = new []{ damageResult };
         var result = new UsageResult(this)
         {
-            Text = "Methane Slap!",User = owner,
+            Text = "Methane Slap!",User = User,
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             DamageResults = damageResultList
@@ -34,7 +34,7 @@ public class MethaneSlap : BasicAttack
         if (BasicFunctionality.RandomChance(DetonateChance))
         {
             foreach (var i in target.StatusEffects.OfType<Bomb>())
-                i.Detonate(target,owner);
+                i.Detonate(User);
         }
         return result;
 
@@ -46,17 +46,17 @@ public class BlowAway : Skill
     public override int MaxCooldown => 4;
     public override string GetDescription(Character character) => $"Throws multiple bombs at the enemy, with a {BombInflictChance} each to inflict Bomb status effect";
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team&& !i.IsDead);
     }
 
     public int BombInflictChance => 100;
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
                 
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} threw multiple bombs at the opposing team!");
-        foreach (var i in GetPossibleTargets(owner))
+        User.CurrentBattle.AddAdditionalBattleText($"{User.NameWithAlphabetIdentifier} threw multiple bombs at the opposing team!");
+        foreach (var i in GetPossibleTargets())
         {
 
             foreach (var _ in Enumerable.Range(0,1))
@@ -64,13 +64,13 @@ public class BlowAway : Skill
                 if (BasicFunctionality.RandomChance(BombInflictChance))
                 {
                                 
-                    i.AddStatusEffect(new Bomb(owner){Duration = 2}, owner.Effectiveness);
+                    i.AddStatusEffect(new Bomb(User){Duration = 2}, User.Effectiveness);
                 }
             }
 
         }
 
-        return new UsageResult(this){TargetType = TargetType.AOE,Text = "Blow Away!",User = owner,UsageType = usageType};
+        return new UsageResult(this){TargetType = TargetType.AOE,Text = "Blow Away!",User = User,UsageType = usageType};
         
     }
 
@@ -82,17 +82,17 @@ public class VolcanicEruption : Surge
     
 
     public override int MaxCooldown  => 6;
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team&& !i.IsDead);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
-        var isCharging = owner.AddStatusEffect(new VolcanicEruptionCharging(owner){Duration = 3});
+        var isCharging = User.AddStatusEffect(new VolcanicEruptionCharging(User){Duration = 3});
         if(isCharging == StatusEffectInflictResult.Succeeded)
-            owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} is charging up a very powerful attack!");
-        return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = owner, Text = "What's this?"};
+            User.CurrentBattle.AddAdditionalBattleText($"{User.NameWithAlphabetIdentifier} is charging up a very powerful attack!");
+        return new UsageResult(this){UsageType = usageType, TargetType = TargetType.AOE, User = User, Text = "What's this?"};
     }
 }
 public class Blast : Character

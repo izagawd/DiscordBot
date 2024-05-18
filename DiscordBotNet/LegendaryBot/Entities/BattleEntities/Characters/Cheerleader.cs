@@ -11,7 +11,7 @@ public class PomPomAttack : BasicAttack
         return "Caster hits the enemy with a pom-pom... and that it";
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
 
         return new UsageResult(this)
@@ -20,16 +20,16 @@ public class PomPomAttack : BasicAttack
             [
                 target.Damage(new DamageArgs(this)
                 {
-                    ElementToDamageWith = owner.Element,
-                    CriticalChance = owner.CriticalChance,
-                    CriticalDamage = owner.CriticalDamage,
-                    Caster = owner,
-                    Damage = owner.Attack * 0.8f,
-                    DamageText = $"{owner.NameWithAlphabetIdentifier} hits {target.NameWithAlphabetIdentifier} with their pompoms, dealing $ damage!"
+                    ElementToDamageWith = User.Element,
+                    CriticalChance = User.CriticalChance,
+                    CriticalDamage = User.CriticalDamage,
+                    Caster = User,
+                    Damage = User.Attack * 0.8f,
+                    DamageText = $"{User.NameWithAlphabetIdentifier} hits {target.NameWithAlphabetIdentifier} with their pompoms, dealing $ damage!"
                 })
             ],
             TargetType = TargetType.SingleTarget,
-            User = owner,
+            User = User,
             UsageType = usageType
         };
     }
@@ -43,21 +43,21 @@ public class  YouCanDoIt : Skill
                "Cannot be used on self";
     }
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.Team.Where(i => !i.IsDead && i != owner);
+        return User.Team.Where(i => !i.IsDead && i != User);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} wants {target.NameWithAlphabetIdentifier} to prevail!");
+        User.CurrentBattle.AddAdditionalBattleText($"{User.NameWithAlphabetIdentifier} wants {target.NameWithAlphabetIdentifier} to prevail!");
         target.IncreaseCombatReadiness(100);
-        target.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
+        target.AddStatusEffect(new AttackBuff(User) { Duration = 2 });
 
         return new UsageResult(this)
         {
             TargetType = TargetType.SingleTarget,
-            User = owner,
+            User = User,
             UsageType = usageType,
         };
     }
@@ -72,18 +72,18 @@ public class YouCanMakeItEveryone : Surge
         return $"Encourages all allies, increasing their combat readiness by {CombatIncreaseAmount}%, and increases their attack for 2 turns";
     }
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.Team.Where(i => !i.IsDead);
+        return User.Team.Where(i => !i.IsDead);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} encourages her allies!");
+        User.CurrentBattle.AddAdditionalBattleText($"{User.NameWithAlphabetIdentifier} encourages her allies!");
 
-        var targets = GetPossibleTargets(owner).ToArray();
+        var targets = GetPossibleTargets().ToArray();
 
-        using (owner.CurrentBattle.PauseBattleEventScope)
+        using (User.CurrentBattle.PauseBattleEventScope)
         {
             foreach (var i in targets)
             {
@@ -91,7 +91,7 @@ public class YouCanMakeItEveryone : Surge
             }
             foreach (var i in targets)
             {
-                i.AddStatusEffect(new AttackBuff(owner) { Duration = 2 });
+                i.AddStatusEffect(new AttackBuff(User) { Duration = 2 });
             }
 
         }
@@ -99,7 +99,7 @@ public class YouCanMakeItEveryone : Surge
         return new UsageResult(this)
         {
             TargetType = TargetType.AOE,
-            User = owner,
+            User = User,
             UsageType = UsageType.NormalUsage
         };
 

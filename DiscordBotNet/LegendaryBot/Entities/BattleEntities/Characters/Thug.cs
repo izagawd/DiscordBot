@@ -12,7 +12,7 @@ public class ThugPunch : BasicAttack
         return "Punches the enemy in a thug way";
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         return new UsageResult(this)
         {
@@ -23,15 +23,15 @@ public class ThugPunch : BasicAttack
             [
                 target.Damage(new DamageArgs(this)
                 {
-                    ElementToDamageWith = owner.Element,
-                    CriticalChance = owner.CriticalChance,
-                    CriticalDamage = owner.CriticalDamage,
-                    Damage = owner.Attack * 1.7f,
-                    Caster = owner,
-                    DamageText = $"{owner.NameWithAlphabetIdentifier} punches {target.NameWithAlphabetIdentifier} in a thug way!"
+                    ElementToDamageWith = User.Element,
+                    CriticalChance = User.CriticalChance,
+                    CriticalDamage = User.CriticalDamage,
+                    Damage = User.Attack * 1.7f,
+                    Caster = User,
+                    DamageText = $"{User.NameWithAlphabetIdentifier} punches {target.NameWithAlphabetIdentifier} in a thug way!"
                 })
             ],
-            User = owner
+            User = User
         };
     }
 }

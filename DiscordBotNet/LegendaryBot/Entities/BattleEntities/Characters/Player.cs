@@ -12,24 +12,24 @@ public class FourthWallBreaker: BasicAttack
     public override string GetDescription(Character character) =>  "Damages the enemy by breaking the fourth wall";
     
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         return new UsageResult(this)
         {
             DamageResults = [
                 target.Damage(new DamageArgs(this)
                 {
-                    ElementToDamageWith = owner.Element,
-                    CriticalChance = owner.CriticalChance,
-                    CriticalDamage = owner.CriticalDamage,
-                    Caster = owner,
+                    ElementToDamageWith = User.Element,
+                    CriticalChance = User.CriticalChance,
+                    CriticalDamage = User.CriticalDamage,
+                    Caster = User,
                     DamageText =
                         $"Breaks the fourth wall, causing {target.NameWithAlphabetIdentifier} to cringe, and making them receive $ damage!",
-                    Damage = owner.Attack * 1.7f
+                    Damage = User.Attack * 1.7f
 
                 })
             ],
-            User = owner,
+            User = User,
             TargetType = TargetType.SingleTarget,
             Text = "It's the power of being a real human",
             UsageType = usageType
@@ -43,31 +43,31 @@ public class FireBall : Skill
     public override string GetDescription(Character character) => "Throws a fire ball at the enemy with a 40% chance to inflict burn";
     
 
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team && !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team && !i.IsDead);
     }
 
     public override int MaxCooldown=> 2;
   
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
         DamageResult? damageResult;
-        using (owner.CurrentBattle.PauseBattleEventScope)
+        using (User.CurrentBattle.PauseBattleEventScope)
         {
             
             damageResult = target.Damage(      new DamageArgs(this)
             {
-                ElementToDamageWith = owner.Element,
-                CriticalChance = owner.CriticalChance,
-                CriticalDamage = owner.CriticalDamage,
-                Damage = owner.Attack * 2.4f,
-                Caster = owner,
-                DamageText =$"{owner.NameWithAlphabetIdentifier} threw a fireball at {target.NameWithAlphabetIdentifier} and dealt $ damage!",
+                ElementToDamageWith = User.Element,
+                CriticalChance = User.CriticalChance,
+                CriticalDamage = User.CriticalDamage,
+                Damage = User.Attack * 2.4f,
+                Caster = User,
+                DamageText =$"{User.NameWithAlphabetIdentifier} threw a fireball at {target.NameWithAlphabetIdentifier} and dealt $ damage!",
             });
             if (BasicFunctionality.RandomChance(10))
             {
-                target.AddStatusEffect(new Burn(owner),owner.Effectiveness);
+                target.AddStatusEffect(new Burn(User),User.Effectiveness);
             }
         }
 
@@ -75,7 +75,7 @@ public class FireBall : Skill
         {
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
-            User = owner,
+            User = User,
             DamageResults =[damageResult]
         };
     }
@@ -87,14 +87,14 @@ public class Ignite : Surge
     
 
     public int IgniteChance  => 100;
-    public override IEnumerable<Character> GetPossibleTargets(Character owner)
+    public override IEnumerable<Character> GetPossibleTargets()
     {
-        return owner.CurrentBattle.Characters.Where(i => i.Team != owner.Team&& !i.IsDead);
+        return User.CurrentBattle.Characters.Where(i => i.Team != User.Team&& !i.IsDead);
     }
 
-    protected override UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType)
+    protected override UsageResult HiddenUtilize(Character target, UsageType usageType)
     {
-        owner.CurrentBattle.AddAdditionalBattleText($"{owner.NameWithAlphabetIdentifier} " +
+        User.CurrentBattle.AddAdditionalBattleText($"{User.NameWithAlphabetIdentifier} " +
                
                                                     $"attempts to make a human torch out of {target.NameWithAlphabetIdentifier}!");
 
@@ -103,17 +103,17 @@ public class Ignite : Surge
         {
             if (BasicFunctionality.RandomChance(IgniteChance))
             {
-                burns.Add(new Burn(owner));
+                burns.Add(new Burn(User));
             }
         }
 
-        target.AddStatusEffects(burns,owner.Effectiveness);
+        target.AddStatusEffects(burns,User.Effectiveness);
         return new UsageResult(this)
         {
             UsageType = usageType,
             TargetType = TargetType.SingleTarget,
             Text = "Ignite!",
-            User = owner
+            User = User
         };
     }
     

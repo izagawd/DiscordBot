@@ -18,12 +18,12 @@ public class DefenseBuff: StatusEffect
 
     }
 
-    public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
     {
         yield return
             new DefensePercentageModifierArgs()
             {
-                CharacterToAffect = owner,
+                CharacterToAffect = Affected,
                 ValueToChangeWith = -50,
                 WorksAfterGearCalculation = true
             };

@@ -20,7 +20,6 @@ public class VolcanicEruptionCharging : StatusEffect
     public override UsageResult OverridenUsage(Character affected,ref Character target, ref BattleDecision decision, UsageType usageType)
     {
         decision = BattleDecision.Other;
-
         if(Duration == 1)
         {
             List<DamageResult> damageResults = [];
@@ -61,16 +60,16 @@ public class VolcanicEruptionCharging : StatusEffect
             User = affected
         };
     }
-    public override void PassTurn(Character affected)
+    public override void PassTurn()
     {
-        var copy = affected.StatusEffects;
-        if (affected.StatusEffects.Any(i => (int)i.OverrideTurnType > (int)OverrideTurnType))
+ 
+        if (Affected.StatusEffects.Any(i => (int)i.OverrideTurnType > (int)OverrideTurnType))
         {
-            affected.RemoveStatusEffect(this);
+            Affected.RemoveStatusEffect(this);
             return;
         }
 
-        base.PassTurn(affected);
+        base.PassTurn();
 
     }
 

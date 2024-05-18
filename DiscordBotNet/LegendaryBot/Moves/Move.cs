@@ -1,4 +1,5 @@
-﻿using DiscordBotNet.LegendaryBot.BattleEvents;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using DiscordBotNet.LegendaryBot.BattleEvents;
 using DiscordBotNet.LegendaryBot.BattleEvents.EventArgs;
 using DiscordBotNet.LegendaryBot.BattleSimulatorStuff;
 using DiscordBotNet.LegendaryBot.Entities.BattleEntities.Characters;
@@ -62,44 +63,46 @@ public abstract class Move : IStatsModifier
     /// </summary>
     /// <param name="level"></param>
     public abstract string GetDescription(Character character);
-
+    
+    
+    /// <summary>
+    /// The character who owns this move
+    /// </summary>
+    public Character User { get; set; }
 
 
     /// <summary>
     /// Gets all the possible targets this move can be used on based on the owner of the move
     /// </summary>
 
-    public abstract IEnumerable<Character> GetPossibleTargets(Character owner);
+    public abstract IEnumerable<Character> GetPossibleTargets();
 
-
-
+    public BattleSimulator CurrentBattle => User?.CurrentBattle;
     /// <summary>
     /// This is where the custom functionality of a move is created
     /// </summary>
-    /// <param name="owner">The owner of the move</param>
     /// <param name="target">The target</param>
     /// <param name="usageType">What type of usage this is</param>
+    protected abstract UsageResult HiddenUtilize(Character target, UsageType usageType);
 
-    protected abstract UsageResult HiddenUtilize(Character owner, Character target, UsageType usageType);
     /// <summary>
     /// This is where the general functionality of a move is done. It does some checks before HiddenUtilize is called
     /// </summary>
-    /// <param name="owner">The owner of the move</param>
     /// <param name="target">The target</param>
     /// <param name="usageType">What type of usage this is</param>
-    public virtual UsageResult Utilize(Character owner, Character target, UsageType usageType)
+    public virtual UsageResult Utilize(Character target, UsageType usageType)
     {
-        var temp = HiddenUtilize(owner, target, usageType);
-        owner.CurrentBattle.InvokeBattleEvent(new CharacterUseMoveEventArgs(temp));
+        var temp = HiddenUtilize(target, usageType);
+        CurrentBattle.InvokeBattleEvent(new CharacterUseMoveEventArgs(temp));
         return temp;
     }
     /// <summary>
     /// Checks if this move can be used based on the owner
     /// </summary>
 
-    public virtual bool CanBeUsed(Character owner)
+    public virtual bool CanBeUsed()
     {
-        return GetPossibleTargets(owner).Any() && !owner.IsOverriden;
+        return GetPossibleTargets().Any() && !User.IsOverriden;
     }
 
     public override string ToString()
@@ -108,7 +111,7 @@ public abstract class Move : IStatsModifier
         return Name;
     }
 
-    public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs(Character owner)
+    public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
     {
         yield break;
     }

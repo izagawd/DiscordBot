@@ -156,7 +156,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         var arrayOfType =
             _statusEffects.Where(i => i.GetType() == statusEffect.GetType())
                 .ToArray();
-
+        statusEffect.Affected = this;
         if (arrayOfType.Length < statusEffect.MaxStacks)
         {
             bool added = false;
@@ -168,6 +168,7 @@ public abstract partial  class Character : BattleEntity, ISetup
                 if (!BasicFunctionality.RandomChance((int)percentToResistance))
                 {
                     added = _statusEffects.Add(statusEffect);
+                    
                 }
                 
             }
@@ -267,7 +268,9 @@ public abstract partial  class Character : BattleEntity, ISetup
         return decreaseAmount;
     }
 
-  
+    /// <summary>
+    /// Blessing currently equipped by character. Character of blessing must be set to this if useed in battle
+    /// </summary>
     public  Blessing? Blessing { get; set; }
 
 
@@ -1039,9 +1042,9 @@ public abstract partial  class Character : BattleEntity, ISetup
         List<BattleDecision> possibleDecisions = [BattleDecision.BasicAttack];
 
 
-        if(Skill is not null && Skill.CanBeUsed(this))
+        if(Skill is not null && Skill.CanBeUsed())
             possibleDecisions.Add(BattleDecision.Skill);
-        if(Surge is not null && Surge.CanBeUsed(this))
+        if(Surge is not null && Surge.CanBeUsed())
             possibleDecisions.Add(BattleDecision.Surge);
 
    
@@ -1050,7 +1053,7 @@ public abstract partial  class Character : BattleEntity, ISetup
 
         moveDecision =BasicFunctionality.RandomChoice<BattleDecision>(possibleDecisions);
         move = this[moveDecision]!;
-        Character[] possibleTargets = move.GetPossibleTargets(this).ToArray();
+        Character[] possibleTargets = move.GetPossibleTargets().ToArray();
         possibleDecisions.Remove(moveDecision);
     
 
@@ -1282,7 +1285,7 @@ public abstract partial  class Character : BattleEntity, ISetup
             // If no shield, damage affects health directly
             Health -= damage;
         }
-        shield.SetShieldValue(this,shieldValue);
+        shield.SetShieldValue(shieldValue);
     }
     public static float DamageFormula(float potentialDamage, float defense)
     {
@@ -1404,7 +1407,7 @@ public abstract partial  class Character : BattleEntity, ISetup
         }
         return $"{Name} ({side}) [{AlphabetIdentifier}]";
     }
-
+    
     public string NameWithAlphabetIdentifier => $"{Name} ({AlphabetIdentifier})";
     [NotMapped] public virtual Skill? Skill { get; } 
     /// <summary>
