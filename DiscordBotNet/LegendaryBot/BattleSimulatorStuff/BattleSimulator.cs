@@ -348,7 +348,7 @@ public class BattleSimulator
     /// characters that started with this battle
     /// </summary>
     /// <param name="character"></param>
-    private void SetupCharacterForThisBattle(Character character)
+    public void SetupCharacterForThisBattle(Character character)
     {
         if (!CharacterTeams.Any(i => i.Contains(character)))
             throw new Exception("Character must be in a team that is in this battle to be set up");

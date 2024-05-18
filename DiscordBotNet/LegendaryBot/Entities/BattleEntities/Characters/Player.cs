@@ -130,7 +130,7 @@ public class Player : Character
 
     
     [NotMapped]
-    public DiscordUser User { get; set; }
+    public DiscordUser DiscordUser { get; set; }
     [NotMapped]
     private Surge fireSurge { get; } = new Ignite();
     [NotMapped]
@@ -172,6 +172,8 @@ public class Player : Character
     public void SetElement(Element element)
     {
         Element = element;
+        if (CurrentBattle is not null) 
+            CurrentBattle.SetupCharacterForThisBattle(this);
     }
 
     public override string ImageUrl { get; protected set; }
@@ -205,14 +207,14 @@ public class Player : Character
         await base.LoadAsync(build);
         if (discordUser is not null)
         {
-            User = discordUser;
-        } else if (User is null)
+            DiscordUser = discordUser;
+        } else if (DiscordUser is null)
         {
-            User = await Bot.Client.GetUserAsync((ulong)UserDataId);
+            DiscordUser = await Bot.Client.GetUserAsync((ulong)UserDataId);
         }
 
-        Name = User.Username;
-        ImageUrl = User.AvatarUrl;
+        Name = DiscordUser.Username;
+        ImageUrl = DiscordUser.AvatarUrl;
         if (UserData is not null)
         {
             Color = UserData.Color;
