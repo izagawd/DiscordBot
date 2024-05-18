@@ -557,6 +557,7 @@ public class BattleSimulator
         {
             _battleSimulator = battleSimulator;
             _battleSimulator.pauseCount++;
+            
         }
 
         private bool disposed = false;
