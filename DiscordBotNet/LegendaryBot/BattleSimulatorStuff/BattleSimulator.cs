@@ -302,36 +302,19 @@ public class BattleSimulator
 
     public  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
-        
-        foreach (var i in Characters)
+        var stop = new Stopwatch(); stop.Start();
+        ;
+        foreach (var i in GetConnectedEntities<IStatsModifier>())
         {
             foreach (var j in i.GetAllStatsModifierArgs())
             {
                 yield return j;
             }
-            foreach (var j in i.MoveList)
-            {
-                foreach (var k in j.GetAllStatsModifierArgs())
-                {
-                    yield return k;
-                }
-            }
-            if (i.Blessing is not null)
-            {
-                foreach (var j in i.Blessing.GetAllStatsModifierArgs())
-                {
-                    yield return j;
-                }
-            
-            }
-            foreach (var j in i.StatusEffects)
-            {
-                foreach (var k in j.GetAllStatsModifierArgs())
-                {
-                    yield return k;
-                }
-            }
         }
+        stop.Stop();
+        ;
+        stop.Elapsed.TotalMicroseconds.Print();
+
     }
 
     public IEnumerable<CharacterTeam> CharacterTeams
