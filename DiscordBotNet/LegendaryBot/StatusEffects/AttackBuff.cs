@@ -3,7 +3,7 @@ using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class AttackBuff : StatusEffect
+public class AttackBuff : StatusEffect, IStatsModifier
 {
 
 
@@ -22,7 +22,7 @@ public class AttackBuff : StatusEffect
 
 
 
-    public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
+    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
     {
         yield return new AttackPercentageModifierArgs
             {

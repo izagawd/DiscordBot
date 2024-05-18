@@ -302,7 +302,7 @@ public class BattleSimulator
 
     public  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgsInBattle()
     {
-      
+        var stop = new Stopwatch(); stop.Start();
         foreach (var i in GetConnectedEntities<IStatsModifier>())
         {
             foreach (var j in i.GetAllStatsModifierArgs())
@@ -310,6 +310,8 @@ public class BattleSimulator
                 yield return j;
             }
         }
+        stop.Stop();
+        stop.Elapsed.TotalMicroseconds.Print();
 
     }
 
@@ -557,7 +559,7 @@ public class BattleSimulator
         {
             _battleSimulator = battleSimulator;
             _battleSimulator.pauseCount++;
-            
+          
         }
 
         private bool disposed = false;
@@ -592,6 +594,11 @@ public class BattleSimulator
     /// </summary>
     public PauseBattleEventsInstance PauseBattleEventScope => new(this);
 
+    public IEnumerable<int> bruh()
+    {
+        yield return 3;
+        
+    }
 
     private async Task CheckForForfeitOrInfoAsync()
     {

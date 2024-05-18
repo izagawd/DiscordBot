@@ -3,7 +3,7 @@ using DiscordBotNet.LegendaryBot.ModifierInterfaces;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public class DefenseDebuff: StatusEffect
+public class DefenseDebuff: StatusEffect, IStatsModifier
 {
 
 
@@ -17,7 +17,7 @@ public class DefenseDebuff: StatusEffect
     {
 
     }
-    public override IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
+    public IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
     {
         yield return
             new DefensePercentageModifierArgs

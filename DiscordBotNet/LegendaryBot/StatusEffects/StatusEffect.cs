@@ -10,7 +10,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.StatusEffects;
 
-public abstract class StatusEffect : ICloneable ,  IStatsModifier
+public abstract class StatusEffect : ICloneable 
 {
     /// <summary>
     /// The character currently affected by the status effect
@@ -157,12 +157,7 @@ public abstract class StatusEffect : ICloneable ,  IStatsModifier
         return Name;
     }
 
-    public virtual  IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
-    {
-        yield break;
-    }
 
- 
 
     object ICloneable.Clone()
     {

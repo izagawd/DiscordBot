@@ -11,7 +11,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace DiscordBotNet.LegendaryBot.Moves;
 
-public abstract class Move : IStatsModifier
+public abstract class Move 
 {
     /// <summary>
     /// The maximum amount this move can be enhanced to
@@ -111,10 +111,7 @@ public abstract class Move : IStatsModifier
         return Name;
     }
 
-    public virtual IEnumerable<StatsModifierArgs> GetAllStatsModifierArgs()
-    {
-        yield break;
-    }
+
 
     public virtual string Name => BasicFunctionality.Englishify(GetType().Name);
 
